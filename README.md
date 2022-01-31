@@ -5,13 +5,13 @@ https://k3s.io
 
 ## Install VM
 
-1. Change hostname in `/etc/hosts` and `/etc/hostname`
-2. Create static ip in DHCP server
+1. Change/add hostname in `/etc/hosts` and `/etc/hostname`
+2. Create hostname and static ip in DHCP server (pfSense)
 
 ## Install Master
 
 ```
-curl -sfL https://get.k3s.io | sh -s - --no-deploy traefik --disable servicelb --write-kubeconfig-mode 644 --node-name k3s-master-01
+curl -sfL https://get.k3s.io | sh -s - server --no-deploy traefik --disable servicelb --write-kubeconfig-mode 644
 ```
 
 ## Install Worker
