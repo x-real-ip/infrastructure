@@ -8,7 +8,7 @@ https://k3s.io
 1. Change/add hostname in `/etc/hosts` and `/etc/hostname`
 2. Install packages
 ```
-sudo apt-get install qemu-guest-agent curl
+sudo apt-get install qemu-guest-agent curl -y 
 ```
 4. Create hostname and static ip in DHCP server (pfSense)
 
