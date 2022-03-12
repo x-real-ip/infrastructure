@@ -3,14 +3,19 @@
 Lightweight, easy, fast Kubernetes distribution with a very small footprint
 https://k3s.io
 
-## Install VM's
+## Install VM's and make a template.
 
 1. Change/add hostname in `/etc/hosts` and `/etc/hostname`
-2. Install packages
+2. Update
+```
+sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get distro-upgrade -y
+```
+3. Install packages.
 ```
 sudo apt-get install qemu-guest-agent curl -y 
 ```
-4. Create hostname and static ip in DHCP server (pfSense)
+4. Create hostname and static ip in DHCP server (pfSense).
+5. Create template from this VM.
 
 ## Install Master node(s)
 
