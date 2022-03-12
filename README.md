@@ -6,7 +6,11 @@ https://k3s.io
 ## Install VM's
 
 1. Change/add hostname in `/etc/hosts` and `/etc/hostname`
-2. Create hostname and static ip in DHCP server (pfSense)
+2. Install packages
+```
+sudo apt-get install qemu-guest-agent curl
+```
+4. Create hostname and static ip in DHCP server (pfSense)
 
 ## Install Master node(s)
 
