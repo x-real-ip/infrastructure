@@ -1,12 +1,13 @@
-# Rancher's k3s - First steps
+# K3s - First steps
 
 Lightweight, easy, fast Kubernetes distribution with a very small footprint
 https://k3s.io
 
 ## Install VM's
 
-1. Change/add hostname in `/etc/hosts` and `/etc/hostname`
-2. Create hostname and static ip in DHCP server (pfSense)
+1. Install VM's with Ubuntu server.
+2. After installation change/add hostname in `/etc/hosts` and `/etc/hostname`
+3. Create hostname and static ip in DHCP server (pfSense)
 
 ## Install Master node(s)
 
@@ -44,8 +45,6 @@ curl -sfL https://get.k3s.io | sh -
 
 ## Connect remotely to the cluster
 
-If you don't want to connect via SSH to a node every time you need to query your cluster, it is possible to install kubectl (k8s command line tool) on your local machine and control remotely your cluster.
-
 Install kubectl on your local machine
 Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
 
@@ -54,7 +53,7 @@ Copy the k3s config file from the master node to your local machine
 ```
 mkdir ~/.kube/
 
-scp coen@k3s-master-01:/etc/rancher/k3s/k3s.yaml ~/.kube/config
+scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config
 
 export KUBECONFIG=~/.kube/config
 
