@@ -1,14 +1,14 @@
 ---
-apiVersion: v1
 kind: Namespace
+apiVersion: v1
 metadata:
   name: metallb-system
   labels:
     app: metallb
 
 ---
-apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
+apiVersion: policy/v1beta1
 metadata:
   labels:
     app: metallb
@@ -49,8 +49,8 @@ spec:
     - emptyDir
 
 ---
-apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
+apiVersion: policy/v1beta1
 metadata:
   labels:
     app: metallb
@@ -88,8 +88,8 @@ spec:
     - emptyDir
 
 ---
-apiVersion: v1
 kind: ServiceAccount
+apiVersion: v1
 metadata:
   labels:
     app: metallb
@@ -97,8 +97,8 @@ metadata:
   namespace: metallb-system
 
 ---
-apiVersion: v1
 kind: ServiceAccount
+apiVersion: v1
 metadata:
   labels:
     app: metallb
@@ -106,8 +106,8 @@ metadata:
   namespace: metallb-system
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -144,8 +144,8 @@ rules:
       - use
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -185,8 +185,8 @@ rules:
       - use
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -203,8 +203,8 @@ rules:
       - watch
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -219,8 +219,8 @@ rules:
       - list
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -251,8 +251,8 @@ rules:
       - get
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -267,8 +267,8 @@ subjects:
     namespace: metallb-system
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -283,8 +283,8 @@ subjects:
     namespace: metallb-system
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -301,8 +301,8 @@ subjects:
     name: speaker
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -317,8 +317,8 @@ subjects:
     name: speaker
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   labels:
     app: metallb
@@ -333,8 +333,8 @@ subjects:
     name: controller
 
 ---
-apiVersion: apps/v1
 kind: DaemonSet
+apiVersion: apps/v1
 metadata:
   labels:
     app: metallb
@@ -432,8 +432,8 @@ spec:
           operator: Exists
 
 ---
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   labels:
     app: metallb
