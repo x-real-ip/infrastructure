@@ -16,22 +16,14 @@ spec:
       labels:
         app: homeassistant
     spec:
-      nodeName: princess-celestia
-      volumes:
-        - name: ha-storage
-          nfs:
-            server: mnemosyne.arkane-systems.lan
-            path: "/swarm/harmony/homeassistant/ha"
-        - name: ha-mysql-storage
-          hostPath:
-            path: /opt/ha-mysql
-            type: DirectoryOrCreate
+      nodeSelector:
+        usb-dev: true
       containers:
         - image: ghcr.io/home-assistant/home-assistant:stable
-          name: home-assistant
+          name: homeassistant
           volumeMounts:
             - mountPath: "/config"
-              name: ha-storage
+              name: homeassistant-storage
         - image: mysql:latest
           name: mysql
           env:
@@ -40,6 +32,15 @@ spec:
                 secretKeyRef:
                   name: mysql-recorder-pass
                   key: password
+      volumes:
+        - name: homeassistant-storage
+          nfs:
+            server: storage-server.lan
+            path: "/r10_8tb/services/homeassistant"
+        - name: ha-mysql-storage
+          hostPath:
+            path: /opt/ha-mysql
+            type: DirectoryOrCreate
           volumeMounts:
             - name: ha-mysql-storage
               mountPath: /var/lib/mysql
@@ -65,8 +66,6 @@ metadata:
   name: homeassistant-ingress
   namespace: homeassistant
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   rules:
     - host: jeeves.harmony.arkane-systems.lan
