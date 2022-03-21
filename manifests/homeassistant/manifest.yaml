@@ -34,10 +34,13 @@ spec:
     - host: coen.test
       http:
         paths:
-          - path: /
+          - pathType: Prefix
+            path: /
             backend:
-              serviceName: home-assistant
-              servicePort: 80
+              service:
+                name: home-assistant
+                port:
+                  number: 80
 
 ---
 kind: Deployment
