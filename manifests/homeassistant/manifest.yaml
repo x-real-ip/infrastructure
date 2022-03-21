@@ -5,21 +5,6 @@ metadata:
   name: home-assistant
 
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: home-assistant
-  namespace: home-assistant
-spec:
-  selector:
-    app: home-assistant
-  ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 8123
-
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -36,7 +21,22 @@ spec:
               service:
                 name: home-assistant
                 port:
-                  number: 80
+                  number: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+spec:
+  selector:
+    app: home-assistant
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8123
 
 ---
 kind: Deployment
