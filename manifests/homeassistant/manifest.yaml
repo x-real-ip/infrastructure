@@ -25,13 +25,10 @@ kind: Ingress
 metadata:
   namespace: home-assistant
   name: home-assistant
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
-    - host: coen.test
+    - host: www.demo.io
       http:
         paths:
           - pathType: Prefix
