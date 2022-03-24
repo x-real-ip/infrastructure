@@ -5,8 +5,6 @@ https://k3s.io
 
 ## Install VM's and make a template.
 
-<<<<<<< HEAD
-
 1. Install VM's with Ubuntu server.
 2. After installation change/add hostname in `/etc/hosts` and `/etc/hostname`
 3. # Create hostname and static ip in DHCP server (pfSense)
@@ -20,12 +18,11 @@ sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get distro-upgrade -y
 3. Install packages.
 
 ```
-sudo apt-get install qemu-guest-agent curl -y
+sudo apt-get install qemu-guest-agent curl nfs-common -y
 ```
 
 4. Create hostname and static ip in DHCP server (pfSense).
 5. Create template from this VM.
-   > > > > > > > 8732f89176046f14b1b1a712b590f8de37658bf7
 
 ## Install Master node(s)
 
