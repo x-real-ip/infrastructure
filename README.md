@@ -29,13 +29,10 @@ sudo apt-get install qemu-guest-agent curl nfs-common -y
 SSH into the master node(s)
 
 ```
-export K3S_KUBECONFIG_MODE="644"
-
-export K3S_DATASTORE_ENDPOINT="mysql://k3s:<PASSWORD>@tcp(mysql.lan:3306)/k3s" k3s server
-
-export INSTALL_K3S_EXEC=" --no-deploy servicelb --no-deploy traefik"
-
-curl -sfL https://get.k3s.io | sh -
+curl -sfL https://get.k3s.io | \
+  INSTALL_K3S_EXEC=" --no-deploy servicelb --no-deploy traefik" \
+  K3S_DATASTORE_ENDPOINT="mysql://k3s:<PASSWORD>@tcp(mysql.lan:3306)/k3s"
+  sh -s 
 ```
 
 ## Save server Token
