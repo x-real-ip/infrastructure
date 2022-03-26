@@ -12,7 +12,7 @@ https://k3s.io
 5. Update
 
 ```
-sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get distro-upgrade -y
+sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y
 ```
 
 3. Install packages.
