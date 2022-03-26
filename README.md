@@ -30,6 +30,7 @@ SSH into the master node(s)
 
 ```
 export K3S_KUBECONFIG_MODE="644"
+
 export K3S_DATASTORE_ENDPOINT="mysql://k3s:<PASSWORD>@tcp(mysql.lan:3306)/kubernetes"
 
 export INSTALL_K3S_EXEC=" --no-deploy servicelb --no-deploy traefik"
