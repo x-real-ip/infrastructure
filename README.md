@@ -30,6 +30,7 @@ SSH into the master node(s)
 
 ```
 export K3S_KUBECONFIG_MODE="644"
+export K3S_DATASTORE_ENDPOINT="mysql://k3s:<PASSWORD>@tcp(mysql.lan:3306)/kubernetes"
 
 export INSTALL_K3S_EXEC=" --no-deploy servicelb --no-deploy traefik"
 
@@ -38,7 +39,7 @@ curl -sfL https://get.k3s.io | sh -
 
 ## Save server Token
 
-Grab token from the master node to be able to add worked nodes to it and save it (in a passwordmanager).
+Grab token from the master node to be able to add worker nodes to it and save it (in a passwordmanager).
 
 ```
 cat /var/lib/rancher/k3s/server/node-token
@@ -85,5 +86,5 @@ kubectl get nodes
 ### create secret base64 encode
 
 ```bash
-echo -n "password123" | base64 -i -
+echo -n "<PASSWORD>" | base64 -i -
 ```
