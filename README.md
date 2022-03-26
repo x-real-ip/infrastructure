@@ -31,7 +31,10 @@ SSH into the master node(s)
 ```
 curl -sfL https://get.k3s.io | \
   INSTALL_K3S_EXEC=" --no-deploy servicelb --no-deploy traefik" \
-  K3S_DATASTORE_ENDPOINT="mysql://k3s:<PASSWORD>@tcp(mysql.lan:3306)/k3s"
+  K3S_DATASTORE_ENDPOINT="mysql://k3s:wdawd12131grrgr666@tcp(mysql.lan:3306)/k3s" \
+  K3S_DATASTORE_CERTFILE="/etc/mysql/certificates/cert.crt" \
+  K3S_DATASTORE_KEYFILE="/etc/mysql/certificates/cert.key" \
+  K3S_DATASTORE_CAFILE="/etc/mysql/certificates/ca.pem" \
   sh -s 
 ```
 
