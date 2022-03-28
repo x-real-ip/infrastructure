@@ -18,7 +18,6 @@ sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y
 sudo apt-get install qemu-guest-agent curl nfs-common -y
 ```
 
-7. Create hostname and static ip in DHCP server (pfSense).
 8. Create template from this VM.
 
 ## Setup external Database
