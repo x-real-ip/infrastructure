@@ -3,7 +3,7 @@
 Lightweight, easy, fast Kubernetes distribution with a very small footprint
 https://k3s.io
 
-## Prepare VM's
+## Prepare k3s Master and Worker nodes as VM's
 
 1. Install VM's with Ubuntu server.
 2. After installation change/add hostname in `/etc/hosts` and `/etc/hostname`
