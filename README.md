@@ -20,12 +20,17 @@ sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y
 sudo apt-get install qemu-guest-agent curl nfs-common -y
 ```
 
+7. Set timezone
+```
+sudo timedatectl set-timezone Europe/Amsterdam
+```
+
 8. Create template from this VM.
 
 ## Setup external Database
 
 1. Install Postgress container
-2. Create user and database for K3s
+2. Create postgres user with name 'k3s' and database with name 'k3s'
 
 ## Install k3s on Master node(s)
 
