@@ -3,6 +3,8 @@
 Lightweight, easy, fast Kubernetes distribution with a very small footprint
 https://k3s.io
 
+## Prepare VM's
+
 1. Install VM's with Ubuntu server.
 2. After installation change/add hostname in `/etc/hosts` and `/etc/hostname`
 3. Create hostname and static ip in DHCP server (pfSense)
