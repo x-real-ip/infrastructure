@@ -3,28 +3,31 @@
 Lightweight, easy, fast Kubernetes distribution with a very small footprint
 https://k3s.io
 
-## Install VM's and make a template.
-
 1. Install VM's with Ubuntu server.
 2. After installation change/add hostname in `/etc/hosts` and `/etc/hostname`
-3. # Create hostname and static ip in DHCP server (pfSense)
-4. Change/add hostname in `/etc/hosts` and `/etc/hostname`
-5. Update
+3. Create hostname and static ip in DHCP server (pfSense)
+4. Update
 
 ```
 sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y
 ```
 
-3. Install packages.
+6. Install packages.
 
 ```
 sudo apt-get install qemu-guest-agent curl nfs-common -y
 ```
 
-4. Create hostname and static ip in DHCP server (pfSense).
-5. Create template from this VM.
+7. Create hostname and static ip in DHCP server (pfSense).
+8. Create template from this VM.
 
-## Install Master node(s)
+## Setup external Database
+
+1. Install Mysql
+2. Create user for K3s
+3. From the Mysql installation download `cert.crt`, `cert.key` and `ca.pem` from `/etc/mysql/certificates/` en put these into the master nodes in the same directory `/etc/mysql/certificates/`
+
+## Install k3s on Master node(s)
 
 SSH into the master node(s)
 
@@ -46,17 +49,14 @@ Grab token from the master node to be able to add worker nodes to it and save it
 cat /var/lib/rancher/k3s/server/node-token
 ```
 
-## Install Worker node(s)
+## Install k3s on Worker node(s)
 
 Install k3s on the worker node and add it to our cluster. SSH into the worker node(s)
 
 ```
 export K3S_KUBECONFIG_MODE="644"
-
 export K3S_URL="https://k3s-master-01.lan:6443"
-
 export K3S_TOKEN="<TOKEN HERE>"
-
 curl -sfL https://get.k3s.io | sh -
 ```
 
