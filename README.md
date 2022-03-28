@@ -59,7 +59,7 @@ Install k3s on the worker node and add it to our cluster. SSH into the worker no
 ```
 curl -sfL https://get.k3s.io | \
 K3S_URL="https://k3s-master-01.lan:6443" \
-K3S_TOKEN="<TOKEN HERE>"
+K3S_TOKEN="<TOKEN HERE>" \
 sh -s
 ```
 
