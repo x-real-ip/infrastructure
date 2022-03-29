@@ -573,7 +573,7 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - create
-            - --host=ingress-nginx-controller-admission,ingress-nginx-controller-admission.$(POD_NAMESPACE).svc
+            - --host=ingress-nginx-prd-ext-controller-admission,ingress-nginx-prd-ext-controller-admission.$(POD_NAMESPACE).svc
             - --namespace=$(POD_NAMESPACE)
             - --secret-name=ingress-nginx-prd-ext-admission
           env:
