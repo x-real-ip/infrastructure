@@ -59,15 +59,16 @@ metadata:
 spec:
   ingressClassName: nginx-prd-ext
   rules:
-    - host: "home-assistant.theautomation.nl"
-        paths:
-          - pathType: Prefix
-            path: /
-            backend:
-              service:
-                name: home-assistant
-                port:
-                  number: 80
+  - host: "home-assistant.theautomation.nl"
+    http:
+    - paths:
+        path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: home-assistant
+            port:
+              number: 80
 
 ---
 kind: Deployment
