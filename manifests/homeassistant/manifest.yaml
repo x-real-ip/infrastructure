@@ -2,7 +2,7 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: home-assistant
+  name: prd-ext
 
 ---
 kind: PersistentVolume
