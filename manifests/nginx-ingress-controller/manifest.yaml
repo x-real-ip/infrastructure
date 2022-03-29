@@ -562,7 +562,7 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
-  name: nginx
+  name: nginx-prd-ext
 spec:
   controller: k8s.io/ingress-nginx
 
