@@ -61,9 +61,9 @@ spec:
   rules:
   - host: "home-assistant.theautomation.nl"
     http:
-    - paths:
-      - path: /
-        pathType: Prefix
+      paths:
+      - pathType: Prefix
+        path: "/"
         backend:
           service:
             name: home-assistant
