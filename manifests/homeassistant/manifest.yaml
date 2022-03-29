@@ -52,13 +52,14 @@ spec:
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  namespace: prd-ext
   name: home-assistant
+  namespace: prd-ext
+  annotations:
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
 spec:
   ingressClassName: nginx
   rules:
-    - host: www.demo.io
-      http:
+    - host: "home-assistant.theautomation.nl"
         paths:
           - pathType: Prefix
             path: /
@@ -72,8 +73,8 @@ spec:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  namespace: prd-ext
   name: home-assistant
+  namespace: prd-ext
   labels:
     app: home-assistant
 spec:
