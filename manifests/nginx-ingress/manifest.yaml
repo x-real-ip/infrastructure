@@ -314,11 +314,11 @@ spec:
                 command:
                   - /wait-shutdown
           args:
-            - /nginx-ingress-controller
-            - --publish-service=$(POD_NAMESPACE)/ingress-nginx-controller
+            - /nginx-ingress-prd-ext-controller
+            - --publish-service=$(POD_NAMESPACE)/ingress-nginx-prd-ext-controller
             - --election-id=ingress-controller-leader
-            - --controller-class=k8s.io/ingress-nginx
-            - --configmap=$(POD_NAMESPACE)/ingress-nginx-controller
+            - --controller-class=k8s.io/ingress-nginx-prd-ext
+            - --configmap=$(POD_NAMESPACE)/ingress-nginx-prd-ext-controller
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
