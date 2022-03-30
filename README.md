@@ -21,6 +21,7 @@ sudo apt-get install qemu-guest-agent curl nfs-common -y
 ```
 
 7. Set timezone
+
 ```
 sudo timedatectl set-timezone Europe/Amsterdam
 ```
@@ -35,13 +36,14 @@ sudo timedatectl set-timezone Europe/Amsterdam
 ## Install k3s on Master node(s)
 
 SSH into the master node(s)
+
 ```
 curl -sfL https://get.k3s.io | \
 INSTALL_K3S_EXEC=" --no-deploy servicelb --no-deploy traefik" \
 K3S_KUBECONFIG_MODE="644" \
 K3S_DATASTORE_ENDPOINT='postgres://k3s:<PASSWORD HERE>@k3s-postgresql.lan:5432/k3s' \
 K3S_TOKEN="<TOKEN HERE>" \
-sh -s 
+sh -s
 ```
 
 ## Save server Token
@@ -65,19 +67,20 @@ sh -s
 
 ## Connect remotely to the cluster
 
-Install kubectl on your local machine
-Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
+1. Install kubectl on your local machine.
+   Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
 
-Copy the k3s config file from the master node to your local machine
+2. Copy the k3s config file from the master node to your local machine
 
-```
+```bash
 mkdir ~/.kube/
 
 scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config
 
 export KUBECONFIG=~/.kube/config
-
 ```
+
+3. Set right ipaddress to Master node in the config file
 
 Test
 
