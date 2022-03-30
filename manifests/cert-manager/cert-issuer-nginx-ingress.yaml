@@ -1,5 +1,6 @@
-apiVersion: cert-manager.io/v1
+---
 kind: ClusterIssuer
+apiVersion: cert-manager.io/v1
 metadata:
   name: letsencrypt-cluster-issuer
 spec:
