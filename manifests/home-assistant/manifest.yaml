@@ -57,9 +57,13 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
 spec:
+  tls:
+    - hosts:
+        - home-assistant.theautomation.nl
+      secretName: home-assistant-tls
   ingressClassName: nginx-prd-ext
   rules:
-    - host: "home-assistant.theautomation.nl"
+    - host: home-assistant.theautomation.nl
       http:
         paths:
           - pathType: Prefix
