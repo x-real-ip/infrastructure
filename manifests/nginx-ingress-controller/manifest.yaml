@@ -2,7 +2,7 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: ingress-nginx
+  name: prd-ext
   labels:
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
@@ -13,7 +13,7 @@ apiVersion: v1
 automountServiceAccountToken: true
 metadata:
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
@@ -24,7 +24,7 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: ingress-nginx-admission
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
@@ -35,7 +35,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
@@ -116,7 +116,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: ingress-nginx-admission
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
@@ -218,7 +218,7 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
@@ -230,14 +230,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: ingress-nginx
-    namespace: ingress-nginx
+    namespace: prd-ext
 
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: ingress-nginx-admission
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
@@ -249,7 +249,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: ingress-nginx-admission
-    namespace: ingress-nginx
+    namespace: prd-ext
 
 ---
 kind: ClusterRoleBinding
@@ -266,7 +266,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: ingress-nginx
-    namespace: ingress-nginx
+    namespace: prd-ext
 
 ---
 kind: ClusterRoleBinding
@@ -284,7 +284,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: ingress-nginx-admission
-    namespace: ingress-nginx
+    namespace: prd-ext
 
 ---
 kind: ConfigMap
@@ -293,7 +293,7 @@ data:
   allow-snippet-annotations: "true"
 metadata:
   name: ingress-nginx-controller
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
@@ -304,7 +304,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ingress-nginx-controller
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
@@ -336,7 +336,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ingress-nginx-controller-admission
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
@@ -358,7 +358,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: ingress-nginx-controller
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
@@ -469,7 +469,7 @@ kind: Job
 apiVersion: batch/v1
 metadata:
   name: ingress-nginx-admission-create
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
@@ -513,7 +513,7 @@ kind: Job
 apiVersion: batch/v1
 metadata:
   name: ingress-nginx-admission-patch
-  namespace: ingress-nginx
+  namespace: prd-ext
   labels:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
@@ -581,7 +581,7 @@ webhooks:
     clientConfig:
       service:
         name: ingress-nginx-controller-admission
-        namespace: ingress-nginx
+        namespace: prd-ext
         path: /networking/v1/ingresses
     failurePolicy: Fail
     matchPolicy: Equivalent
