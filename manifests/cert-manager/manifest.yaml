@@ -5227,6 +5227,7 @@ webhooks:
         name: cert-manager-webhook
         namespace: prd-ext
         path: /mutate
+
 ---
 # Source: cert-manager/templates/webhook-validating-webhook.yaml
 apiVersion: admissionregistration.k8s.io/v1
