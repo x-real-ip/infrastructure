@@ -2,7 +2,7 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: metallb-system
+  name: prd-ext
   labels:
     app: metallb
 
@@ -94,7 +94,7 @@ metadata:
   labels:
     app: metallb
   name: controller
-  namespace: metallb-system
+  namespace: prd-ext
 
 ---
 kind: ServiceAccount
@@ -103,7 +103,7 @@ metadata:
   labels:
     app: metallb
   name: speaker
-  namespace: metallb-system
+  namespace: prd-ext
 
 ---
 kind: ClusterRole
@@ -191,7 +191,7 @@ metadata:
   labels:
     app: metallb
   name: config-watcher
-  namespace: metallb-system
+  namespace: prd-ext
 rules:
   - apiGroups:
       - ""
@@ -209,7 +209,7 @@ metadata:
   labels:
     app: metallb
   name: pod-lister
-  namespace: metallb-system
+  namespace: prd-ext
 rules:
   - apiGroups:
       - ""
@@ -225,7 +225,7 @@ metadata:
   labels:
     app: metallb
   name: controller
-  namespace: metallb-system
+  namespace: prd-ext
 rules:
   - apiGroups:
       - ""
@@ -264,7 +264,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: controller
-    namespace: metallb-system
+    namespace: prd-ext
 
 ---
 kind: ClusterRoleBinding
@@ -280,7 +280,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: speaker
-    namespace: metallb-system
+    namespace: prd-ext
 
 ---
 kind: RoleBinding
@@ -289,7 +289,7 @@ metadata:
   labels:
     app: metallb
   name: config-watcher
-  namespace: metallb-system
+  namespace: prd-ext
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -307,7 +307,7 @@ metadata:
   labels:
     app: metallb
   name: pod-lister
-  namespace: metallb-system
+  namespace: prd-ext
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -323,7 +323,7 @@ metadata:
   labels:
     app: metallb
   name: controller
-  namespace: metallb-system
+  namespace: prd-ext
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -340,7 +340,7 @@ metadata:
     app: metallb
     component: speaker
   name: speaker
-  namespace: metallb-system
+  namespace: prd-ext
 spec:
   selector:
     matchLabels:
@@ -439,7 +439,7 @@ metadata:
     app: metallb
     component: controller
   name: controller
-  namespace: metallb-system
+  namespace: prd-ext
 spec:
   revisionHistoryLimit: 3
   selector:
@@ -507,7 +507,7 @@ spec:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  namespace: metallb-system
+  namespace: prd-ext
   name: config
 data:
   config: |
@@ -515,4 +515,4 @@ data:
     - name: default
       protocol: layer2
       addresses:
-      - 192.168.1.240
+      - 192.168.1.240-192.168.1.245
