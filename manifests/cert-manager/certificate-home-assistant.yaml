@@ -1,6 +1,6 @@
 ---
-apiVersion: cert-manager.io/v1
 kind: Certificate
+apiVersion: cert-manager.io/v1
 metadata:
   name: home-assistant.theautomation.nl
   namespace: prd-ext
