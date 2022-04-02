@@ -60,7 +60,7 @@ spec:
   tls:
     - hosts:
         - home-assistant.theautomation.nl
-      secretName: home-assistant-tls
+      secretName: home-assistant.theautomation.nl-tls
   ingressClassName: nginx-prd-ext
   rules:
     - host: home-assistant.theautomation.nl
