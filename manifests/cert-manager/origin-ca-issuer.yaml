@@ -1,6 +1,6 @@
 ---
-kind: CustomResourceDefinition
 apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: (devel)
@@ -126,8 +126,8 @@ status:
   storedVersions: []
 
 ---
-kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
   name: originissuer-control
 roleRef:
@@ -137,11 +137,13 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: originissuer-control
-    namespace: prd-ext
+    namespace: origin-ca-issuer
 
 ---
-kind: ClusterRoleBinding
+# bind the cert-manager internal approver to approve
+# cert-manager.k8s.cloudflare.com CertificateRequests
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
   name: cert-manager-controller-approve:cert-manager-k8s-cloudflare-com
 roleRef:
@@ -151,11 +153,11 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: cert-manager
-    namespace: prd-ext
+    namespace: cert-manager
 
 ---
-kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
   creationTimestamp: null
   name: originissuer-control
@@ -219,8 +221,9 @@ rules:
       - update
 
 ---
-kind: ClusterRole
+# permissions to approve all cert-manager.k8s.cloudflare.com requests
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
   name: cert-manager-controller-approve:cert-manager-k8s-cloudflare-com
 rules:
@@ -234,11 +237,11 @@ rules:
       - originissuers.cert-manager.k8s.cloudflare.com/*
 
 ---
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: origin-ca-issuer
-  namespace: prd-ext
+  namespace: origin-ca-issuer
 spec:
   selector:
     matchLabels:
@@ -263,8 +266,8 @@ spec:
       terminationGracePeriodSeconds: 10
 
 ---
-kind: ServiceAccount
 apiVersion: v1
+kind: ServiceAccount
 metadata:
   name: originissuer-control
-  namespace: prd-ext
+  namespace: origin-ca-issuer
