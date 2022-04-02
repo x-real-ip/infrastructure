@@ -1,0 +1,8 @@
+---
+kind: Secret
+apiVersion: v1
+data:
+  key: <BASE 64 API KEY HERE>
+metadata:
+  name: theautomation-service-key
+  namespace: prd-ext
