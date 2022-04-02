@@ -1,13 +1,4 @@
 ---
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: prd-ext
-  labels:
-    app.kubernetes.io/instance: ingress-nginx
-    app.kubernetes.io/name: ingress-nginx
-
----
 kind: ServiceAccount
 apiVersion: v1
 automountServiceAccountToken: true

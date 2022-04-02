@@ -1,10 +1,4 @@
 ---
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: prd-ext
-
----
 kind: PersistentVolume
 apiVersion: v1
 metadata:
