@@ -116,24 +116,3 @@ spec:
         - name: home-assistant-config
           persistentVolumeClaim:
             claimName: home-assistant-config-pvc
-
----
-kind: Certificate
-apiVersion: cert-manager.io/v1
-metadata:
-  name: home-assistant.theautomation.nl
-  namespace: prd-ext
-spec:
-  # The secret name where cert-manager should store the signed certificate
-  secretName: home-assistant.theautomation.nl-tls
-  dnsNames:
-    - home-assistant.theautomation.nl
-  # Duation of the certificate
-  duration: 168h
-  # Renew a day before the certificate expiration
-  renewBefore: 24h
-  # Reference the Origin CA Issuer you created above, which must be in the same namespace.
-  issuerRef:
-    group: cert-manager.k8s.cloudflare.com
-    kind: OriginIssuer
-    name: prod-issuer
