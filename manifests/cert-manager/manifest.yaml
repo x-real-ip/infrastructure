@@ -4180,7 +4180,7 @@ spec:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: cert-manager
+  name: prd-ext
 ---
 # Source: cert-manager/templates/cainjector-serviceaccount.yaml
 apiVersion: v1
@@ -4805,7 +4805,7 @@ subjects:
   - apiGroup: ""
     kind: ServiceAccount
     name: cert-manager-webhook
-    namespace: cert-manager
+    namespace: prd-ext
 ---
 # Source: cert-manager/templates/cainjector-rbac.yaml
 # leader election rules
@@ -4813,7 +4813,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: cert-manager-cainjector:leaderelection
-  namespace: kube-system
+  namespace: prd-ext
   labels:
     app: cainjector
     app.kubernetes.io/name: cainjector
@@ -4855,7 +4855,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: cert-manager:leaderelection
-  namespace: kube-system
+  namespace: prd-ext
   labels:
     app: cert-manager
     app.kubernetes.io/name: cert-manager
@@ -4910,7 +4910,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: cert-manager-cainjector:leaderelection
-  namespace: kube-system
+  namespace: prd-ext
   labels:
     app: cainjector
     app.kubernetes.io/name: cainjector
@@ -4924,7 +4924,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: cert-manager-cainjector
-    namespace: cert-manager
+    namespace: prd-ext
 ---
 # Source: cert-manager/templates/rbac.yaml
 # grant cert-manager permission to manage the leaderelection configmap in the
@@ -4933,7 +4933,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: cert-manager:leaderelection
-  namespace: kube-system
+  namespace: prd-ext
   labels:
     app: cert-manager
     app.kubernetes.io/name: cert-manager
@@ -4948,7 +4948,7 @@ subjects:
   - apiGroup: ""
     kind: ServiceAccount
     name: cert-manager
-    namespace: cert-manager
+    namespace: prd-ext
 ---
 # Source: cert-manager/templates/webhook-rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -4970,7 +4970,7 @@ subjects:
   - apiGroup: ""
     kind: ServiceAccount
     name: cert-manager-webhook
-    namespace: cert-manager
+    namespace: prd-ext
 ---
 # Source: cert-manager/templates/service.yaml
 apiVersion: v1
@@ -5057,7 +5057,7 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - --v=2
-            - --leader-election-namespace=kube-system
+            - --leader-election-namespace=prd-ext
           env:
             - name: POD_NAMESPACE
               valueFrom:
@@ -5106,7 +5106,7 @@ spec:
           args:
             - --v=2
             - --cluster-resource-namespace=$(POD_NAMESPACE)
-            - --leader-election-namespace=kube-system
+            - --leader-election-namespace=prd-ext
           ports:
             - containerPort: 9402
               protocol: TCP
