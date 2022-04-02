@@ -3,7 +3,7 @@ kind: OriginIssuer
 apiVersion: cert-manager.k8s.cloudflare.com/v1
 metadata:
   name: prod-issuer
-  namespace: cert-manager
+  namespace: prd-ext
 spec:
   requestType: OriginECC
   auth:
