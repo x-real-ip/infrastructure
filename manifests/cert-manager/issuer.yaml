@@ -1,0 +1,12 @@
+---
+kind: OriginIssuer
+apiVersion: cert-manager.k8s.cloudflare.com/v1
+metadata:
+  name: prod-issuer
+  namespace: prd-ext
+spec:
+  requestType: OriginECC
+  auth:
+    serviceKeyRef:
+      name: theautomation-service-key
+      key: key
