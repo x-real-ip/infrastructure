@@ -1,0 +1,7 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: metallb-system
+  labels:
+    app: metallb

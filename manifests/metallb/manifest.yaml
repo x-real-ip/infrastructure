@@ -86,7 +86,7 @@ metadata:
   labels:
     app: metallb
   name: controller
-  namespace: prd-ext
+  namespace: metallb-system
 
 ---
 kind: ServiceAccount
@@ -95,7 +95,7 @@ metadata:
   labels:
     app: metallb
   name: speaker
-  namespace: prd-ext
+  namespace: metallb-system
 
 ---
 kind: ClusterRole
@@ -183,7 +183,7 @@ metadata:
   labels:
     app: metallb
   name: config-watcher
-  namespace: prd-ext
+  namespace: metallb-system
 rules:
   - apiGroups:
       - ""
@@ -201,7 +201,7 @@ metadata:
   labels:
     app: metallb
   name: pod-lister
-  namespace: prd-ext
+  namespace: metallb-system
 rules:
   - apiGroups:
       - ""
@@ -217,7 +217,7 @@ metadata:
   labels:
     app: metallb
   name: controller
-  namespace: prd-ext
+  namespace: metallb-system
 rules:
   - apiGroups:
       - ""
@@ -256,7 +256,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: controller
-    namespace: prd-ext
+    namespace: metallb-system
 
 ---
 kind: ClusterRoleBinding
@@ -272,7 +272,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: speaker
-    namespace: prd-ext
+    namespace: metallb-system
 
 ---
 kind: RoleBinding
@@ -281,7 +281,7 @@ metadata:
   labels:
     app: metallb
   name: config-watcher
-  namespace: prd-ext
+  namespace: metallb-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -299,7 +299,7 @@ metadata:
   labels:
     app: metallb
   name: pod-lister
-  namespace: prd-ext
+  namespace: metallb-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -315,7 +315,7 @@ metadata:
   labels:
     app: metallb
   name: controller
-  namespace: prd-ext
+  namespace: metallb-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -332,7 +332,7 @@ metadata:
     app: metallb
     component: speaker
   name: speaker
-  namespace: prd-ext
+  namespace: metallb-system
 spec:
   selector:
     matchLabels:
@@ -431,7 +431,7 @@ metadata:
     app: metallb
     component: controller
   name: controller
-  namespace: prd-ext
+  namespace: metallb-system
 spec:
   revisionHistoryLimit: 3
   selector:
@@ -494,17 +494,3 @@ spec:
         fsGroup: 65534
       serviceAccountName: controller
       terminationGracePeriodSeconds: 0
-
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  namespace: prd-ext
-  name: config
-data:
-  config: |
-    address-pools:
-    - name: default
-      protocol: layer2
-      addresses:
-      - 192.168.1.240/32
