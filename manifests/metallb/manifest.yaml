@@ -1,4 +1,19 @@
 ---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: lan-ips
+      protocol: layer2
+      addresses:
+      - 192.168.1.240/32
+      - 192.168.1.250/32
+
+---
 kind: PodSecurityPolicy
 apiVersion: policy/v1beta1
 metadata:
