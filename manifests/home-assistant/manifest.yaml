@@ -44,6 +44,18 @@ spec:
       targetPort: 8123
 
 ---
+kind: Service
+apiVersion: v1
+metadata:
+  name: home-assistant-svc-prd-int
+  namespace: prd-int
+spec:
+  type: ExternalName
+  externalName: home-assistant-svc-prd-int.prd-ext.svc.cluster.local
+  ports:
+    - port: 80
+
+---
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
