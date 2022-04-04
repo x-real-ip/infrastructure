@@ -31,10 +31,9 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: home-assistant-svc-prd-ext
+  name: home-assistant
   namespace: prd-ext
 spec:
-  type: ClusterIP
   selector:
     app: home-assistant
   ports:
@@ -42,18 +41,6 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 8123
-
-# ---
-# kind: Service
-# apiVersion: v1
-# metadata:
-#   name: home-assistant-svc-prd-int
-#   namespace: prd-int
-# spec:
-#   type: ExternalName
-#   externalName: home-assistant.prd-ext.svc.cluster.local
-#   ports:
-#     - port: 80
 
 ---
 kind: Ingress
@@ -63,7 +50,6 @@ metadata:
   namespace: prd-ext
   annotations:
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
   ingressClassName: nginx-prd-ext
   rules:
@@ -74,36 +60,13 @@ spec:
             path: "/"
             backend:
               service:
-                name: home-assistant-svc-prd-ext
+                name: home-assistant
                 port:
                   number: 80
   tls:
     - hosts:
         - home-assistant.theautomation.nl
       secretName: home-assistant.theautomation.nl-tls
-
-# ---
-# kind: Ingress
-# apiVersion: networking.k8s.io/v1
-# metadata:
-#   name: home-assistant
-#   namespace: prd-int
-#   annotations:
-#     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-#     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-# spec:
-#   ingressClassName: nginx-prd-int
-#   rules:
-#     - host: home-assistant.k3s-prd-int.lan
-#       http:
-#         paths:
-#           - pathType: Prefix
-#             path: "/"
-#             backend:
-#               service:
-#                 name: home-assistant-svc-prd-int
-#                 port:
-#                   number: 80
 
 ---
 kind: Deployment
@@ -115,8 +78,6 @@ metadata:
     app: home-assistant
 spec:
   replicas: 1
-  strategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: home-assistant
@@ -125,6 +86,15 @@ spec:
       labels:
         app: home-assistant
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - k3s-worker-01
       containers:
         - name: home-assistant
           image: homeassistant/home-assistant:stable
@@ -142,15 +112,6 @@ spec:
             requests:
               cpu: 1
               memory: 1G
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - k3s-worker-01
       volumes:
         - name: home-assistant-config
           persistentVolumeClaim:
