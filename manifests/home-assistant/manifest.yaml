@@ -100,10 +100,8 @@ spec:
           - pathType: Prefix
             path: "/"
             backend:
-              service:
-                name: home-assistant
-                port:
-                  number: 80
+              serviceName: home-assistant-svc-prd-int
+              servicePort: 80
 
 ---
 kind: Deployment
