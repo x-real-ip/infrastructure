@@ -63,7 +63,7 @@ metadata:
   namespace: prd-ext
   annotations:
     nginx.ingress.kubernetes.io/from-to-www-redirect: "false"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "flase"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
   ingressClassName: nginx-prd-ext
   rules:
