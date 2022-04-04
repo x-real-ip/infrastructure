@@ -51,7 +51,7 @@ metadata:
   namespace: prd-int
 spec:
   type: ExternalName
-  externalName: home-assistant.prd-ext.svc.cluster.local
+  externalName: home-assistant-svc-prd-ext.prd-ext.svc.cluster.local
   ports:
     - port: 80
 
@@ -89,7 +89,7 @@ metadata:
   name: home-assistant
   namespace: prd-int
   annotations:
-    nginx.ingress.kubernetes.io/from-to-www-redirect: "false"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
   ingressClassName: nginx-prd-int
