@@ -31,7 +31,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: home-assistant
+  name: home-assistant-svc-prd-ext
   namespace: prd-ext
 spec:
   type: ClusterIP
@@ -74,7 +74,7 @@ spec:
             path: "/"
             backend:
               service:
-                name: home-assistant
+                name: home-assistant-svc-prd-ext
                 port:
                   number: 80
   tls:
