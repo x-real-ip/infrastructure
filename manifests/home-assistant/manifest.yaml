@@ -62,8 +62,8 @@ metadata:
   name: home-assistant
   namespace: prd-ext
   annotations:
-    nginx.ingress.kubernetes.io/from-to-www-redirect: "false"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx-prd-ext
   rules:
