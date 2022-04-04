@@ -51,7 +51,7 @@ metadata:
   namespace: prd-int
 spec:
   type: ExternalName
-  externalName: home-assistant-svc-prd-int.prd-ext.svc.cluster.local
+  externalName: home-assistant.prd-ext.svc.cluster.local
   ports:
     - port: 80
 
