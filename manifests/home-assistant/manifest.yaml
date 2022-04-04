@@ -31,7 +31,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: home-assistant
+  name: home-assistant-svc-prd-ext
   namespace: prd-ext
 spec:
   type: ClusterIP
@@ -43,17 +43,17 @@ spec:
       port: 80
       targetPort: 8123
 
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: home-assistant-svc-prd-int
-  namespace: prd-int
-spec:
-  type: ExternalName
-  externalName: home-assistant.prd-ext.svc.cluster.local
-  ports:
-    - port: 80
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: home-assistant-svc-prd-int
+#   namespace: prd-int
+# spec:
+#   type: ExternalName
+#   externalName: home-assistant.prd-ext.svc.cluster.local
+#   ports:
+#     - port: 80
 
 ---
 kind: Ingress
@@ -74,7 +74,7 @@ spec:
             path: "/"
             backend:
               service:
-                name: home-assistant
+                name: home-assistant-svc-prd-ext
                 port:
                   number: 80
   tls:
@@ -82,28 +82,28 @@ spec:
         - home-assistant.theautomation.nl
       secretName: home-assistant.theautomation.nl-tls
 
----
-kind: Ingress
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: home-assistant
-  namespace: prd-int
-  annotations:
-    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-spec:
-  ingressClassName: nginx-prd-int
-  rules:
-    - host: home-assistant.k3s-prd-int.lan
-      http:
-        paths:
-          - pathType: Prefix
-            path: "/"
-            backend:
-              service:
-                name: home-assistant-svc-prd-int
-                port:
-                  number: 80
+# ---
+# kind: Ingress
+# apiVersion: networking.k8s.io/v1
+# metadata:
+#   name: home-assistant
+#   namespace: prd-int
+#   annotations:
+#     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+#     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+# spec:
+#   ingressClassName: nginx-prd-int
+#   rules:
+#     - host: home-assistant.k3s-prd-int.lan
+#       http:
+#         paths:
+#           - pathType: Prefix
+#             path: "/"
+#             backend:
+#               service:
+#                 name: home-assistant-svc-prd-int
+#                 port:
+#                   number: 80
 
 ---
 kind: Deployment
