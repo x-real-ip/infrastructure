@@ -1,13 +1,8 @@
 hostname: k3s-template-xx
 k3os:
-  # server_url: https://myserver:6443 # The URL of the k3s server to join as an agent.
-  # token: myclustersecret
   modules:
     - kvm
     - nvme
-  sysctl:
-    kernel.printk: "4 4 1 7"
-    kernel.kptr_restrict: "1"
   dns_nameservers:
     - 1.1.1.1
     - 1.0.0.1
@@ -15,13 +10,10 @@ k3os:
     - 0.nl.pool.ntp.org
     - 1.nl.pool.ntp.org
   password: rancher
-  server_url: https://someserver:6443
   token: TOKEN_VALUE
-  labels:
-    region: us-west-1
-    somekey: somevalue
   k3s_args:
     - server
+    - "--datastore-endpoint=postgres://k3s:<PASSWORD HERE>@k3s-postgresql.lan:5432/k3s"
     - "--cluster-init"
     - "--disable=traefik"
     - "--no-deploy servicelb"
