@@ -4,10 +4,12 @@ passwd:
       ssh_authorized_keys:
         - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCdD/NgT7GF9tQPnw9M7qPIEOFzm9CGcYZS4DiZcVPjRGrtwTRV7jzsWjvJKVVxGxNmvyz+vP2zfEgHlluWT2XRpKha3u8SX8iv3gHATME93j2Vk2jPDkKvDHXIoArFj5wjvHbwSSNOPjmUAgJvqDT4zK/owARGSrNpgfD3hjYm+3Hf/gGhbfgaVyuSJT3iDeG7hCeoCqZ8bBBkOSJddlFEksgNZpK83vVlxVsvEpqBXU5ZDH7f/6i+qoxz9M7oBmHcNkl60KVbUnhcE9BmYVx9B578zQ6bp0PS4OcVp5l+RAIalVc5YTZ685HQ0zkJmabLjyz/hFbHMBfblq6XGz36UtU/ug7twejVLT1soy0ljAQ2FuEOeqvpi1uIm5gpVqxh0yHd65aFFvXoCf64QJJXYnF0Ljpbohhu9Mqzs7jeA1Ar2W3DwLgsRtoTBlvspUNf3F0PQv0do9UBgrxy9ZIbtA4wxVuTHXrGzkygY9WCsUH5gHksMcU5tZX/e7nTcN2Oj+fo7MiiNpz66oXaJo7ByGzjF7iVUB4fwnf67wq0sdftMF+A28X06VRxhvJS6ocee7pg9zShkOezofUg02LuWKr//QeKbRUGFspOEojazQFt2IwmL0gbHjdz7JkgMVPWbJxDa4LUJEpESb18ONDAtnBEKotK0aTaahBbnBMNBQ== coen@laptop-3
 storage:
+  disks:
+    - device: /dev/sda
   filesystems:
     - name: filesystem
       mount:
-        device: /dev/sda
+        device: /dev/disk/by-partlabel/ROOT
         format: btrfs
         wipe_filesystem: true
         label: ROOT
