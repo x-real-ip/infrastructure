@@ -1,0 +1,18 @@
+hostname: k3os-master-**
+k3os:
+  modules:
+    - kvm
+    - nvme
+  dns_nameservers:
+    - 1.1.1.1
+    - 8.8.8.8
+  ntp_servers:
+    - 0.nl.pool.ntp.org
+    - 1.nl.pool.ntp.org
+  password: <REDACTED>
+  token: <REDACTED>
+  environment:
+    K3S_DATASTORE_ENDPOINT: "postgres://k3s:<REDACTED>@k3os-postgresql.lan:5432/k3os"
+  k3s_args:
+    - server
+    - "--disable=traefik"
