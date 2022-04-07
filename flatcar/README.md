@@ -1,6 +1,6 @@
 curl -o ignition.json https://raw.githubusercontent.com/theautomation/kubernetes-k3s/main/flatcar/ignition.json
 
-flatcar-install -d /dev/sda -i ignition.json
+flatcar-install -d /dev/sda -C stable -i ignition.json
 
 # After installation
 
