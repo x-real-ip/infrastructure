@@ -1,0 +1,15 @@
+hostname: k3os-worker-**
+k3os:
+  modules:
+    - kvm
+    - nvme
+    - nfs
+  dns_nameservers:
+    - 1.1.1.1
+    - 8.8.8.8
+  ntp_servers:
+    - 0.nl.pool.ntp.org
+    - 1.nl.pool.ntp.org
+  password: <REDACTED>
+  token: <REDACTED>
+  server_url: https://k3os-master-01:6443
