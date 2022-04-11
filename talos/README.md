@@ -31,10 +31,5 @@ talosctl --talosconfig ./talosconfig config node 192.168.1.11
 talosctl --talosconfig ./talosconfig bootstrap --nodes 192.168.1.11 --endpoints 192.168.1.11
 ```
 
-talosctl kubeconfig --endpoints 192.168.1.11
-
-
-talosctl config node 192.168.1.12 --file k8s-master-02.yaml --insecure 
-
-talosctl -n 192.168.1.12 patch machineconfig --file k8s-master-02.yaml --insecure
-talosctl -n 192.168.1.12 edit machineconfig
+Edit machine config
+```talosctl -n 192.168.1.12 edit machineconfig```
