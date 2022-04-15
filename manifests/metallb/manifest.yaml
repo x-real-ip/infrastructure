@@ -1,4 +1,12 @@
 ---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: metallb-system
+  labels:
+    app: metallb
+
+---
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -7,11 +15,14 @@ metadata:
 data:
   config: |
     address-pools:
-    - name: lan-ips
-      protocol: layer2
-      addresses:
-      - 192.168.1.240/32
-      - 192.168.1.250/32
+      - name: prd-ext-lan-ips
+        protocol: layer2
+        addresses:
+          - 192.168.1.240/32
+      - name: prd-int-lan-ips
+        protocol: layer2
+        addresses:
+          - 192.168.1.250/32
 
 ---
 kind: PodSecurityPolicy
