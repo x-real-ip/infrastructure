@@ -1,12 +1,12 @@
 Generate config
 ```bash
-talosctl gen config "k8s-cluster-01" "https://192.168.1.x:6443"
+talosctl gen config "k8s-cluster-01" "https://192.168.130:6443"
 ```
 change controleplane.yaml
 ```bash
 talosctl apply-config --insecure \
---nodes 192.168.1.144 \
---file k8s-master-02.yaml
+--nodes 192.168.1.150 \
+--file k8s-worker-01.yaml
 ```
 
 Set controlplane endpoints in config
@@ -21,15 +21,13 @@ talosctl --talosconfig=./talosconfig \
 config node 192.168.1.11
 ```
 
-Bootstrap Etcd
 ```bash
-talosctl --talosconfig ./talosconfig config endpoint 192.168.1.11
-talosctl --talosconfig ./talosconfig config node 192.168.1.11
+talosctl --talosconfig=./talosconfig \
+bootstrap --nodes 192.168.1.11 --endpoints 192.168.1.11
 ```
 
+Get kubeconfig
 ```bash
-talosctl --talosconfig ./talosconfig bootstrap --nodes 192.168.1.11 --endpoints 192.168.1.11
+talosctl --talosconfig=./talosconfig \
+kubeconfig
 ```
-
-Edit machine config
-```talosctl -n 192.168.1.12 edit machineconfig```

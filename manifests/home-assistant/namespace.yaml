@@ -1,7 +1,0 @@
----
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: prd-ext
-  labels:
-    app: home-assistant

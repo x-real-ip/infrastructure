@@ -296,6 +296,8 @@ apiVersion: v1
 metadata:
   name: ingress-nginx-controller
   namespace: prd-int
+  annotations:
+    metallb.universe.tf/address-pool: prd-int-lan-ips
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
