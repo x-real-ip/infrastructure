@@ -1,2 +1,3 @@
 secret.yaml
 talos/k8s-*.yaml
+talos/talosconfig.yaml
