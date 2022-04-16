@@ -12,6 +12,8 @@ spec:
   nfs:
     server: storage-server.lan
     path: "/r10_8tb/services/home-assistant/config"
+  mountOptions:
+    - nfsvers=4.0
 
 ---
 kind: PersistentVolumeClaim
@@ -50,6 +52,7 @@ metadata:
   namespace: prd-ext
   annotations:
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   tls:
     - hosts:
