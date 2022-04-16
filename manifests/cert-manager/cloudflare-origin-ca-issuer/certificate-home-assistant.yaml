@@ -10,11 +10,11 @@ spec:
   dnsNames:
     - home-assistant.theautomation.nl
   # Duation of the certificate
-  duration: 168h
+  duration: 720h
   # Renew a day before the certificate expiration
-  renewBefore: 24h
+  renewBefore: 48h
   # Reference the Origin CA Issuer you created above, which must be in the same namespace.
   issuerRef:
     group: cert-manager.k8s.cloudflare.com
     kind: OriginIssuer
-    name: prod-issuer
+    name: prd-issuer

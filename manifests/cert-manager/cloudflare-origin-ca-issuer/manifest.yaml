@@ -1,4 +1,10 @@
 ---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: origin-ca-issuer
+
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -31,7 +37,8 @@ spec:
                 internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: string
             kind:
-              description: "Kind is a string value representing the REST resource this
+              description:
+                "Kind is a string value representing the REST resource this
                 object represents. Servers may infer this from the endpoint the client
                 submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: string
@@ -45,7 +52,8 @@ spec:
                 - requestType
               properties:
                 auth:
-                  description: Auth configures how to authenticate with the Cloudflare
+                  description:
+                    Auth configures how to authenticate with the Cloudflare
                     API.
                   type: object
                   properties:
@@ -57,7 +65,8 @@ spec:
                         - name
                       properties:
                         key:
-                          description: Key of the secret to select from. Must be a valid
+                          description:
+                            Key of the secret to select from. Must be a valid
                             secret key.
                           type: string
                         name:
@@ -66,7 +75,8 @@ spec:
                             to select from.
                           type: string
                 requestType:
-                  description: RequestType is the signature algorithm Cloudflare should
+                  description:
+                    RequestType is the signature algorithm Cloudflare should
                     use to sign the certificate.
                   type: string
                   enum:
@@ -77,11 +87,13 @@ spec:
               type: object
               properties:
                 conditions:
-                  description: List of status conditions to indicate the status of an
+                  description:
+                    List of status conditions to indicate the status of an
                     OriginIssuer Known condition types are `Ready`.
                   type: array
                   items:
-                    description: OriginIssuerCondition contains condition information
+                    description:
+                      OriginIssuerCondition contains condition information
                       for the OriginIssuer.
                     type: object
                     required:
@@ -89,20 +101,24 @@ spec:
                       - type
                     properties:
                       lastTransitionTime:
-                        description: LastTransitionTime is the timestamp corresponding
+                        description:
+                          LastTransitionTime is the timestamp corresponding
                           to the last status change of this condition.
                         type: string
                         format: date-time
                       message:
-                        description: Message is a human readable description of the
+                        description:
+                          Message is a human readable description of the
                           details of the last transition1, complementing reason.
                         type: string
                       reason:
-                        description: Reason is a brief machine readable explanation
+                        description:
+                          Reason is a brief machine readable explanation
                           for the condition's last transition.
                         type: string
                       status:
-                        description: Status of the condition, one of ('True', 'False',
+                        description:
+                          Status of the condition, one of ('True', 'False',
                           'Unknown')
                         type: string
                         enum:
