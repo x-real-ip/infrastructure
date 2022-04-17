@@ -30,48 +30,6 @@ spec:
       storage: 10Gi
 
 ---
-kind: Service
-apiVersion: v1
-metadata:
-  name: home-assistant
-  namespace: prd-ext
-spec:
-  selector:
-    app: home-assistant
-  ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 8123
-
----
-kind: Ingress
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: home-assistant
-  namespace: prd-ext
-  annotations:
-    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-spec:
-  tls:
-    - hosts:
-        - home-assistant.theautomation.nl
-      secretName: home-assistant.theautomation.nl-tls
-  ingressClassName: nginx-prd-ext
-  rules:
-    - host: home-assistant.theautomation.nl
-      http:
-        paths:
-          - pathType: Prefix
-            path: "/"
-            backend:
-              service:
-                name: home-assistant
-                port:
-                  number: 80
-
----
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -119,3 +77,45 @@ spec:
         - name: home-assistant-config
           persistentVolumeClaim:
             claimName: home-assistant-config-pvc
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: home-assistant
+  namespace: prd-ext
+spec:
+  selector:
+    app: home-assistant
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8123
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: home-assistant
+  namespace: prd-ext
+  annotations:
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - home-assistant.theautomation.nl
+      secretName: home-assistant.theautomation.nl-tls
+  ingressClassName: nginx-prd-ext
+  rules:
+    - host: home-assistant.theautomation.nl
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: home-assistant
+                port:
+                  number: 80
