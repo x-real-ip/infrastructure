@@ -5,15 +5,11 @@ metadata:
   name: home-assistant.theautomation.nl
   namespace: prd-ext
 spec:
-  # The secret name where cert-manager should store the signed certificate
   secretName: home-assistant.theautomation.nl-tls
   dnsNames:
     - home-assistant.theautomation.nl
-  # Duation of the certificate
   duration: 720h
-  # Renew a day before the certificate expiration
   renewBefore: 48h
-  # Reference the Origin CA Issuer you created above, which must be in the same namespace.
   issuerRef:
     group: cert-manager.k8s.cloudflare.com
     kind: OriginIssuer

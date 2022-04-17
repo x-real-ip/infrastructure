@@ -9,6 +9,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 
 ---
 kind: ServiceAccount
@@ -20,6 +22,8 @@ metadata:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 
 ---
 kind: Role
@@ -31,6 +35,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 rules:
   - apiGroups:
       - ""
@@ -112,6 +118,8 @@ metadata:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 rules:
   - apiGroups:
       - ""
@@ -129,6 +137,8 @@ metadata:
   labels:
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 rules:
   - apiGroups:
       - ""
@@ -195,6 +205,8 @@ metadata:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 rules:
   - apiGroups:
       - admissionregistration.k8s.io
@@ -214,6 +226,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -233,23 +247,27 @@ metadata:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 roleRef:
+  apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: ingress-nginx-admission
-  apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: ServiceAccount
     name: ingress-nginx-admission
     namespace: prd-ext
 
 ---
-kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
   name: ingress-nginx
   labels:
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -268,6 +286,8 @@ metadata:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -289,6 +309,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 
 ---
 kind: Service
@@ -302,8 +324,9 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 spec:
-  externalTrafficPolicy: Local
   ipFamilies:
     - IPv4
   ipFamilyPolicy: SingleStack
@@ -334,6 +357,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 spec:
   ports:
     - appProtocol: https
@@ -356,6 +381,8 @@ metadata:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 spec:
   minReadySeconds: 0
   revisionHistoryLimit: 10
@@ -374,7 +401,6 @@ spec:
       containers:
         - args:
             - /nginx-ingress-controller
-            - --publish-service=$(POD_NAMESPACE)/ingress-nginx-controller
             - --election-id=ingress-controller-leader
             - --controller-class=k8s.io/ingress-nginx
             - --ingress-class=nginx-prd-ext
@@ -393,7 +419,7 @@ spec:
                   fieldPath: metadata.namespace
             - name: LD_PRELOAD
               value: /usr/local/lib/libmimalloc.so
-          image: k8s.gcr.io/ingress-nginx/controller:v1.1.2@sha256:28b11ce69e57843de44e3db6413e98d09de0f6688e33d4bd384002a44f78405c
+          image: k8s.gcr.io/ingress-nginx/controller:v1.1.3@sha256:31f47c1e202b39fadecf822a9b76370bd4baed199a005b3e7d4d1455f4fd3fe2
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
@@ -467,14 +493,18 @@ metadata:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 spec:
   template:
     metadata:
-      name: ingress-nginx-admission-create
       labels:
         app.kubernetes.io/component: admission-webhook
         app.kubernetes.io/instance: ingress-nginx
         app.kubernetes.io/name: ingress-nginx
+        app.kubernetes.io/part-of: ingress-nginx
+        app.kubernetes.io/version: 1.1.3
+      name: ingress-nginx-admission-create
     spec:
       containers:
         - args:
@@ -511,14 +541,18 @@ metadata:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 spec:
   template:
     metadata:
-      name: ingress-nginx-admission-patch
       labels:
         app.kubernetes.io/component: admission-webhook
         app.kubernetes.io/instance: ingress-nginx
         app.kubernetes.io/name: ingress-nginx
+        app.kubernetes.io/part-of: ingress-nginx
+        app.kubernetes.io/version: 1.1.3
+      name: ingress-nginx-admission-patch
     spec:
       containers:
         - args:
@@ -551,11 +585,13 @@ spec:
 kind: IngressClass
 apiVersion: networking.k8s.io/v1
 metadata:
+  name: nginx-prd-ext
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
-  name: nginx-prd-ext
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 spec:
   controller: k8s.io/ingress-nginx
 
@@ -568,6 +604,8 @@ metadata:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.1.3
 webhooks:
   - admissionReviewVersions:
       - v1
