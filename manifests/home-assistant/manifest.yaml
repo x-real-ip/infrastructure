@@ -14,6 +14,7 @@ spec:
     path: "/r10_8tb/services/home-assistant/config"
   mountOptions:
     - nfsvers=4.0
+    - hard
 
 ---
 kind: PersistentVolumeClaim
