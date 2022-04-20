@@ -95,6 +95,40 @@ spec:
       targetPort: 8123
 
 ---
+kind: Service
+apiVersion: v1
+metadata:
+  name: home-assistant
+  namespace: prd-int
+spec:
+  type: ExternalName
+  externalName: home-assistant.prd-ext.svc.cluster.local
+  ports:
+    - port: 80
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: home-assistant
+  namespace: prd-int
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+spec:
+  ingressClassName: nginx-private
+  rules:
+    - host: home-assistant.k8s-prd-int.lan
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: home-assistant
+                port:
+                  number: 80
+
+---
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
