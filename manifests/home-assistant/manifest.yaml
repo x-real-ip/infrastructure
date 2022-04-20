@@ -2,6 +2,24 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
+  name: home-assistant-data-pv
+spec:
+  storageClassName: nfs
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: storage-server.lan
+    path: "/r10_8tb/services/home-assistant/data"
+  mountOptions:
+    - nfsvers=4.0
+    - hard
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
   name: home-assistant-config-pv
 spec:
   storageClassName: nfs
@@ -20,6 +38,20 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  name: home-assistant-data-pvc
+  namespace: prd-ext
+spec:
+  storageClassName: nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
   name: home-assistant-config-pvc
   namespace: prd-ext
 spec:
@@ -29,6 +61,65 @@ spec:
   resources:
     requests:
       storage: 10Gi
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: home-assistant-mysql-secrets
+  namespace: prd-ext
+type: Opaque
+data:
+  mysql-username: <REDACTED>
+  mysql-password: <REDACTED>
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: home-assistant-mysql
+  namespace: prd-ext
+  labels:
+    app: home-assistant-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: home-assistant-mysql
+  template:
+    metadata:
+      labels:
+        app: home-assistant-mysql
+    spec:
+      containers:
+        - name: home-assistant-mysql
+          image: mysql:8.0.28
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-mysql-secrets
+                  key: mysql-password
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-mysql-secrets
+                  key: mysql-username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-mysql-secrets
+                  key: mysql-password
+            - name: MYSQL_DATABASE
+              value: home-assistant
+          volumeMounts:
+            - name: home-assistant-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: home-assistant-data
+          persistentVolumeClaim:
+            claimName: home-assistant-data-pvc
 
 ---
 kind: Deployment
@@ -60,6 +151,7 @@ spec:
       containers:
         - name: home-assistant
           image: homeassistant/home-assistant:stable
+          imagePullPolicy: Always
           securityContext:
             privileged: true
           ports:
@@ -67,17 +159,24 @@ spec:
           volumeMounts:
             - name: home-assistant-config
               mountPath: /config
-          resources:
-            limits:
-              cpu: 1
-              memory: 4G
-            requests:
-              cpu: 1
-              memory: 1G
       volumes:
         - name: home-assistant-config
           persistentVolumeClaim:
             claimName: home-assistant-config-pvc
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: home-assistant-mysql
+  namespace: prd-ext
+spec:
+  selector:
+    app: home-assistant-mysql
+  type: ClusterIP
+  ports:
+    - port: 3306
+      protocol: TCP
 
 ---
 kind: Service
@@ -88,6 +187,7 @@ metadata:
 spec:
   selector:
     app: home-assistant
+  type: ClusterIP
   ports:
     - name: http
       protocol: TCP
