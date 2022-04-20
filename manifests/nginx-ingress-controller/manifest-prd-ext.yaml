@@ -414,7 +414,7 @@ spec:
             - --publish-service=$(POD_NAMESPACE)/ingress-nginx-prd-ext-controller
             - --election-id=ingress-controller-leader
             - --controller-class=k8s.io/ingress-nginx-prd-ext
-            - --ingress-class=nginx
+            - --ingress-class=nginx-public
             - --configmap=$(POD_NAMESPACE)/ingress-nginx-prd-ext-controller
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
