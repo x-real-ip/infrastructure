@@ -104,7 +104,7 @@ metadata:
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
-  ingressClassName: nginx-prd-ext
+  ingressClassName: nginx-public
   rules:
     - host: home-assistant.theautomation.nl
       http:
