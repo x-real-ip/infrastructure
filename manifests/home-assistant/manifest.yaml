@@ -104,19 +104,19 @@ metadata:
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
-  tls:
-    - hosts:
-        - home-assistant.theautomation.nl
-      secretName: home-assistant.theautomation.nl-tls
   ingressClassName: nginx-prd-ext
   rules:
     - host: home-assistant.theautomation.nl
       http:
         paths:
-          - pathType: Prefix
-            path: "/"
+          - path: "/"
+            pathType: Prefix
             backend:
               service:
                 name: home-assistant
                 port:
                   number: 80
+  tls:
+    - hosts:
+        - home-assistant.theautomation.nl
+      secretName: home-assistant.theautomation.nl-tls
