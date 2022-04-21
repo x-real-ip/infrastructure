@@ -3,6 +3,8 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   name: home-assistant-data-pv
+  labels:
+    app: home-assistant
 spec:
   storageClassName: nfs
   capacity:
@@ -21,6 +23,8 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   name: home-assistant-config-pv
+  labels:
+    app: home-assistant
 spec:
   storageClassName: nfs
   capacity:
@@ -40,6 +44,8 @@ apiVersion: v1
 metadata:
   name: home-assistant-data-pvc
   namespace: prd-ext
+  labels:
+    app: home-assistant
 spec:
   storageClassName: nfs
   accessModes:
@@ -54,6 +60,8 @@ apiVersion: v1
 metadata:
   name: home-assistant-config-pvc
   namespace: prd-ext
+  labels:
+    app: home-assistant
 spec:
   storageClassName: nfs
   accessModes:
@@ -62,16 +70,18 @@ spec:
     requests:
       storage: 10Gi
 
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: home-assistant-mysql-secrets
-  namespace: prd-ext
-type: Opaque
-data:
-  mysql-username: <REDACTED>
-  mysql-password: <REDACTED>
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: home-assistant-mysql-secrets
+#   namespace: prd-ext
+#   labels:
+#     app: home-assistant
+# type: Opaque
+# data:
+#   mysql-username: <REDACTED>
+#   mysql-password: <REDACTED>
 
 ---
 kind: Deployment
@@ -80,9 +90,11 @@ metadata:
   name: home-assistant-mysql
   namespace: prd-ext
   labels:
-    app: home-assistant-mysql
+    app: home-assistant
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: home-assistant-mysql
@@ -150,7 +162,7 @@ spec:
                       - k8s-worker-01
       containers:
         - name: home-assistant
-          image: homeassistant/home-assistant:stable
+          image: homeassistant/home-assistant:2022.4
           imagePullPolicy: Always
           securityContext:
             privileged: true
@@ -170,6 +182,8 @@ apiVersion: v1
 metadata:
   name: home-assistant-mysql
   namespace: prd-ext
+  labels:
+    app: home-assistant
 spec:
   selector:
     app: home-assistant-mysql
@@ -184,6 +198,8 @@ apiVersion: v1
 metadata:
   name: home-assistant
   namespace: prd-ext
+  labels:
+    app: home-assistant
 spec:
   selector:
     app: home-assistant
@@ -200,6 +216,8 @@ apiVersion: v1
 metadata:
   name: home-assistant
   namespace: prd-int
+  labels:
+    app: home-assistant
 spec:
   type: ExternalName
   externalName: home-assistant.prd-ext.svc.cluster.local
@@ -212,12 +230,14 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: home-assistant
   namespace: prd-int
+  labels:
+    app: home-assistant
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
   ingressClassName: nginx-private
   rules:
-    - host: home-assistant.k8s-prd-int.lan
+    - host: home-assistant.k8s.lan
       http:
         paths:
           - path: "/"
@@ -234,6 +254,8 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: home-assistant
   namespace: prd-ext
+  labels:
+    app: home-assistant
   annotations:
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
