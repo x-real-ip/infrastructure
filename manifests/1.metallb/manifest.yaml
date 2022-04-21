@@ -18,11 +18,11 @@ data:
       - name: prd-ext-lan-ips
         protocol: layer2
         addresses:
-          - 192.168.1.240/32
+          - 192.168.1.250/32
       - name: prd-int-lan-ips
         protocol: layer2
         addresses:
-          - 192.168.1.250/32
+          - 192.168.1.240/32
 
 ---
 kind: PodSecurityPolicy
