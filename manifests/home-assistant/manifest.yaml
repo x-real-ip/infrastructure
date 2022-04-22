@@ -146,6 +146,8 @@ spec:
   selector:
     matchLabels:
       app: home-assistant
+  strategy:
+    type: RollingUpdate
   template:
     metadata:
       labels:
