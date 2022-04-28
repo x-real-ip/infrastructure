@@ -1,19 +1,4 @@
-# Copyright 2022 The cert-manager Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 ---
-# Source: cert-manager/templates/templates.out
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -24,7 +9,6 @@ metadata:
     app: "cert-manager"
     app.kubernetes.io/name: "cert-manager"
     app.kubernetes.io/instance: "cert-manager"
-    # Generated labels
     app.kubernetes.io/version: "v1.7.2"
 spec:
   group: cert-manager.io
@@ -1021,8 +1005,8 @@ spec:
                                           description: Describes node affinity scheduling rules for the pod.
                                           type: object
                                           properties:
-                                            preferredDuringSchedulingIgnoredDuringExecution:
-                                              description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+                                            ? preferredDuringSchedulingIgnoredDuringExecution
+                                            : description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
                                               type: array
                                               items:
                                                 description: An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
@@ -1081,8 +1065,8 @@ spec:
                                                     description: Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
                                                     type: integer
                                                     format: int32
-                                            requiredDuringSchedulingIgnoredDuringExecution:
-                                              description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+                                            ? requiredDuringSchedulingIgnoredDuringExecution
+                                            : description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
                                               type: object
                                               required:
                                                 - nodeSelectorTerms
@@ -1140,8 +1124,8 @@ spec:
                                           description: Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
                                           type: object
                                           properties:
-                                            preferredDuringSchedulingIgnoredDuringExecution:
-                                              description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+                                            ? preferredDuringSchedulingIgnoredDuringExecution
+                                            : description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
                                               type: array
                                               items:
                                                 description: The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -1184,8 +1168,8 @@ spec:
                                                           matchLabels:
                                                             description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                             type: object
-                                                            additionalProperties:
-                                                              type: string
+                                                            ? additionalProperties
+                                                            : type: string
                                                       namespaceSelector:
                                                         description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                         type: object
@@ -1214,8 +1198,8 @@ spec:
                                                           matchLabels:
                                                             description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                             type: object
-                                                            additionalProperties:
-                                                              type: string
+                                                            ? additionalProperties
+                                                            : type: string
                                                       namespaces:
                                                         description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                         type: array
@@ -1228,8 +1212,8 @@ spec:
                                                     description: weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
                                                     type: integer
                                                     format: int32
-                                            requiredDuringSchedulingIgnoredDuringExecution:
-                                              description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+                                            ? requiredDuringSchedulingIgnoredDuringExecution
+                                            : description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
                                               type: array
                                               items:
                                                 description: Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
@@ -1309,8 +1293,8 @@ spec:
                                           description: Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
                                           type: object
                                           properties:
-                                            preferredDuringSchedulingIgnoredDuringExecution:
-                                              description: The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+                                            ? preferredDuringSchedulingIgnoredDuringExecution
+                                            : description: The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
                                               type: array
                                               items:
                                                 description: The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -1353,8 +1337,8 @@ spec:
                                                           matchLabels:
                                                             description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                             type: object
-                                                            additionalProperties:
-                                                              type: string
+                                                            ? additionalProperties
+                                                            : type: string
                                                       namespaceSelector:
                                                         description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                         type: object
@@ -1383,8 +1367,8 @@ spec:
                                                           matchLabels:
                                                             description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                             type: object
-                                                            additionalProperties:
-                                                              type: string
+                                                            ? additionalProperties
+                                                            : type: string
                                                       namespaces:
                                                         description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                         type: array
@@ -1397,8 +1381,8 @@ spec:
                                                     description: weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
                                                     type: integer
                                                     format: int32
-                                            requiredDuringSchedulingIgnoredDuringExecution:
-                                              description: If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+                                            ? requiredDuringSchedulingIgnoredDuringExecution
+                                            : description: If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
                                               type: array
                                               items:
                                                 description: Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
@@ -2054,8 +2038,8 @@ spec:
                                                 description: Describes node affinity scheduling rules for the pod.
                                                 type: object
                                                 properties:
-                                                  preferredDuringSchedulingIgnoredDuringExecution:
-                                                    description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+                                                  ? preferredDuringSchedulingIgnoredDuringExecution
+                                                  : description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
                                                     type: array
                                                     items:
                                                       description: An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
@@ -2114,8 +2098,8 @@ spec:
                                                           description: Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
                                                           type: integer
                                                           format: int32
-                                                  requiredDuringSchedulingIgnoredDuringExecution:
-                                                    description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+                                                  ? requiredDuringSchedulingIgnoredDuringExecution
+                                                  : description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
                                                     type: object
                                                     required:
                                                       - nodeSelectorTerms
@@ -2173,8 +2157,8 @@ spec:
                                                 description: Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
                                                 type: object
                                                 properties:
-                                                  preferredDuringSchedulingIgnoredDuringExecution:
-                                                    description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+                                                  ? preferredDuringSchedulingIgnoredDuringExecution
+                                                  : description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
                                                     type: array
                                                     items:
                                                       description: The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -2193,8 +2177,8 @@ spec:
                                                               description: A label query over a set of resources, in this case pods.
                                                               type: object
                                                               properties:
-                                                                matchExpressions:
-                                                                  description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
+                                                                ? matchExpressions
+                                                                : description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                                                                   type: array
                                                                   items:
                                                                     description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -2217,14 +2201,14 @@ spec:
                                                                 matchLabels:
                                                                   description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                                   type: object
-                                                                  additionalProperties:
-                                                                    type: string
+                                                                  ? additionalProperties
+                                                                  : type: string
                                                             namespaceSelector:
                                                               description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                               type: object
                                                               properties:
-                                                                matchExpressions:
-                                                                  description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
+                                                                ? matchExpressions
+                                                                : description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                                                                   type: array
                                                                   items:
                                                                     description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -2247,8 +2231,8 @@ spec:
                                                                 matchLabels:
                                                                   description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                                   type: object
-                                                                  additionalProperties:
-                                                                    type: string
+                                                                  ? additionalProperties
+                                                                  : type: string
                                                             namespaces:
                                                               description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                               type: array
@@ -2261,8 +2245,8 @@ spec:
                                                           description: weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
                                                           type: integer
                                                           format: int32
-                                                  requiredDuringSchedulingIgnoredDuringExecution:
-                                                    description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+                                                  ? requiredDuringSchedulingIgnoredDuringExecution
+                                                  : description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
                                                     type: array
                                                     items:
                                                       description: Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
@@ -2298,8 +2282,8 @@ spec:
                                                             matchLabels:
                                                               description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                               type: object
-                                                              additionalProperties:
-                                                                type: string
+                                                              ? additionalProperties
+                                                              : type: string
                                                         namespaceSelector:
                                                           description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                           type: object
@@ -2328,8 +2312,8 @@ spec:
                                                             matchLabels:
                                                               description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                               type: object
-                                                              additionalProperties:
-                                                                type: string
+                                                              ? additionalProperties
+                                                              : type: string
                                                         namespaces:
                                                           description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                           type: array
@@ -2342,8 +2326,8 @@ spec:
                                                 description: Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
                                                 type: object
                                                 properties:
-                                                  preferredDuringSchedulingIgnoredDuringExecution:
-                                                    description: The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+                                                  ? preferredDuringSchedulingIgnoredDuringExecution
+                                                  : description: The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
                                                     type: array
                                                     items:
                                                       description: The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -2362,8 +2346,8 @@ spec:
                                                               description: A label query over a set of resources, in this case pods.
                                                               type: object
                                                               properties:
-                                                                matchExpressions:
-                                                                  description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
+                                                                ? matchExpressions
+                                                                : description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                                                                   type: array
                                                                   items:
                                                                     description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -2386,14 +2370,14 @@ spec:
                                                                 matchLabels:
                                                                   description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                                   type: object
-                                                                  additionalProperties:
-                                                                    type: string
+                                                                  ? additionalProperties
+                                                                  : type: string
                                                             namespaceSelector:
                                                               description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                               type: object
                                                               properties:
-                                                                matchExpressions:
-                                                                  description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
+                                                                ? matchExpressions
+                                                                : description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                                                                   type: array
                                                                   items:
                                                                     description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -2416,8 +2400,8 @@ spec:
                                                                 matchLabels:
                                                                   description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                                   type: object
-                                                                  additionalProperties:
-                                                                    type: string
+                                                                  ? additionalProperties
+                                                                  : type: string
                                                             namespaces:
                                                               description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                               type: array
@@ -2430,8 +2414,8 @@ spec:
                                                           description: weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
                                                           type: integer
                                                           format: int32
-                                                  requiredDuringSchedulingIgnoredDuringExecution:
-                                                    description: If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+                                                  ? requiredDuringSchedulingIgnoredDuringExecution
+                                                  : description: If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
                                                     type: array
                                                     items:
                                                       description: Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
@@ -2467,8 +2451,8 @@ spec:
                                                             matchLabels:
                                                               description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                               type: object
-                                                              additionalProperties:
-                                                                type: string
+                                                              ? additionalProperties
+                                                              : type: string
                                                         namespaceSelector:
                                                           description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                           type: object
@@ -2497,8 +2481,8 @@ spec:
                                                             matchLabels:
                                                               description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                               type: object
-                                                              additionalProperties:
-                                                                type: string
+                                                              ? additionalProperties
+                                                              : type: string
                                                         namespaces:
                                                           description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                           type: array
@@ -3264,8 +3248,8 @@ spec:
                                                 description: Describes node affinity scheduling rules for the pod.
                                                 type: object
                                                 properties:
-                                                  preferredDuringSchedulingIgnoredDuringExecution:
-                                                    description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+                                                  ? preferredDuringSchedulingIgnoredDuringExecution
+                                                  : description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
                                                     type: array
                                                     items:
                                                       description: An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
@@ -3324,8 +3308,8 @@ spec:
                                                           description: Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
                                                           type: integer
                                                           format: int32
-                                                  requiredDuringSchedulingIgnoredDuringExecution:
-                                                    description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+                                                  ? requiredDuringSchedulingIgnoredDuringExecution
+                                                  : description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
                                                     type: object
                                                     required:
                                                       - nodeSelectorTerms
@@ -3383,8 +3367,8 @@ spec:
                                                 description: Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
                                                 type: object
                                                 properties:
-                                                  preferredDuringSchedulingIgnoredDuringExecution:
-                                                    description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+                                                  ? preferredDuringSchedulingIgnoredDuringExecution
+                                                  : description: The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
                                                     type: array
                                                     items:
                                                       description: The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -3403,8 +3387,8 @@ spec:
                                                               description: A label query over a set of resources, in this case pods.
                                                               type: object
                                                               properties:
-                                                                matchExpressions:
-                                                                  description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
+                                                                ? matchExpressions
+                                                                : description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                                                                   type: array
                                                                   items:
                                                                     description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -3427,14 +3411,14 @@ spec:
                                                                 matchLabels:
                                                                   description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                                   type: object
-                                                                  additionalProperties:
-                                                                    type: string
+                                                                  ? additionalProperties
+                                                                  : type: string
                                                             namespaceSelector:
                                                               description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                               type: object
                                                               properties:
-                                                                matchExpressions:
-                                                                  description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
+                                                                ? matchExpressions
+                                                                : description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                                                                   type: array
                                                                   items:
                                                                     description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -3457,8 +3441,8 @@ spec:
                                                                 matchLabels:
                                                                   description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                                   type: object
-                                                                  additionalProperties:
-                                                                    type: string
+                                                                  ? additionalProperties
+                                                                  : type: string
                                                             namespaces:
                                                               description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                               type: array
@@ -3471,8 +3455,8 @@ spec:
                                                           description: weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
                                                           type: integer
                                                           format: int32
-                                                  requiredDuringSchedulingIgnoredDuringExecution:
-                                                    description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+                                                  ? requiredDuringSchedulingIgnoredDuringExecution
+                                                  : description: If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
                                                     type: array
                                                     items:
                                                       description: Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
@@ -3508,8 +3492,8 @@ spec:
                                                             matchLabels:
                                                               description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                               type: object
-                                                              additionalProperties:
-                                                                type: string
+                                                              ? additionalProperties
+                                                              : type: string
                                                         namespaceSelector:
                                                           description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                           type: object
@@ -3538,8 +3522,8 @@ spec:
                                                             matchLabels:
                                                               description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                               type: object
-                                                              additionalProperties:
-                                                                type: string
+                                                              ? additionalProperties
+                                                              : type: string
                                                         namespaces:
                                                           description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                           type: array
@@ -3552,8 +3536,8 @@ spec:
                                                 description: Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
                                                 type: object
                                                 properties:
-                                                  preferredDuringSchedulingIgnoredDuringExecution:
-                                                    description: The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+                                                  ? preferredDuringSchedulingIgnoredDuringExecution
+                                                  : description: The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
                                                     type: array
                                                     items:
                                                       description: The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -3572,8 +3556,8 @@ spec:
                                                               description: A label query over a set of resources, in this case pods.
                                                               type: object
                                                               properties:
-                                                                matchExpressions:
-                                                                  description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
+                                                                ? matchExpressions
+                                                                : description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                                                                   type: array
                                                                   items:
                                                                     description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -3596,14 +3580,14 @@ spec:
                                                                 matchLabels:
                                                                   description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                                   type: object
-                                                                  additionalProperties:
-                                                                    type: string
+                                                                  ? additionalProperties
+                                                                  : type: string
                                                             namespaceSelector:
                                                               description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                               type: object
                                                               properties:
-                                                                matchExpressions:
-                                                                  description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
+                                                                ? matchExpressions
+                                                                : description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                                                                   type: array
                                                                   items:
                                                                     description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -3626,8 +3610,8 @@ spec:
                                                                 matchLabels:
                                                                   description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                                   type: object
-                                                                  additionalProperties:
-                                                                    type: string
+                                                                  ? additionalProperties
+                                                                  : type: string
                                                             namespaces:
                                                               description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                               type: array
@@ -3640,8 +3624,8 @@ spec:
                                                           description: weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
                                                           type: integer
                                                           format: int32
-                                                  requiredDuringSchedulingIgnoredDuringExecution:
-                                                    description: If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+                                                  ? requiredDuringSchedulingIgnoredDuringExecution
+                                                  : description: If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
                                                     type: array
                                                     items:
                                                       description: Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
@@ -3677,8 +3661,8 @@ spec:
                                                             matchLabels:
                                                               description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                               type: object
-                                                              additionalProperties:
-                                                                type: string
+                                                              ? additionalProperties
+                                                              : type: string
                                                         namespaceSelector:
                                                           description: A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
                                                           type: object
@@ -3707,8 +3691,8 @@ spec:
                                                             matchLabels:
                                                               description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                                               type: object
-                                                              additionalProperties:
-                                                                type: string
+                                                              ? additionalProperties
+                                                              : type: string
                                                         namespaces:
                                                           description: namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
                                                           type: array
@@ -4259,7 +4243,8 @@ rules:
     resources: ["events"]
     verbs: ["get", "create", "update", "patch"]
   - apiGroups: ["admissionregistration.k8s.io"]
-    resources: ["validatingwebhookconfigurations", "mutatingwebhookconfigurations"]
+    resources:
+      ["validatingwebhookconfigurations", "mutatingwebhookconfigurations"]
     verbs: ["get", "list", "watch", "update"]
   - apiGroups: ["apiregistration.k8s.io"]
     resources: ["apiservices"]
@@ -4346,7 +4331,8 @@ rules:
       ]
     verbs: ["update"]
   - apiGroups: ["cert-manager.io"]
-    resources: ["certificates", "certificaterequests", "clusterissuers", "issuers"]
+    resources:
+      ["certificates", "certificaterequests", "clusterissuers", "issuers"]
     verbs: ["get", "list", "watch"]
   # We require these rules to support users with the OwnerReferencesPermissionEnforcement
   # admission controller enabled:
@@ -4479,7 +4465,8 @@ rules:
     resources: ["certificates", "certificaterequests"]
     verbs: ["create", "update", "delete"]
   - apiGroups: ["cert-manager.io"]
-    resources: ["certificates", "certificaterequests", "issuers", "clusterissuers"]
+    resources:
+      ["certificates", "certificaterequests", "issuers", "clusterissuers"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["networking.k8s.io"]
     resources: ["ingresses"]
@@ -4559,7 +4546,8 @@ rules:
   - apiGroups: ["cert-manager.io"]
     resources: ["signers"]
     verbs: ["approve"]
-    resourceNames: ["issuers.cert-manager.io/*", "clusterissuers.cert-manager.io/*"]
+    resourceNames:
+      ["issuers.cert-manager.io/*", "clusterissuers.cert-manager.io/*"]
 ---
 # Source: cert-manager/templates/rbac.yaml
 # Permission to:
@@ -4584,7 +4572,8 @@ rules:
     verbs: ["update"]
   - apiGroups: ["certificates.k8s.io"]
     resources: ["signers"]
-    resourceNames: ["issuers.cert-manager.io/*", "clusterissuers.cert-manager.io/*"]
+    resourceNames:
+      ["issuers.cert-manager.io/*", "clusterissuers.cert-manager.io/*"]
     verbs: ["sign"]
   - apiGroups: ["authorization.k8s.io"]
     resources: ["subjectaccessreviews"]
