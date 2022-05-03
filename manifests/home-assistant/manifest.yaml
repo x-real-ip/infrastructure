@@ -1,69 +1,30 @@
 ---
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: home-assistant-data-pv
-  labels:
-    app: home-assistant
-spec:
-  storageClassName: nfs
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteMany
-  nfs:
-    server: storage-server.lan
-    path: "/r10_8tb/services/home-assistant/data"
-  mountOptions:
-    - nfsvers=4.0
-    - hard
-
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: home-assistant-config-pv
-  labels:
-    app: home-assistant
-spec:
-  storageClassName: nfs
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteMany
-  nfs:
-    server: storage-server.lan
-    path: "/r10_8tb/services/home-assistant/config"
-  mountOptions:
-    - nfsvers=4.0
-    - hard
-
----
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: home-assistant-data-pvc
-  namespace: prd-ext
-  labels:
-    app: home-assistant
+  name: pvc-iscsi-home-assistant-data
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "freenas-iscsi-csi"
 spec:
-  storageClassName: nfs
+  storageClassName: freenas-iscsi-csi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 5Gi
 
 ---
-kind: PersistentVolumeClaim
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: home-assistant-config-pvc
+  name: pvc-iscsi-home-assistant-config
   namespace: prd-ext
   labels:
     app: home-assistant
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "freenas-iscsi-csi"
 spec:
-  storageClassName: nfs
+  storageClassName: freenas-iscsi-csi
   accessModes:
     - ReadWriteMany
   resources:
@@ -131,7 +92,7 @@ spec:
       volumes:
         - name: home-assistant-data
           persistentVolumeClaim:
-            claimName: home-assistant-data-pvc
+            claimName: pvc-iscsi-home-assistant-data
 
 ---
 kind: Deployment
@@ -176,7 +137,7 @@ spec:
       volumes:
         - name: home-assistant-config
           persistentVolumeClaim:
-            claimName: home-assistant-config-pvc
+            claimName: pvc-iscsi-home-assistant-config
 
 ---
 kind: Service
