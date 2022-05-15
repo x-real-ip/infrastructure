@@ -1,4 +1,33 @@
 
+# Setup
+
+1. Proxmox server installed for VM k8s master and worker nodes
+2. Terraform local installation
+3. kubeseal binary to use Bitnami sealed serets in k8s
+
+After terraform apply
+
+# Connect remotely to the cluster
+
+1. Install kubectl on your local machine.
+   Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
+
+2. Copy the k3s config file from the master node to your local machine
+
+```bash
+mkdir ~/.kube/
+scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config
+export KUBECONFIG=~/.kube/config
+```
+
+3. Set right ipaddress to Master node in the config file
+
+Test
+
+```
+kubectl get nodes
+```
+
 # Kubernetes 
 
 ## Cheatsheet
