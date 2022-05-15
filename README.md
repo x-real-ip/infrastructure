@@ -1,12 +1,33 @@
 # Setup
 
-1. Proxmox server installed for VM k8s master and worker nodes.
-2. Setup api in proxmox to use terraform.
+## Hardware hierarchy
+
+```
+├───────── hypervisor (proxmox-ve)
+│  ├────── kubernetes (k3s) master nodes
+│    ├──── control plane
+│    ├──── etcd
+│  ├────── kubernetes (k3s) worker nodes
+│    ├──── containers
+│  │────── pfSense (firewall)
+```
+```
+├─── storage-server (truenas)
+```
+
+1. Need to have a Proxmox server installed for k8s master and worker nodes as VM's.
+2. Setup API in proxmox to use terraform.
 3. Install Terraform locally to apply terraform plan to proxmox.
 4. Install Kubeseal locally to use Bitnami sealed serets in k8s.
 ```bash
    wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-linux-amd64 -O kubeseal
    sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+```
+5. Add A record in pfSense
+Add A record in pfSense to bind a domainname for redirecting internal traffic into k3s private ingress controller.
+```
+local-zone: "k8s.lan" redirect
+local-data: "k8s.lan 86400 IN A 192.168.1.240"
 ```
 5. Apply terraform plan to proxmox
 
@@ -18,9 +39,9 @@
 2. Copy the k3s config file from the master node to your local machine
 
 ```bash
-mkdir ~/.kube/
-scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config
-export KUBECONFIG=~/.kube/config
+mkdir -p ~/.kube/ \
+&& scp coen@192.168.1.11:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
+&& sed -i 's/127.0.0.1/192.168.1.11/g' ~/.kube/config```
 ```
 
 3. Set right ipaddress to Master node in the config file
