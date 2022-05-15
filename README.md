@@ -1,13 +1,16 @@
-
 # Setup
 
-1. Proxmox server installed for VM k8s master and worker nodes
-2. Terraform local installation
-3. kubeseal binary to use Bitnami sealed serets in k8s
+1. Proxmox server installed for VM k8s master and worker nodes.
+2. Setup api in proxmox to use terraform.
+3. Install Terraform locally to apply terraform plan to proxmox.
+4. Install Kubeseal locally to use Bitnami sealed serets in k8s.
+```bash
+   wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-linux-amd64 -O kubeseal
+   sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+```
+5. Apply terraform plan to proxmox
 
-After terraform apply
-
-# Connect remotely to the cluster
+## Connect remotely to the cluster
 
 1. Install kubectl on your local machine.
    Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
@@ -28,9 +31,7 @@ Test
 kubectl get nodes
 ```
 
-# Kubernetes 
-
-## Cheatsheet
+# Kubernetes Cheatsheet
 
 ### Convert to BASE64
 ```batch
@@ -68,3 +69,20 @@ spec:
       storage: 5Gi
   volumeName: pvc-iscsi-home-assistant-data
 ```
+
+# Bitnami Sealed secret
+
+
+1. Create TLS secret
+```
+kubectl create secret tls cloudflare-tls --key origin-ca.pk --cert origin-ca.crt --dry-run=client -o yaml > cloudflare-tls.yaml
+```
+
+2. Encrypt secret
+```
+kubeseal --format=yaml < cloudflare-tls.yaml > sealed-cloudflare-tls.yaml
+```
+
+[AWS Bitnami tutorial](https://aws.amazon.com/blogs/opensource/managing-secrets-deployment-in-kubernetes-using-sealed-secrets/)
+
+[Blogpost Tutorial](https://itsmetommy.com/2020/06/26/kubernetes-sealed-secrets/)
