@@ -5,8 +5,8 @@ metadata:
   name: argocd
 
 ---
-apiVersion: networking.k8s.io/v1
 kind: Ingress
+apiVersion: networking.k8s.io/v1
 metadata:
   name: argocd-server-http-ingress
   namespace: argocd
@@ -30,9 +30,10 @@ spec:
     - hosts:
         - argocd.k8s.lan
       secretName: argocd-secret # do not change, this is provided by Argo CD
+
 ---
-apiVersion: networking.k8s.io/v1
 kind: Ingress
+apiVersion: networking.k8s.io/v1
 metadata:
   name: argocd-server-grpc-ingress
   namespace: argocd
