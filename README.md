@@ -107,3 +107,11 @@ kubeseal --format=yaml < cloudflare-tls.yaml > sealed-cloudflare-tls.yaml
 [AWS Bitnami tutorial](https://aws.amazon.com/blogs/opensource/managing-secrets-deployment-in-kubernetes-using-sealed-secrets/)
 
 [Blogpost Tutorial](https://itsmetommy.com/2020/06/26/kubernetes-sealed-secrets/)
+
+
+# ArgoCD
+
+Get admin password after deploy
+```
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
