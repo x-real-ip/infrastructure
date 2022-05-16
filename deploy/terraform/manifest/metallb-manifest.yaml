@@ -391,11 +391,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            # needed when another software is also using memberlist / port 7946
-            # when changing this default you also need to update the container ports definition
-            # and the PodSecurityPolicy hostPorts definition
-            #- name: METALLB_ML_BIND_PORT
-            #  value: "7946"
             - name: METALLB_ML_LABELS
               value: "app=metallb,component=speaker"
             - name: METALLB_ML_SECRET_KEY
