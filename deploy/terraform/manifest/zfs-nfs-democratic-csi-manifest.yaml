@@ -5,51 +5,22 @@ metadata:
   name: democratic-csi
 
 ---
-apiVersion: v1
-kind: Secret
-type: Opaque
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
 metadata:
   name: zfs-nfs-democratic-csi-driver-config
   namespace: democratic-csi
-  labels:
-    app.kubernetes.io/name: democratic-csi
-    app.kubernetes.io/instance: zfs-nfs
-stringData:
-  driver-config-file.yaml: |-
-    driver: freenas-nfs
-    httpConnection:
-      allowInsecure: true
-      apiVersion: 2
-      host: storage-server.lan
-      password: <REDACTED>
-      port: 80
-      protocol: http
-      username: root
-    instance_id: null
-    nfs:
-      shareAlldirs: false
-      shareAllowedHosts: []
-      shareAllowedNetworks: []
-      shareHost: storage-server.lan
-      shareMapallGroup: ""
-      shareMapallUser: ""
-      shareMaprootGroup: wheel
-      shareMaprootUser: root
-    sshConnection:
-      host: storage-server.lan
-      password: <REDACTED>
-      port: 22
-      username: csi
-    zfs:
-      cli:
-        sudoEnabled: true
-      datasetEnableQuotas: true
-      datasetEnableReservation: false
-      datasetParentName: r10_8tb/k8s/nfs/v
-      datasetPermissionsGroup: 0
-      datasetPermissionsMode: "0777"
-      datasetPermissionsUser: 0
-      detachedSnapshotsDatasetParentName: r10_8tb/k8s/nfs/s
+spec:
+  template:
+    type: Opaque
+    metadata:
+      name: zfs-nfs-democratic-csi-driver-config
+      namespace: democratic-csi
+      labels:
+        app.kubernetes.io/instance: zfs-nfs
+        app.kubernetes.io/name: democratic-csi
+  encryptedData:
+    driver-config-file.yaml: AgAQ0a4JJ8HjYYvQJ09rlNPKVE821qToQMpyNjirAMMRbDztLgXny+EIqywRB3h7YwyEvIgsUD4ZnoOU5HSWQ1ilWrwPV3z5wvIf6kggy0CzftMjC5RQFzgky3wJijDFtMrlOo8RRrufIvNM1btsxPcRU3a/emniy9Jl8OUPnNNyODXjN1xJi94SJerXomjiL8c6Nd5/7IAeUpZGroiCvwXSdWpfLeTFB1uzmcavn8FS5RJc/dy1GvWw779mmeC9cUW2lR1UBPpHeX5EPPrKz0mVlp2Mrl32/+KvnUMhcbuPajnkUYO2jOtHBrB2KicOohyBKZ7kf3Cgtd2gH66p1t9XYxfVEFknJWKG6m3xx16aAfjm6/YOy7a5P28VFgI1fYvqtfjaz3f/O75HfQfEE6SDSd1EWonJ0A2qO2QKKMSDQSg0WPGcjUTxss9TFj+92TDZdJcAV8FMyVtaTYhCQ7sJgx45kDnFsQxh5wsk0ZsQ5FsaHVNCbmkxj5WONl4U6x4FljVzNoSTAQFcVO9zGzgzZHf1J91xx0Qv0+boT9Rjo0QqX95aPP4XHoZZgVebuSefer+keTTxIhP9wfJySJm2uAFY6BCLCIlyIt1g7YHqedl2591ErICGqcFBPfEh5BMZl+gC4knfice2o27xRzcLZVE90ej5yfSLPkuFh56UAFjYAOR97sj+i0sGMLK7/oqEJqo0DyCLA38ipvGr/ZdwtQKc9Ueo751I110JmP3mUyyw5HGunlxli4OLbpX42SMCXeu6CUkaBtmUbeaJkb3fEM74W51HDqhPl8k3hZ7gw2LyoDNqaJ0YoP0TrQ/GrXlbKqGMmHvgI0huKURKHxy5d/lCXRu9Pn7zwrsdPCK0/U3AgZ3gvPGwMvQlSqndM9VhoQybZxlItk04/uRJZYhiQvb69brxZzAATI9jIp5gHBtbOAVI+OUcJ5si/UEiAoEmaVUOlfIKqNtSdq6EBJIoHnKeqblNMmoxqJSmXo8V9tVOS+tPdyBaFF01njGCVPmPsh8bqbf3o6EEt98EgaPDPiQr272LjP99b+PkaIYfl0+O/uTn5i58Bnj23R939+wL2BjiLCiZexorL2ACXXiMbFjGLtRHbwFKi9W/Or9Ii/tqnPsNRXlkpObYavi+TRo1QpKM6RXgqx6SxvhGDUo7q88/7oJ7a/wEO+36TPHRmgPKIn+F14ajIO++5hQOVAP56lFhOOvmI3bjqsMNrDSD0Sj6WjdgjmHODZ81cdtpEYwXyPLv7wQismAZYcCSdT2ARP1KSdpPK7TQjfAdn9J4H9fih7devutzqpveqk9uRTb1RgK852TKTzYdClWqMhKcJGHKAiNPci4dTQ0R4eEeF0UlLl/vitTcc95umQto8I+DX/xqwA2O1VDz07KpXxoRCec/JzFztOs4BGaoZA3PWs75TYeojHzgDtq3hHR+gD1c08W/W/MOAgvXdoijhoEXhMPj5UNd6BbXpH2Os5or64yGKMFGAoUVrsRoGpm5+IPccpXxha4dyaWp0habP5xeHTvXrg+rsGavtUuQ6mB3VeB/8t80Kcw1ZWKE9NkC35K2XMZ1wBgSL/dwx93Q9UNSvQBg2eapNJBgRErLuF9ZWxMcB0sPRq0qmv5fPo+Zs9B81FU94gapEToEsYv0ad13uDqb7b6aNkUWNjKP85rDHWnrnzAlBDaUdhoIpnJsEndMscb7Z4GjQX2HJPMd1XfcpWO+7JgECLX88yt1J2otCeA=
 
 ---
 kind: ConfigMap
