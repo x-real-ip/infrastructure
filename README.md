@@ -8,7 +8,8 @@
 │    ├──── control plane
 │    ├──── etcd
 │  ├────── kubernetes (k3s) worker nodes
-│    ├──── containers
+│    ├──── pods
+|    ├──── ...
 │  │────── pfSense (firewall)
 ```
 ```
