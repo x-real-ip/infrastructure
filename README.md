@@ -24,8 +24,7 @@
    wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-linux-amd64 -O kubeseal
    sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
-5. Add A record in pfSense
-Add A record in pfSense to bind a domainname for redirecting internal traffic into k3s private ingress controller.
+5. Add A record in pfSense to bind a domainname for redirecting internal traffic into k3s private ingress controller.
 ```
 local-zone: "k8s.lan" redirect
 local-data: "k8s.lan 86400 IN A 192.168.1.240"
