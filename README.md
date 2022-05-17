@@ -46,7 +46,7 @@ mkdir -p ~/.kube/ \
 
 3. Set right ipaddress to Master node in the config file
 
-Test
+Test if kubeconfig is working
 
 ```
 kubectl get nodes
@@ -55,8 +55,13 @@ kubectl get nodes
 # Kubernetes Cheatsheet
 
 ### Convert to BASE64
-```batch
+```bash
 echo -n '<value>' | base64
+```
+
+### Decode a secret with config file data
+```bash
+kubectl get secret <secret_name> -o jsonpath='{.data}' -n <namespace>
 ```
 
 ### Restart Pod
@@ -67,9 +72,10 @@ kubectl rollout restart deployment <deployment name> -n <namespace>
 ### Reuse PV in PVC
 1. Remove the claimRef in the PV this will set the PV status from ```Released``` to ```Available```
 ```
-kubectl patch pv <pv name> -p '{"spec":{"claimRef": null}}'
+kubectl patch pv <pv_name> -p '{"spec":{"claimRef": null}}'
 ```
 2. Add ```volumeName``` in PVC
+
 ```yaml
 ---
 kind: PersistentVolumeClaim
