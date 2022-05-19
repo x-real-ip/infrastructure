@@ -69,6 +69,11 @@ kubectl get secret <secret_name> -o jsonpath='{.data}' -n <namespace>
 kubectl rollout restart deployment <deployment name> -n <namespace>
 ```
 
+## Change PV reclaim policy
+```console
+kubectl patch pv <pv-name> -p "{\"spec\":{\"persistentVolumeReclaimPolicy\":\"Retain\"}}"
+```
+
 ### Reuse PV in PVC
 1. Remove the claimRef in the PV this will set the PV status from ```Released``` to ```Available```
 ```console
@@ -119,7 +124,7 @@ kubectl create secret tls cloudflare-tls --key origin-ca.pk --cert origin-ca.crt
 
 ### Encrypt secret with custom public certificate.
 ```console
-kubeseal --cert "./sealed-secret-tls.crt" --format=yaml < <secret>.yaml > sealed-<secret>.yaml
+kubeseal --cert "./kubernetes-gitops/certs/sealed-secret-tls.crt" --format=yaml < <secret>.yaml > sealed-<secret>.yaml
 ```
 
 ### Add sealed secret to configfile secret
