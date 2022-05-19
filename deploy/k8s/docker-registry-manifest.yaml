@@ -1,0 +1,171 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-iscsi-docker-registry-data
+  namespace: devops
+  labels:
+    app: docker-registry
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "freenas-iscsi-csi"
+spec:
+  storageClassName: freenas-iscsi-csi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 40Gi
+  volumeName: pvc-8a682c66-d0c7-40a3-a82a-c8f833eb8b92
+
+---
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
+metadata:
+  name: docker-registry-secret
+  namespace: devops
+spec:
+  template:
+    type: Opaque
+    metadata:
+      name: docker-registry-secret
+      namespace: devops
+      labels:
+        app: docker-registry
+  encryptedData:
+    haSharedSecret: AgCoDydruce5lkJ9QmjHy7CKSAv6Rwbac1h0wN4Tot8UshqKYXd0oUTr4MQtBkxChBhkcnYbRPOlEpjKADNkGG5nrp4ZiQZHmO01HwbMAqoHrshpf75/o09ktApedj9rP72S+H+Ep+zkZbeTHT2Au8rHwD7b77trZlsLg1DOemIl49ekTgUNpPfvVEOsb8BXunP9GLLhbi5w1rXF5k/K1CS+GUL/cJko00SU70DSjMcLy6TeM3MhRHWauzEYmEeu9gHTDVn5RWq9eCpBwuAzCyfXtpXoDFOmX3dvt4YstZaoyLXR+tMCREvpB/Pf1oE4Va0cFp8WePO1o4vNnBMo8Pft78lgBUDkagm4EKc5kBvTINVRlax8DhOR634JcREc2F7fW/JGLuTx+0+r41AppOs4FxK68XGzpqSnnL3kCIOvjnjJFBkwBZ7peqDpLOVG99vw3eyTX8ew6jO6pxSeVwMSsUsHOxWv4RtP210KGHTlMfNFNVk68wqFe3DJVpQcuIRow64bW/pt5vtwvakprhSi4sxqexFPYOB9q3tGUjXu0GZbX8CTXwK5iIUK+ckKrPerUPVfQS+f+Q1O9SdGhpl8o5ZycMbaT3nUy/j3IarhT73qY2AFz7C+BxOYIsX5zeZrqrxOC7TrqAaP9tQs4mHAnE5MLgVhGq/+5wqeQQWmhFHZ8Kzrzux9jHhNJ85EjPRc2yGj+N9Ie1kWCsD49pqm
+    htpasswd: AgATq6uyzhd+vlOfk+FTELt1PmUbj9QoqswktakcD/k97I68Is9mMa0jr46h5GUQkhYgqLD8csOf9R7kduFLL0QexHdsMpqsAZJG58JY7ZbzDPwYmoVYoc9kUUN/ex671X8JZlIi486MDRl/aVYWhKLb4Y8J8nOe4k3eTT/5xfSp9WiYd138vZHknyphVXaWQ/mHl10psKQrl1jOZ7ZllcvGKD/axlnP6k761UhOBVxV8XN9O2D6pLz7IEu0ae97wlhQeUHf9/IhC6t2lneGDuLm0GNO5MyUHu6EwcJ6xjBE0CxDaSlKw6duDo97pCAp8MKCROgIx/Bwrvl5h9Rb2SrDWx93pwk4ZgTu5LxdqZ5anIoXFUVWpiMwhrN1S5xhgU28TA6tP2QqlNV17Gg9OzuQwxwObzNtwvZ8U7Bu7MBfgu50KijLXgDYnD9go7+YnzIsI/C+uVZtZC8d3Ee8kGwK9Ol7SLCZJvDYkoCOt2Jjpsd2ZoYOcR6eQsv/LfxidS3lZFln2GhpwDKE+YRZRPFkfK6gp6emlDyNls6yxvqKTCwUYCwCp+VCSiTrFWgvQCifjdRQ1XrtsxdMQezfceZmjZdfBmELz8bRCUozZP/jYTxb1MsgNmiTVTbxZ4Lt8lW/yWyQOrarefsMbrObdrHpRCgKGG21lpdbnSekrMsQK+l9BUYPwXzuclFzfTIUqHIVXZUa9BY0nmfyiMEaKjYXnc75tkRjby07NDA7ZWmLbIkxXi52mcchD+Unhod6mB21FOQwTgBJGUgdxmLYGllRUwCb++KxXXfyXg==
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: docker-registry-config
+  namespace: devops
+  labels:
+    app: docker-registry
+data:
+  config.yml: |-
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+    http:
+      addr: :5000
+      debug:
+        addr: :5001
+        prometheus:
+          enabled: false
+          path: /metrics
+      headers:
+        X-Content-Type-Options:
+        - nosniff
+    log:
+      fields:
+        service: registry
+    storage:
+      cache:
+        blobdescriptor: inmemory
+    version: 0.1
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: docker-registry
+  namespace: devops
+  labels:
+    app: docker-registry
+spec:
+  selector:
+    matchLabels:
+      app: docker-registry
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: docker-registry
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      containers:
+        - name: docker-registry
+          image: "registry:2.7.1"
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/registry
+            - serve
+            - /etc/docker/registry/config.yml
+          ports:
+            - containerPort: 5000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+          resources: {}
+          env:
+            - name: REGISTRY_HTTP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: docker-registry-secret
+                  key: haSharedSecret
+            - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+              value: "/var/lib/registry"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/registry/
+            - name: "docker-registry-config"
+              mountPath: "/etc/docker/registry"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pvc-iscsi-docker-registry-data
+        - name: docker-registry-config
+          configMap:
+            name: docker-registry-config
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: docker-registry
+  namespace: devops
+  labels:
+    app: docker-registry
+spec:
+  type: ClusterIP
+  selector:
+    app: docker-registry
+  ports:
+    - port: 5000
+      protocol: TCP
+      name: http-5000
+      targetPort: 5000
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: docker-registry
+  namespace: devops
+  labels:
+    app: docker-registry
+spec:
+  ingressClassName: nginx-private
+  rules:
+    - host: docker-registry.k8s.lan
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: docker-registry
+                port:
+                  number: 5000
