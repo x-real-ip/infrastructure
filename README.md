@@ -100,15 +100,28 @@ spec:
 # Bitnami Sealed secret
 
 
-1. Create TLS secret
+### Create TLS (unencrypted) secret
 ```
 kubectl create secret tls cloudflare-tls --key origin-ca.pk --cert origin-ca.crt --dry-run=client -o yaml > cloudflare-tls.yaml
 ```
 
-2. Encrypt secret
+### Encrypt secret with custom public certificate.
+```bash
+kubeseal --cert "./sealed-secret-tls.crt" --format=yaml < <secret>.yaml > sealed-<secret>.yaml
 ```
-kubeseal --format=yaml < cloudflare-tls.yaml > sealed-cloudflare-tls.yaml
+
+### Add sealed secret to configfile secret
+```bash
+    echo -n <mypassword_key> | kubectl create secret generic <secretname> --dry-run=client --from-file=<password_value>=/dev/stdin -o json | kubeseal --cert ./sealed-secret-tls.crt -o yaml \
+    -n democratic-csi --merge-into <secret>.yaml
 ```
+
+### Raw sealed secret
+```bash
+echo -n <mypassword_key> | kubeseal --raw --from-file=/dev/stdin --namespace <namespace> --name <secretname>
+```
+
+
 
 [AWS Bitnami tutorial](https://aws.amazon.com/blogs/opensource/managing-secrets-deployment-in-kubernetes-using-sealed-secrets/)
 
