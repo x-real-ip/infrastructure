@@ -1,8 +1,8 @@
-# ---
-# kind: Namespace
-# apiVersion: v1
-# metadata:
-#   name: democratic-csi
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: democratic-csi
 
 ---
 apiVersion: bitnami.com/v1alpha1
