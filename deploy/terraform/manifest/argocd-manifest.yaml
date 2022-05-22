@@ -10658,14 +10658,6 @@ kind: Secret
 apiVersion: v1
 type: Opaque
 metadata:
-  name: argocd-notifications-secret
-  namespace: argocd
-
----
-kind: Secret
-apiVersion: v1
-type: Opaque
-metadata:
   name: argocd-secret
   namespace: argocd
   labels:
@@ -12147,13 +12139,18 @@ spec:
     - Ingress
 
 ---
-kind: Secret
-apiVersion: v1
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
 metadata:
   name: argocd-notifications-secret
   namespace: argocd
-stringData:
-  slack-token:
+spec:
+  template:
+    metadata:
+      name: argocd-notifications-secret
+      namespace: argocd
+  encryptedData:
+    slack-token: AgB3DYfM8CHWkCKeHezE3Zbka7+oqXMiYQ9IuC2zyhwi+Zv1Q943Vr3GPluUMumSqHLOZLRg4D2c+XPBK8odJNnBPacfcI9Ft7ML5szOwWBApR6YHX6BscAG57MJtCk38FjHjJ8pgOgBlogUwABBKLW5I/W5jVuIaB07lg/xINv9GXND5dWJ2vpDJpdj9N3vuBp2mDjsEMCUUaJJC+iIDtksyxFvTXVweGWd4aNs5FRCph5dgCiO5Jo2+K3dgcq96YdqnIIhGcV4hCmCdxrbXC2FBSBhcLj8CxR68mG6w7VbvMi48nJU0zFBOoI82uoqVyzcesgPzlqA7JnCfwSRTOjM/HRtCIIP57VWnQ0CQTFBwqKziyjEpcQTDSnpdLL1EnDKqNiTQRNsUUh2Mw+i/V9SZKCov9+X0UFi6N2nk6tRQ7n9NXzB0WRVWxHdjr+29WjeXY6k5OminnLwLvWaf4Hfz2I8SRw8rbu47A6kFzpI8QW5zaBQ0bwJV0owNR0IN6cZxuv1L58yLbJn9UuUEnRd4JjooXW4xIQQfripHq39nJ+Q6OGapwsXIRJMRoMmLEZNi4FW9YC7MiS98BYWomlDKXAFaW6qFeEJEvLDz4v847qszJxCxc/OD+JRvd5z0mjVjK4iA2lN9utVHnu6yWNMb/zjUvevBiwaQz7oF10v35xHxLHLzab15vVDuFoPjpnmuy4kArPzKvJhc/PKAcPW/boWQ5IK5rOSN6Y2Jo7xOZ1yw5H/8O4+zMi0hq6KoVgAFUtGmZTXt5DENkSGkUi6kdV1w0Hw7Q9sHdqG
 
 ---
 kind: ConfigMap
