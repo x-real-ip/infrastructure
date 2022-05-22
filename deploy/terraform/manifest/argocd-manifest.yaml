@@ -12145,3 +12145,22 @@ spec:
       app.kubernetes.io/name: argocd-server
   policyTypes:
     - Ingress
+
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: argocd-notifications-secret
+  namespace: argocd
+stringData:
+  slack-token: eG94Yi0zNTEzMDU4MDE2OTY1LTM1MzgzMzE2ODkwMTItVm04aUM1ekNZRTdqdnNMd0ZrdmNvRjFE
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: argocd-notifications-cm
+  namespace: argocd
+data:
+  service.slack: |
+    token: $slack-token
