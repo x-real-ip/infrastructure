@@ -16,6 +16,8 @@
 ├─── storage-server (truenas)
 ```
 
+## Installation
+
 1. Need to have a Proxmox server installed for k8s master and worker nodes as VM's.
 2. Setup API in proxmox to use terraform.
 3. Install Terraform locally to apply terraform plan to proxmox.
@@ -24,6 +26,7 @@
    wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-linux-amd64 -O kubeseal
    sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
+
 5. Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
 ```
 local-zone: "k8s.lan" redirect
@@ -31,12 +34,10 @@ local-data: "k8s.lan 86400 IN A 192.168.1.240"
 ```
 5. Apply terraform plan to proxmox
 
-## Connect remotely to the cluster
-
-1. Install kubectl on your local machine.
+6. Install kubectl on your local machine.
    Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
 
-2. Copy the k3s config file from the master node to your local machine
+7. Copy the k3s config file from the master node to your local machine
 
 ```console
 mkdir -p ~/.kube/ \
@@ -44,13 +45,19 @@ mkdir -p ~/.kube/ \
 && sed -i 's/127.0.0.1/192.168.1.11/g' ~/.kube/config```
 ```
 
-3. Set right ipaddress to Master node in the config file
+8. Set right ipaddress to Master node in the config file
 
 Test if kubeconfig is working
 
 ```console
 kubectl get nodes
 ```
+
+9. Install tekton cli 
+```console
+curl -LO https://github.com/tektoncd/cli/releases/download/v0.23.1/tkn_0.23.1_Linux_x86_64.tar.gz
+sudo tar xvzf tkn_0.23.1_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
+``` 
 
 # Kubernetes Cheatsheet
 
