@@ -13,7 +13,7 @@ spec:
     targetRevision: main
     path: deploy/k8s
     directory:
-      recurse: true
+      recurse: false
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
