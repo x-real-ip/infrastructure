@@ -12153,7 +12153,7 @@ metadata:
   name: argocd-notifications-secret
   namespace: argocd
 stringData:
-  slack-token: eG94Yi0zNTEzMDU4MDE2OTY1LTM1MzgzMzE2ODkwMTItVm04aUM1ekNZRTdqdnNMd0ZrdmNvRjFE
+  slack-token:
 
 ---
 kind: ConfigMap
