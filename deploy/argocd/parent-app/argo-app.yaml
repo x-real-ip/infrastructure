@@ -13,7 +13,7 @@ spec:
     targetRevision: main
     path: deploy/argocd/child-app
     directory:
-      recurse: true
+      recurse: false
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
