@@ -12,11 +12,21 @@ spec:
     repoURL: https://github.com/theautomation/kubernetes-gitops.git
     targetRevision: main
     path: deploy/argocd/child-app
-    directory:
-      recurse: false
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
       selfHeal: true
       prune: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
