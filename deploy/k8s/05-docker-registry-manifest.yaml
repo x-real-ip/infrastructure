@@ -15,7 +15,7 @@ spec:
   resources:
     requests:
       storage: 40Gi
-  # volumeName: pvc-8a682c66-d0c7-40a3-a82a-c8f833eb8b92
+  volumeName: pvc-aad8933c-d0d4-4fe3-9bec-caf19fc23182
 
 ---
 kind: SealedSecret
