@@ -1,3 +1,14 @@
+# Gitops hierarchy
+
+```
+├───────── deploy
+│  ├────── argocd             # Argocd applications
+│  ├────── k8s                # Bootstrap cluster k8s manifests
+│  ├────── tekton             # Tekton resources for CI piplines
+│  ├────── terraform          # Terraform plan to apply k8s VM cluster in Proxmox
+```
+
+
 # Setup
 
 ## Hardware hierarchy
