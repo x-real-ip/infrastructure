@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/theautomation/kubernetes-gitops.git
     targetRevision: main
-    path: deploy/k8s
+    path: deploy/k8s/bitnami
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
