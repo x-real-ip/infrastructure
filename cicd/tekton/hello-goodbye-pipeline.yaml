@@ -12,3 +12,6 @@ spec:
         - hello
       taskRef:
         name: goodbye
+      workspaces:
+        - name: output
+          workspace: myworkspace
