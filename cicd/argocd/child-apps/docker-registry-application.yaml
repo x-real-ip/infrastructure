@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tekton
+  name: docker-registry
   namespace: argocd
   annotations:
     notifications.argoproj.io/subscribe.on-sync-succeeded.slack: cicd
@@ -11,9 +11,7 @@ spec:
   source:
     repoURL: https://github.com/theautomation/kubernetes-gitops.git
     targetRevision: main
-    path: cicd/tekton
-    directory:
-      recurse: true
+    path: deploy/k8s/docker-registry
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
