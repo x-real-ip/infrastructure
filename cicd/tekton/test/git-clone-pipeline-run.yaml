@@ -2,9 +2,15 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: git-clone-checking-out-a-branch
+  namespace: devops
 spec:
   pipelineRef:
     name: cat-branch-readme
+  params:
+    - name: repo-url
+      value: https://github.com/theautomation/home-assistant.git
+    - name: branch-name
+      value: docker
   workspaces:
     - name: shared-data
       volumeClaimTemplate:
@@ -14,8 +20,3 @@ spec:
           resources:
             requests:
               storage: 1Gi
-  params:
-    - name: repo-url
-      value: https://github.com/tektoncd/pipeline.git
-    - name: branch-name
-      value: release-v0.12.x
