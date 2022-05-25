@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/theautomation/kubernetes-gitops.git
     targetRevision: main
-    path: cicd/tekton
+    path: cicd/tekton/tasks
     directory:
       recurse: true
   destination:
