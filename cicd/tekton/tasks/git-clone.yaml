@@ -1,5 +1,5 @@
-apiVersion: tekton.dev/v1beta1
 kind: Task
+apiVersion: tekton.dev/v1beta1
 metadata:
   name: git-clone
   namespace: devops
