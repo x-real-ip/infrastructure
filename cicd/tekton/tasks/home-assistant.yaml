@@ -18,8 +18,6 @@ spec:
       description: extra args needs to append
       default: ["--help"]
   steps:
-    # Add an extra step to list the contents of /workspace
-    # You might add this before or after another Task
     - name: dump-directory
       image: alpine
       command:
@@ -34,7 +32,7 @@ spec:
       image: "$(params.containerImage)"
       workingDir: $(workspaces.home-assistant-code.path)
       command:
-        - mv ./src/config/secrets.yaml.example ./src/config/secrets.yaml
+        - mv /workspace/home-assistant-code/src/config/secrets.yaml.example /workspace/home-assistant-code/src/config/secrets.yaml
     - name: config-check
       image: "$(params.containerImage)"
       workingDir: $(workspaces.home-assistant-code.path)
