@@ -22,7 +22,6 @@ spec:
       image: "$(arams.containerImage)"
       workingDir: $(workspaces.home-assistant-code.path)
       command:
-        - echo ${PWD}
         - ls -la
     - name: rename-example-secret
       image: "$(params.containerImage)"
