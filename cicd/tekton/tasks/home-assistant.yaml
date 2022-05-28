@@ -18,11 +18,18 @@ spec:
       description: extra args needs to append
       default: ["--help"]
   steps:
-    - name: list-all
-      image: "$(params.containerImage)"
-      workingDir: $(workspaces.home-assistant-code.path)
+    # Add an extra step to list the contents of /workspace
+    # You might add this before or after another Task
+    - name: dump-directory
+      image: alpine
       command:
-        - ls -la
+        - /bin/sh
+      args:
+        - "-c"
+        - |
+          set -ex
+          ls -la
+          find /workspace
     - name: rename-example-secret
       image: "$(params.containerImage)"
       workingDir: $(workspaces.home-assistant-code.path)
