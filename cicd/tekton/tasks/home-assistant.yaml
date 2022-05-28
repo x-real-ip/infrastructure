@@ -18,8 +18,8 @@ spec:
       description: extra args needs to append
       default: ["--help"]
   steps:
-    - name: list all
-      image: "$(params.containerImage)"
+    - name: list-all
+      image: "$(arams.containerImage)"
       workingDir: $(workspaces.home-assistant-code.path)
       command:
         - echo ${PWD}
