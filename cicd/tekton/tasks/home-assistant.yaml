@@ -18,6 +18,11 @@ spec:
       description: extra args needs to append
       default: ["--help"]
   steps:
+    - name: list all
+      image: "$(params.containerImage)"
+      workingDir: $(workspaces.home-assistant-code.path)
+      command:
+        - ls -la
     - name: rename-example-secret
       image: "$(params.containerImage)"
       workingDir: $(workspaces.home-assistant-code.path)
