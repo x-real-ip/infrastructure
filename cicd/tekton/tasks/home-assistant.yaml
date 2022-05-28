@@ -19,7 +19,7 @@ spec:
       default: ["--help"]
   steps:
     - name: list-all
-      image: "$(arams.containerImage)"
+      image: "$(params.containerImage)"
       workingDir: $(workspaces.home-assistant-code.path)
       command:
         - ls -la
