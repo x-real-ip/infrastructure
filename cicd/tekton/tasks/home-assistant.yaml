@@ -18,6 +18,11 @@ spec:
       description: extra args needs to append
       default: ["--help"]
   steps:
+    - name: rename-example-secret
+      image: "$(params.containerImage)"
+      workingDir: $(workspaces.home-assistant-code.path)
+      command:
+        - mv config/secrets.yaml.example config/secrets.yaml
     - name: config-check
       image: "$(params.containerImage)"
       workingDir: $(workspaces.home-assistant-code.path)
