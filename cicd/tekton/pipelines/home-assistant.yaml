@@ -65,7 +65,7 @@ spec:
       taskRef:
         name: home-assistant
       runAfter:
-        - rename-secret
+        - rename-example-secret
       workspaces:
         - name: home-assistant-code
           workspace: shared-data
