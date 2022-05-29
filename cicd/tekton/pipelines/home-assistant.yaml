@@ -51,12 +51,21 @@ spec:
         - name: args
           value: ["."]
 
+    - name: rename-secret
+      taskRef:
+        name: rename-secret
+      runAfter:
+        - check-code-style
+        - check-yaml-style
+      workspaces:
+        - name: home-assistant-code
+          workspace: shared-data
+
     - name: check-hass-config-latest
       taskRef:
         name: home-assistant
       runAfter:
-        - check-code-style
-        - check-yaml-style
+        - rename-secret
       workspaces:
         - name: home-assistant-code
           workspace: shared-data
@@ -72,8 +81,7 @@ spec:
       taskRef:
         name: home-assistant
       runAfter:
-        - check-code-style
-        - check-yaml-style
+        - rename-secret
       workspaces:
         - name: home-assistant-code
           workspace: shared-data
@@ -91,8 +99,7 @@ spec:
       taskRef:
         name: home-assistant
       runAfter:
-        - check-code-style
-        - check-yaml-style
+        - rename-secret
       workspaces:
         - name: home-assistant-code
           workspace: shared-data
