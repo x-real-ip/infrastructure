@@ -51,7 +51,7 @@ spec:
         - name: args
           value: ["."]
 
-    - name: rename-secret
+    - name: rename-example-secret
       taskRef:
         name: rename-secret
       runAfter:
