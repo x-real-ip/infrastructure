@@ -18,21 +18,11 @@ spec:
       description: extra args needs to append
       default: ["--help"]
   steps:
-    - name: dump-directory
-      image: alpine
-      command:
-        - /bin/sh
-      args:
-        - "-c"
-        - |
-          set -ex
-          ls -la
-          find /workspace
     - name: rename-example-secret
       image: alpine
       workingDir: $(workspaces.home-assistant-code.path)
       command:
-        - mv /workspace/home-assistant-code/src/config/secrets.yaml.example /workspace/home-assistant-code/src/config/secrets.yaml
+        - cat /workspace/home-assistant-code/src/config/secrets.yaml.example /workspace/home-assistant-code/src/config/secrets.yaml
     - name: config-check
       image: "$(params.containerImage)"
       workingDir: $(workspaces.home-assistant-code.path)

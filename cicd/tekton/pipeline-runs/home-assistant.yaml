@@ -1,3 +1,4 @@
+---
 kind: PipelineRun
 apiVersion: tekton.dev/v1beta1
 metadata:
@@ -8,5 +9,10 @@ spec:
     name: test-and-build-image
   workspaces:
     - name: shared-data
-      persistentVolumeClaim:
-        claimName: pipeline-pvc
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 5Gi
