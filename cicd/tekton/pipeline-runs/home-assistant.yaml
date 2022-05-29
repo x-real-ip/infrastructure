@@ -1,0 +1,17 @@
+kind: PipelineRun
+apiVersion: tekton.dev/v1beta1
+metadata:
+  name: home-assistant-build
+  namespace: devops
+spec:
+  pipelineRef:
+    name: test-and-build-image
+  workspaces:
+    - name: shared-data
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 5Gi
