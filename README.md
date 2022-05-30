@@ -29,26 +29,63 @@
 
 ## Installation
 
-1. Need to have a Proxmox server installed for k8s master and worker nodes as VM's.
-2. Setup API in proxmox to use terraform.
-3. Install Terraform locally to apply terraform plan to proxmox.
-4. Install Kubeseal locally to use Bitnami sealed serets in k8s.
+### Nodes
+
+1. Create VM and install ubuntu server on it.
+2. Intall dependicies
+
+SSH 
+```bash
+sudo apt install openssh-server openssh-client
+```
+
+NFS
+```bash
+sudo apt install -y libnfs-utils
+```
+
+ISCSI
+```bash
+sudo apt-get install -y open-iscsi lsscsi sg3-utils multipath-tools scsitools
+```
+```consol
+sudo tee /etc/multipath.conf <<-'EOF'
+defaults {
+    user_friendly_names yes
+    find_multipaths yes
+}
+```
+
+QUME guest
+```bash
+sudo apt-get install qemu-guest-agent -y
+```
+
+3. Add worker node to the cluster 
+
+```bash
+curl -sfL https://get.k3s.io | K3S_URL=https://192.168.1.11:6443 K3S_TOKEN=<k3s_token> sh -
+```
+
+### Local machine
+
+1. Install Kubeseal locally to use Bitnami sealed serets in k8s.
 ```console
    wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-linux-amd64 -O kubeseal
    sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
 
-5. Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
+2. Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
 ```
 local-zone: "k8s.lan" redirect
 local-data: "k8s.lan 86400 IN A 192.168.1.240"
 ```
-5. Apply terraform plan to proxmox
+3. Apply terraform plan to proxmox
 
-6. Install kubectl on your local machine.
+4. Install kubectl on your local machine.
    Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
 
-7. Copy the k3s config file from the master node to your local machine
+5. Copy the k3s config file from the master node to your local machine
 
 ```console
 mkdir -p ~/.kube/ \
@@ -56,7 +93,7 @@ mkdir -p ~/.kube/ \
 && sed -i 's/127.0.0.1/192.168.1.11/g' ~/.kube/config```
 ```
 
-8. Set right ipaddress to Master node in the config file
+6. Set right ipaddress to Master node in the config file
 
 Test if kubeconfig is working
 
@@ -64,7 +101,7 @@ Test if kubeconfig is working
 kubectl get nodes
 ```
 
-9. Install tekton cli 
+7. Install tekton cli 
 ```console
 curl -LO https://github.com/tektoncd/cli/releases/download/v0.23.1/tkn_0.23.1_Linux_x86_64.tar.gz
 sudo tar xvzf tkn_0.23.1_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
