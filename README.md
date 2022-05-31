@@ -1,4 +1,14 @@
-# Gitops hierarchy
+# Kubernetes Gitops
+
+- [Gitops hierarchy](#gitops-hierarchy)
+- [Setup](#setup)
+    - [Bootstrap K3s cluster](#bootstrap-k3s-cluster)
+    - [Local](#local)
+- [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
+- [Bitnami Sealed Secret](#bitnami-sealed-secret)
+- [ArgoCD](#argocd)
+
+## Gitops hierarchy
 
 ```
 ├───────── deploy
@@ -8,31 +18,12 @@
 │  ├────── terraform          # Terraform plan to apply k8s VM cluster in Proxmox
 ```
 
-
-# Setup
-
-## Hardware hierarchy
-
-```
-├───────── hypervisor (proxmox-ve)
-│  ├────── kubernetes (k3s) master nodes
-│    ├──── control plane
-│    ├──── etcd
-│  ├────── kubernetes (k3s) worker nodes
-│    ├──── pods
-|    ├──── ...
-│  │────── pfSense (firewall)
-```
-```
-├─── storage-server (truenas)
-```
-
-## Installation
+## Setup
 
 ### Bootstrap K3s cluster
 
 1. Create VM's and install ubuntu server on it. (3x master 2x worker)
-2. SSH into each node en run below command:
+2. SSH into each node en run below commands:
 
 ```console
 export k3s_token="<k3s_token>"
@@ -40,7 +31,7 @@ export k3s_cluster_init_ip="<ip_of_master-01>"
 curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | sh -
 ```
 
-### Local machine
+### Local
 
 1. Install Kubeseal locally to use Bitnami sealed serets in k8s.
 ```console
@@ -80,7 +71,7 @@ curl -LO https://github.com/tektoncd/cli/releases/download/v0.23.1/tkn_0.23.1_Li
 sudo tar xvzf tkn_0.23.1_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
 ``` 
 
-# Kubernetes Cheatsheet
+## Kubernetes Cheatsheet
 
 ### Convert to BASE64
 ```console
@@ -130,25 +121,21 @@ spec:
   volumeName: pvc-iscsi-home-assistant-data
 ```
 
-### Maintain node
+### Maintain cluster node
 
 Use kubectl drain to gracefully terminate all pods on the node while marking the node as unschedulable
 ```console
 kubectl drain --ignore-daemonsets --delete-emptydir-data <nodename>
 ```
 
-Update node with k3s script
-[See bootstrap k3s](###-Bootstrap-K3s-cluster)
-
-[Markdown - Summary](#Getting-started-with-Markdown)
+To update node with k3s script [See bootstrap k3s](#bootstrap-k3s-cluster)
 
 Make the node schedulable again
 ```console
 kubectl uncordon <nodename>
 ```
 
-
-# Bitnami Sealed secret
+## Bitnami Sealed Secret
 
 ### Create TLS (unencrypted) secret
 ```
@@ -209,7 +196,7 @@ metadata:
 [Blogpost Tutorial](https://itsmetommy.com/2020/06/26/kubernetes-sealed-secrets/)
 
 
-# ArgoCD
+## ArgoCD
 
 Get admin password after deploy
 ```
