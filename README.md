@@ -34,9 +34,9 @@
 1. Create VM's and install ubuntu server on it. (3x master 2x worker)
 2. SSH into each node en run below command:
 
-```bash
-export k3s_token="<k3s_token>" \
-export k3s_cluster_init_ip="<ip_of_master-01>" \
+```console
+export k3s_token="<k3s_token>"
+export k3s_cluster_init_ip="<ip_of_master-01>"
 curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | sh -
 ```
 
