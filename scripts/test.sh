@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+
+manifest_location="/var/lib/rancher/k3s/server/manifests/"
+github_k8s_url="https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/deploy/k8s"
+
+
 echo "test"
 
 curl -O ${github_k8s_url}/bitnami/bitnami-manifest.yaml
