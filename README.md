@@ -29,39 +29,10 @@
 
 ## Installation
 
-### Nodes
+### Bootstrap K3s cluster
 
-1. Create VM and install ubuntu server on it.
-2. Intall dependicies
-
-SSH 
-```bash
-sudo apt install openssh-server openssh-client
-```
-
-NFS
-```bash
-sudo apt install -y libnfs-utils
-```
-
-ISCSI
-```bash
-sudo apt-get install -y open-iscsi lsscsi sg3-utils multipath-tools scsitools
-```
-```consol
-sudo tee /etc/multipath.conf <<-'EOF'
-defaults {
-    user_friendly_names yes
-    find_multipaths yes
-}
-```
-
-QUME guest
-```bash
-sudo apt-get install qemu-guest-agent -y
-```
-
-3. Add worker node to the cluster 
+1. Create VM's and install ubuntu server on it. (3x master 2x worker)
+2. SSH into the node en run below command:
 
 ```bash
 curl -sfL https://get.k3s.io | K3S_URL=https://192.168.1.11:6443 K3S_TOKEN=<k3s_token> sh -
