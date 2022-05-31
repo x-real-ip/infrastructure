@@ -86,7 +86,7 @@ kubectl get secret <secret_name> -o jsonpath='{.data}' -n <namespace>
 ```
 
 Restart Pod
-```batch
+```console
 kubectl rollout restart deployment <deployment name> -n <namespace>
 ```
 
