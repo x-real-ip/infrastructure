@@ -35,7 +35,7 @@
 2. SSH into the node en run below command:
 
 ```bash
-curl -sfL https://get.k3s.io | K3S_URL=https://192.168.1.11:6443 K3S_TOKEN=<k3s_token> sh -
+curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | k3s_token=<k3s_token> sh -
 ```
 
 ### Local machine
