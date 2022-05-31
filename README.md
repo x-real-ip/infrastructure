@@ -63,7 +63,7 @@ local-data: "k8s.lan 86400 IN A 192.168.1.240"
 ```console
 mkdir -p ~/.kube/ \
 && scp coen@192.168.1.11:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-&& sed -i 's/127.0.0.1/192.168.1.11/g' ~/.kube/config```
+&& sed -i 's/127.0.0.1/192.168.1.11/g' ~/.kube/config
 ```
 
 6. Set right ipaddress to Master node in the config file
@@ -134,8 +134,11 @@ spec:
 
 Use kubectl drain to gracefully terminate all pods on the node while marking the node as unschedulable
 ```console
-kubectl drain <nodename>
+kubectl drain --ignore-daemonsets --delete-emptydir-data <nodename>
 ```
+
+Update node with k3s script
+link: [See bootstrap k3s] ("### Bootstrap K3s cluster")
 
 Make the node schedulable again
 ```console
