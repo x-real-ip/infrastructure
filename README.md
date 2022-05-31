@@ -138,7 +138,9 @@ kubectl drain --ignore-daemonsets --delete-emptydir-data <nodename>
 ```
 
 Update node with k3s script
-link: [See bootstrap k3s] ("### Bootstrap K3s cluster")
+[See bootstrap k3s](###-Bootstrap-K3s-cluster)
+
+[Markdown - Summary](#Getting-started-with-Markdown)
 
 Make the node schedulable again
 ```console
