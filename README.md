@@ -1,12 +1,14 @@
 # Kubernetes Gitops
 
-- [Gitops hierarchy](#gitops-hierarchy)
-- [Setup](#setup)
+- [Kubernetes Gitops](#kubernetes-gitops)
+  - [Gitops hierarchy](#gitops-hierarchy)
+  - [Setup](#setup)
     - [Bootstrap K3s cluster](#bootstrap-k3s-cluster)
     - [Local](#local)
-- [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
-- [Bitnami Sealed Secret](#bitnami-sealed-secret)
-- [ArgoCD](#argocd)
+  - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
+    - [Maintain cluster node](#maintain-cluster-node)
+  - [Bitnami Sealed Secret](#bitnami-sealed-secret)
+  - [ArgoCD](#argocd)
 
 ## Gitops hierarchy
 
@@ -73,27 +75,27 @@ sudo tar xvzf tkn_0.23.1_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
 
 ## Kubernetes Cheatsheet
 
-### Convert to BASE64
+Convert to BASE64
 ```console
 echo -n '<value>' | base64
 ```
 
-### Decode a secret with config file data
+Decode a secret with config file data
 ```console
 kubectl get secret <secret_name> -o jsonpath='{.data}' -n <namespace>
 ```
 
-### Restart Pod
+Restart Pod
 ```batch
 kubectl rollout restart deployment <deployment name> -n <namespace>
 ```
 
-## Change PV reclaim policy
+Change PV reclaim policy
 ```console
 kubectl patch pv <pv-name> -p "{\"spec\":{\"persistentVolumeReclaimPolicy\":\"Retain\"}}"
 ```
 
-### Reuse PV in PVC
+Reuse PV in PVC
 1. Remove the claimRef in the PV this will set the PV status from ```Released``` to ```Available```
 ```console
 kubectl patch pv <pv_name> -p '{"spec":{"claimRef": null}}'
@@ -137,23 +139,23 @@ kubectl uncordon <nodename>
 
 ## Bitnami Sealed Secret
 
-### Create TLS (unencrypted) secret
+Create TLS (unencrypted) secret
 ```
 kubectl create secret tls cloudflare-tls --key origin-ca.pk --cert origin-ca.crt --dry-run=client -o yaml > cloudflare-tls.yaml
 ```
 
-### Encrypt secret with custom public certificate.
+Encrypt secret with custom public certificate.
 ```console
 kubeseal --cert "./kubernetes-gitops/certs/sealed-secret-tls.crt" --format=yaml < <secret>.yaml > sealed-<secret>.yaml
 ```
 
-### Add sealed secret to configfile secret
+Add sealed secret to configfile secret
 ```console
     echo -n <mypassword_key> | kubectl create secret generic <secretname> --dry-run=client --from-file=<password_value>=/dev/stdin -o json | kubeseal --cert ./sealed-secret-tls.crt -o yaml \
     -n democratic-csi --merge-into <secret>.yaml
 ```
 
-### Raw sealed secret
+Raw sealed secret
 
 `strict` scope (default):
 
