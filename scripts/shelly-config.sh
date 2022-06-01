@@ -7,8 +7,8 @@
 
 domain="lan"
 ip_subnet="192.168.40"
-ip_start="2"
-ip_end="200"
+ip_start="70"
+ip_end="180"
 
 #--------------------------------
 
@@ -59,7 +59,7 @@ select action in "${actions[@]}"; do
         tableLine
         for i in $(seq ${ip_start} ${ip_end}); do
             nameFqdn
-            status=$(curl -s -m 2 "http://${ip_subnet}.${i}/reboot" | jq -cr '.ok' 2>/dev/null)
+            status=$(curl -s -m 1 "http://${ip_subnet}.${i}/reboot" | jq -cr '.ok' 2>/dev/null)
             if [ "${status}" = "true" ]; then tableRow "${name}" "Restarted" "http://${fqdn}.${domain}"; elif [ "${status}" = "false" ]; then tableRow "${name}" "Restart failed" "http://${fqdn}.${domain}"; fi
         done
         echo "Done..."
@@ -70,7 +70,7 @@ select action in "${actions[@]}"; do
         tableLine
         for i in $(seq ${ip_start} ${ip_end}); do
             nameFqdn
-            status=$(curl -s -m 2 "http://${ip_subnet}.${i}/ota/check" | jq -cr '.status' 2>/dev/null)
+            status=$(curl -s -m 1 "http://${ip_subnet}.${i}/ota/check" | jq -cr '.status' 2>/dev/null)
             if [ "${status}" = "ok" ]; then tableRow "${name}" "Checked firmware" "http://${fqdn}.${domain}"; fi
         done
         echo -e "\nCheck if Shelly devices can be updated, this can take several minutes...\n"
