@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 
 # Install k3s and dependencies
 # Writtin by Coen Stam.
