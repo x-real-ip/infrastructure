@@ -40,11 +40,11 @@ sudo service open-iscsi start
 echo "Installing QEMU guest agent..." &&
     sudo apt-get install qemu-guest-agent -y
 
-echo ${HOSTNAME}
+echo "${HOSTNAME}"
 
-if [[ ${HOSTNAME} =~ ^k3s-master-* ]]; then
+if [[ "${HOSTNAME}" =~ ^k3s-master-* ]]; then
     # Setup masters
-    if [[ $HOSTNAME -eq 'k3s-master-01' ]]; then
+    if [[ "${HOSTNAME}" -eq 'k3s-master-01' ]]; then
         # Add manifests
         mkdir -p ${manifest_location} &&
             cd ${manifest_location}
