@@ -5,6 +5,10 @@
   - [Setup](#setup)
     - [Bootstrap K3s cluster](#bootstrap-k3s-cluster)
     - [Local](#local)
+      - [Kubectl](#kubectl)
+      - [Bitnami Kubeseal](#bitnami-kubeseal)
+      - [ArgoCD CLI](#argocd-cli)
+      - [Tekton CLI](#tekton-cli)
     - [Other settings](#other-settings)
   - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
     - [Maintain cluster node](#maintain-cluster-node)
@@ -38,6 +42,7 @@ curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main
 
 ### Local
 
+#### Kubectl
 1. Install kubectl on your local machine.
 Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
 
@@ -49,7 +54,8 @@ mkdir -p ~/.kube/ \
 && sed -i 's/127.0.0.1/k3s-master-01.lan/g' ~/.kube/config
 ```
 
-3. Install Kubeseal locally to use Bitnami sealed serets in k8s.
+#### Bitnami Kubeseal
+Install Kubeseal locally to use Bitnami sealed serets in k8s.
 ```console
 sudo wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/kubeseal-0.18.0-linux-amd64.tar.gz
 
@@ -58,7 +64,16 @@ sudo tar xzvf kubeseal-0.18.0-linux-amd64.tar.gz
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
 
-4. Install tekton cli 
+#### ArgoCD CLI
+Intall ArgoCD cli
+```console
+sudo curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+
+sudo chmod +x /usr/local/bin/argocd
+```
+
+#### Tekton CLI
+Install tekton cli 
 ```console
 curl -LO https://github.com/tektoncd/cli/releases/download/v0.23.1/tkn_0.23.1_Linux_x86_64.tar.gz
 
@@ -204,3 +219,22 @@ Get admin password after deploy
 ```
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
+
+Use ArgoCD CLI
+The end-users need Kubernetes access to manage Argo CD. The argocd CLI has to be configured using the following commands:
+
+change current kube context to argocd namespace
+```console
+kubectl config set-context --current --namespace=argocd
+```
+
+Login to ArgoCD directly to Kubernetes
+```console
+argocd login --core
+```
+
+Make WebUI available
+```console
+argocd admin dashboard
+```
+
