@@ -5,6 +5,7 @@
   - [Setup](#setup)
     - [Bootstrap K3s cluster](#bootstrap-k3s-cluster)
     - [Local](#local)
+    - [Other settings](#other-settings)
   - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
     - [Maintain cluster node](#maintain-cluster-node)
   - [Bitnami Sealed Secret](#bitnami-sealed-secret)
@@ -24,18 +25,23 @@
 
 ### Bootstrap K3s cluster
 
-1. Create VM's and install ubuntu server on it. (3x master 2x worker)
+1. Create VM's and install ubuntu server on it. For example 3x master 2x worker nodes.
 2. SSH into each node en run below commands:
 
 ```console
 export k3s_token="<k3s_token>"
+
 export k3s_cluster_init_ip="<ip_of_master-01>"
+
 curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | bash -
 ```
 
 ### Local
 
-1. Copy the k3s config file from the master node to your local machine
+1. Install kubectl on your local machine.
+Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
+
+2. Copy the k3s config file from the master node to your local machine
 
 ```console
 mkdir -p ~/.kube/ \
@@ -43,35 +49,29 @@ mkdir -p ~/.kube/ \
 && sed -i 's/127.0.0.1/k3s-master-01.lan/g' ~/.kube/config
 ```
 
-2. Install Kubeseal locally to use Bitnami sealed serets in k8s.
+3. Install Kubeseal locally to use Bitnami sealed serets in k8s.
 ```console
-   wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-linux-amd64 -O kubeseal
-   sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+sudo wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/kubeseal-0.18.0-linux-amd64.tar.gz
+
+sudo tar xzvf kubeseal-0.18.0-linux-amd64.tar.gz
+
+sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
 
-2. Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
+4. Install tekton cli 
+```console
+curl -LO https://github.com/tektoncd/cli/releases/download/v0.23.1/tkn_0.23.1_Linux_x86_64.tar.gz
+
+sudo tar xvzf tkn_0.23.1_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
+```
+
+### Other settings
+
+1. Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
 ```
 local-zone: "k8s.lan" redirect
 local-data: "k8s.lan 86400 IN A 192.168.1.240"
 ```
-3. Apply terraform plan to proxmox
-
-4. Install kubectl on your local machine.
-   Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
-
-6. Set right ipaddress to Master node in the config file
-
-Test if kubeconfig is working
-
-```console
-kubectl get nodes
-```
-
-7. Install tekton cli 
-```console
-curl -LO https://github.com/tektoncd/cli/releases/download/v0.23.1/tkn_0.23.1_Linux_x86_64.tar.gz
-sudo tar xvzf tkn_0.23.1_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
-``` 
 
 ## Kubernetes Cheatsheet
 
