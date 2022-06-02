@@ -1,3 +1,1 @@
-secret.yaml
-talos/k8s-*.yaml
-talos/talosconfig
+*sealed-secret-customkeys.yaml

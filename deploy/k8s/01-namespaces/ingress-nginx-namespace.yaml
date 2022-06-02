@@ -1,0 +1,14 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: prd-int
+  labels:
+    app: ingress-nginx
+
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: prd-ext
+  labels:
+    app: ingress-nginx
