@@ -33,7 +33,7 @@ sudo apt install -y curl wget unzip
 # sudo service open-iscsi start
 
 # QEMU guest agent
-echo "Installing QEMU guest agent..." &&
+echo -e "\nInstalling QEMU guest agent...\n" &&
     sudo apt-get install qemu-guest-agent -y
 
 if [[ $HOSTNAME =~ master ]]; then
@@ -42,11 +42,11 @@ if [[ $HOSTNAME =~ master ]]; then
         # Add manifests
         sudo mkdir -p ${manifest_location} &&
             cd ${manifest_location}
-        curl -O ${github_k8s_url}/metallb/metallb-manifest.yaml
-        curl -O ${github_k8s_url}/nginx-ingress-controller/nginx-ingress-controller-prd-ext-manifest.yaml
-        curl -O ${github_k8s_url}/nginx-ingress-controller/nginx-ingress-controller-prd-int-manifest.yaml
-        # curl -O ${github_k8s_url}/bitnami/bitnami-manifest.yaml
-        # curl -O ${github_k8s_url}/argocd/argocd-manifest.yaml
+        sudo curl -O ${github_k8s_url}/metallb/metallb-manifest.yaml
+        sudo curl -O ${github_k8s_url}/nginx-ingress-controller/nginx-ingress-controller-prd-ext-manifest.yaml
+        sudo curl -O ${github_k8s_url}/nginx-ingress-controller/nginx-ingress-controller-prd-int-manifest.yaml
+        # sudo curl -O ${github_k8s_url}/bitnami/bitnami-manifest.yaml
+        # sudo curl -O ${github_k8s_url}/argocd/argocd-manifest.yaml
 
         echo -e "\nInstalling k3s master and initializing the cluster...\n" &&
             curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --no-deploy servicelb --no-deploy traefik --no-deploy servicelb --cluster-init
@@ -54,7 +54,7 @@ if [[ $HOSTNAME =~ master ]]; then
         echo -e "\nInstalling k3s master and joining to cluster...\n" &&
             curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --no-deploy servicelb --no-deploy traefik --no-deploy servicelb --server=https://${k3s_cluster_init_ip}:6443
     fi
-    sleep 20 && echo "Installing k3s on $HOSTNAME done." &&
+    sleep 20 && echo -e "\nInstalling k3s on $HOSTNAME done.\n" &&
         kubectl get nodes
 else
     # Setup workers
