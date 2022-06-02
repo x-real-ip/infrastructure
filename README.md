@@ -35,7 +35,15 @@ curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main
 
 ### Local
 
-1. Install Kubeseal locally to use Bitnami sealed serets in k8s.
+1. Copy the k3s config file from the master node to your local machine
+
+```console
+mkdir -p ~/.kube/ \
+&& scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
+&& sed -i 's/127.0.0.1/k3s-master-01.lan/g' ~/.kube/config
+```
+
+2. Install Kubeseal locally to use Bitnami sealed serets in k8s.
 ```console
    wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-linux-amd64 -O kubeseal
    sudo install -m 755 kubeseal /usr/local/bin/kubeseal
@@ -50,14 +58,6 @@ local-data: "k8s.lan 86400 IN A 192.168.1.240"
 
 4. Install kubectl on your local machine.
    Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
-
-5. Copy the k3s config file from the master node to your local machine
-
-```console
-mkdir -p ~/.kube/ \
-&& scp coen@192.168.1.11:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-&& sed -i 's/127.0.0.1/192.168.1.11/g' ~/.kube/config
-```
 
 6. Set right ipaddress to Master node in the config file
 
