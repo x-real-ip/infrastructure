@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Install k3s and dependencies
 # Writtin by Coen Stam.
