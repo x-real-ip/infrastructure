@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Install k3s and dependencies
 # Writtin by Coen Stam.
@@ -8,13 +8,9 @@
 manifest_location="/var/lib/rancher/k3s/server/manifests/"
 github_k8s_url="https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/deploy/k8s"
 
-sudo apt update >/dev/null
-sudo apt upgrade -y >/dev/null
+sudo apt update
+sudo apt upgrade -y
 sudo apt install -y curl wget unzip
-
-# openSSH
-echo "Installing OpenSSH..." &&
-    sudo apt install openssh-server openssh-client
 
 # # NFS
 # echo "Installing NFS..." &&
@@ -40,17 +36,17 @@ echo "Installing OpenSSH..." &&
 echo "Installing QEMU guest agent..." &&
     sudo apt-get install qemu-guest-agent -y
 
-if [[ $HOSTNAME =~ ^k3s-master-* ]]; then
+if [[ $HOSTNAME =~ master ]]; then
     # Setup masters
-    if [[ $HOSTNAME -eq 'k3s-master-01' ]]; then
+    if [[ $HOSTNAME = "k3s-master-01" ]]; then
         # Add manifests
-        mkdir -p ${manifest_location} &&
+        sudo mkdir -p ${manifest_location} &&
             cd ${manifest_location}
         curl -O ${github_k8s_url}/metallb/metallb-manifest.yaml
         curl -O ${github_k8s_url}/nginx-ingress-controller/nginx-ingress-controller-prd-ext-manifest.yaml
         curl -O ${github_k8s_url}/nginx-ingress-controller/nginx-ingress-controller-prd-int-manifest.yaml
-        curl -O ${github_k8s_url}/bitnami/bitnami-manifest.yaml
-        curl -O ${github_k8s_url}/argocd/argocd-manifest.yaml
+        # curl -O ${github_k8s_url}/bitnami/bitnami-manifest.yaml
+        # curl -O ${github_k8s_url}/argocd/argocd-manifest.yaml
 
         echo -e "\nInstalling k3s master and initializing the cluster...\n" &&
             curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --no-deploy servicelb --no-deploy traefik --no-deploy servicelb --cluster-init
