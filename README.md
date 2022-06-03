@@ -225,7 +225,7 @@ The end-users need Kubernetes access to manage Argo CD. The argocd CLI has to be
 
 change current kube context to argocd namespace
 ```console
-kubectl config set-context --current --namespace=argocd
+kubectl config set-context --current --namespace=devops
 ```
 
 Login to ArgoCD directly to Kubernetes

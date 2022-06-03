@@ -9439,6 +9439,7 @@ metadata:
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
   name: argocd-application-controller
+  namespace: devops
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -9448,6 +9449,7 @@ metadata:
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd-applicationset
   name: argocd-applicationset-controller
+  namespace: devops
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -9457,6 +9459,7 @@ metadata:
     app.kubernetes.io/name: argocd-redis
     app.kubernetes.io/part-of: argocd
   name: argocd-redis
+  namespace: devops
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -9466,6 +9469,7 @@ metadata:
     app.kubernetes.io/name: argocd-repo-server
     app.kubernetes.io/part-of: argocd
   name: argocd-repo-server
+  namespace: devops
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -9475,6 +9479,7 @@ metadata:
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
   name: argocd-application-controller
+  namespace: devops
 rules:
   - apiGroups:
       - ""
@@ -9514,6 +9519,7 @@ metadata:
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd-applicationset
   name: argocd-applicationset-controller
+  namespace: devops
 rules:
   - apiGroups:
       - argoproj.io
@@ -9600,6 +9606,7 @@ metadata:
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
   name: argocd-application-controller
+  namespace: devops
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -9616,6 +9623,7 @@ metadata:
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd-applicationset
   name: argocd-applicationset-controller
+  namespace: devops
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -9632,6 +9640,7 @@ metadata:
     app.kubernetes.io/name: argocd-redis
     app.kubernetes.io/part-of: argocd
   name: argocd-redis
+  namespace: devops
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -9655,7 +9664,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: argocd-application-controller
-    namespace: argocd
+    namespace: devops
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -9664,6 +9673,7 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-cm
+  namespace: devops
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -9672,6 +9682,7 @@ metadata:
     app.kubernetes.io/name: argocd-cmd-params-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-cmd-params-cm
+  namespace: devops
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -9680,6 +9691,7 @@ metadata:
     app.kubernetes.io/name: argocd-gpg-keys-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-gpg-keys-cm
+  namespace: devops
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -9688,6 +9700,7 @@ metadata:
     app.kubernetes.io/name: argocd-rbac-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-rbac-cm
+  namespace: devops
 ---
 apiVersion: v1
 data:
@@ -9707,6 +9720,7 @@ metadata:
     app.kubernetes.io/name: argocd-ssh-known-hosts-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-ssh-known-hosts-cm
+  namespace: devops
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -9715,6 +9729,7 @@ metadata:
     app.kubernetes.io/name: argocd-tls-certs-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-tls-certs-cm
+  namespace: devops
 ---
 apiVersion: v1
 kind: Secret
@@ -9723,6 +9738,7 @@ metadata:
     app.kubernetes.io/name: argocd-secret
     app.kubernetes.io/part-of: argocd
   name: argocd-secret
+  namespace: devops
 type: Opaque
 ---
 apiVersion: v1
@@ -9733,6 +9749,7 @@ metadata:
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd-applicationset
   name: argocd-applicationset-controller
+  namespace: devops
 spec:
   ports:
     - name: webhook
@@ -9754,6 +9771,7 @@ metadata:
     app.kubernetes.io/name: argocd-metrics
     app.kubernetes.io/part-of: argocd
   name: argocd-metrics
+  namespace: devops
 spec:
   ports:
     - name: metrics
@@ -9771,6 +9789,7 @@ metadata:
     app.kubernetes.io/name: argocd-redis
     app.kubernetes.io/part-of: argocd
   name: argocd-redis
+  namespace: devops
 spec:
   ports:
     - name: tcp-redis
@@ -9787,6 +9806,7 @@ metadata:
     app.kubernetes.io/name: argocd-repo-server
     app.kubernetes.io/part-of: argocd
   name: argocd-repo-server
+  namespace: devops
 spec:
   ports:
     - name: server
@@ -9808,6 +9828,7 @@ metadata:
     app.kubernetes.io/name: argocd-applicationset-controller
     app.kubernetes.io/part-of: argocd-applicationset
   name: argocd-applicationset-controller
+  namespace: devops
 spec:
   selector:
     matchLabels:
@@ -9876,6 +9897,7 @@ metadata:
     app.kubernetes.io/name: argocd-redis
     app.kubernetes.io/part-of: argocd
   name: argocd-redis
+  namespace: devops
 spec:
   selector:
     matchLabels:
@@ -9929,6 +9951,7 @@ metadata:
     app.kubernetes.io/name: argocd-repo-server
     app.kubernetes.io/part-of: argocd
   name: argocd-repo-server
+  namespace: devops
 spec:
   selector:
     matchLabels:
@@ -10147,6 +10170,7 @@ metadata:
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
   name: argocd-application-controller
+  namespace: devops
 spec:
   replicas: 1
   selector:
@@ -10325,6 +10349,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: argocd-application-controller-network-policy
+  namespace: devops
 spec:
   ingress:
     - from:
@@ -10341,6 +10366,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: argocd-redis-network-policy
+  namespace: devops
 spec:
   ingress:
     - from:
@@ -10366,6 +10392,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: argocd-repo-server-network-policy
+  namespace: devops
 spec:
   ingress:
     - from:
