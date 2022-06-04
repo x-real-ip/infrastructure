@@ -1,0 +1,304 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: freenas-nfs-manual-csi
+  annotations:
+  labels:
+    app.kubernetes.io/name: democratic-csi
+    app.kubernetes.io/instance: zfs-nfs-manual
+provisioner: org.democratic-csi.node-manual
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+parameters:
+  fsType: "nfs"
+mountOptions:
+  - noatime
+  - nfsvers=4
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: zfs-nfs-manual-democratic-csi
+  namespace: democratic-csi
+  labels:
+    app.kubernetes.io/name: democratic-csi
+    app.kubernetes.io/instance: zfs-nfs-manual
+data:
+  extra-ca-certs: ""
+
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: zfs-nfs-manual-democratic-csi-driver-config
+  namespace: democratic-csi
+  labels:
+    app.kubernetes.io/name: democratic-csi
+    app.kubernetes.io/instance: zfs-nfs-manual
+stringData:
+  driver-config-file.yaml: |-
+    driver: node-manual
+
+---
+apiVersion: storage.k8s.io/v1
+kind: CSIDriver
+metadata:
+  name: org.democratic-csi.node-manual
+  labels:
+    app.kubernetes.io/name: democratic-csi
+    app.kubernetes.io/instance: zfs-nfs-manual
+spec:
+  attachRequired: false
+  podInfoOnMount: true
+  #  added in Kubernetes 1.16
+  #  volumeLifecycleModes:
+  #  - Persistent
+  #  - Ephemeral
+
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: zfs-nfs-manual-democratic-csi-node-sa
+  namespace: democratic-csi
+  labels:
+    app.kubernetes.io/name: democratic-csi
+    app.kubernetes.io/instance: zfs-nfs-manual
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: zfs-nfs-manual-democratic-csi-node-cr
+  labels:
+    app.kubernetes.io/name: democratic-csi
+    app.kubernetes.io/instance: zfs-nfs-manual
+rules:
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["list", "create"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattachments"]
+    verbs: ["get", "list", "watch", "update"]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: zfs-nfs-manual-democratic-csi-node-rb
+  labels:
+    app.kubernetes.io/name: democratic-csi
+    app.kubernetes.io/instance: zfs-nfs-manual
+roleRef:
+  kind: ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+  name: zfs-nfs-manual-democratic-csi-node-cr
+subjects:
+  - kind: ServiceAccount
+    name: zfs-nfs-manual-democratic-csi-node-sa
+    namespace: democratic-csi
+
+---
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: zfs-nfs-manual-democratic-csi-node
+  namespace: democratic-csi
+  labels:
+    app.kubernetes.io/name: democratic-csi
+    app.kubernetes.io/instance: zfs-nfs-manual
+    app.kubernetes.io/csi-role: "node"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: democratic-csi
+      app.kubernetes.io/instance: zfs-nfs-manual
+      app.kubernetes.io/csi-role: "node"
+  template:
+    metadata:
+      annotations:
+        checksum/secret: 290ace7390ba56e84389f275d81f56015d2b071a35e75f87db73c351ea0234f3
+        checksum/configmap: 5cc65280f5bb05bda7838e2fad37e2224cb45eab81038e0bffda7127c4cdf3c8
+      labels:
+        app.kubernetes.io/name: democratic-csi
+        app.kubernetes.io/instance: zfs-nfs-manual
+        app.kubernetes.io/csi-role: "node"
+    spec:
+      serviceAccount: zfs-nfs-manual-democratic-csi-node-sa
+      hostNetwork: true
+      hostAliases: []
+      hostIPC: true
+      containers:
+        - name: csi-driver
+          image: docker.io/democraticcsi/democratic-csi:latest
+          args:
+            - --csi-version=1.5.0
+            - --csi-name=org.democratic-csi.node-manual
+            - --driver-config-file=/config/driver-config-file.yaml
+            - --log-level=info
+            - --csi-mode=node
+            - --server-socket=/csi-data/csi.sock.internal
+          securityContext:
+            allowPrivilegeEscalation: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+            privileged: true
+          env:
+            - name: CSI_NODE_ID
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: NODE_EXTRA_CA_CERTS
+              value: "/tmp/certs/extra-ca-certs.crt"
+          terminationMessagePath: /tmp/termination-log
+          terminationMessagePolicy: File
+          livenessProbe:
+            failureThreshold: 3
+            exec:
+              command:
+                - bin/liveness-probe
+                - --csi-version=1.5.0
+                - --csi-address=/csi-data/csi.sock.internal
+            initialDelaySeconds: 10
+            timeoutSeconds: 15
+            periodSeconds: 60
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi-data
+            - name: kubelet-dir
+              mountPath: /var/lib/kubelet
+              mountPropagation: Bidirectional
+            - name: modules-dir
+              mountPath: /lib/modules
+              readOnly: true
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: udev-data
+              mountPath: /run/udev
+            - name: host-dir
+              mountPath: /host
+              mountPropagation: Bidirectional
+            - mountPath: /sys
+              name: sys-dir
+            - name: dev-dir
+              mountPath: /dev
+            - name: config
+              mountPath: /config
+            - name: extra-ca-certs
+              mountPath: /tmp/certs
+        - name: csi-proxy
+          image: docker.io/democraticcsi/csi-grpc-proxy:v0.4.2
+          env:
+            - name: BIND_TO
+              value: "unix:///csi-data/csi.sock"
+            - name: PROXY_TO
+              value: "unix:///csi-data/csi.sock.internal"
+          volumeMounts:
+            - mountPath: /csi-data
+              name: socket-dir
+        - name: driver-registrar
+          image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.0
+          args:
+            - --v=5
+            - --csi-address=/csi-data/csi.sock
+            - --kubelet-registration-path=/var/lib/kubelet/plugins/org.democratic-csi.node-manual/csi.sock
+          env:
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          livenessProbe:
+            exec:
+              command:
+                - /csi-node-driver-registrar
+                - --kubelet-registration-path=/var/lib/kubelet/plugins/org.democratic-csi.node-manual/csi.sock
+                - --mode=kubelet-registration-probe
+          volumeMounts:
+            - mountPath: /csi-data
+              name: socket-dir
+            - name: registration-dir
+              mountPath: /registration
+            - name: kubelet-dir
+              mountPath: /var/lib/kubelet
+        - name: cleanup
+          image: docker.io/busybox:1.32.0
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "--"
+          args: ["while true; do sleep 2; done;"]
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  [
+                    "/bin/sh",
+                    "-c",
+                    "rm -rf /plugins/org.democratic-csi.node-manual /registration/org.democratic-csi.node-manual-reg.sock",
+                  ]
+          volumeMounts:
+            - name: plugins-dir
+              mountPath: /plugins
+            - name: registration-dir
+              mountPath: /registration
+      volumes:
+        - name: socket-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/org.democratic-csi.node-manual
+            type: DirectoryOrCreate
+        - name: plugins-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins
+            type: Directory
+        - name: registration-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins_registry
+            type: Directory
+        - name: kubelet-dir
+          hostPath:
+            path: /var/lib/kubelet
+            type: Directory
+        - name: dev-dir
+          hostPath:
+            path: /dev
+            type: Directory
+        - name: modules-dir
+          hostPath:
+            path: /lib/modules
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        - name: udev-data
+          hostPath:
+            path: /run/udev
+        - name: sys-dir
+          hostPath:
+            path: /sys
+            type: Directory
+        - name: host-dir
+          hostPath:
+            path: /
+            type: Directory
+        - name: config
+          secret:
+            secretName: zfs-nfs-manual-democratic-csi-driver-config
+        - name: extra-ca-certs
+          configMap:
+            name: zfs-nfs-manual-democratic-csi
+            items:
+              - key: extra-ca-certs
+                path: extra-ca-certs.crt

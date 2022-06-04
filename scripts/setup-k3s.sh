@@ -14,25 +14,21 @@ sudo apt update
 sudo apt upgrade -y
 sudo apt install -y curl wget unzip
 
-# # NFS
-# echo "Installing NFS..." &&
-#     sudo apt install -y libnfs-utils
+# ISCSI
+echo -e "\nInstalling ISCSI...\n"
+sudo apt-get install -y open-iscsi lsscsi sg3-utils multipath-tools scsitools
 
-# # ISCSI
-# echo "Installing ISCSI..." &&
-#     sudo apt-get install -y open-iscsi lsscsi sg3-utils multipath-tools scsitools
+sudo tee /etc/multipath.conf <<-'EOF'
+defaults {
+    user_friendly_names yes
+    find_multipaths yes
+}
+EOF
 
-# sudo tee /etc/multipath.conf <<-'EOF'
-# defaults {
-#     user_friendly_names yes
-#     find_multipaths yes
-# }
-# EOF
-
-# sudo systemctl enable multipath-tools.service
-# sudo service multipath-tools restart
-# sudo systemctl enable open-iscsi.service
-# sudo service open-iscsi start
+sudo systemctl enable multipath-tools.service
+sudo service multipath-tools restart
+sudo systemctl enable open-iscsi.service
+sudo service open-iscsi start
 
 # QEMU guest agent
 echo -e "\nInstalling QEMU guest agent...\n" &&
