@@ -9,11 +9,13 @@
       - [Bitnami Kubeseal](#bitnami-kubeseal)
       - [ArgoCD CLI](#argocd-cli)
       - [Tekton CLI](#tekton-cli)
-    - [Other settings](#other-settings)
   - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
     - [Maintain cluster node](#maintain-cluster-node)
   - [Bitnami Sealed Secret](#bitnami-sealed-secret)
   - [ArgoCD](#argocd)
+  - [Other](#other)
+    - [Rsync](#rsync)
+    - [ISCSI](#iscsi)
 
 ## Gitops hierarchy
 
@@ -78,14 +80,6 @@ Install tekton cli
 curl -LO https://github.com/tektoncd/cli/releases/download/v0.23.1/tkn_0.23.1_Linux_x86_64.tar.gz
 
 sudo tar xvzf tkn_0.23.1_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
-```
-
-### Other settings
-
-1. Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
-```
-local-zone: "k8s.lan" redirect
-local-data: "k8s.lan 86400 IN A 192.168.1.240"
 ```
 
 ## Kubernetes Cheatsheet
@@ -238,3 +232,46 @@ Make WebUI available
 argocd admin dashboard
 ```
 
+## Other
+
+Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
+```
+local-zone: "k8s.lan" redirect
+local-data: "k8s.lan 86400 IN A 192.168.1.240"
+```
+
+### Rsync
+rsync exact copy
+```console
+sudo rsync -axHAWXS --numeric-ids --info=progress2 /mnt/sourcePart/ /mnt/destPart
+```
+
+### ISCSI
+
+Discovering targets in iSCSI server
+```console
+iscsiadm --mode discovery -t sendtargets --portal storage-server.lan
+```
+
+Mount disk
+```console
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server.lan --login
+```
+
+Unmount disk
+```console
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server.lan -u
+```
+
+Migration notes:
+
+1. create iscsi zvol
+2. make iscsi share
+3. make pv
+4. make pvc
+5. apply k8s deployment (to let it write data to zvol)
+6. delete k8s deployment
+7. mount old iscsi driver
+8. rsync to temporary folder
+9. mount new drive
+10. rsync old files to new drive
