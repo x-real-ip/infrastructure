@@ -250,7 +250,7 @@ sudo rsync -axHAWXS --numeric-ids --info=progress2 /mnt/sourcePart/ /mnt/destPar
 
 Discovering targets in iSCSI server
 ```console
-iscsiadm --mode discovery -t sendtargets --portal storage-server.lan
+sudo iscsiadm --mode discovery -t sendtargets --portal storage-server.lan
 ```
 
 Mount disk
