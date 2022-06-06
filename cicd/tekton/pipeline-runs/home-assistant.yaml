@@ -2,8 +2,8 @@
 kind: PipelineRun
 apiVersion: tekton.dev/v1beta1
 metadata:
-  name: home-assistant-build
-  namespace: devops
+  name: home-assistant
+  namespace: home-automation
 spec:
   pipelineRef:
     name: test-and-build-image

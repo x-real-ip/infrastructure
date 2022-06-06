@@ -1,21 +1,46 @@
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-nfs-docker-registry-data
+spec:
+  storageClassName: "freenas-nfs-manual-csi"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=4
+    - nolock
+    - noatime
+  csi:
+    driver: org.democratic-csi.node-manual
+    readOnly: false
+    fsType: nfs
+    volumeHandle: pv-nfs-docker-registry-data
+    volumeAttributes:
+      server: storage-server.lan
+      share: /mnt/r10_8tb/k8s/docker-registry-data
+      node_attach_driver: nfs
+      provisioner_driver: node-manual
+
+---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-iscsi-docker-registry-data
+  name: pvc-nfs-docker-registry-data
   namespace: devops
-  labels:
-    app: docker-registry
   annotations:
-    volume.beta.kubernetes.io/storage-class: "freenas-iscsi-csi"
+    volume.beta.kubernetes.io/storage-class: "freenas-nfs-manual-csi"
 spec:
-  storageClassName: freenas-iscsi-csi
+  storageClassName: freenas-nfs-manual-csi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 40Gi
-  volumeName: pvc-aad8933c-d0d4-4fe3-9bec-caf19fc23182
+      storage: 50Gi
+  volumeName: pv-nfs-docker-registry-data
 
 ---
 kind: SealedSecret
@@ -125,7 +150,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: pvc-iscsi-docker-registry-data
+            claimName: pvc-nfs-docker-registry-data
         - name: docker-registry-config
           configMap:
             name: docker-registry-config
