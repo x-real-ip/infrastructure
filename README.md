@@ -209,11 +209,6 @@ metadata:
 
 ## ArgoCD
 
-Get admin password after deploy
-```
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-```
-
 Use ArgoCD CLI
 The end-users need Kubernetes access to manage Argo CD. The argocd CLI has to be configured using the following commands:
 
