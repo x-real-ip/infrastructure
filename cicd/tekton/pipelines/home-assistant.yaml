@@ -70,6 +70,8 @@ spec:
         - name: home-assistant-code
           workspace: shared-data
       params:
+        - name: containerImage
+          value: "homeassistant/home-assistant:latest"
         - name: args
           value:
             - --script
