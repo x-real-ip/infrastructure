@@ -1,8 +1,7 @@
-kind: Task
+kind: ClusterTask
 apiVersion: tekton.dev/v1beta1
 metadata:
   name: prettier
-  namespace: devops
   labels:
     app.kubernetes.io/version: "0.1"
   annotations:

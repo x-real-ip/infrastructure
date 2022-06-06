@@ -1,8 +1,7 @@
-kind: Task
+kind: ClusterTask
 apiVersion: tekton.dev/v1beta1
 metadata:
   name: git-clone
-  namespace: devops
 spec:
   workspaces:
     - name: output
