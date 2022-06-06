@@ -48,11 +48,11 @@ spec:
             sudoEnabled: true
           datasetEnableQuotas: true
           datasetEnableReservation: false
-          datasetParentName: r10_8tb/k8s/nfs/v
+          datasetParentName: r10_8tb/k8s
+          detachedSnapshotsDatasetParentName: r10_8tb/k8s
           datasetPermissionsGroup: 0
           datasetPermissionsMode: "0777"
           datasetPermissionsUser: 0
-          detachedSnapshotsDatasetParentName: r10_8tb/k8s/nfs/s
 
 ---
 kind: ConfigMap
