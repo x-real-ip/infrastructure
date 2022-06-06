@@ -1,6 +1,5 @@
----
+kind: ClusterTask
 apiVersion: tekton.dev/v1beta1
-kind: Task
 metadata:
   name: buildah
   labels:

@@ -6,7 +6,7 @@ metadata:
   namespace: home-automation
 spec:
   pipelineRef:
-    name: test-and-build-image
+    name: home-assistant
   workspaces:
     - name: shared-data
       volumeClaimTemplate:
