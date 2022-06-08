@@ -1,4 +1,4 @@
-# *.theautomation.nl wildcard TLS certificate
+# *.theautomation.nl TLS certificate
 
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
