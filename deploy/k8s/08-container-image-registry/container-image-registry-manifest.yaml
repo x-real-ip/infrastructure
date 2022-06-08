@@ -1,0 +1,229 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-nfs-container-image-registry-data
+spec:
+  storageClassName: "freenas-nfs-manual-csi"
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=4
+    - nolock
+    - noatime
+  csi:
+    driver: org.democratic-csi.node-manual
+    readOnly: false
+    fsType: nfs
+    volumeHandle: pv-nfs-container-image-registry-data
+    volumeAttributes:
+      server: storage-server.lan
+      share: /mnt/r10_8tb/k8s/container-image-registry-data
+      node_attach_driver: nfs
+      provisioner_driver: node-manual
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-nfs-container-image-registry-data
+  namespace: devops
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "freenas-nfs-manual-csi"
+spec:
+  storageClassName: freenas-nfs-manual-csi
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: pv-nfs-container-image-registry-data
+
+---
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
+metadata:
+  name: container-image-registry-config
+  namespace: devops
+spec:
+  encryptedData:
+    htpasswd: AgCuW8QSeJ9eaIKbkzwJqBNJoAMI1zhM4Q1cNa3J/X6To31opiL3GBJCuCOGXKzn1TKnVmpnR9h1pfpFCp2mYoSNr0E2dzfQ6/D5KdinKCiBeOwuTHuCjWo5mWyRYgxgdW9Ev3y28b05G9LNc8kvIJxj9J2h3gyKcz6X24by341PWzRQYzsU9IcQ6GgMdiZw5KeO2XfNWA5EzC8qBGwub6TiHyUau94IdpqCzcMjtYOKuWqAsN8Mx9UbbwOcneVCAqfQdeVDT/d7WhdVljT8WUUNSXLET0yxeOzEHC21+Jd/O0QEFBDWgL+FRktiUJgiwdDbCaTyoZEE/VkWm6Ss+5EDDwJ7xYFriUBmP98YC6YEfs/1oZZbs8LcfvNsTLBptUxv8yybN9BTkn0Z4dNL/ul/w8WQ3DKggS7SCZyIOlJDQgTGy9moO1fIWOxpjZ8fqkvclHWRLZ40J6Gv0F/XMIWrmQXUdMwclVQfVv8o6kCP4b5EloFOGu7qO5Q8Ky2rcCX3VnCOSvuR96l+J8mbuOBF4TLc/rgav7kuK7RTJJPufxPgSpS+xPW4D4xxovrUFnVVY/j1vRmGXS4w7PTkOd9pwyyCa18HhtV0vGrBNZTgNt/YGA+PPUUbSerS/q+Tv4Afc1pQqxchP2cKA6Pi2Glrsp8sDWS49oY+IbzdlM5M3xJI/9Dz0KaRjTBBIpESqWUrWtqebRw82Dw3+MbhJP/+CoBaVq4u3gcpp42/vPNqU61Z579AKTgI65JdnmYKNsniP4GSX/Trfkva88VZInjsZQ==
+    config-http-secret: AgABPIMXSq3oT0/FtWREWs3oh6soMjhFAdqb0W8LF8mj5HaSH+ygKsRhswWW8cOGfFr8gvpUt2tWOUqkcB0fm76iVG9vKmPic+hghirbi72RE3GmKCqUK7JH5d28hEaqnjr1knxPF59npwtIrl2a5GTZ9fha9hksvluXwmqM1Gf4nHzLlXOtpPBWIosJkmwtNUhs6PVXLZ+s5vTRemPbvrWO1cKih921Re0e12tbPjHP0v6Y6CY+WFFxL+g7M3LnGBS8NSrvOsz62K8sCy3HnCZ/9Se/QwK6j/D7Itq48fliLovjr69L62UeNU30zlBhf8L1u6o3xZJWM/yr+SWIckkSj7K4ftbzGqdL34RHzGrCTCIo1+5PPpMQUvGbYM45NHBnmqP3zlLs9UA2/0ZEDnOcDzvxxzEXo3/kZN+Dqv+m9rigaEojufurMt6CC0BufWAcxXBjXNUnCECnT/oUkjQAE/wPxysbRGD6sJSsh51gUdzgP7nNJXgvvFwxHvS5uB13T8+IXUbi1K1dF9M9vkDUg/Vd4jIzxzVlRpvYKjcofqffyAU+WJU5KV182JpOXEsbySRd0a257FoAURpC4yc+htuf4K+L5+MSi4reyo81S5RAQTJJ4SK4Ja5jrw0VETdEWiFfiQ7vNmqFE9MBn1ppDiy43tF3HbXNjSfWHkUJl1CvOD6jOPoDy4gLcD46HeLSfMiqxQfY1//wAw==
+  template:
+    data:
+      htpasswd: |
+        {{ index . "htpasswd" }}
+      config: |
+        version: 0.1
+        log:
+          fields:
+            service: registry
+        storage:
+          cache:
+            blobdescriptor: inmemory
+          filesystem:
+            rootdirectory: /var/lib/registry
+        http:
+          addr: :5000
+          headers:
+            X-Content-Type-Options: [nosniff]
+          secret: {{ index . "config-http-secret" }}
+        auth:
+          htpasswd:
+            realm: basic-realm
+            path: /etc/docker/registry/htpasswd
+    metadata:
+      name: container-image-registry-config
+      namespace: devops
+      labels:
+        app: container-image-registry
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: container-image-registry
+  namespace: devops
+  labels:
+    app: container-image-registry
+spec:
+  selector:
+    matchLabels:
+      app: container-image-registry
+  replicas: 1
+  strategy:
+    type: Recreate
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: container-image-registry
+    spec:
+      containers:
+        - name: container-image-registry
+          image: registry:2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+          resources:
+            limits:
+              cpu: 300m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - name: auth
+              mountPath: /etc/docker/registry/htpasswd
+              subPath: htpasswd
+            - name: auth
+              mountPath: /etc/docker/registry/config.yml
+              subPath: config
+            - name: data
+              mountPath: /var/lib/registry
+      volumes:
+        - name: auth
+          secret:
+            secretName: container-image-registry-config
+            optional: false
+            items:
+              - key: htpasswd
+                path: htpasswd
+              - key: config
+                path: config
+        - name: data
+          persistentVolumeClaim:
+            claimName: pvc-nfs-container-image-registry-data
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: container-image-registry
+  namespace: devops
+  labels:
+    app: container-image-registry
+spec:
+  type: ClusterIP
+  selector:
+    app: container-image-registry
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: container-image-registry
+  namespace: prd-ext
+  labels:
+    app: container-image-registry
+spec:
+  type: ExternalName
+  externalName: container-image-registry.devops.svc.cluster.local
+  ports:
+    - port: 5000
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: container-image-registry
+  namespace: devops
+  labels:
+    app: container-image-registry
+spec:
+  ingressClassName: nginx-private
+  rules:
+    - host: container-image-registry.k8s.lan
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: container-image-registry
+                port:
+                  number: 5000
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: container-image-registry
+  namespace: prd-ext
+  labels:
+    app: container-image-registry
+  annotations:
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx-public
+  rules:
+    - host: container-image-registry.theautomation.nl
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: container-image-registry
+                port:
+                  number: 5000
+  tls:
+    - hosts:
+        - container-image-registry.theautomation.nl
+      secretName: cloudflare-tls

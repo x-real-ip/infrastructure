@@ -104,6 +104,11 @@ Change PV reclaim policy
 kubectl patch pv <pv-name> -p "{\"spec\":{\"persistentVolumeReclaimPolicy\":\"Retain\"}}"
 ```
 
+Shell into pod
+```console
+kubectl exec -it <pod_name> -- /bin/bash
+```
+
 Reuse PV in PVC
 1. Remove the claimRef in the PV this will set the PV status from ```Released``` to ```Available```
 ```console
