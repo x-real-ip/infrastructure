@@ -1,0 +1,19 @@
+kind: Task
+apiVersion: tekton.dev/v1beta1
+metadata:
+  name: list-files
+  namespace: devops
+spec:
+  workspaces:
+    - name: allfiles
+  steps:
+    - name: dump-directory
+      image: alpine
+      workingDir: $(workspaces.allfiles.path)
+      command:
+        - /bin/sh
+      args:
+        - "-c"
+        - |
+          set -ex
+          find /workspace

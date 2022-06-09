@@ -1,8 +1,8 @@
 kind: Task
 apiVersion: tekton.dev/v1beta1
 metadata:
-  name: home-assistant
-  namespace: home-automation
+  name: home-assistant-config-check
+  namespace: devops
 spec:
   description: >-
     This task does a configuration check of the Home Assistant yaml files.

@@ -1,25 +1,9 @@
-kind: ClusterTask
+kind: Task
 apiVersion: tekton.dev/v1beta1
 metadata:
   name: buildah
-  labels:
-    app.kubernetes.io/version: "0.3"
-  annotations:
-    tekton.dev/categories: Image Build
-    tekton.dev/pipelines.minVersion: "0.17.0"
-    tekton.dev/tags: image-build
-    tekton.dev/platforms: "linux/amd64,linux/s390x,linux/ppc64le,linux/arm64"
+  namespace: devops
 spec:
-  description: >-
-    Buildah task builds source into a container image and
-    then pushes it to a container registry.
-
-    Buildah Task builds source into a container image using Project Atomic's
-    Buildah build tool.It uses Buildah's support for building from Dockerfiles,
-    using its buildah bud command.This command executes the directives in the
-    Dockerfile to assemble a container image, then pushes that image to a
-    container registry.
-
   params:
     - name: IMAGE
       description: Reference of the image buildah will produce.
@@ -73,7 +57,6 @@ spec:
           mountPath: /var/lib/containers
       securityContext:
         privileged: true
-
     - name: push
       image: $(params.BUILDER_IMAGE)
       workingDir: $(workspaces.source.path)
@@ -89,11 +72,23 @@ spec:
           mountPath: /var/lib/containers
       securityContext:
         privileged: true
-
+      env:
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: container-image-registry-auth
+              key: username
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: container-image-registry-auth
+              key: password
+        - name: ENV_IMAGE_DIGEST
+          value: $(results.IMAGE_DIGEST.path)
     - name: digest-to-results
       image: $(params.BUILDER_IMAGE)
-      script: cat $(workspaces.source.path)/image-digest | tee /tekton/results/IMAGE_DIGEST
-
+      script: |
+        cat $(workspaces.source.path)/image-digest | tee /tekton/results/IMAGE_DIGEST
   volumes:
     - name: varlibcontainers
       emptyDir: {}

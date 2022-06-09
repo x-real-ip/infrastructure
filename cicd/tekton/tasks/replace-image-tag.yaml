@@ -1,0 +1,38 @@
+kind: Task
+apiVersion: tekton.dev/v1beta1
+metadata:
+  name: replace-image-tag
+spec:
+  workspaces:
+    - name: git-source
+      description: The git repo
+  params:
+    - name: IMAGE_URL
+      description: Url of the container image registry
+      default: "container-image-registry.theautomation.nl"
+    - name: IMAGE_REPO
+      description: Image repository inside the container image registry
+    - name: FILE_PATH
+      description: The path to the yaml file to deploy within the git source
+      default: "./deploy/k8s/manifest.yaml"
+    - name: IMAGE
+      description: name of the image
+    - name: IMAGE_DIGEST
+      description: Digest of the image to be used.
+  steps:
+    - name: update-yaml
+      image: alpine
+      command: ["sed"]
+      args:
+        - "-i"
+        - "-e"
+        - 's;image: "$(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):.*";image: $(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):$(params.IMAGE_DIGEST);g'
+        - "$(workspaces.git-source.path)/$(params.FILE_PATH)"
+    - name: show-yaml
+      image: alpine
+      command:
+        - /bin/sh
+      args:
+        - "-c"
+        - |
+          cat $(workspaces.git-source.path)/$(params.FILE_PATH)
