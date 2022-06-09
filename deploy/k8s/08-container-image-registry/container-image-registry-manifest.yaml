@@ -45,6 +45,24 @@ spec:
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
+  name: container-image-registry-auth
+  namespace: devops
+spec:
+  encryptedData:
+    password: AgA4IYi6rXVQoKnvMb9tLZNjbuQHX/anJ8dtUC/U6P7hlPMrwkVmdVIP7Fv3MxEk07/CBdHuEYNhX8BbCOQhQfte7VySFNvuvgpIcQVjWFCTiVEwXT1ISvHFs4aVEYQXpsuWTfzXkw9erQaxMuyHhAutFWcHtS3iPLJlTvrIEoIl4w39cFYJC7R1+YqP6M8SR//HEAddg9/X23gtIhz8euJ326kulBYf1vgdkjAMCbfHnvENTV7lBp/wLhIbBgF5NxjYU4VwbviVgn4v8m3BgdfDSrM12Ysl/7TWcBPbTHgZbFC3esSJqkr0sU7aft0ZcCXPCQK2fayuzBXcUPx+KuoPYhibQeE3FgriMNmOFtWO5B3q1e6735+2hyREjTDmSxddlS+fL+ZGRKJhavUqzkYCVt77kzSk9wt3pr7/2VMed7zOsM9KQH1mNj1qJVWxxJAX3po5UyNqYkPGhKlkBNXr1yhkRisdmqY0yu+U8ZroUqvKOXd4medypplfjrhcHxnqPvRHGBIi4iJHFxOtkE73SCOjaJCyJTklxPfCiSt7DXPprh/InwrGHi7ZN244DY7UVWpx60ASHo2NaxX+l9lBkbIWp2WJ8XvQVCeJOzw9vxXUW0s4L9qLuq+51JqN2kQ4z9IHdy5NU6Ci2xOLbiVak4QT07W3jQO6QZrncxeoN30R5uHOfut7beBMN72SVal+aiFCTWyCSGqs7D/FIA==
+    username: AgAE7ZZ7iWcKGOosg8eQCuyspHSkqoISr06tg7DrLaFKBntW9UttTcIKHn/yM0q75V0HPesaUSlhDkB5pXtxit4Hc0P7g7Y93CQK/cmQhImiXknOFwpmp33S1xJnlj6XzZuawCMFSyY5EfSZV7zECzK7H7enDZkny2PgXBSjZnH1tUl6WBWWZN4kr9fKsDGpkQSJUd7XGdOoso1JBZaB+hFKvmTSQ7tqo26VVgGwb2ivlLWU+16gvKz4b3EXlr741gIeL79UFazxZMfTWw3WGMtJhnk9ldJW23c4JJc9KnfHWAwlexMH3RaMWIFYYOS5nST5psDak1f1c/I0y9wLHKXY6Lv2htpRXiqRwEI+zGohELDXSA4OMvP71ww74rO6NgB4GeXf4U59o2Ff7idEgjhh11J41/8HmhgvBwfdUWZhCiYKBgSAgtQYXfcQAJxBePsg93lnfaBKNxq6NCMaH8G0v7KfgyZlsGsWFCswdNiOjqUjeZkB4Fi7PIo9pFjTuvg4thNmXhfV2LlLgMDTy0WXD0xyjkBZgCozmMmuNeXcUwZPpl7wiVaoOuo54YUhAH2Gm4KejDlnlHsYqZ7/aU461nDGubYOtrdDCs8Cqgn1k7ponPgJnKCbkvtRuKDeUQ3hFG5LPqMIeJGZrQyCvc5MHkdRV7a1twWzgsog3ioL6cs1Bw5wS+G2ScVvNm7pJYm7RRW2
+  template:
+    type: kubernetes.io/basic-auth
+    metadata:
+      name: container-image-registry-auth
+      namespace: devops
+      annotations:
+        tekton.dev/docker-0: tekton.dev/docker-0
+
+---
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
+metadata:
   name: container-image-registry-config
   namespace: devops
 spec:
@@ -185,6 +203,8 @@ metadata:
   namespace: devops
   labels:
     app: container-image-registry
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
 spec:
   ingressClassName: nginx-private
   rules:
@@ -210,6 +230,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
 spec:
   ingressClassName: nginx-public
   rules:

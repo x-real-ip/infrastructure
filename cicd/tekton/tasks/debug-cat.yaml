@@ -1,0 +1,19 @@
+kind: Task
+apiVersion: tekton.dev/v1beta1
+metadata:
+  name: cat
+  namespace: devops
+spec:
+  workspaces:
+    - name: allfiles
+  params:
+    - name: IMAGE_DIGEST
+  steps:
+    - name: dump-directory
+      image: alpine
+      command:
+        - /bin/sh
+      args:
+        - "-c"
+        - |
+          echo -n $(params.IMAGE_DIGEST)

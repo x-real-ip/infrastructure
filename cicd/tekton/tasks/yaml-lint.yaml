@@ -1,7 +1,8 @@
-kind: ClusterTask
+kind: Task
 apiVersion: tekton.dev/v1beta1
 metadata:
   name: yaml-lint
+  namespace: devops
 spec:
   description: >-
     This task can be used to perform lint check on YAML files

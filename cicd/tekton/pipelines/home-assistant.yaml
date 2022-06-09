@@ -1,8 +1,9 @@
+---
 kind: Pipeline
 apiVersion: tekton.dev/v1beta1
 metadata:
   name: home-assistant
-  namespace: home-automation
+  namespace: devops
 spec:
   workspaces:
     - name: shared-data
@@ -10,7 +11,6 @@ spec:
     - name: fetch-repo
       taskRef:
         name: git-clone
-        kind: ClusterTask
       workspaces:
         - name: output
           workspace: shared-data
@@ -22,42 +22,39 @@ spec:
         - name: deleteExisting
           value: "true"
 
-    - name: check-code-style
-      taskRef:
-        name: prettier
-        kind: ClusterTask
-      runAfter:
-        - fetch-repo
-      workspaces:
-        - name: source
-          workspace: shared-data
-      params:
-        - name: args
-          value:
-            - --config
-            - ".prettierrc.yaml"
-            - --ignore-path
-            - "./.prettierignore.yaml"
-            - --check
-            - "./src/config/**/*.yaml"
+    # - name: check-code-style
+    #   taskRef:
+    #     name: prettier
+    #   runAfter:
+    #     - fetch-repo
+    #   workspaces:
+    #     - name: source
+    #       workspace: shared-data
+    #   params:
+    #     - name: args
+    #       value:
+    #         - --config
+    #         - ".prettierrc.yaml"
+    #         - --ignore-path
+    #         - "./.prettierignore.yaml"
+    #         - --check
+    #         - "./src/config/**/*.yaml"
 
-    - name: check-yaml-style
-      taskRef:
-        name: yaml-lint
-        kind: ClusterTask
-      runAfter:
-        - fetch-repo
-      workspaces:
-        - name: shared-workspace
-          workspace: shared-data
-      params:
-        - name: args
-          value: ["."]
+    # - name: check-yaml-style
+    #   taskRef:
+    #     name: yaml-lint
+    #   runAfter:
+    #     - fetch-repo
+    #   workspaces:
+    #     - name: shared-workspace
+    #       workspace: shared-data
+    #   params:
+    #     - name: args
+    #       value: ["."]
 
-    - name: buildah
+    - name: build-push-image
       taskRef:
         name: buildah
-        kind: ClusterTask
       runAfter:
         - fetch-repo
       workspaces:
@@ -65,74 +62,104 @@ spec:
           workspace: shared-data
       params:
         - name: IMAGE
-          value: docker-registry.devops.svc:5000/$(context.pipelineRun.namespace)/$(context.pipelineRun.name)
+          value: container-image-registry.devops.svc:5000/home-automation/$(context.pipelineRun.name):latest
         - name: DOCKERFILE
           value: ./deploy/container/Containerfile
+        - name: PUSH_EXTRA_ARGS
+          value: "--creds=${USERNAME}:${PASSWORD}"
         - name: TLSVERIFY
           value: "false"
         - name: FORMAT
           value: "docker"
 
-    - name: rename-example-secret
+    - name: replace-image-tag
       taskRef:
-        name: rename-secret
+        name: replace-image-tag
       runAfter:
-        - check-code-style
-        - check-yaml-style
+        - build-push-image
       workspaces:
-        - name: home-assistant-code
-          workspace: shared-data
-
-    - name: check-hass-config-latest
-      taskRef:
-        name: home-assistant
-      runAfter:
-        - rename-example-secret
-      workspaces:
-        - name: home-assistant-code
+        - name: git-source
           workspace: shared-data
       params:
-        - name: containerImage
-          value: "homeassistant/home-assistant:latest"
-        - name: args
-          value:
-            - --script
-            - "check_config"
-            - --config
-            - "./src/config/"
+        - name: IMAGE_REPO
+          value: home-automation
+        - name: IMAGE
+          value: $(context.pipelineRun.name)
+        - name: IMAGE_DIGEST
+          value: $(tasks.build-push-image.results.IMAGE_DIGEST)
 
-    - name: check-hass-config-dev
+    - name: cat
       taskRef:
-        name: home-assistant
+        name: cat
       runAfter:
-        - rename-example-secret
+        - build-push-image
       workspaces:
-        - name: home-assistant-code
+        - name: allfiles
           workspace: shared-data
       params:
-        - name: containerImage
-          value: "homeassistant/home-assistant:dev"
-        - name: args
-          value:
-            - --script
-            - "check_config"
-            - --config
-            - "./src/config/"
+        - name: IMAGE_DIGEST
+          value: $(tasks.build-push-image.results.IMAGE_DIGEST)
 
-    - name: check-hass-config-beta
-      taskRef:
-        name: home-assistant
-      runAfter:
-        - rename-example-secret
-      workspaces:
-        - name: home-assistant-code
-          workspace: shared-data
-      params:
-        - name: containerImage
-          value: "homeassistant/home-assistant:beta"
-        - name: args
-          value:
-            - --script
-            - "check_config"
-            - --config
-            - "./src/config/"
+    # - name: rename-example-secret
+    #   taskRef:
+    #     name: home-assistant-rename-secret
+    #   runAfter:
+    #     - check-code-style
+    #     - check-yaml-style
+    #   workspaces:
+    #     - name: home-assistant-code
+    #       workspace: shared-data
+
+    # - name: check-hass-config-latest
+    #   taskRef:
+    #     name: home-assistant-config-check
+    #   runAfter:
+    #     - rename-example-secret
+    #   workspaces:
+    #     - name: home-assistant-code
+    #       workspace: shared-data
+    #   params:
+    #     - name: containerImage
+    #       value: "homeassistant/home-assistant:latest"
+    #     - name: args
+    #       value:
+    #         - --script
+    #         - "check_config"
+    #         - --config
+    #         - "./src/config/"
+
+    # - name: check-hass-config-dev
+    #   taskRef:
+    #     name: home-assistant-config-check
+    #   runAfter:
+    #     - rename-example-secret
+    #   workspaces:
+    #     - name: home-assistant-code
+    #       workspace: shared-data
+    #   params:
+    #     - name: containerImage
+    #       value: "homeassistant/home-assistant:dev"
+    #     - name: args
+    #       value:
+    #         - --script
+    #         - "check_config"
+    #         - --config
+    #         - "./src/config/"
+
+    # - name: check-hass-config-beta
+    #   taskRef:
+    #     name: home-assistant-config-check
+    #   runAfter:
+    #     - rename-example-secret
+    #   workspaces:
+    #     - name: home-assistant-code
+    #       workspace: shared-data
+    #   params:
+    #     - name: containerImage
+    #       value: "homeassistant/home-assistant:beta"
+    #     - name: args
+    #       value:
+    #         - --script
+    #         - "check_config"
+    #         - --config
+    #         - "./src/config/"

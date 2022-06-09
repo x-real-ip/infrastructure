@@ -3,7 +3,7 @@ kind: PipelineRun
 apiVersion: tekton.dev/v1beta1
 metadata:
   name: home-assistant
-  namespace: home-automation
+  namespace: devops
 spec:
   pipelineRef:
     name: home-assistant
