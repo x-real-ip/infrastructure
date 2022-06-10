@@ -52,7 +52,27 @@ spec:
     #     - name: args
     #       value: ["."]
 
-    - name: build-push-image
+    - name: build-push-home-assistant-init-image
+      taskRef:
+        name: buildah
+      runAfter:
+        - fetch-repo
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: IMAGE
+          value: container-image-registry.devops.svc:5000/home-automation/$(context.pipelineRun.name)-init:latest
+        - name: DOCKERFILE
+          value: ./deploy/container/Containerfile-init
+        - name: PUSH_EXTRA_ARGS
+          value: "--creds=${USERNAME}:${PASSWORD}"
+        - name: TLSVERIFY
+          value: "false"
+        - name: FORMAT
+          value: "docker"
+
+    - name: build-push-home-assistant-image
       taskRef:
         name: buildah
       runAfter:
@@ -76,7 +96,7 @@ spec:
       taskRef:
         name: replace-image-tag
       runAfter:
-        - build-push-image
+        - build-push-home-assistant-image
       workspaces:
         - name: git-source
           workspace: shared-data
@@ -86,19 +106,19 @@ spec:
         - name: IMAGE
           value: $(context.pipelineRun.name)
         - name: IMAGE_DIGEST
-          value: $(tasks.build-push-image.results.IMAGE_DIGEST)
+          value: $(tasks.build-push-home-assistant-image.results.IMAGE_DIGEST)
 
     - name: cat
       taskRef:
         name: cat
       runAfter:
-        - build-push-image
+        - build-push-home-assistant-image
       workspaces:
         - name: allfiles
           workspace: shared-data
       params:
         - name: IMAGE_DIGEST
-          value: $(tasks.build-push-image.results.IMAGE_DIGEST)
+          value: $(tasks.build-push-home-assistant-image.results.IMAGE_DIGEST)
 
     # - name: rename-example-secret
     #   taskRef:
