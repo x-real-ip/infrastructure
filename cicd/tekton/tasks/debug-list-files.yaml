@@ -5,11 +5,11 @@ metadata:
   namespace: devops
 spec:
   workspaces:
-    - name: allfiles
+    - name: source
   steps:
     - name: dump-directory
       image: alpine
-      workingDir: $(workspaces.allfiles.path)
+      workingDir: $(workspaces.source.path)
       command:
         - /bin/sh
       args:

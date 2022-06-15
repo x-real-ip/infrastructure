@@ -1,4 +1,3 @@
----
 kind: Pipeline
 apiVersion: tekton.dev/v1beta1
 metadata:
@@ -7,13 +6,16 @@ metadata:
 spec:
   workspaces:
     - name: shared-data
+    - name: github-ssh
   tasks:
-    - name: fetch-repo
+    - name: git-clone
       taskRef:
         name: git-clone
       workspaces:
-        - name: output
+        - name: source
           workspace: shared-data
+        - name: ssh-directory
+          workspace: github-ssh
       params:
         - name: url
           value: https://github.com/theautomation/home-assistant.git
@@ -22,41 +24,43 @@ spec:
         - name: deleteExisting
           value: "true"
 
-    # - name: check-code-style
-    #   taskRef:
-    #     name: prettier
-    #   runAfter:
-    #     - fetch-repo
-    #   workspaces:
-    #     - name: source
-    #       workspace: shared-data
-    #   params:
-    #     - name: args
-    #       value:
-    #         - --config
-    #         - ".prettierrc.yaml"
-    #         - --ignore-path
-    #         - "./.prettierignore.yaml"
-    #         - --check
-    #         - "./src/config/**/*.yaml"
+    - name: validate-code-style
+      taskRef:
+        name: prettier
+      runAfter:
+        - git-clone
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: args
+          value:
+            - --config
+            - ".prettierrc.yaml"
+            - --ignore-path
+            - "./.prettierignore.yaml"
+            - --check
+            - "./src/config/**/*.yaml"
 
-    # - name: check-yaml-style
-    #   taskRef:
-    #     name: yaml-lint
-    #   runAfter:
-    #     - fetch-repo
-    #   workspaces:
-    #     - name: shared-workspace
-    #       workspace: shared-data
-    #   params:
-    #     - name: args
-    #       value: ["."]
+    - name: validate-yaml-syntax
+      taskRef:
+        name: yaml-lint
+      runAfter:
+        - git-clone
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: args
+          value: ["."]
 
     - name: build-push-home-assistant-init-image
       taskRef:
         name: buildah
       runAfter:
-        - fetch-repo
+        - validate-code-style
+        - validate-yaml-syntax
+        - git-clone
       workspaces:
         - name: source
           workspace: shared-data
@@ -76,7 +80,8 @@ spec:
       taskRef:
         name: buildah
       runAfter:
-        - fetch-repo
+        - validate-code-style
+        - validate-yaml-syntax
       workspaces:
         - name: source
           workspace: shared-data
@@ -92,13 +97,29 @@ spec:
         - name: FORMAT
           value: "docker"
 
+    - name: replace-image-tag-init
+      taskRef:
+        name: replace-image-tag
+      runAfter:
+        - build-push-home-assistant-init-image
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: IMAGE_REPO
+          value: home-automation
+        - name: IMAGE
+          value: $(context.pipelineRun.name)-init
+        - name: IMAGE_DIGEST
+          value: $(tasks.build-push-home-assistant-init-image.results.IMAGE_DIGEST)
+
     - name: replace-image-tag
       taskRef:
         name: replace-image-tag
       runAfter:
         - build-push-home-assistant-image
       workspaces:
-        - name: git-source
+        - name: source
           workspace: shared-data
       params:
         - name: IMAGE_REPO
@@ -108,78 +129,96 @@ spec:
         - name: IMAGE_DIGEST
           value: $(tasks.build-push-home-assistant-image.results.IMAGE_DIGEST)
 
-    - name: cat
+    - name: rename-example-secret
       taskRef:
-        name: cat
+        name: home-assistant-rename-secret
       runAfter:
-        - build-push-home-assistant-image
+        - validate-code-style
+        - validate-yaml-syntax
       workspaces:
-        - name: allfiles
+        - name: source
+          workspace: shared-data
+
+    - name: check-hass-config-latest
+      taskRef:
+        name: home-assistant-config-check
+      runAfter:
+        - rename-example-secret
+      workspaces:
+        - name: source
           workspace: shared-data
       params:
-        - name: IMAGE_DIGEST
-          value: $(tasks.build-push-home-assistant-image.results.IMAGE_DIGEST)
+        - name: containerImage
+          value: "homeassistant/home-assistant:latest"
+        - name: args
+          value:
+            - --script
+            - "check_config"
+            - --config
+            - "./src/config/"
 
-    # - name: rename-example-secret
-    #   taskRef:
-    #     name: home-assistant-rename-secret
-    #   runAfter:
-    #     - check-code-style
-    #     - check-yaml-style
-    #   workspaces:
-    #     - name: home-assistant-code
-    #       workspace: shared-data
+    - name: check-hass-config-dev
+      taskRef:
+        name: home-assistant-config-check
+      runAfter:
+        - rename-example-secret
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: containerImage
+          value: "homeassistant/home-assistant:dev"
+        - name: args
+          value:
+            - --script
+            - "check_config"
+            - --config
+            - "./src/config/"
 
-    # - name: check-hass-config-latest
-    #   taskRef:
-    #     name: home-assistant-config-check
-    #   runAfter:
-    #     - rename-example-secret
-    #   workspaces:
-    #     - name: home-assistant-code
-    #       workspace: shared-data
-    #   params:
-    #     - name: containerImage
-    #       value: "homeassistant/home-assistant:latest"
-    #     - name: args
-    #       value:
-    #         - --script
-    #         - "check_config"
-    #         - --config
-    #         - "./src/config/"
+    - name: check-hass-config-beta
+      taskRef:
+        name: home-assistant-config-check
+      runAfter:
+        - rename-example-secret
+      workspaces:
+        - name: source
+          workspace: shared-data
+      params:
+        - name: containerImage
+          value: "homeassistant/home-assistant:beta"
+        - name: args
+          value:
+            - --script
+            - "check_config"
+            - --config
+            - "./src/config/"
 
-    # - name: check-hass-config-dev
-    #   taskRef:
-    #     name: home-assistant-config-check
-    #   runAfter:
-    #     - rename-example-secret
-    #   workspaces:
-    #     - name: home-assistant-code
-    #       workspace: shared-data
-    #   params:
-    #     - name: containerImage
-    #       value: "homeassistant/home-assistant:dev"
-    #     - name: args
-    #       value:
-    #         - --script
-    #         - "check_config"
-    #         - --config
-    #         - "./src/config/"
+    - name: git-push
+      taskRef:
+        name: git-cli
+      runAfter:
+        - replace-image-tag-init
+        - replace-image-tag
+      workspaces:
+        - name: ssh-directory
+          workspace: github-ssh
+        - name: source
+          workspace: shared-data
+      params:
+        - name: GIT_SCRIPT
+          value: |
+            git add ./deploy/k8s/manifest.yaml
+            git commit -m "tekton set new image digest"
+            git remote set-url origin git@github.com:theautomation/$(context.pipeline.name).git
+            git push origin HEAD:main
 
-    # - name: check-hass-config-beta
-    #   taskRef:
-    #     name: home-assistant-config-check
-    #   runAfter:
-    #     - rename-example-secret
-    #   workspaces:
-    #     - name: home-assistant-code
-    #       workspace: shared-data
-    #   params:
-    #     - name: containerImage
-    #       value: "homeassistant/home-assistant:beta"
-    #     - name: args
-    #       value:
-    #         - --script
-    #         - "check_config"
-    #         - --config
-    #         - "./src/config/"
+    - name: slack-message
+      taskRef:
+        name: send-to-channel-slack
+      runAfter:
+        - git-push
+      params:
+        - name: token-secret
+          value: token-secret
+        - name: message
+          value: "Build and deploy $(context.pipelineRun.name) successfully"

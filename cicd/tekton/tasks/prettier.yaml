@@ -3,20 +3,7 @@ apiVersion: tekton.dev/v1beta1
 metadata:
   name: prettier
   namespace: devops
-  labels:
-    app.kubernetes.io/version: "0.1"
-  annotations:
-    tekton.dev/pipelines.minVersion: "0.12.1"
-    tekton.dev/categories: Code Quality
-    tekton.dev/tags: editor
-    tekton.dev/platforms: "linux/amd64"
 spec:
-  description: >-
-    This Task is for running Prettier code formatter against the provided
-    source code in the Workspace.
-    By default this Task will check the format of files in the root of your
-    Workspace.Run the prettier code formatter against provided source code.
-    See https://prettier.io for more information.
   workspaces:
     - name: source
       mountPath: /source
@@ -27,13 +14,12 @@ spec:
       default:
         - "--check"
         - "."
-    - name: prettierImage
+    - name: image
       type: string
-      description: Prettier image used to run Prettier.
       default: docker.io/elnebuloso/prettier:latest
   steps:
     - name: check
-      image: $(params.prettierImage)
+      image: $(params.image)
       workingDir: "$(workspaces.source.path)"
       command: [prettier]
       args: ["$(params.args[*])"]

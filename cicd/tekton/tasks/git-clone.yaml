@@ -5,28 +5,13 @@ metadata:
   namespace: devops
 spec:
   workspaces:
-    - name: output
-      description: The git repo will be cloned onto the volume backing this Workspace.
+    - name: source
     - name: ssh-directory
       optional: true
-      description: |
-        A .ssh directory with private key, known_hosts, config, etc. Copied to
-        the user's home before git commands are executed. Used to authenticate
-        with the git remote when performing the clone. Binding a Secret to this
-        Workspace is strongly recommended over other volume types.
     - name: basic-auth
       optional: true
-      description: |
-        A Workspace containing a .gitconfig and .git-credentials file. These
-        will be copied to the user's home before any git commands are run. Any
-        other files in this Workspace are ignored. It is strongly recommended
-        to use ssh-directory over basic-auth whenever possible and to bind a
-        Secret to this Workspace over other volume types.
     - name: ssl-ca-directory
       optional: true
-      description: |
-        A workspace containing CA certificates, this will be used by Git to
-        verify the peer with when fetching or pushing over HTTPS.
   params:
     - name: url
       description: Repository URL to clone from.
@@ -51,7 +36,7 @@ spec:
       type: string
       default: "true"
     - name: subdirectory
-      description: Subdirectory inside the `output` Workspace to clone the repo into.
+      description: Subdirectory inside the `source` Workspace to clone the repo into.
       type: string
       default: ""
     - name: sparseCheckoutDirectories
@@ -127,8 +112,8 @@ spec:
           value: $(params.sparseCheckoutDirectories)
         - name: PARAM_USER_HOME
           value: $(params.userHome)
-        - name: WORKSPACE_OUTPUT_PATH
-          value: $(workspaces.output.path)
+        - name: WORKSPACE_SOURCE_PATH
+          value: $(workspaces.source.path)
         - name: WORKSPACE_SSH_DIRECTORY_BOUND
           value: $(workspaces.ssh-directory.bound)
         - name: WORKSPACE_SSH_DIRECTORY_PATH
@@ -166,7 +151,7 @@ spec:
         if [ "${WORKSPACE_SSL_CA_DIRECTORY_BOUND}" = "true" ] ; then
            export GIT_SSL_CAPATH="${WORKSPACE_SSL_CA_DIRECTORY_PATH}"
         fi
-        CHECKOUT_DIR="${WORKSPACE_OUTPUT_PATH}/${PARAM_SUBDIRECTORY}"
+        CHECKOUT_DIR="${WORKSPACE_SOURCE_PATH}/${PARAM_SUBDIRECTORY}"
 
         cleandir() {
           # Delete any existing contents of the repo directory if it exists.
