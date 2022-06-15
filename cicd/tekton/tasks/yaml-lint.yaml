@@ -4,10 +4,8 @@ metadata:
   name: yaml-lint
   namespace: devops
 spec:
-  description: >-
-    This task can be used to perform lint check on YAML files
   workspaces:
-    - name: shared-workspace
+    - name: source
       description: A workspace that contains the fetched git repository.
   params:
     - name: args
@@ -15,9 +13,9 @@ spec:
       description: extra args needs to append
       default: ["--help"]
   steps:
-    - name: lint-yaml-files
+    - name: check
       image: docker.io/cytopia/yamllint:latest
-      workingDir: $(workspaces.shared-workspace.path)
+      workingDir: $(workspaces.source.path)
       command:
         - yamllint
       args:

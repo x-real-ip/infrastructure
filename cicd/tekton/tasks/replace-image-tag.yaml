@@ -4,8 +4,7 @@ metadata:
   name: replace-image-tag
 spec:
   workspaces:
-    - name: git-source
-      description: The git repo
+    - name: source
   params:
     - name: IMAGE_URL
       description: Url of the container image registry
@@ -26,8 +25,8 @@ spec:
       args:
         - "-i"
         - "-e"
-        - 's;image: "$(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):.*";image: "$(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):$(params.IMAGE_DIGEST)";g'
-        - "$(workspaces.git-source.path)/$(params.FILE_PATH)"
+        - 's;image: "$(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):latest@.*";image: "$(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):latest@$(params.IMAGE_DIGEST)";g'
+        - "$(workspaces.source.path)/$(params.FILE_PATH)"
     - name: show-yaml
       image: alpine
       command:
@@ -35,4 +34,4 @@ spec:
       args:
         - "-c"
         - |
-          cat $(workspaces.git-source.path)/$(params.FILE_PATH)
+          cat $(workspaces.source.path)/$(params.FILE_PATH)

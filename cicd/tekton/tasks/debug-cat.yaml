@@ -5,7 +5,7 @@ metadata:
   namespace: devops
 spec:
   workspaces:
-    - name: allfiles
+    - name: source
   params:
     - name: IMAGE_DIGEST
   steps:
