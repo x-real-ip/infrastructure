@@ -39,6 +39,8 @@ export k3s_token="<k3s_token>"
 
 export k3s_cluster_init_ip="<ip_of_master-01>"
 
+export k3s_vipip="192.168.1.10"
+
 curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | bash -
 ```
 
