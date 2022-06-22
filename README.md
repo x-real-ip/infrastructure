@@ -1,4 +1,4 @@
-# Kubernetes Gitops
+# Kubernetes GitOps
 
 - [Kubernetes Gitops](#kubernetes-gitops)
   - [Gitops hierarchy](#gitops-hierarchy)
