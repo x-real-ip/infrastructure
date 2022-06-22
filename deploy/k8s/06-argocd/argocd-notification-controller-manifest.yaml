@@ -58,6 +58,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: argocd-notifications-controller
+
 ---
 apiVersion: v1
 kind: Service
@@ -74,6 +75,7 @@ spec:
       targetPort: 9001
   selector:
     app.kubernetes.io/name: argocd-notifications-controller
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -109,6 +111,7 @@ spec:
         - configMap:
             name: argocd-tls-certs-cm
           name: tls-certs
+
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -116,6 +119,13 @@ metadata:
   name: argocd-notifications-cm
   namespace: devops
 data:
+  defaultTriggers: |
+    - on-sync-status-unknown
+    - on-sync-running
+    - on-sync-succeeded
+    - on-sync-failed
+    - on-deployed
+    - on-health-degraded
   service.slack: |
     token: $slack-token
   template.app-deployed: |
