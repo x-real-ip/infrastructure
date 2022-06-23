@@ -6,7 +6,7 @@ metadata:
   annotations:
   labels:
     app.kubernetes.io/name: democratic-csi
-    app.kubernetes.io/instance: csi-iscsi-manual
+    app.kubernetes.io/instance: csi-manual
 provisioner: org.democratic-csi.node-manual
 reclaimPolicy: Retain
 allowVolumeExpansion: true
@@ -15,14 +15,33 @@ parameters:
   fsType: "xfs"
 
 ---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: freenas-nfs-manual-csi
+  annotations:
+  labels:
+    app.kubernetes.io/name: democratic-csi
+    app.kubernetes.io/instance: csi-manual
+provisioner: org.democratic-csi.node-manual
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+parameters:
+  fsType: "nfs"
+mountOptions:
+  - noatime
+  - nfsvers=4
+
+---
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: csi-iscsi-manual-democratic-csi
+  name: csi-manual-democratic-csi
   namespace: democratic-csi
   labels:
     app.kubernetes.io/name: democratic-csi
-    app.kubernetes.io/instance: csi-iscsi-manual
+    app.kubernetes.io/instance: csi-manual
 data:
   extra-ca-certs: ""
 
@@ -31,11 +50,11 @@ kind: Secret
 apiVersion: v1
 type: Opaque
 metadata:
-  name: csi-iscsi-manual-democratic-csi-driver-config
+  name: csi-manual-democratic-csi-driver-config
   namespace: democratic-csi
   labels:
     app.kubernetes.io/name: democratic-csi
-    app.kubernetes.io/instance: csi-iscsi-manual
+    app.kubernetes.io/instance: csi-manual
 stringData:
   driver-config-file.yaml: |-
     driver: node-manual
@@ -47,7 +66,7 @@ metadata:
   name: org.democratic-csi.node-manual
   labels:
     app.kubernetes.io/name: democratic-csi
-    app.kubernetes.io/instance: csi-iscsi-manual
+    app.kubernetes.io/instance: csi-manual
 spec:
   attachRequired: false
   podInfoOnMount: true
@@ -59,20 +78,20 @@ spec:
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: csi-iscsi-manual-democratic-csi-node-sa
+  name: csi-manual-democratic-csi-node-sa
   namespace: democratic-csi
   labels:
     app.kubernetes.io/name: democratic-csi
-    app.kubernetes.io/instance: csi-iscsi-manual
+    app.kubernetes.io/instance: csi-manual
 
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: csi-iscsi-manual-democratic-csi-node-cr
+  name: csi-manual-democratic-csi-node-cr
   labels:
     app.kubernetes.io/name: democratic-csi
-    app.kubernetes.io/instance: csi-iscsi-manual
+    app.kubernetes.io/instance: csi-manual
 rules:
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
@@ -91,46 +110,43 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: csi-iscsi-manual-democratic-csi-node-rb
+  name: csi-manual-democratic-csi-node-rb
   labels:
     app.kubernetes.io/name: democratic-csi
-    app.kubernetes.io/instance: csi-iscsi-manual
+    app.kubernetes.io/instance: csi-manual
 roleRef:
   kind: ClusterRole
   apiGroup: rbac.authorization.k8s.io
-  name: csi-iscsi-manual-democratic-csi-node-cr
+  name: csi-manual-democratic-csi-node-cr
 subjects:
   - kind: ServiceAccount
-    name: csi-iscsi-manual-democratic-csi-node-sa
+    name: csi-manual-democratic-csi-node-sa
     namespace: democratic-csi
 
 ---
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: csi-iscsi-manual-democratic-csi-node
+  name: csi-manual-democratic-csi-node
   namespace: democratic-csi
   labels:
     app.kubernetes.io/name: democratic-csi
-    app.kubernetes.io/instance: csi-iscsi-manual
+    app.kubernetes.io/instance: csi-manual
     app.kubernetes.io/csi-role: "node"
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: democratic-csi
-      app.kubernetes.io/instance: csi-iscsi-manual
+      app.kubernetes.io/instance: csi-manual
       app.kubernetes.io/csi-role: "node"
   template:
     metadata:
-      annotations:
-        checksum/secret: 9f0367edade47de6422d0d70d70ca2834819154cf2d48a756305dad673332fcd
-        checksum/configmap: 422631bc49fa1a920efa8ec3c3c8b5cde977dd507ec7f4073e3348e72fed6805
       labels:
         app.kubernetes.io/name: democratic-csi
-        app.kubernetes.io/instance: csi-iscsi-manual
+        app.kubernetes.io/instance: csi-manual
         app.kubernetes.io/csi-role: "node"
     spec:
-      serviceAccount: csi-iscsi-manual-democratic-csi-node-sa
+      serviceAccount: csi-manual-democratic-csi-node-sa
       hostNetwork: true
       hostAliases: []
       hostIPC: true
@@ -292,10 +308,10 @@ spec:
             type: Directory
         - name: config
           secret:
-            secretName: csi-iscsi-manual-democratic-csi-driver-config
+            secretName: csi-manual-democratic-csi-driver-config
         - name: extra-ca-certs
           configMap:
-            name: csi-iscsi-manual-democratic-csi
+            name: csi-manual-democratic-csi
             items:
               - key: extra-ca-certs
                 path: extra-ca-certs.crt

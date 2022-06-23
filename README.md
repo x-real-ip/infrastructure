@@ -1,6 +1,6 @@
 # Kubernetes GitOps
 
-- [Kubernetes Gitops](#kubernetes-gitops)
+- [Kubernetes GitOps](#kubernetes-gitops)
   - [Gitops hierarchy](#gitops-hierarchy)
   - [Setup](#setup)
     - [Bootstrap K3s cluster](#bootstrap-k3s-cluster)
@@ -111,6 +111,11 @@ Shell into pod
 kubectl exec -it <pod_name> -- /bin/bash
 ```
 
+Copy to or from pod
+```console
+kubectl cp <namespace>/<pod>:/tmp/foo /tmp/bar
+```
+
 Reuse PV in PVC
 1. Remove the claimRef in the PV this will set the PV status from ```Released``` to ```Available```
 ```console
@@ -167,7 +172,7 @@ kubeseal --cert "./kubernetes-gitops/certs/sealed-secret-tls.crt" --format=yaml 
 
 Add sealed secret to configfile secret
 ```console
-    echo -n <mypassword_key> | kubectl create secret generic <secretname> --dry-run=client --from-file=<password_value>=/dev/stdin -o json | kubeseal --cert ./sealed-secret-tls.crt -o yaml \
+    echo -n <mypassword_key> | kubectl create secret generic <secretname> --dry-run=client --from-file=<password_value>=/dev/stdin -o json | kubeseal --cert ./sealed-secret-tls-2.crt -o yaml \
     -n democratic-csi --merge-into <secret>.yaml
 ```
 
@@ -176,16 +181,24 @@ Raw sealed secret
 `strict` scope (default):
 
 ```console
-$ echo -n foo | kubeseal --raw --from-file=/dev/stdin --namespace bar --name mysecret
+echo -n foo | kubeseal --raw --from-file=/dev/stdin --namespace bar --name mysecret
 AgBChHUWLMx...
 ```
 
 `namespace-wide` scope:
 
 ```console
-$ echo -n foo | kubeseal --raw --from-file=/dev/stdin --namespace bar --scope namespace-wide
+echo -n foo | kubeseal --cert ./sealed-secret-tls-2.crt --raw --from-file=/dev/stdin --namespace bar --scope namespace-wide
 AgAbbFNkM54...
 ```
+
+`cluster-wide` scope:
+
+```console
+echo -n foo | kubeseal --cert ./sealed-secret-tls-2.crt --raw --from-file=/dev/stdin --scope cluster-wide
+AgAjLKpIYV+...
+```
+
 Include the `sealedsecrets.bitnami.com/namespace-wide` annotation in the `SealedSecret`
 ```yaml
 metadata:
@@ -193,12 +206,6 @@ metadata:
     sealedsecrets.bitnami.com/namespace-wide: "true"
 ```
 
-`cluster-wide` scope:
-
-```console
-$ echo -n foo | kubeseal --raw --from-file=/dev/stdin --scope cluster-wide
-AgAjLKpIYV+...
-```
 Include the `sealedsecrets.bitnami.com/cluster-wide` annotation in the `SealedSecret`
 ```yaml
 metadata:

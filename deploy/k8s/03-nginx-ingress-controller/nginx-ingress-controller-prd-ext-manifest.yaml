@@ -311,6 +311,9 @@ metadata:
     app.kubernetes.io/component: controller
 data:
   allow-snippet-annotations: "true"
+  enable-real-ip: "true"
+  use-forwarded-headers: "true"
+  proxy-real-ip-cidr: "192.168.1.250/32"
 
 ---
 kind: Service
