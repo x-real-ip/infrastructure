@@ -221,4 +221,4 @@ spec:
         - name: token-secret
           value: token-secret
         - name: message
-          value: "Build and deploy $(context.pipelineRun.name) successfully"
+          value: "Tekton had run $(context.pipelineRun.name) successfully"
