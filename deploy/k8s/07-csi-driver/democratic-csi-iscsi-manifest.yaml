@@ -52,8 +52,8 @@ spec:
         zfs:
           cli:
             sudoEnabled: true
-          datasetParentName: r10_8tb/k8s
-          detachedSnapshotsDatasetParentName: r10_8tb/k8s
+          datasetParentName: r10_8tb/k8s/v
+          detachedSnapshotsDatasetParentName: r10_8tb/k8s/s
           zvolBlocksize: null
           zvolCompression: null
           zvolDedup: null
