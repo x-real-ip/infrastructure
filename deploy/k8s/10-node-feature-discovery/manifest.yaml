@@ -3,7 +3,7 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: node-feature-discovery
-  namespace: tools
+  namespace: devops
   labels:
     app.kubernetes.io/name: node-feature-discovery
 
@@ -12,7 +12,7 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: node-feature-discovery-worker
-  namespace: tools
+  namespace: devops
   labels:
     app.kubernetes.io/name: node-feature-discovery
 
@@ -56,14 +56,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: node-feature-discovery
-    namespace: tools
+    namespace: devops
 
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: node-feature-discovery-master
-  namespace: tools
+  namespace: devops
   labels:
     app.kubernetes.io/name: node-feature-discovery
     role: master
@@ -149,7 +149,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: node-feature-discovery-worker-conf
-  namespace: tools
+  namespace: devops
   labels:
     app.kubernetes.io/name: node-feature-discovery
 data:
@@ -401,7 +401,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: node-feature-discovery-master
-  namespace: tools
+  namespace: devops
   labels:
     app.kubernetes.io/name: node-feature-discovery
     role: master
@@ -419,7 +419,7 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: node-feature-discovery-worker
-  namespace: tools
+  namespace: devops
   labels:
     app.kubernetes.io/name: node-feature-discovery
     role: worker

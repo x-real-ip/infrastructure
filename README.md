@@ -16,6 +16,7 @@
   - [Other](#other)
     - [Rsync](#rsync)
     - [ISCSI](#iscsi)
+  - [Node Feature Discovery](#node-feature-discovery)
 
 ## Gitops hierarchy
 
@@ -284,3 +285,9 @@ Migration notes:
 8. rsync to temporary folder
 9. mount new drive
 10. rsync old files to new drive
+
+## Node Feature Discovery
+Show node lables
+```console
+kubectl get no -o json | jq .items[].metadata.labels
+```
