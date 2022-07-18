@@ -8,6 +8,7 @@
 manifest_location="/var/lib/rancher/k3s/server/manifests/"
 github_k8s_url="https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/deploy/k8s"
 
+# Update and install packages
 sudo apt update
 sudo apt upgrade -y
 sudo apt install -y curl wget unzip
@@ -41,8 +42,6 @@ if [[ $HOSTNAME =~ master ]]; then
         sudo curl -O ${github_k8s_url}/metallb/metallb-manifest.yaml
         sudo curl -O ${github_k8s_url}/nginx-ingress-controller/nginx-ingress-controller-prd-ext-manifest.yaml
         sudo curl -O ${github_k8s_url}/nginx-ingress-controller/nginx-ingress-controller-prd-int-manifest.yaml
-        # sudo curl -O ${github_k8s_url}/bitnami/bitnami-manifest.yaml
-        # sudo curl -O ${github_k8s_url}/argocd/argocd-manifest.yaml
 
         echo -e "\nInstalling k3s master and initializing the cluster...\n" &&
             curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --no-deploy servicelb --no-deploy traefik --tls-san ${k3s_vipip} --no-deploy servicelb --cluster-init
@@ -51,7 +50,7 @@ if [[ $HOSTNAME =~ master ]]; then
             curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --no-deploy servicelb --no-deploy traefik --tls-san ${k3s_vipip} --no-deploy servicelb --server=https://${k3s_cluster_init_ip}:6443
     fi
     sleep 20 && echo -e "\nInstalling k3s on $HOSTNAME done.\n" &&
-        kubectl get nodes
+        kubectl get nodes -o wide
 else
     # Setup workers
     echo -e "\nInstalling k3s workers and joining to cluster...\n" &&

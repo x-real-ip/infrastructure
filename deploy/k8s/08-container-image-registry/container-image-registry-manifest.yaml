@@ -99,7 +99,7 @@ spec:
         app: container-image-registry
 
 ---
-kind: Deployment
+kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: container-image-registry
@@ -110,9 +110,6 @@ spec:
   selector:
     matchLabels:
       app: container-image-registry
-  replicas: 1
-  strategy:
-    type: Recreate
   minReadySeconds: 5
   template:
     metadata:
