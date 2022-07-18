@@ -35,6 +35,18 @@
 1. Create VM's and install ubuntu server on it. For example 3x master 2x worker nodes.
 2. SSH into each node en run below commands:
 
+Set hostname
+```console 
+sudo hostnamectl set-hostname <hostname>
+```
+
+Set hostname in ```/etc/hosts```
+```console
+sudo nano /etc/hosts
+```
+
+Reboot the host machine
+
 ```console
 export k3s_token="<k3s_token>"
 
