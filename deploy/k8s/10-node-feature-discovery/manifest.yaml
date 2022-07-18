@@ -144,6 +144,7 @@ spec:
           key: node-role.kubernetes.io/control-plane
           operator: Equal
           value: ""
+
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -154,7 +155,18 @@ metadata:
     app.kubernetes.io/name: node-feature-discovery
 data:
   nfd-worker.conf: |-
-    null
+    sources:
+      usb:
+        deviceClassWhitelist:
+          - "0e"
+          - "ef"
+          - "fe"
+          - "ff"
+          - "02"
+        deviceLabelFields:
+          - "class"
+          - "vendor"
+          - "device"
 
 ---
 kind: CustomResourceDefinition
@@ -414,6 +426,7 @@ spec:
       name: grpc
   selector:
     app.kubernetes.io/name: node-feature-discovery
+
 ---
 kind: DaemonSet
 apiVersion: apps/v1
