@@ -16,6 +16,7 @@
   - [Other](#other)
     - [Rsync](#rsync)
     - [ISCSI](#iscsi)
+      - [Steps to restore PVC using iSCSI mounts:](#steps-to-restore-pvc-using-iscsi-mounts)
   - [Node Feature Discovery](#node-feature-discovery)
 
 ## Gitops hierarchy
@@ -297,6 +298,19 @@ Migration notes:
 8. rsync to temporary folder
 9. mount new drive
 10. rsync old files to new drive
+
+#### Steps to restore PVC using iSCSI mounts:
+
+1. SSH into one of the nodes in the cluster and start discovery sudo iscsiadm -m discovery -t st -p <truenas-portal-ip>
+2. Login to target sudo iscsiadm -m node --targetname <iscsi-share-fqdn>:<volume-target-name> --portal <truenas-portal-ip> --login
+3. See the device using lsblk. In the following steps, assume sda is the device name.
+4. Create a local mount point & mount to replay logfile sudo mkdir -vp /mnt/data-0 && sudo mount /dev/sda /mnt/data-0/
+5. Unmount the device sudo umount /mnt/data-0/
+6. Run check / ncheck sudo xfs_repair -n /dev/sda; sudo xfs_ncheck /dev/sda If filesystem corruption was corrected due to replay of the logfile, the xfs_ncheck should produce a list of nodes and pathnames, instead of the errorlog.
+7. If needed run xfs repair sudo xfs_repair /dev/sda
+8. Logout from target sudo iscsiadm -m node --targetname <iscsi-share-fqdn>:<volume-target-name> --portal <truenas-portal-ip> --logout
+9. Volumes are now ready to be mounted as PVCs.
+
 
 ## Node Feature Discovery
 Show node lables
