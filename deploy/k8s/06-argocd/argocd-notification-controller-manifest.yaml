@@ -126,6 +126,7 @@ data:
     - on-sync-failed
     - on-deployed
     - on-health-degraded
+    - on-health-healthy
   service.slack: |
     token: $slack-token
   template.app-deployed: |
@@ -178,6 +179,40 @@ data:
           "title": "{{ .app.metadata.name}}",
           "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
           "color": "#f4c030",
+          "fields": [
+          {
+            "title": "Sync Status",
+            "value": "{{.app.status.sync.status}}",
+            "short": true
+          },
+          {
+            "title": "Repository",
+            "value": "{{.app.spec.source.repoURL}}",
+            "short": true
+          }
+          {{range $index, $c := .app.status.conditions}}
+          {{if not $index}},{{end}}
+          {{if $index}},{{end}}
+          {
+            "title": "{{$c.type}}",
+            "value": "{{$c.message}}",
+            "short": true
+          }
+          {{end}}
+          ]
+        }]
+  template.app-health-healthy: |
+    email:
+      subject: Application {{.app.metadata.name}} is healthy.
+    message: |
+      {{if eq .serviceType "slack"}}:white_check_mark:{{end}} Application {{.app.metadata.name}} is healthy.
+      Application details: {{.context.argocdUrl}}/applications/{{.app.metadata.name}}.
+    slack:
+      attachments: |-
+        [{
+          "title": "{{ .app.metadata.name}}",
+          "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+          "color": "#18be52",
           "fields": [
           {
             "title": "Sync Status",
@@ -326,6 +361,13 @@ data:
       send:
       - app-health-degraded
       when: app.status.health.status == 'Degraded'
+  trigger.on-health-healthy: |
+    - description: Application is healthy
+      oncePer: app.status.sync.revision
+      send:
+      - app-health-healthy
+      when: app.status.health.status == 'Healthy'
+
   trigger.on-sync-failed: |
     - description: Application syncing has failed
       send:

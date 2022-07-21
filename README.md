@@ -186,7 +186,7 @@ kubeseal --cert "./kubernetes-gitops/certs/sealed-secret-tls.crt" --format=yaml 
 
 Add sealed secret to configfile secret
 ```console
-    echo -n <mypassword_key> | kubectl create secret generic <secretname> --dry-run=client --from-file=<password_value>=/dev/stdin -o json | kubeseal --cert ./sealed-secret-tls-2.crt -o yaml \
+    echo -n <mypassword_value> | kubectl create secret generic <secretname> --dry-run=client --from-file=<password_key>=/dev/stdin -o json | kubeseal --cert ./sealed-secret-tls-2.crt -o yaml \
     -n democratic-csi --merge-into <secret>.yaml
 ```
 
