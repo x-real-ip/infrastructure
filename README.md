@@ -181,7 +181,7 @@ kubectl create secret tls cloudflare-tls --key origin-ca.pk --cert origin-ca.crt
 
 Encrypt secret with custom public certificate.
 ```console
-kubeseal --cert "./kubernetes-gitops/certs/sealed-secret-tls.crt" --format=yaml < <secret>.yaml > sealed-<secret>.yaml
+kubeseal --cert "./sealed-secret-tls-2.crt" --format=yaml < secret.yaml > sealed-secret.yaml
 ```
 
 Add sealed secret to configfile secret
