@@ -25,7 +25,7 @@ spec:
       args:
         - "-i"
         - "-e"
-        - 's;image: "$(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):latest@.*";image: "$(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):latest@$(params.IMAGE_DIGEST)";g'
+        - 's%image: "$(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):latest@.*"%image: "$(params.IMAGE_URL)/$(params.IMAGE_REPO)/$(params.IMAGE):latest@$(params.IMAGE_DIGEST)"%g'
         - "$(workspaces.source.path)/$(params.FILE_PATH)"
     - name: show-yaml
       image: alpine
