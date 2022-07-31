@@ -40,7 +40,7 @@ tableLine() { printf '%s\n' "|--------------------------------------------------
 
 # Choose actions
 PS3='Choose an action for all Shelly devices: '
-actions=("List devices" "Reboot" "Check for new firmware version" "Update firmware version" "Enable and edit CoIoT" "Quit")
+actions=("List devices" "Reboot" "Check for new firmware version" "Update firmware version" "Enable and edit CoIoT" "Set SNTP IP Address" "Quit")
 select action in "${actions[@]}"; do
     case $action in
     "List devices")
@@ -101,7 +101,20 @@ select action in "${actions[@]}"; do
             if [ "${status}" = "true" ]; then tableRow "${name}" "CoIoT peer set to ${coiot_peer}" "http://${fqdn}.${domain}"; fi
         done
         echo "Done..."
-        echo "2) Reboot required when CoIoT peer is changed!"
+        echo "2) Reboot required when CoIoT peer is changed!, choose option 2"
+        ;;
+    "Set SNTP IP Address")
+        read -p "Enter SNTP IP address: " input
+        echo -e "\nUpdate SNTP on all Shelly devices, this can take several minutes...\n"
+        tableRow "Name" "Status" "FQDN"
+        tableLine
+        for i in $(seq ${ip_start} ${ip_end}); do
+            nameFqdn
+            status=$(curl -s -m 1 "http://${ip_subnet}.${i}/settings?sntp_enable=true&sntp_server=${input}" | jq -cr '.sntp.enabled' 2>/dev/null)
+            if [ "${status}" = "true" ]; then tableRow "${name}" "SNTP IP address is set to ${input}" "http://${fqdn}.${domain}"; fi
+        done
+        echo "Done..."
+        echo "2) Reboot required when SNTP is changed!, choose option 2"
         ;;
     "Quit")
         echo "exiting..."
