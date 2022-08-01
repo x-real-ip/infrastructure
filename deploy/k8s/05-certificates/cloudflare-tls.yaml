@@ -3,7 +3,7 @@ kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
   name: cloudflare-tls
-  namespace: prd-ext
+  namespace: devops
   annotations:
     sealedsecrets.bitnami.com/cluster-wide: "true"
 spec:
@@ -14,6 +14,6 @@ spec:
     type: kubernetes.io/tls
     metadata:
       name: cloudflare-tls
-      namespace: tools
+      namespace: devops
       annotations:
         sealedsecrets.bitnami.com/cluster-wide: "true"
