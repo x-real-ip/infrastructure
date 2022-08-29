@@ -1,0 +1,312 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-iscsi-drone-server-data
+spec:
+  storageClassName: "freenas-iscsi-manual-csi"
+  capacity:
+    storage: 8Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: org.democratic-csi.node-manual
+    readOnly: false
+    fsType: xfs
+    volumeHandle: pv-iscsi-drone-server-data
+    volumeAttributes:
+      portal: storage-server.lan:3260
+      iqn: iqn.2005-10.org.freenas.ctl:drone-server-data
+      lun: "0"
+      node_attach_driver: iscsi
+      provisioner_driver: node-manual
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-iscsi-drone-server-data
+  namespace: devops
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "freenas-iscsi-manual-csi"
+spec:
+  storageClassName: freenas-iscsi-manual-csi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+  volumeName: pv-iscsi-drone-server-data
+
+---
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
+metadata:
+  name: drone-server-secret
+  namespace: devops
+spec:
+  encryptedData:
+    DRONE_GITHUB_CLIENT_ID: AgCYM7K6a+KrooUE1Zcf0MG8KhnWaZEg5H2+Zfp4MC/TyGxUkco4++fu/iwoIvmanYrCb+vppOfUrgGuTFWNj0n7+uEYk5uiNXsZLUAtoKClmDGrzwrxIeTfC3/sG3r84Kn8u3INXR2xSSevi0sbRAoOTtFn+G4K0B+iyZgND7MsbYupihnjTpzk+gDT5ROQwkL++RQrqcsTXLcNHnR+UJOojDL+HD/KiLbbR8LTwsEtB7JCtc94wj9rj0O6x/KuW1fIy5IL3BLMpviPtad6+uXChLi3/+dSqa6PWUPx1nO0k+8UYK1J8HHU5O3qVgMxxrNlT7HJq839aWb5xzTUk3G/Wi/Rr/vn4h+9+tEvAorwRxurX3yMkO6Yyfa1uJyif4fwT/gDAMMDj+SyzK3jn5FOPddc/aTjv/HHueQrWo9ErKPUOjKW7o/ril7OCXJ9dCfXGG7wTu7mJaBMrJdjOgAcm0OW/hEts6k7s+E5KH32zgkd7HPixIJuYpnNfPHbpeo5v5DPYOpveY5kv/NGRkZwmN5IlwP1buHBsSX4NYhJTcRLRRaXH05BKJtbgbvGzRaVGl5ThxmA/lERrCKWPqX9G3hi6w/fjZlW10CzbDAsDcqiiJJ7c1SybqknGMFH9oFR9+ukOKge2YJTrE1D33xv6cLogriLgZojKUVVES+O85KAzUXWszJNAzzdM6EMwz/IwbHLIvj3P4/LW/73vRef6uqNhw==
+    DRONE_GITHUB_CLIENT_SECRET: AgC6ehEAnvaMNs+Uews1hzhGMHMbE7lX+5qX7fADpK8nebUBHq2HWU5uNCY7hV9OEdTQiFDujyGeYyULpI2kdnBZZ495NkxjcOo0VRMP2wxQIpBAzQ64o010a7nHlByOeebSxddqNdzTKBIdCIU5y/QaorQN4ozRdsaxQA9Bu49FRLgPRcxdjaVtwCnbHIPTTqi3mxOTCRDlddpuE9ZFtK36HYe/GKjgI7VRg3wqSIK3dOLzTgDvEpswRI94ofHAdOzqOkyaPaBPyXQNp0z/C8QtfkH8+/ZBk7hvzclPi+ztQ9ays/wYzeWog1sUAlUtvjqFCvHFrkr0K34HVfOqPWRzH/8GWl3quT0cXw4FcfawqiVphe6CXhGdOQAexNXVbsCyoY14/LoyRmgZL6BmTW4ZJCVlbDmtfPfVY95JTI55oWpks6EXfEcuprucd3RWUTikZFkDmizcbNDbJjAG3uTv+lyCft1jGnJDxnVmiEFOJV8WygMP7q6NAdsyNr8beDIK3zNXSWfxybGz4SXcliFnS49sfGffL8G+E523tUD2UC6h6BHa1uMaYrEVWfnxN3AUymhfj9wJAOnIXA5GCcmlyYr84wlStep/KfWqrv+hS6yRJKyPNBsItUpFKtdLl8IG3EqDLhVzTsHBYHbq/AdZFxd5ImXeGzfTKKIBkHHlFd7kMxBZSsf+W34/LH0QRivg9VQqVcgw4qhFH/Qup74KjlsUmnOYLoK/2d/dRo9wdzbEIgucC+qz
+    DRONE_RPC_SECRET: AgDq+9cab6eGpDwohvcqG18BsXmQmoQnTdG+7tUBCY3QU+D7V3B4jYaV3CSvuBMUdXl0r8Y6Ujc9GyUswSAzR7slLhtlqZzeh2Pe9bJbQL86b7ta376hKMMnupxFVfcEYvoszV0BoY4eiKqVOsG2xYuJYw83nJFY8HUq81NlXbnPeXLN2xA55XPQeH2IPuTlpbwF9BdipkLVTRha+ALSvWhZKaMStgXhognn8r+kyEKCaK4J7y+PtwzHKWtZPLcQslw+sorxtUlPkuGnFvnoPeYGW5cm9OSf+Rz75FyE8Xnffg6ScYym2PBGrm7A9/mj5jlOJRRuhRINtt3zSs3R28+NSmlwIMKSyNHthV7Fo/SUKNheBK/K+xkC/5dEWoOeHHC91bjKC4FZr8sKhH8z16bF/72LABASNZ8g1vt7lxCu8OCHsL03xzffSMGX0/zdcwLxvNeUTZzx4QH8SA0T91EjDhcCL6nZDMB8yXdyeQq86IQgq9WLENdy4xdzPOxRLZLlSCHCOvXb6h0aLgmO+coC/WtNtZ9mx+FIhxXX7f+/Srez0boxt5AZz5u1F1Yliez99NaN0njnWBQ41Wi+YCXBW7mHe9Sf4RAlYgGZ/FyVU7Iz5d4otSGDR+qlUx17oJ5cC2shVn9SxlWinpBl3tggWI0wzxY604uYqHfAJV7FcjMGjVGpQsOE+DaYyIO9nXvH99qH0fm1bvUT337OPf0+0ppWmufQ5ORhMO8f3CybiA==
+  template:
+    metadata:
+      name: drone-server-secret
+      namespace: devops
+      labels:
+        app: drone-server
+
+---
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
+metadata:
+  name: drone-runner-kube-secret
+  namespace: devops
+spec:
+  encryptedData:
+    DRONE_RPC_SECRET: AgA6AD9tIQjiejhKqYuFfpMK1WUdsjZ4K5mY89PLo8CGEtAuny+Ow9D6NwQaseeHpGGO311OnQGWLdp8F0JwBzEnedZEKxtMnkOqACBYKBop3kuIMmebKdeRshxQczZ4ITTnleJY58F6/H0b2dJubDsqRjM4rrOa6gnLmCTBo2zMUNjlNtEpfTYURtB3I4bTO7BQOftJCSpZdFxUjvkj8GTfA1g7nrys3JACRgYLhELvsJgJTG6eMlXRheYfT0HA1NmYr7VJwfXIkwkE/57yaa3DmSEhI8Uz8WOkiBgSg1ggufdVfu3sI5JfIk8F6o8ufHvwIIJwD+aUorMr8O48yrdIrCOeOXkU4wzzhTcPmm+rjzjUoBagL8aNn9+9elAIa+Mej4K20zuX9GMcvVk4jmBL0pAEkcAyUXDbz3NDbvQVHeiYzm0bWmQqSzoHcF47HIkjXLPUywWyeWU9NXIVXB20Hjc+yV2VDe9fQ008hC0ON6pgw/FLl+JbcOvQJzntu/U1eZuPQ1W8kvjNQ+cPOrGWQz7XRReSCrweoDUQzUUBB0/LyNm6qP4PK4qgYs24Vfer78XGEWncib52o1dGEIo0hu2JL+mM3uUwpxoaT/XQqbqCPhYtTXf4zgA2B9mLp+OkXvzeLKddpDk3mOj3+7V7CObHivvlQ5nPlO6uk9KTLsChjz4JLWzWTJk3m4t1mJx6PT6Bg9UBrvP7yfxtoooQgMIlBBV/BaXgiki41dVIpQ==
+  template:
+    metadata:
+      name: drone-runner-kube-secret
+      namespace: devops
+      labels:
+        app: drone-runner-kube
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: drone-server-config
+  namespace: devops
+data:
+  DRONE_SERVER_HOST: "drone.theautomation.nl"
+  DRONE_SERVER_PROTO: "https"
+  DRONE_SERVER_PORT: ":80"
+  DRONE_USER_CREATE: "username:theautomation,admin:true"
+  DRONE_USER_FILTER: "theautomation"
+  DRONE_TLS_AUTOCERT: "false"
+  DRONE_LOGS_TRACE: "true"
+  # DRONE_DATABASE_DRIVER=postgres
+  # DRONE_DATABASE_DATASOURCE=postgres://root:password@1.2.3.4:5432/postgres?sslmode=disable
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: drone-runner-kube-config
+  namespace: devops
+  labels:
+    app: drone-runner-kube
+data:
+  DRONE_NAMESPACE_DEFAULT: "devops"
+  DRONE_RPC_HOST: "drone.theautomation.nl"
+  DRONE_RPC_PROTO: "https"
+  DRONE_LOGS_TRACE: "true"
+
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: drone-server
+  namespace: devops
+  labels:
+    app: drone-server
+
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: drone-runner-kube
+  namespace: devops
+  labels:
+    app: drone-runner-kube
+
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: drone-runner-kube
+  namespace: devops
+  labels:
+    app: drone-runner-kube
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - pods/log
+    verbs:
+      - get
+      - create
+      - delete
+      - list
+      - watch
+      - update
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: drone-runner-kube
+  namespace: devops
+  labels:
+    app: drone-runner-kube
+subjects:
+  - kind: ServiceAccount
+    name: drone-runner-kube
+    namespace: devops
+roleRef:
+  kind: Role
+  name: drone-runner-kube
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone-server
+  namespace: devops
+  labels:
+    app: drone-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drone-server
+  template:
+    metadata:
+      labels:
+        app: drone-server
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: drone-server
+      containers:
+        - name: drone-server
+          image: "drone/drone:2.12.1"
+          resources: {}
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: drone-server-config
+            - secretRef:
+                name: drone-server-secret
+          # livenessProbe:
+          #   httpGet:
+          #     path: /healthz
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /healthz
+          #     port: http
+          volumeMounts:
+            - name: drone-server-data
+              mountPath: /data
+              subPath: ""
+      volumes:
+        - name: drone-server-data
+          persistentVolumeClaim:
+            claimName: pvc-iscsi-drone-server-data
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone-runner-kube
+  namespace: devops
+  labels:
+    app: drone-runner-kube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drone-runner-kube
+  template:
+    metadata:
+      labels:
+        app: drone-runner-kube
+    spec:
+      serviceAccountName: drone-runner-kube
+      terminationGracePeriodSeconds: 3600
+      containers:
+        - name: drone-runner-kube
+          image: "drone/drone-runner-kube:1.0.0-rc.3"
+          resources: {}
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: drone-runner-kube-config
+            - secretRef:
+                name: drone-runner-kube-secret
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: drone-runner-kube
+  namespace: devops
+  labels:
+    app: drone-runner-kube
+spec:
+  selector:
+    app: drone-runner-kube
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: drone-server-svc
+  namespace: devops
+  labels:
+    app: drone-server
+spec:
+  selector:
+    app: drone-server
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 80
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: drone-server
+  namespace: devops
+  labels:
+    app: drone-server
+spec:
+  ingressClassName: nginx-public
+  rules:
+    - host: "drone.theautomation.nl"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: drone-server-svc
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - drone.theautomation.nl
+      secretName: cloudflare-tls
