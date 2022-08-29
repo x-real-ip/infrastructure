@@ -56,8 +56,6 @@ spec:
     metadata:
       name: container-image-registry-auth
       namespace: devops
-      annotations:
-        tekton.dev/docker-0: tekton.dev/docker-0
 
 ---
 kind: SealedSecret
