@@ -61,11 +61,28 @@ spec:
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
+  name: drone-secrets-secret
+  namespace: devops
+spec:
+  encryptedData:
+    SECRET_KEY: AgAD/OhJL7TEd0OhAck+M4d+F5Ss6/SLRHQlsIQa1EBR+9AQbQx9qeiNmgq8ccFze8PVUqvVz2MYweB3UdkXCL8HHVbQOzyJXWUg9RrykvNFMJ/oOPABFT4fd6RmsJQDxwgv0z1WX3uhoIdU3O1DmCtQ21gcPgdXpfKo/w8sNTYxQXt7Cb8XbtTwgvgsFsnPS4yq6yDBk27VOMpZ4fLKf4SeNoa7wlAXS9bQWDWktnwB2jd6cdAMwkNfjuEZ8FlU+XGcvuxEkVPvkxHqSkCagNy1hNmX2Xd6QpNUhqftBGtdrRwumzQldDxdB/3iDP7Ujzocs/x5TpcPgLAs/DRcC9pEP6C58eXSOi6lqIojN/KFzm6R/3WrWLrZ2R4YOQlDvaGjBHjH/tPd4t+udxWbwt2dQhCEDdywkdS0klnfl374H7dgXnXk7bETATaVP3uBgATI+4UjnGoO1WFTsoNqmc/sWdcriPeiROHRs9HAKgkCz3T44dO6Uh9LrVujT1Sdg5KGSvlm2lt1vfIu5ie+KYdN/1p9SSdxBnA3osO3zjKrBMeh3ju8XLzBuYexHgzL4gMakOpe3q+xKrCAPOy6rOGrGE5bSOwJkHPdtBP2wkgso3bxMsHfzjp7HuUhvjnWw9+GZnv8WFbCGaZjAXEwgoMJjKPNjvNpx5gwZMNyJJxq/PPHmU9ZQDjUHv8/ft8tzJhpOOZn9sGaReqe4GL+F6AkwkhafCHUMTRad0WmrAVbEA==
+  template:
+    metadata:
+      name: drone-secrets-secret
+      namespace: devops
+      labels:
+        app: drone-secrets
+
+---
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
+metadata:
   name: drone-runner-kube-secret
   namespace: devops
 spec:
   encryptedData:
     DRONE_RPC_SECRET: AgA6AD9tIQjiejhKqYuFfpMK1WUdsjZ4K5mY89PLo8CGEtAuny+Ow9D6NwQaseeHpGGO311OnQGWLdp8F0JwBzEnedZEKxtMnkOqACBYKBop3kuIMmebKdeRshxQczZ4ITTnleJY58F6/H0b2dJubDsqRjM4rrOa6gnLmCTBo2zMUNjlNtEpfTYURtB3I4bTO7BQOftJCSpZdFxUjvkj8GTfA1g7nrys3JACRgYLhELvsJgJTG6eMlXRheYfT0HA1NmYr7VJwfXIkwkE/57yaa3DmSEhI8Uz8WOkiBgSg1ggufdVfu3sI5JfIk8F6o8ufHvwIIJwD+aUorMr8O48yrdIrCOeOXkU4wzzhTcPmm+rjzjUoBagL8aNn9+9elAIa+Mej4K20zuX9GMcvVk4jmBL0pAEkcAyUXDbz3NDbvQVHeiYzm0bWmQqSzoHcF47HIkjXLPUywWyeWU9NXIVXB20Hjc+yV2VDe9fQ008hC0ON6pgw/FLl+JbcOvQJzntu/U1eZuPQ1W8kvjNQ+cPOrGWQz7XRReSCrweoDUQzUUBB0/LyNm6qP4PK4qgYs24Vfer78XGEWncib52o1dGEIo0hu2JL+mM3uUwpxoaT/XQqbqCPhYtTXf4zgA2B9mLp+OkXvzeLKddpDk3mOj3+7V7CObHivvlQ5nPlO6uk9KTLsChjz4JLWzWTJk3m4t1mJx6PT6Bg9UBrvP7yfxtoooQgMIlBBV/BaXgiki41dVIpQ==
+    DRONE_SECRET_PLUGIN_TOKEN: AgBJRxtZPEDV+BzFnM5kB8C+fbkEAwNSqzLEqaFCsaE5g9XlXCzPHeIpqgn2if9De2SAehIn5+Q3720mcqUSo4BpPppUfmvYMbeGat0Ozh3t4TJFvZWhl2qJbUMJ2cIeMkAu1h8MwaelolptPnhipnd85vsh03t0OQ0JBTYeFUpODljofyBIrZN8sVJ/t+j38kXlnquZqasRwCkayiaQcbQ4+na4JqiiXIODfqW0kXbm1MfErjX6x+6HFcwj11AX7p/okjkkYubRNlrIUIIyeqdbPvoAvhLHFxf6VEnemMlzgfsq/Klf0bokn5dVsDdg8MpMnEes420Nv/WUXmtRFC5MapIuzeJg7w1ZUGix9YfL/rwNuY9FnrIsEhC8D5rE7f6/a1vstMXULBFB3fd64h8dfritucOTiGUTOc7tmdH5b3wVwNy7eT+gSxa2vupHqp7fSlhQG66SoVdvJayR3bvy1Jq2uj/pwcYsD/7+kfw6gnHOolS6bCvpYiEwlDnsplOxxWLdPzOlXXexHw/VSWZGGuX+9XUDYEBVz/jFlwyk/MHE5qjkVO3ZwrIxhfMAlHDvl0dkX7haUUKgizr70zSEHSVyJtmflke+MjkeZA+HNWjAv7eTJwwAkEaPbb1u+za2MKxwjw6VNLvfvtvNz7+G6xhTbmKBig0qQp5NEUL9MsZkuMZ5pD1kkIFsXxfiOKFK1ym7eBOSmvSrdPjnA1XCXUe3SJnfymuCtGRrlOVqMjHGCwqlMKXFtIFqJg==
   template:
     metadata:
       name: drone-runner-kube-secret
@@ -103,6 +120,7 @@ data:
   DRONE_RPC_HOST: "drone.theautomation.nl"
   DRONE_RPC_PROTO: "https"
   DRONE_LOGS_TRACE: "true"
+  DRONE_SECRET_PLUGIN_ENDPOINT: "http://localhost:3010"
 
 ---
 kind: ServiceAccount
@@ -238,6 +256,13 @@ spec:
       serviceAccountName: drone-runner-kube
       terminationGracePeriodSeconds: 3600
       containers:
+        - name: drone-secrets
+          image: drone/kubernetes-secrets:latest
+          ports:
+            - containerPort: 3010
+          envFrom:
+            - secretRef:
+                name: drone-secrets-secret
         - name: drone-runner-kube
           image: "drone/drone-runner-kube:1.0.0-rc.3"
           resources: {}
