@@ -11,6 +11,7 @@
       - [Tekton CLI](#tekton-cli)
   - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
     - [Maintain cluster node](#maintain-cluster-node)
+    - [Upgrade K3s](#upgrade-k3s)
   - [Bitnami Sealed Secret](#bitnami-sealed-secret)
   - [ArgoCD](#argocd)
   - [Other](#other)
@@ -69,7 +70,7 @@ Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl
 ```console
 mkdir -p ~/.kube/ \
 && scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-&& sed -i 's/127.0.0.1/k3s-master-01.lan/g' ~/.kube/config
+&& sed -i 's/127.0.0.1/192.168.1.10/g' ~/.kube/config
 ```
 
 #### Bitnami Kubeseal
