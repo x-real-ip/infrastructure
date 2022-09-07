@@ -7,17 +7,15 @@
     - [Local](#local)
       - [Kubectl](#kubectl)
       - [Bitnami Kubeseal](#bitnami-kubeseal)
-      - [ArgoCD CLI](#argocd-cli)
-      - [Tekton CLI](#tekton-cli)
   - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
     - [Maintain cluster node](#maintain-cluster-node)
     - [Upgrade K3s](#upgrade-k3s)
   - [Bitnami Sealed Secret](#bitnami-sealed-secret)
-  - [ArgoCD](#argocd)
   - [Other](#other)
     - [Rsync](#rsync)
     - [ISCSI](#iscsi)
-      - [Steps to restore PVC using iSCSI mounts:](#steps-to-restore-pvc-using-iscsi-mounts)
+      - [Migration notes:](#migration-notes)
+      - [Repair PVC using iSCSI mounts:](#repair-pvc-using-iscsi-mounts)
   - [Node Feature Discovery](#node-feature-discovery)
 
 ## Gitops hierarchy
@@ -81,22 +79,6 @@ sudo wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18
 sudo tar xzvf kubeseal-0.18.0-linux-amd64.tar.gz
 
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
-```
-
-#### ArgoCD CLI
-Intall ArgoCD cli
-```console
-sudo curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-
-sudo chmod +x /usr/local/bin/argocd
-```
-
-#### Tekton CLI
-Install tekton cli 
-```console
-curl -LO https://github.com/tektoncd/cli/releases/download/v0.23.1/tkn_0.23.1_Linux_x86_64.tar.gz
-
-sudo tar xvzf tkn_0.23.1_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
 ```
 
 ## Kubernetes Cheatsheet
@@ -275,26 +257,6 @@ metadata:
 [Blogpost Tutorial](https://itsmetommy.com/2020/06/26/kubernetes-sealed-secrets/)
 
 
-## ArgoCD
-
-Use ArgoCD CLI
-The end-users need Kubernetes access to manage Argo CD. The argocd CLI has to be configured using the following commands:
-
-change current kube context to argocd namespace
-```console
-kubectl config set-context --current --namespace=devops
-```
-
-Login to ArgoCD directly to Kubernetes
-```console
-argocd login --core
-```
-
-Make WebUI available
-```console
-argocd admin dashboard
-```
-
 ## Other
 
 Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
@@ -326,7 +288,7 @@ Unmount disk
 sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server.lan -u
 ```
 
-Migration notes:
+#### Migration notes:
 
 1. create iscsi zvol
 2. make iscsi share
@@ -339,17 +301,26 @@ Migration notes:
 9. mount new drive
 10. rsync old files to new drive
 
-#### Steps to restore PVC using iSCSI mounts:
+#### Repair PVC using iSCSI mounts:
 
-1. SSH into one of the nodes in the cluster and start discovery sudo iscsiadm -m discovery -t st -p <truenas-portal-ip>
-2. Login to target sudo iscsiadm -m node --targetname <iscsi-share-fqdn>:<volume-target-name> --portal <truenas-portal-ip> --login
-3. See the device using lsblk. In the following steps, assume sda is the device name.
-4. Create a local mount point & mount to replay logfile sudo mkdir -vp /mnt/data-0 && sudo mount /dev/sda /mnt/data-0/
-5. Unmount the device sudo umount /mnt/data-0/
-6. Run check / ncheck sudo xfs_repair -n /dev/sda; sudo xfs_ncheck /dev/sda If filesystem corruption was corrected due to replay of the logfile, the xfs_ncheck should produce a list of nodes and pathnames, instead of the errorlog.
-7. If needed run xfs repair sudo xfs_repair /dev/sda
-8. Logout from target sudo iscsiadm -m node --targetname <iscsi-share-fqdn>:<volume-target-name> --portal <truenas-portal-ip> --logout
-9. Volumes are now ready to be mounted as PVCs.
+1. SSH into one of the nodes in the cluster and start discovery 
+    ```console
+    sudo iscsiadm -m discovery -t st -p storage-server.lan
+    ```
+2. Login to target 
+    ```console
+    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server.lan --login
+    ``` 
+3. See the device using ```lsblk```. In the following steps, assume sdd is the device name.
+4. Create a local mount point & mount to replay logfile ```sudo mkdir -vp /mnt/data-0 && sudo mount /dev/sdd /mnt/data-0/```
+5. Unmount the device ```sudo umount /mnt/data-0/```
+6. Run check / ncheck ```sudo xfs_repair -n /dev/sdd; sudo xfs_ncheck /dev/sdd``` If filesystem corruption was corrected due to replay of the logfile, the xfs_ncheck should produce a list of nodes and pathnames, instead of the errorlog.
+7.  If needed run xfs repair ```sudo xfs_repair /dev/sdd```
+8.  Logout from target 
+    ```console
+    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server.lan --logout
+    ```
+9.  Volumes are now ready to be mounted as PVCs.
 
 
 ## Node Feature Discovery
