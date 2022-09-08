@@ -61,6 +61,23 @@ spec:
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
+  name: drone-runner-kube-secret
+  namespace: devops
+spec:
+  encryptedData:
+    DRONE_RPC_SECRET: AgDKmx4WEpcWKSxAii9QsmhzjhwcF4J66JIaxMZC076LIk7wmMew1XtkkjKcf4ke5r5IWSdd6Or+7T+y5B86ZySBOB4/C0+u3ey5Gxci+wngM4YSEmhHbt+BTbYzF51s0bVJOtu+Dj6ozz5RIKVLzyLmhfRgW8Y+xVp8czHa/KOmkqDGyACgouNYTT3xbczgARB5cuJ+8uXyl+hv47zKq+k5mwRHQOwvms3NtZAhwigtY5ub68o71HDbfkxbbV2Ka5F2Nomztjs058a4CfJnznAyAkgzPbiIEfiN3o9q4OdL80EZ1yY/NLqqV3RI8MgGlABv77FpW/gZEs01yghoeanejrK0bba5p194t31r4a+57KTJGZYI4erTGo4VXGGSsEPz8JW0oNxxKnuRtZdIPQCQPJeJVHYNIOhnliutPfYLyGkPpYL/rphM8p8i1EZLrddPWJvKZEKhcDMp2/ZllmRg+lRLHifeFgJTmqlkVkIdJK148DRQ8TsSwV0BUn5C5dhcG3n+WXDPV8RlH4vld4hIyogkrOyviKLg57Tf85SxXykgg3W+p0tBJmI29YiaZb3kq5JU/DDPMHs3TLUP8Ejruh/DOr4DLT3GlPBhG6ylWZIXnhnFpJGlP32P6Kxp8uYv9GcxtSizcH9+eqrJPa4cVSbk4wKfQ1D6kMwrmjLTpdHoQPDFUI4jQCb9YHtydWjxdmd87ykeGRV0itWibOgM8KxO6KM4jBhKIASwwNyNlg==
+    DRONE_SECRET_PLUGIN_TOKEN: AgBc+nWdQF0g7DPiyowVhBc0ix/o4Ik1SRxN5+P+NDdvDiKhwSsF9XqyngpqlWaUa5o95vvJ04BBs+4+RxR4HGFP8FvLPow5VXNliFvhrM/CHrvI3hOL0eBYNiH8g7880V9bRAz5wbrUNJ1J2e8MlaPWLOYqwlBDDjdfQNyBaE7/Qrz82U+yx0/2i1Odo5LUEWx6LCwmdrq/m6erDm6HZRJIM6zL3ADuWb2WAhscpdXfTakdTj95kZ/cja1LvtFujoIFVYKLgGRcYkUAGT3qz3yBHudpM3/9RzbLYfWPqmaoHb99YkK7QzGccpBIwtXv55+RAi29dRiqU+hwBBcIJ3cUeJNzGqAtmHSGsWT9E7NmWnfAuwU3SRKH3nYMraaKVvPtQiq9NP3u5CJm/869/Ysd12rGC+KirrrLzx4pGYRfMQqe/3s5tl20BTR5M6fe0vyQ66+vriTZYQhz7oTb+SshkRbph+PSb+nx2RTAkw6QLxv1VNc6y59T+68bFzW1gVtXFpbsRmO1KpIbNPela2dzSMaRhCnGf6C2a67V3u/iORZkCkfu+Huhx48uu5j5+FGsjgmNHJKUPidx7mugXs8A7AvTJ3mE+HZswDzUpAuElOhDCo81G8YHxTQsvPMKYlKgDfdsaHFxOwSm4gWVfbNJP6cH4ECLaWnztloFuUUB1KbhM/yYHIGd3t0JAqntzOj8WxqXLSSWfOPs5rodOhK/88ktmbyYKa9Sb9EKz7zt/Q==
+  template:
+    metadata:
+      name: drone-runner-kube-secret
+      namespace: devops
+      labels:
+        app: drone-runner-kube
+
+---
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
+metadata:
   name: drone-secrets-secret
   namespace: devops
 spec:
@@ -72,23 +89,6 @@ spec:
       namespace: devops
       labels:
         app: drone-secrets
-
----
-kind: SealedSecret
-apiVersion: bitnami.com/v1alpha1
-metadata:
-  name: drone-runner-kube-secret
-  namespace: devops
-spec:
-  encryptedData:
-    DRONE_RPC_SECRET: AgA6AD9tIQjiejhKqYuFfpMK1WUdsjZ4K5mY89PLo8CGEtAuny+Ow9D6NwQaseeHpGGO311OnQGWLdp8F0JwBzEnedZEKxtMnkOqACBYKBop3kuIMmebKdeRshxQczZ4ITTnleJY58F6/H0b2dJubDsqRjM4rrOa6gnLmCTBo2zMUNjlNtEpfTYURtB3I4bTO7BQOftJCSpZdFxUjvkj8GTfA1g7nrys3JACRgYLhELvsJgJTG6eMlXRheYfT0HA1NmYr7VJwfXIkwkE/57yaa3DmSEhI8Uz8WOkiBgSg1ggufdVfu3sI5JfIk8F6o8ufHvwIIJwD+aUorMr8O48yrdIrCOeOXkU4wzzhTcPmm+rjzjUoBagL8aNn9+9elAIa+Mej4K20zuX9GMcvVk4jmBL0pAEkcAyUXDbz3NDbvQVHeiYzm0bWmQqSzoHcF47HIkjXLPUywWyeWU9NXIVXB20Hjc+yV2VDe9fQ008hC0ON6pgw/FLl+JbcOvQJzntu/U1eZuPQ1W8kvjNQ+cPOrGWQz7XRReSCrweoDUQzUUBB0/LyNm6qP4PK4qgYs24Vfer78XGEWncib52o1dGEIo0hu2JL+mM3uUwpxoaT/XQqbqCPhYtTXf4zgA2B9mLp+OkXvzeLKddpDk3mOj3+7V7CObHivvlQ5nPlO6uk9KTLsChjz4JLWzWTJk3m4t1mJx6PT6Bg9UBrvP7yfxtoooQgMIlBBV/BaXgiki41dVIpQ==
-    DRONE_SECRET_PLUGIN_TOKEN: AgC4hgltD5i8ss0ZGOG4Hnwjr6bYPZBjV3rwwQkuvzcQUQIr5lW7RIqKCoZWyhPpy9YE/QTgAEb2/NJVtumgSFMsVgYKcQmbKXiwNE1XW+4HO0GA53IzNkkKRKOIto57AlAdlGWX7FFOV/Ghm1p2CGnCJUeSELPUK9b+SwQ8oxiqmtsO3QVJAuxi99i50UyT/Yu2VQJVJhqjHe615PwU5VF6zvp9bpsQ6vm/BSwMy4VT3bTe3wm5dZIO8eS+AgKpqY7k2EUYrtiBOIhf3TbXad5VFDvEp5BOIJHRA7aBMJiQQILPsKTI7yoMddjwEpvgyMdjYpqVMzGzcHk5tXJdVho++oTfev2EFWZfLOpYugggeqOvhysGO8VuRCfXaB+TTdURJJWnesGnBmbwzD078ttPnXL0F1YuBp+K1eslzmKD8AdI1jRDwMI0VCKb0AossgT2hhy/HoAcPTUlS8I2v2IUVu3TZBphMWKOghfNTUbtIty/R/Uu1NdO3WEK44Mrv0UoDrJDPul++LO+MeoPQqlqVv5Ho4Di3/biUL2Or5VTWcGFD1PZb2AMzbrYvfoSL9uGa+SrzuAukaNWtkSOpqm8o1ug0ZCdUat5Tys2ZYeg7qK7/5dPpXF5jFRKUg9CPn/e3/l3UIMOCir/EheFAMiYix+Q7yDozWfTmsgS2MsXa/grdnLrDqkNC8koPk6hP7m7ZRYp9kvixVh4ooLaoQoop8wMJqp9TdkyGgO7ZSqgNtbSYNbo2GTMP40hqQ==
-  template:
-    metadata:
-      name: drone-runner-kube-secret
-      namespace: devops
-      labels:
-        app: drone-runner-kube
 
 ---
 kind: ConfigMap
@@ -120,7 +120,20 @@ data:
   DRONE_RPC_HOST: "drone.theautomation.nl"
   DRONE_RPC_PROTO: "https"
   DRONE_LOGS_TRACE: "true"
-  DRONE_SECRET_PLUGIN_ENDPOINT: "http://localhost:3010"
+  DRONE_SECRET_PLUGIN_ENDPOINT: "http://drone-secrets.devops.svc.cluster.local:3000"
+  DRONE_DEBUG: "true"
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: drone-secrets-config
+  namespace: devops
+  labels:
+    app: drone-runner-kube
+data:
+  KUBERNETES_NAMESPACE: "devops"
+  DRONE_DEBUG: "true"
 
 ---
 kind: ServiceAccount
@@ -139,6 +152,15 @@ metadata:
   namespace: devops
   labels:
     app: drone-runner-kube
+
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: drone-secrets
+  namespace: devops
+  labels:
+    app: drone-secrets
 
 ---
 kind: Role
@@ -170,6 +192,23 @@ rules:
       - update
 
 ---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: drone-secrets
+  namespace: devops
+  labels:
+    app: drone-secrets
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - secrets
+    verbs:
+    - get
+    - watch
+
+---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -184,6 +223,23 @@ subjects:
 roleRef:
   kind: Role
   name: drone-runner-kube
+  apiGroup: rbac.authorization.k8s.io
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: drone-secrets
+  namespace: devops
+  labels:
+    app: drone-secrets
+subjects:
+- kind: ServiceAccount
+  name: drone-secrets
+  namespace: devops
+roleRef:
+  kind: Role
+  name: drone-secrets
   apiGroup: rbac.authorization.k8s.io
 
 ---
@@ -256,13 +312,6 @@ spec:
       serviceAccountName: drone-runner-kube
       terminationGracePeriodSeconds: 3600
       containers:
-        - name: drone-secrets
-          image: drone/kubernetes-secrets:latest
-          ports:
-            - containerPort: 3010
-          envFrom:
-            - secretRef:
-                name: drone-secrets-secret
         - name: drone-runner-kube
           image: "drone/drone-runner-kube:1.0.0-rc.3"
           resources: {}
@@ -274,6 +323,57 @@ spec:
                 name: drone-runner-kube-config
             - secretRef:
                 name: drone-runner-kube-secret
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: drone-secrets
+  namespace: devops
+  labels:
+    app: drone-secrets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drone-secrets
+  template:
+    metadata:
+      labels:
+        app: drone-secrets
+    spec:
+      serviceAccountName: drone-secrets
+      containers:
+        - name: drone-secrets
+          image: drone/kubernetes-secrets:latest
+          resources: {}
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: drone-secrets-config
+            - secretRef:
+                name: drone-secrets-secret
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: drone-server-svc
+  namespace: devops
+  labels:
+    app: drone-server
+spec:
+  selector:
+    app: drone-server
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 80
+
 ---
 kind: Service
 apiVersion: v1
@@ -296,19 +396,19 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: drone-server-svc
+  name: drone-secrets
   namespace: devops
   labels:
-    app: drone-server
+    app: drone-secrets
 spec:
   selector:
-    app: drone-server
+    app: drone-secrets
   type: ClusterIP
   ports:
     - name: http
       protocol: TCP
-      port: 8080
-      targetPort: 80
+      port: 3000
+      targetPort: 3000
 
 ---
 kind: Ingress
