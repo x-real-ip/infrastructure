@@ -39,12 +39,12 @@ if [[ $HOSTNAME =~ master ]]; then
         # Add manifests
         sudo mkdir -p ${manifest_location} &&
             cd ${manifest_location}
-        sudo curl -O ${github_k8s_url}/01-namespaces/*.yaml
-        sudo curl -O ${github_k8s_url}/01-kube-vip/manifest.yaml
-        sudo curl -O ${github_k8s_url}/02-metallb/manifest.yaml
-        sudo curl -O ${github_k8s_url}/03-nginx-ingress-controller/nginx-ingress-controller-prd-int-manifest.yaml
-        sudo curl -O ${github_k8s_url}/03-nginx-ingress-controller/nginx-ingress-controller-prd-int-manifest.yaml
-        sudo curl -O ${github_k8s_url}/04-bitnami/manifest.yaml
+        sudo curl -O ${github_k8s_url}/init/01-kube-vip.yaml
+        sudo curl -O ${github_k8s_url}/init/02-namespaces.yaml
+        sudo curl -O ${github_k8s_url}/init/03-metallb.yaml
+        sudo curl -O ${github_k8s_url}/init/04-nginx-ingress-controller-prd-ext-manifest.yaml
+        sudo curl -O ${github_k8s_url}/init/04-nginx-ingress-controller-prd-int-manifest.yaml
+        sudo curl -O ${github_k8s_url}/init/05-bitnami-manifest.yaml
 
         echo -e "\nInstalling k3s master and initializing the cluster...\n" &&
             curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --no-deploy servicelb --no-deploy traefik --tls-san ${k3s_vipip} --no-deploy servicelb --cluster-init
