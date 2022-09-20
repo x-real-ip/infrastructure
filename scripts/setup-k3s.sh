@@ -11,7 +11,7 @@ github_k8s_url="https://raw.githubusercontent.com/theautomation/kubernetes-gitop
 # Update and install packages
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y curl wget unzip
+sudo apt install -y curl wget unzip git
 
 # ISCSI
 echo -e "\nInstalling ISCSI...\n"
