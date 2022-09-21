@@ -50,9 +50,9 @@ Reboot the host machine
 ```console
 export k3s_token="<k3s_token>"
 
-export k3s_cluster_init_ip="<ip_of_master-01>"
+export k3s_cluster_init_ip="192.168.1.101"
 
-export k3s_vipip="192.168.1.10"
+export k3s_vipip="192.168.1.100"
 
 curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | bash -
 ```
@@ -68,7 +68,7 @@ Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl
 ```console
 mkdir -p ~/.kube/ \
 && scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-&& sed -i 's/127.0.0.1/192.168.1.10/g' ~/.kube/config
+&& sed -i 's/127.0.0.1/192.168.1.100/g' ~/.kube/config
 ```
 
 #### Bitnami Kubeseal
