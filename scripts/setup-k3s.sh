@@ -63,10 +63,10 @@ EOF
         sudo cp -rv ./kubernetes-gitops/deploy/k8s/* ${manifest_location}
 
         echo -e "\nInstalling k3s master and initializing the cluster...\n" &&
-            curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --no-deploy servicelb --no-deploy traefik --tls-san ${k3s_vipip} --no-deploy servicelb --cluster-init
+            curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --disable servicelb --disable traefik --tls-san ${k3s_vipip} --cluster-init
     else
         echo -e "\nInstalling k3s master and joining to cluster...\n" &&
-            curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --no-deploy servicelb --no-deploy traefik --tls-san ${k3s_vipip} --no-deploy servicelb --server=https://${k3s_cluster_init_ip}:6443
+            curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --disable servicelb --disable traefik --tls-san ${k3s_vipip} --server=https://${k3s_cluster_init_ip}:6443
     fi
     sleep 10 && echo -e "\nInstalling k3s on $HOSTNAME done.\n" &&
         kubectl get nodes -o wide
