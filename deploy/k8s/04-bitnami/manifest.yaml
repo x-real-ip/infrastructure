@@ -211,11 +211,10 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  annotations: {}
-  labels:
-    name: sealed-secrets-controller
   name: sealed-secrets-controller
   namespace: kube-system
+  labels:
+    name: sealed-secrets-controller
 spec:
   ports:
     - port: 8080

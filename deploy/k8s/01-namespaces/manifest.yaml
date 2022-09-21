@@ -44,3 +44,9 @@ metadata:
   name: prd-ext
   labels:
     app: ingress-nginx
+
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: media
