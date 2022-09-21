@@ -45,7 +45,10 @@ Set hostname in ```/etc/hosts```
 sudo nano /etc/hosts
 ```
 
-Reboot the host machine
+3. Reboot the host machine
+4. Assing static ip in router for the VM's
+5. Reboot the host machine's
+6. ssh into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
 
 ```console
 export k3s_token="<k3s_token>"
@@ -59,6 +62,7 @@ export tls_key="<tls.key>"
 
 curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | bash -
 ```
+7. After applying the above command on each node k3s is setup.
 
 ### Local
 
