@@ -44,9 +44,6 @@ if [[ $HOSTNAME =~ master ]]; then
         git clone ${github_repo}
 
         # Create sealedsecret custom certificate in init repo folder
-        echo "Enter tls.key base64 encoded string for Bitnami Sealed Secret:"
-        read -r tls_key
-
         sudo cat <<EOF >./kubernetes-gitops/deploy/k8s/sealed-secret-customkeys-2.yaml
         ---
         kind: Secret

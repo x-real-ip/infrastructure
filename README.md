@@ -54,6 +54,9 @@ export k3s_cluster_init_ip="192.168.1.101"
 
 export k3s_vipip="192.168.1.100"
 
+# tls.key base64 encoded string for Bitnami Sealed Secret
+export tls_key="<tls.key>"
+
 curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | bash -
 ```
 
