@@ -77,7 +77,7 @@ spec:
         - name: vip_ddns
           value: "false"
         - name: svc_enable
-          value: "true"
+          value: "false"
         - name: vip_leaderelection
           value: "true"
         - name: vip_leaseduration
@@ -99,10 +99,6 @@ spec:
             - NET_RAW
             - SYS_TIME
       hostNetwork: true
-      hostAliases:
-      - hostnames:
-        - kubernetes
-        ip: 127.0.0.1
       serviceAccountName: kube-vip
       tolerations:
       - effect: NoSchedule
