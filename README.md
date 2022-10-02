@@ -32,23 +32,27 @@
 
 ### Bootstrap K3s cluster
 
-1. Create VM's and install ubuntu server on it. For example 3x master 2x worker nodes.
+1. Create VM's and install debian on it. For example 3x master 2x worker nodes.
 2. SSH into each node en run below commands:
 
 Set hostname
 ```console 
-sudo hostnamectl set-hostname <hostname>
+hostnamectl set-hostname <hostname>
 ```
 
 Set hostname in ```/etc/hosts```
 ```console
-sudo nano /etc/hosts
+nano /etc/hosts
+```
+3. Install CURL
+```
+apt install curl -y
 ```
 
-3. Reboot the host machine
-4. Assing static ip in router for the VM's
-5. Reboot the host machine's
-6. ssh into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
+4. Reboot the host machine
+5. Assing static ip in firewall/router for the VM's
+6. Reboot the host machine's
+7. ssh into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
 
 ```console
 export k3s_token="<k3s_token>"
