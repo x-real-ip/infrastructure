@@ -6,45 +6,60 @@
 #
 
 manifest_location="/var/lib/rancher/k3s/server/manifests/"
-github_repo="https://github.com/theautomation/kubernetes-gitops.git"
+# github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
-# Update and install packages
-sudo apt update \
-&& sudo apt upgrade -y \
-&& sudo apt install -y curl wget unzip git
+# Set path variable for shutdown command.
+export PATH=$PATH:/usr/sbin
+
+# Set correct timezone.
+echo "Set timezone..."
+timedatectl set-timezone Europe/Amsterdam
+
+# Set the system locale
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# Update and install packages.
+apt update && apt upgrade -y &&
+    apt install -y \
+        curl \
+        wget \
+        unzip \
+        git
 
 # ISCSI
-echo -e "\nInstalling ISCSI...\n"
-sudo apt-get install -y open-iscsi lsscsi sg3-utils multipath-tools scsitools
+echo -e "\nInstalling ISCSI and dependencies...\n"
+apt install -y \
+    open-iscsi \
+    lsscsi \
+    sg3-utils \
+    multipath-tools \
+    scsitools
 
-sudo tee /etc/multipath.conf <<-'EOF'
+tee /etc/multipath.conf <<-'EOF'
+blacklist {
+    devnode "sda"
+}
 defaults {
     user_friendly_names yes
     find_multipaths yes
 }
 EOF
 
-sudo systemctl enable multipath-tools.service
-sudo service multipath-tools restart
-sudo systemctl enable open-iscsi.service
-sudo service open-iscsi start
-
-# QEMU guest agent
-echo -e "\nInstalling QEMU guest agent...\n" &&
-    sudo apt-get install qemu-guest-agent -y
+systemctl enable multipath-tools.service
+systemctl restart multipath-tools
+systemctl enable open-iscsi.service
+systemctl start open-iscsi
 
 if [[ $HOSTNAME =~ master ]]; then
     # Setup masters
     if [[ $HOSTNAME = "k3s-master-01" ]]; then
 
         # Create dir for init manifests
-        sudo mkdir -p ${manifest_location}
-
-        # Git clone
-        git clone ${github_repo}
+        mkdir -p ${manifest_location}
 
         # Create sealedsecret custom certificate in init repo folder
-        sudo cat <<EOF >./kubernetes-gitops/deploy/k8s/sealed-secret-customkeys-2.yaml
+        cat <<EOF >/var/lib/rancher/k3s/server/manifests/sealed-secret-customkeys-2.yaml
 ---
 kind: Secret
 apiVersion: v1
@@ -59,9 +74,6 @@ data:
   tls.key: ${tls_key} 
 EOF
 
-        # Copy init manifests to init folder
-        sudo cp -rv ./kubernetes-gitops/deploy/k8s/* ${manifest_location}
-
         echo -e "\nInstalling k3s master and initializing the cluster...\n" &&
             curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --disable servicelb --disable traefik --tls-san ${k3s_vipip} --cluster-init
     else
@@ -75,6 +87,3 @@ else
     echo -e "\nInstalling k3s workers and joining to cluster...\n" &&
         curl -sfL https://get.k3s.io | K3S_URL=https://${k3s_cluster_init_ip}:6443 K3S_TOKEN=${k3s_token} sh -
 fi
-
-# Cleanup
-sudo rm -r ./kubernetes-gitops
