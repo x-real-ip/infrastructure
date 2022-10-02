@@ -5,8 +5,8 @@
 # github@theautomation.nl
 #
 
-manifest_location="/var/lib/rancher/k3s/server/manifests/"
-github_repo="https://github.com/theautomation/kubernetes-gitops.git"
+export manifest_location="/var/lib/rancher/k3s/server/manifests/"
+export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
 # Set path variable for shutdown command.
 export PATH=$PATH:/usr/sbin
