@@ -78,8 +78,8 @@ EOF
         git clone ${github_repo}
 
         # Copy init manifests to init folder
-        sudo cp -rv ./kubernetes-gitops/deploy/k8s/01-namespaces ${manifest_location}
-        sudo cp -rv ./kubernetes-gitops/deploy/k8s/02-kube-vip ${manifest_location}
+        cp -rv ./kubernetes-gitops/deploy/k8s/01-namespaces ${manifest_location}
+        cp -rv ./kubernetes-gitops/deploy/k8s/02-kube-vip ${manifest_location}
 
         echo -e "\nInstalling k3s master and initializing the cluster...\n" &&
             curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --write-kubeconfig-mode=644 --disable servicelb --disable traefik --tls-san ${k3s_vipip} --cluster-init
