@@ -33,7 +33,7 @@
 ### Bootstrap K3s cluster
 
 1. Create VM's and install debian on it. For example 3x master 2x worker nodes.
-2. SSH into each node en run below commands:
+2. SSH into each node en run below commands as root:
 
 Set hostname
 ```console 
