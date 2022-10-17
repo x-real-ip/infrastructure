@@ -282,7 +282,7 @@ spec:
       serviceAccountName: drone-server
       containers:
         - name: drone-server
-          image: "drone/drone:2.12.1"
+          image: "drone/drone:2"
           resources: {}
           ports:
             - containerPort: 80
@@ -331,7 +331,7 @@ spec:
       terminationGracePeriodSeconds: 3600
       containers:
         - name: drone-runner-kube
-          image: "drone/drone-runner-kube:1.0.0-rc.3"
+          image: "drone/drone-runner-kube:latest"
           resources: {}
           ports:
             - containerPort: 3000
@@ -426,7 +426,7 @@ spec:
     - name: http
       protocol: TCP
       port: 3000
-      targetPort: 3000
+      targetPort: 3000  
 
 ---
 kind: Ingress
