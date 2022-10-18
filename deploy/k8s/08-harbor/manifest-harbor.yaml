@@ -16,7 +16,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-iscsi-harbor-db
     volumeAttributes:
-      portal: storage-server.lan:3260
+      portal: storage-server-lagg.lan:3260
       iqn: iqn.2005-10.org.freenas.ctl:harbor-db
       lun: "0"
       node_attach_driver: iscsi
@@ -40,7 +40,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-iscsi-harbor-trivy
     volumeAttributes:
-      portal: storage-server.lan:3260
+      portal: storage-server-lagg.lan:3260
       iqn: iqn.2005-10.org.freenas.ctl:harbor-trivy
       lun: "0"
       node_attach_driver: iscsi
@@ -64,7 +64,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-iscsi-harbor-jobservice
     volumeAttributes:
-      portal: storage-server.lan:3260
+      portal: storage-server-lagg.lan:3260
       iqn: iqn.2005-10.org.freenas.ctl:harbor-jobservice
       lun: "0"
       node_attach_driver: iscsi
@@ -88,7 +88,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-iscsi-harbor-jobservice-scandata
     volumeAttributes:
-      portal: storage-server.lan:3260
+      portal: storage-server-lagg.lan:3260
       iqn: iqn.2005-10.org.freenas.ctl:harbor-jobservice-scandata
       lun: "0"
       node_attach_driver: iscsi
@@ -112,7 +112,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-iscsi-harbor-redis
     volumeAttributes:
-      portal: storage-server.lan:3260
+      portal: storage-server-lagg.lan:3260
       iqn: iqn.2005-10.org.freenas.ctl:harbor-redis
       lun: "0"
       node_attach_driver: iscsi
@@ -161,7 +161,7 @@ spec:
     fsType: nfs
     volumeHandle: pv-nfs-harbor-registry
     volumeAttributes:
-      server: storage-server.lan
+      server: storage-server-lagg.lan
       share: /mnt/r10_8tb/k8s/harbor-registry
       node_attach_driver: nfs
       provisioner_driver: node-manual
