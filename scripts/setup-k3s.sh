@@ -8,6 +8,18 @@
 export manifest_location="/var/lib/rancher/k3s/server/manifests/"
 export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
+# List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster
+MANIFESTS=(
+    01-namespaces
+    02-kube-vip
+    03-metallb
+    04-bitnami
+    05-nginx
+    06-certificates
+    07-csi
+    08-harbor
+)
+
 # Set path variable for shutdown command.
 export PATH=$PATH:/usr/sbin
 
@@ -114,14 +126,9 @@ EOF
     git clone ${github_repo}
 
     # Copy init manifests to init folder
-    cp -rv ./kubernetes-gitops/deploy/k8s/01-namespaces ${manifest_location}
-    cp -rv ./kubernetes-gitops/deploy/k8s/02-kube-vip ${manifest_location}
-    cp -rv ./kubernetes-gitops/deploy/k8s/03-metallb ${manifest_location}
-    cp -rv ./kubernetes-gitops/deploy/k8s/04-bitnami ${manifest_location}
-    cp -rv ./kubernetes-gitops/deploy/k8s/05-nginx ${manifest_location}
-    cp -rv ./kubernetes-gitops/deploy/k8s/06-certificates ${manifest_location}
-    cp -rv ./kubernetes-gitops/deploy/k8s/07-csi ${manifest_location}
-    cp -rv ./kubernetes-gitops/deploy/k8s/08-harbor ${manifest_location}
+    for m in "${MANIFESTS[@]}"; do
+    cp -rv ./kubernetes-gitops/deploy/k8s/"$m" "${manifest_location}"
+    done
 
     echo -e "\nInstalling k3s master and initializing the cluster...\n" &&
       curl -sfL https://get.k3s.io | sh
