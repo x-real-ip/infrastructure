@@ -5,10 +5,8 @@
 # github@theautomation.nl
 #
 
-export manifest_location="/var/lib/rancher/k3s/server/manifests/"
-export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
-
 # List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster
+# See https://github.com/theautomation/kubernetes-gitops/tree/main/deploy/k8s
 MANIFESTS=(
     01-namespaces
     02-kube-vip
@@ -18,15 +16,20 @@ MANIFESTS=(
     06-certificates
     07-csi
     08-harbor
+    09-node-feature-discovery
+    10-drone
 )
 
-# Set correct timezone.
-echo "Set timezone..."
-timedatectl set-timezone Europe/Amsterdam
+export manifest_location="/var/lib/rancher/k3s/server/manifests/"
+export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
 # Set the system locale
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+
+# Set correct timezone.
+echo "Set timezone..."
+timedatectl set-timezone Europe/Amsterdam
 
 # Update and install packages.
 apt update && apt upgrade -y &&
@@ -36,7 +39,7 @@ apt update && apt upgrade -y &&
     unzip \
     git
 
-# ISCSI
+# Install ISCSI and dependencies
 echo -e "\nInstalling ISCSI and dependencies...\n"
 apt install -y \
   open-iscsi \
@@ -45,7 +48,7 @@ apt install -y \
   multipath-tools \
   scsitools
 
-# Create multipath config
+# Create multipath config for ISCSI
 cat <<EOF >/etc/multipath.conf
 blacklist {
     devnode "sda"
