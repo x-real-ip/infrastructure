@@ -20,9 +20,6 @@ MANIFESTS=(
     08-harbor
 )
 
-# Set path variable for shutdown command.
-export PATH=$PATH:/usr/sbin
-
 # Set correct timezone.
 echo "Set timezone..."
 timedatectl set-timezone Europe/Amsterdam
