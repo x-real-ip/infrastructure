@@ -38,7 +38,8 @@ apt update && apt upgrade -y &&
   apt install -y \
     wget \
     unzip \
-    git
+    git \
+    sudo
 
 # Install ISCSI and dependencies
 echo -e "\nInstalling ISCSI and dependencies...\n"
