@@ -65,6 +65,9 @@ systemctl restart multipath-tools
 systemctl enable open-iscsi.service
 systemctl start open-iscsi
 
+# Create K3s /etc/rancher/k3s
+mkdir -p /etc/rancher/k3s/
+
 # Create private registry yaml
 cat <<EOF >/etc/rancher/k3s/registries.yaml
 ---
