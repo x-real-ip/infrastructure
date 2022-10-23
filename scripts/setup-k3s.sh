@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Install k3s and dependencies on Debian distro.
 # Writtin by Coen Stam.
 # github@theautomation.nl
@@ -34,7 +36,6 @@ timedatectl set-timezone Europe/Amsterdam
 # Update and install packages.
 apt update && apt upgrade -y &&
   apt install -y \
-    curl \
     wget \
     unzip \
     git
