@@ -61,7 +61,6 @@ defaults {
 }
 EOF
 
-systemctl enable multipath-tools.service
 systemctl restart multipath-tools
 systemctl enable open-iscsi.service
 systemctl start open-iscsi
