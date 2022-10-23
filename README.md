@@ -57,9 +57,9 @@ apt install curl -y
 ```console
 export k3s_token="<k3s_token>"
 
-export k3s_cluster_init_ip="192.168.1.101"
+export k3s_cluster_init_ip="192.168.100.101"
 
-export k3s_vipip="192.168.1.100"
+export k3s_vipip="192.168.100.100"
 
 # tls.key base64 encoded string for Bitnami Sealed Secret
 export tls_key="<tls.key>"
@@ -70,6 +70,11 @@ curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main
 
 ### Local
 
+Flush dns cache
+```console
+resolvectl flush-caches
+```
+
 #### Kubectl
 1. Install kubectl on your local machine.
 Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
@@ -79,15 +84,15 @@ Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl
 ```console
 mkdir -p ~/.kube/ \
 && scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-&& sed -i 's/127.0.0.1/192.168.1.100/g' ~/.kube/config
+&& sed -i 's/127.0.0.1/192.168.100.100/g' ~/.kube/config
 ```
 
 #### Bitnami Kubeseal
 Install Kubeseal locally to use Bitnami sealed serets in k8s.
 ```console
-sudo wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/kubeseal-0.18.0-linux-amd64.tar.gz
+sudo wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.19.1/kubeseal-0.19.1-linux-amd64.tar.gz
 
-sudo tar xzvf kubeseal-0.18.0-linux-amd64.tar.gz
+sudo tar xzvf kubeseal-0.19.1-linux-amd64.tar.gz
 
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
@@ -286,12 +291,12 @@ sudo rsync -axHAWXS --numeric-ids --info=progress2 /mnt/sourcePart/ /mnt/destPar
 
 Discovering targets in iSCSI server
 ```console
-sudo iscsiadm --mode discovery -t sendtargets --portal storage-server.lan
+sudo iscsiadm --mode discovery -t sendtargets --portal storage-server-lagg.lan
 ```
 
 Mount disk
 ```console
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server.lan --login
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --login
 ```
 
 Unmount disk
