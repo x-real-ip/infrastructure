@@ -47,9 +47,9 @@ metadata:
   namespace: devops
 spec:
   encryptedData:
+    DRONE_RPC_SECRET: AgDq+9cab6eGpDwohvcqG18BsXmQmoQnTdG+7tUBCY3QU+D7V3B4jYaV3CSvuBMUdXl0r8Y6Ujc9GyUswSAzR7slLhtlqZzeh2Pe9bJbQL86b7ta376hKMMnupxFVfcEYvoszV0BoY4eiKqVOsG2xYuJYw83nJFY8HUq81NlXbnPeXLN2xA55XPQeH2IPuTlpbwF9BdipkLVTRha+ALSvWhZKaMStgXhognn8r+kyEKCaK4J7y+PtwzHKWtZPLcQslw+sorxtUlPkuGnFvnoPeYGW5cm9OSf+Rz75FyE8Xnffg6ScYym2PBGrm7A9/mj5jlOJRRuhRINtt3zSs3R28+NSmlwIMKSyNHthV7Fo/SUKNheBK/K+xkC/5dEWoOeHHC91bjKC4FZr8sKhH8z16bF/72LABASNZ8g1vt7lxCu8OCHsL03xzffSMGX0/zdcwLxvNeUTZzx4QH8SA0T91EjDhcCL6nZDMB8yXdyeQq86IQgq9WLENdy4xdzPOxRLZLlSCHCOvXb6h0aLgmO+coC/WtNtZ9mx+FIhxXX7f+/Srez0boxt5AZz5u1F1Yliez99NaN0njnWBQ41Wi+YCXBW7mHe9Sf4RAlYgGZ/FyVU7Iz5d4otSGDR+qlUx17oJ5cC2shVn9SxlWinpBl3tggWI0wzxY604uYqHfAJV7FcjMGjVGpQsOE+DaYyIO9nXvH99qH0fm1bvUT337OPf0+0ppWmufQ5ORhMO8f3CybiA==
     DRONE_GITHUB_CLIENT_ID: AgCYM7K6a+KrooUE1Zcf0MG8KhnWaZEg5H2+Zfp4MC/TyGxUkco4++fu/iwoIvmanYrCb+vppOfUrgGuTFWNj0n7+uEYk5uiNXsZLUAtoKClmDGrzwrxIeTfC3/sG3r84Kn8u3INXR2xSSevi0sbRAoOTtFn+G4K0B+iyZgND7MsbYupihnjTpzk+gDT5ROQwkL++RQrqcsTXLcNHnR+UJOojDL+HD/KiLbbR8LTwsEtB7JCtc94wj9rj0O6x/KuW1fIy5IL3BLMpviPtad6+uXChLi3/+dSqa6PWUPx1nO0k+8UYK1J8HHU5O3qVgMxxrNlT7HJq839aWb5xzTUk3G/Wi/Rr/vn4h+9+tEvAorwRxurX3yMkO6Yyfa1uJyif4fwT/gDAMMDj+SyzK3jn5FOPddc/aTjv/HHueQrWo9ErKPUOjKW7o/ril7OCXJ9dCfXGG7wTu7mJaBMrJdjOgAcm0OW/hEts6k7s+E5KH32zgkd7HPixIJuYpnNfPHbpeo5v5DPYOpveY5kv/NGRkZwmN5IlwP1buHBsSX4NYhJTcRLRRaXH05BKJtbgbvGzRaVGl5ThxmA/lERrCKWPqX9G3hi6w/fjZlW10CzbDAsDcqiiJJ7c1SybqknGMFH9oFR9+ukOKge2YJTrE1D33xv6cLogriLgZojKUVVES+O85KAzUXWszJNAzzdM6EMwz/IwbHLIvj3P4/LW/73vRef6uqNhw==
     DRONE_GITHUB_CLIENT_SECRET: AgC6ehEAnvaMNs+Uews1hzhGMHMbE7lX+5qX7fADpK8nebUBHq2HWU5uNCY7hV9OEdTQiFDujyGeYyULpI2kdnBZZ495NkxjcOo0VRMP2wxQIpBAzQ64o010a7nHlByOeebSxddqNdzTKBIdCIU5y/QaorQN4ozRdsaxQA9Bu49FRLgPRcxdjaVtwCnbHIPTTqi3mxOTCRDlddpuE9ZFtK36HYe/GKjgI7VRg3wqSIK3dOLzTgDvEpswRI94ofHAdOzqOkyaPaBPyXQNp0z/C8QtfkH8+/ZBk7hvzclPi+ztQ9ays/wYzeWog1sUAlUtvjqFCvHFrkr0K34HVfOqPWRzH/8GWl3quT0cXw4FcfawqiVphe6CXhGdOQAexNXVbsCyoY14/LoyRmgZL6BmTW4ZJCVlbDmtfPfVY95JTI55oWpks6EXfEcuprucd3RWUTikZFkDmizcbNDbJjAG3uTv+lyCft1jGnJDxnVmiEFOJV8WygMP7q6NAdsyNr8beDIK3zNXSWfxybGz4SXcliFnS49sfGffL8G+E523tUD2UC6h6BHa1uMaYrEVWfnxN3AUymhfj9wJAOnIXA5GCcmlyYr84wlStep/KfWqrv+hS6yRJKyPNBsItUpFKtdLl8IG3EqDLhVzTsHBYHbq/AdZFxd5ImXeGzfTKKIBkHHlFd7kMxBZSsf+W34/LH0QRivg9VQqVcgw4qhFH/Qup74KjlsUmnOYLoK/2d/dRo9wdzbEIgucC+qz
-    DRONE_RPC_SECRET: AgDq+9cab6eGpDwohvcqG18BsXmQmoQnTdG+7tUBCY3QU+D7V3B4jYaV3CSvuBMUdXl0r8Y6Ujc9GyUswSAzR7slLhtlqZzeh2Pe9bJbQL86b7ta376hKMMnupxFVfcEYvoszV0BoY4eiKqVOsG2xYuJYw83nJFY8HUq81NlXbnPeXLN2xA55XPQeH2IPuTlpbwF9BdipkLVTRha+ALSvWhZKaMStgXhognn8r+kyEKCaK4J7y+PtwzHKWtZPLcQslw+sorxtUlPkuGnFvnoPeYGW5cm9OSf+Rz75FyE8Xnffg6ScYym2PBGrm7A9/mj5jlOJRRuhRINtt3zSs3R28+NSmlwIMKSyNHthV7Fo/SUKNheBK/K+xkC/5dEWoOeHHC91bjKC4FZr8sKhH8z16bF/72LABASNZ8g1vt7lxCu8OCHsL03xzffSMGX0/zdcwLxvNeUTZzx4QH8SA0T91EjDhcCL6nZDMB8yXdyeQq86IQgq9WLENdy4xdzPOxRLZLlSCHCOvXb6h0aLgmO+coC/WtNtZ9mx+FIhxXX7f+/Srez0boxt5AZz5u1F1Yliez99NaN0njnWBQ41Wi+YCXBW7mHe9Sf4RAlYgGZ/FyVU7Iz5d4otSGDR+qlUx17oJ5cC2shVn9SxlWinpBl3tggWI0wzxY604uYqHfAJV7FcjMGjVGpQsOE+DaYyIO9nXvH99qH0fm1bvUT337OPf0+0ppWmufQ5ORhMO8f3CybiA==
   template:
     metadata:
       name: drone-server-secret
@@ -61,34 +61,18 @@ spec:
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
-  name: drone-runner-kube-secret
+  name: drone-runner-docker-secret
   namespace: devops
 spec:
   encryptedData:
-    DRONE_RPC_SECRET: AgDKmx4WEpcWKSxAii9QsmhzjhwcF4J66JIaxMZC076LIk7wmMew1XtkkjKcf4ke5r5IWSdd6Or+7T+y5B86ZySBOB4/C0+u3ey5Gxci+wngM4YSEmhHbt+BTbYzF51s0bVJOtu+Dj6ozz5RIKVLzyLmhfRgW8Y+xVp8czHa/KOmkqDGyACgouNYTT3xbczgARB5cuJ+8uXyl+hv47zKq+k5mwRHQOwvms3NtZAhwigtY5ub68o71HDbfkxbbV2Ka5F2Nomztjs058a4CfJnznAyAkgzPbiIEfiN3o9q4OdL80EZ1yY/NLqqV3RI8MgGlABv77FpW/gZEs01yghoeanejrK0bba5p194t31r4a+57KTJGZYI4erTGo4VXGGSsEPz8JW0oNxxKnuRtZdIPQCQPJeJVHYNIOhnliutPfYLyGkPpYL/rphM8p8i1EZLrddPWJvKZEKhcDMp2/ZllmRg+lRLHifeFgJTmqlkVkIdJK148DRQ8TsSwV0BUn5C5dhcG3n+WXDPV8RlH4vld4hIyogkrOyviKLg57Tf85SxXykgg3W+p0tBJmI29YiaZb3kq5JU/DDPMHs3TLUP8Ejruh/DOr4DLT3GlPBhG6ylWZIXnhnFpJGlP32P6Kxp8uYv9GcxtSizcH9+eqrJPa4cVSbk4wKfQ1D6kMwrmjLTpdHoQPDFUI4jQCb9YHtydWjxdmd87ykeGRV0itWibOgM8KxO6KM4jBhKIASwwNyNlg==
-    DRONE_SECRET_PLUGIN_TOKEN: AgBc+nWdQF0g7DPiyowVhBc0ix/o4Ik1SRxN5+P+NDdvDiKhwSsF9XqyngpqlWaUa5o95vvJ04BBs+4+RxR4HGFP8FvLPow5VXNliFvhrM/CHrvI3hOL0eBYNiH8g7880V9bRAz5wbrUNJ1J2e8MlaPWLOYqwlBDDjdfQNyBaE7/Qrz82U+yx0/2i1Odo5LUEWx6LCwmdrq/m6erDm6HZRJIM6zL3ADuWb2WAhscpdXfTakdTj95kZ/cja1LvtFujoIFVYKLgGRcYkUAGT3qz3yBHudpM3/9RzbLYfWPqmaoHb99YkK7QzGccpBIwtXv55+RAi29dRiqU+hwBBcIJ3cUeJNzGqAtmHSGsWT9E7NmWnfAuwU3SRKH3nYMraaKVvPtQiq9NP3u5CJm/869/Ysd12rGC+KirrrLzx4pGYRfMQqe/3s5tl20BTR5M6fe0vyQ66+vriTZYQhz7oTb+SshkRbph+PSb+nx2RTAkw6QLxv1VNc6y59T+68bFzW1gVtXFpbsRmO1KpIbNPela2dzSMaRhCnGf6C2a67V3u/iORZkCkfu+Huhx48uu5j5+FGsjgmNHJKUPidx7mugXs8A7AvTJ3mE+HZswDzUpAuElOhDCo81G8YHxTQsvPMKYlKgDfdsaHFxOwSm4gWVfbNJP6cH4ECLaWnztloFuUUB1KbhM/yYHIGd3t0JAqntzOj8WxqXLSSWfOPs5rodOhK/88ktmbyYKa9Sb9EKz7zt/Q==
+    DRONE_RPC_SECRET: AgBe3nUv7MqFe9ag9qVPOMd7uDGGrDRVboW4B2askpSbiNVYn6AmsEI6vHE+H2pjtJOsD+ohTthMz+9+PP0lVxEVTXkmIJm7J34dyQ2bbwOxT0GOm0bE2MDjmgUmMksN7ESLJ7pXFbHaUq53/OUspLHdy5EO/gjXGkprDDLSezSdYxIa7wOzO8bvWV8851GaxeT1ZFz7XL/8UDAY/XmNteEFHprvO/hdBrhyhWt1bQrnSLOQEahCWlAvtwtZuC0yxA5ngxbWq/ko4jiC26oVBaw7y/dzm1YGF42tsPgia7kQQEIWfR9+ZHC4tfyFFPt21SdBdXaodmR6Lw4SSW2XEcvKMSRiltaW5TgiaoRGWZWwThTejQ4NfPFn9yYaOIjyLqxqybiilPJDUJn5NltYGh6vAJRFnBZml2/C6VL8b8JX6giogoxJt+iBdGyrhYLTJu1NAwAUStHRP2p+WT98nAhqddQmcgRuXlqFtMTTB/vNBuLnLDBYDjV/IKo7jgWDJiRkhJB+ob64pDAWw+oN9pYJ47Fx2aQx7jnErKur84kCNMkFG+E1nepofKbMcxDs4+A0gPQ62JJRL3p3EsFjTcrZN6XYPq+327sk2nZyEUdIltYg1x76bN4+rN3bDNKBfOELacyj0LVWEST5X/Vs65ra0uKOxBbDFk2nPBjYubEEOZ1JsF+RxkZnH81FyDuabZEodG7Pkmd7EqH7B6rXf2cVr2zsWAaCUBO9jFe+0XaYMw==
+    DRONE_SECRET_PLUGIN_TOKEN: AgBoqEqneK39Nk6GJk6stzL23cJgOR0hMkZ2xErO30sfkc5vM4oVJlsUO+n7d13IYq5uwtOYCufve+WyqBAy/FL7/XUAASDa7CKRVlcNFKy8IiDsD7qDo2R0rF+QkS99d8SKRLc6WrL8WmalENOGBdXMQsIt/GW1D9/uEyQfqFqRr+dpTXAiowwtkUxEOgjtGLeZEYjRhELcbjOiirVOS+BfNA11I2IezMWeO2XKyKfkzC2tBzInbZCZMPKc/fxZiy3LBJTMFMRB6bPd0Xg8Pnlb3rztH9js+Ys+HHAH3ZFOCRKXWFG3jzHrctZfp0Z/9XU7Fh3y5oAmcD8u9Ip10TrHi6fBkRkQN49hbdM5KTwd3XwCPQn+0sfMUQtHE8m8g6W6ubPtAEbww4YAwtPpAY4+Wd2Wid4WxyY4RB2CGfZKVK2MTX/y3oShlto2iasNAOCQG8mCiJIDnGbu6NBx7KAHfckBwqninHgNQuCRLtDgWem69EkkqXmysSfZqdBdSjujfhLIoqEkpk6QdZwqHi4U7W4h4zDfmg5Xfnc2+XPOdzL1rTYElbIn5cMlPRWf5OYfgH7rsFIzDdNHU4EaqrLk0OeJa6Q4d8kBBtv1CGGwyB6wTELp4oFfpZhGWyQA4zEivj8dcw5NNUWL8z9oij0Z2NKmmtY8VWG94JquSdjl1KjsVxH3e12YDDHmEf22sU3imej3joqnKd02D2bSvqXPxjgYfQhTsw/esBRmM0pS8g==
   template:
     metadata:
-      name: drone-runner-kube-secret
+      name: drone-runner-docker-secret
       namespace: devops
       labels:
-        app: drone-runner-kube
-
----
-kind: SealedSecret
-apiVersion: bitnami.com/v1alpha1
-metadata:
-  name: drone-secrets-secret
-  namespace: devops
-spec:
-  encryptedData:
-    SECRET_KEY: AgAD/OhJL7TEd0OhAck+M4d+F5Ss6/SLRHQlsIQa1EBR+9AQbQx9qeiNmgq8ccFze8PVUqvVz2MYweB3UdkXCL8HHVbQOzyJXWUg9RrykvNFMJ/oOPABFT4fd6RmsJQDxwgv0z1WX3uhoIdU3O1DmCtQ21gcPgdXpfKo/w8sNTYxQXt7Cb8XbtTwgvgsFsnPS4yq6yDBk27VOMpZ4fLKf4SeNoa7wlAXS9bQWDWktnwB2jd6cdAMwkNfjuEZ8FlU+XGcvuxEkVPvkxHqSkCagNy1hNmX2Xd6QpNUhqftBGtdrRwumzQldDxdB/3iDP7Ujzocs/x5TpcPgLAs/DRcC9pEP6C58eXSOi6lqIojN/KFzm6R/3WrWLrZ2R4YOQlDvaGjBHjH/tPd4t+udxWbwt2dQhCEDdywkdS0klnfl374H7dgXnXk7bETATaVP3uBgATI+4UjnGoO1WFTsoNqmc/sWdcriPeiROHRs9HAKgkCz3T44dO6Uh9LrVujT1Sdg5KGSvlm2lt1vfIu5ie+KYdN/1p9SSdxBnA3osO3zjKrBMeh3ju8XLzBuYexHgzL4gMakOpe3q+xKrCAPOy6rOGrGE5bSOwJkHPdtBP2wkgso3bxMsHfzjp7HuUhvjnWw9+GZnv8WFbCGaZjAXEwgoMJjKPNjvNpx5gwZMNyJJxq/PPHmU9ZQDjUHv8/ft8tzJhpOOZn9sGaReqe4GL+F6AkwkhafCHUMTRad0WmrAVbEA==
-  template:
-    metadata:
-      name: drone-secrets-secret
-      namespace: devops
-      labels:
-        app: drone-secrets
+        app: drone-runner-docker
 
 ---
 kind: SealedSecret
@@ -104,6 +88,22 @@ spec:
     type: Opaque
     metadata:
       name: github-ssh-keys
+      namespace: devops
+      labels:
+        app: drone-secrets
+
+---
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
+metadata:
+  name: drone-secrets-secret
+  namespace: devops
+spec:
+  encryptedData:
+    SECRET_KEY: AgAD/OhJL7TEd0OhAck+M4d+F5Ss6/SLRHQlsIQa1EBR+9AQbQx9qeiNmgq8ccFze8PVUqvVz2MYweB3UdkXCL8HHVbQOzyJXWUg9RrykvNFMJ/oOPABFT4fd6RmsJQDxwgv0z1WX3uhoIdU3O1DmCtQ21gcPgdXpfKo/w8sNTYxQXt7Cb8XbtTwgvgsFsnPS4yq6yDBk27VOMpZ4fLKf4SeNoa7wlAXS9bQWDWktnwB2jd6cdAMwkNfjuEZ8FlU+XGcvuxEkVPvkxHqSkCagNy1hNmX2Xd6QpNUhqftBGtdrRwumzQldDxdB/3iDP7Ujzocs/x5TpcPgLAs/DRcC9pEP6C58eXSOi6lqIojN/KFzm6R/3WrWLrZ2R4YOQlDvaGjBHjH/tPd4t+udxWbwt2dQhCEDdywkdS0klnfl374H7dgXnXk7bETATaVP3uBgATI+4UjnGoO1WFTsoNqmc/sWdcriPeiROHRs9HAKgkCz3T44dO6Uh9LrVujT1Sdg5KGSvlm2lt1vfIu5ie+KYdN/1p9SSdxBnA3osO3zjKrBMeh3ju8XLzBuYexHgzL4gMakOpe3q+xKrCAPOy6rOGrGE5bSOwJkHPdtBP2wkgso3bxMsHfzjp7HuUhvjnWw9+GZnv8WFbCGaZjAXEwgoMJjKPNjvNpx5gwZMNyJJxq/PPHmU9ZQDjUHv8/ft8tzJhpOOZn9sGaReqe4GL+F6AkwkhafCHUMTRad0WmrAVbEA==
+  template:
+    metadata:
+      name: drone-secrets-secret
       namespace: devops
       labels:
         app: drone-secrets
@@ -129,17 +129,18 @@ data:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: drone-runner-kube-config
+  name: drone-runner-docker-config
   namespace: devops
   labels:
-    app: drone-runner-kube
+    app: drone-runner-docker
 data:
-  DRONE_NAMESPACE_DEFAULT: "devops"
+  DOCKER_HOST: "tcp://localhost:2375"
   DRONE_RPC_HOST: "drone.theautomation.nl"
   DRONE_RPC_PROTO: "https"
   DRONE_LOGS_TRACE: "true"
-  DRONE_SECRET_PLUGIN_ENDPOINT: "http://drone-secrets.devops.svc.cluster.local:3000"
   DRONE_DEBUG: "true"
+  DRONE_NAMESPACE_DEFAULT: "devops"
+  DRONE_SECRET_PLUGIN_ENDPOINT: "http://drone-secrets.devops.svc.cluster.local:3000"
 
 ---
 kind: ConfigMap
@@ -166,10 +167,10 @@ metadata:
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: drone-runner-kube
+  name: drone-runner-docker
   namespace: devops
   labels:
-    app: drone-runner-kube
+    app: drone-runner-docker
 
 ---
 kind: ServiceAccount
@@ -184,77 +185,31 @@ metadata:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: drone-runner-kube
+  name: drone-secrets
   namespace: devops
   labels:
-    app: drone-runner-kube
+    app: drone-secrets
 rules:
   - apiGroups:
       - ""
     resources:
       - secrets
     verbs:
-      - create
-      - delete
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-      - pods/log
-    verbs:
       - get
-      - create
-      - delete
-      - list
       - watch
-      - update
 
 ---
-kind: Role
+kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: drone-secrets
   namespace: devops
   labels:
     app: drone-secrets
-rules:
-  - apiGroups:
-    - ""
-    resources:
-    - secrets
-    verbs:
-    - get
-    - watch
-
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: drone-runner-kube
-  namespace: devops
-  labels:
-    app: drone-runner-kube
 subjects:
   - kind: ServiceAccount
-    name: drone-runner-kube
+    name: drone-secrets
     namespace: devops
-roleRef:
-  kind: Role
-  name: drone-runner-kube
-  apiGroup: rbac.authorization.k8s.io
-
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: drone-secrets
-  namespace: devops
-  labels:
-    app: drone-secrets
-subjects:
-- kind: ServiceAccount
-  name: drone-secrets
-  namespace: devops
 roleRef:
   kind: Role
   name: drone-secrets
@@ -310,37 +265,108 @@ spec:
             claimName: pvc-iscsi-drone-server-data
 
 ---
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
-  name: drone-runner-kube
+  name: drone-runner-docker
   namespace: devops
   labels:
-    app: drone-runner-kube
+    app: drone-runner-docker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: drone-runner-kube
+      app: drone-runner-docker
   template:
     metadata:
       labels:
-        app: drone-runner-kube
+        app: drone-runner-docker
     spec:
-      serviceAccountName: drone-runner-kube
-      terminationGracePeriodSeconds: 3600
+      serviceAccountName: drone-runner-docker
+      volumes:
+        - emptyDir: {}
+          name: storage
       containers:
-        - name: drone-runner-kube
-          image: "drone/drone-runner-kube:latest"
+        - name: drone-runner-docker
+          image: "drone/drone-runner-docker:1.8.1"
           resources: {}
-          ports:
-            - containerPort: 3000
-              protocol: TCP
+          imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: drone-runner-kube-config
+                name: drone-runner-docker-config
             - secretRef:
-                name: drone-runner-kube-secret
+                name: drone-runner-docker-secret
+          env:
+            - name: DOCKER_HOST
+              value: tcp://localhost:2375
+            - name: DRONE_RUNNER_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          ports:
+            - name: tcp
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: tcp
+          readinessProbe:
+            tcpSocket:
+              port: tcp
+        - name: dind
+          image: "docker:20-dind"
+          resources: {}
+          imagePullPolicy: IfNotPresent
+          command:
+            - dockerd
+          args:
+            - --host
+            - tcp://localhost:2375
+          securityContext:
+            privileged: true
+          livenessProbe:
+            exec:
+              command:
+                - docker
+                - -H
+                - tcp://localhost:2375
+                - images
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - docker
+                - -H
+                - tcp://localhost:2375
+                - images
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - mountPath: /var/lib/docker
+              name: storage
+              subPath: docker
+        - name: gc
+          image: "drone/gc:1.0.0"
+          resources: {}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DOCKER_HOST
+              value: tcp://localhost:2375
+            - name: GC_CACHE
+              value: "5gb"
+            - name: GC_DEBUG
+              value: "false"
+            - name: GC_DEBUG_COLOR
+              value: "false"
+            - name: GC_DEBUG_PRETTY
+              value: "false"
+            - name: GC_IGNORE_CONTAINERS
+              value: ""
+            - name: GC_IGNORE_IMAGES
+              value: ""
+            - name: GC_INTERVAL
+              value: "5m"
 
 ---
 kind: Deployment
@@ -396,19 +422,19 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: drone-runner-kube
+  name: drone-runner-docker
   namespace: devops
   labels:
-    app: drone-runner-kube
+    app: drone-runner-docker
 spec:
-  selector:
-    app: drone-runner-kube
   type: ClusterIP
   ports:
     - name: http
       protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 80
+      targetPort: http
+  selector:
+    app: drone-runner-docker
 
 ---
 kind: Service
@@ -426,7 +452,7 @@ spec:
     - name: http
       protocol: TCP
       port: 3000
-      targetPort: 3000  
+      targetPort: 3000
 
 ---
 kind: Ingress
