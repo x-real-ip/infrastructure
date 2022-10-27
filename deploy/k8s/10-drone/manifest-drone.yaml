@@ -96,6 +96,23 @@ spec:
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
+  name: harbor-registry-drone-password
+  namespace: devops
+spec:
+  encryptedData:
+    harbor-robot-password: AgBkfXVeEFXO/QI82armceeqp+oHxStLam67z/sKvdXJ2cLQKTyj+YyqE+ww9U/upBjxwC1SKdS4n2DCFjsqxuGsL0wh0pNGduriIJ9IxOM26lN0Tf2C1scQ/2Zmv/AtsVInWxOcU20Vn0B+0SdEaIYadrEvldFdjv/V1qvCpiPXHm4CBD+3R2iEGQhL1d7usieRtOIszlKj7P5iSbVK/XxDlMuw5yg+6PMiV/uTaApD+5xjIoKb/2mbTQnp1TAnN9wmOCp+nw9Fa0wSv8HwuXd9aXjX2LlIfjT769QPAQqAahWztXev57IOZMPn/FgSF3E5WBMF0zsjK/2q46EAn96247ADSQe9vUJKmap7p2R3VG6zdXvGWppQOQDp24RMPZC5Ezd7hXlgEQisIrm0/JAL9PfJNlL2sr03Y0mmLIlbB+unnR70X2TxX5O4WTTv4pwthpnDqTrmQQRrcN0LtoXJ/900eWbvspcPaB/rbRuFrEn0TljBfiWFnQd5QWgJZsGB2imR9WPGRK5abUUoIEKEqJo3daF2yUTxznO7H/WKUzrXpPUiwPPoMY7/jeE2LsE8Ezae9CW+x+MO+QS0ag2fRyR2iDpsu9Y7c/LpuRIvGIMaOBMTzN1DZ/BamH+3wrxcdb0wGPeUUpkh50F0VjEn+57YD1hKGzfAqq8JgbXJjZ0RHsb4e0RuO6vl2vvri/Jd1iI6jp4jzBCxbHDcvaghnxMhnrTDpx5DKdf2cgRgyQ==
+  template:
+    metadata:
+      labels:
+        app: drone-secrets
+      name: harbor-registry-drone-password
+      namespace: devops
+    type: Opaque
+
+---
+kind: SealedSecret
+apiVersion: bitnami.com/v1alpha1
+metadata:
   name: drone-secrets-secret
   namespace: devops
 spec:
@@ -153,6 +170,20 @@ metadata:
 data:
   KUBERNETES_NAMESPACE: "devops"
   DRONE_DEBUG: "true"
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: drone-private-registry
+  namespace: devops
+  labels:
+    app: drone-runner-kube
+data:
+  daemon.json: |
+    {
+      "insecure-registries" : ["harbor-registry.devops.svc.cluster.local:5000"]
+    }
 
 ---
 kind: ServiceAccount
@@ -283,9 +314,6 @@ spec:
         app: drone-runner-docker
     spec:
       serviceAccountName: drone-runner-docker
-      volumes:
-        - emptyDir: {}
-          name: storage
       containers:
         - name: drone-runner-docker
           image: "drone/drone-runner-docker:1.8.1"
@@ -346,6 +374,9 @@ spec:
             - mountPath: /var/lib/docker
               name: storage
               subPath: docker
+            - name: daemon-json
+              mountPath: /etc/docker/daemon.json
+              subPath: daemon.json
         - name: gc
           image: "drone/gc:1.0.0"
           resources: {}
@@ -367,7 +398,12 @@ spec:
               value: ""
             - name: GC_INTERVAL
               value: "5m"
-
+      volumes:
+        - name: daemon-json
+          configMap:
+            name: drone-private-registry
+        - emptyDir: {}
+          name: storage
 ---
 kind: Deployment
 apiVersion: apps/v1
