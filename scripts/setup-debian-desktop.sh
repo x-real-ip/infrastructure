@@ -15,7 +15,8 @@ code \
 git \
 curl \
 cifs-utils \
-nfs-common
+nfs-common \
+buildah
 
 # Install Helm
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
