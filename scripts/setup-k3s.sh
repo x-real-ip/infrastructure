@@ -94,9 +94,9 @@ tls-san:
   - "${k3s_vipip}"
   - "k3s-cluster.lan"
 kubelet-arg:
-  - feature-gates=StatefulSetAutoDeletePVC=true
+  - "feature-gates=StatefulSetAutoDeletePVC=true"
 kube-apiserver-arg: 
-  - feature-gates=StatefulSetAutoDeletePVC=true
+  - "feature-gates=StatefulSetAutoDeletePVC=true"
 EOF
 
 if [[ $HOSTNAME =~ master ]]; then
