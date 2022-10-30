@@ -1,8 +1,8 @@
 # /etc/fstab
 
 # NFS
-storage-server.lan:/mnt/r10_8tb/media /home/coen/storage-server/media nfs rsize=32768,wsize=32768
-storage-server.lan:/mnt/r10_8tb/k8s/home-assistant-config /home/coen/storage-server/k8s/home-assistant nfs defaults
+storage-server-lagg.lan:/mnt/r10_8tb/media /home/coen/storage-server/media nfs rsize=32768,wsize=32768
+storage-server-lagg.lan:/mnt/r10_8tb/k8s/home-assistant-config /home/coen/storage-server/k8s/home-assistant nfs defaults
 
 # SMB
-//storage-server.lan/coen /home/coen/storage-server/coen  cifs rw,uid=coen,file_mode=0777,dir_mode=0777,credentials=/home/coen/.smbcredentials,iocharset=utf8, 0 0
+//storage-server-lagg.lan/coen /home/coen/storage-server/coen  cifs rw,uid=coen,file_mode=0777,dir_mode=0777,credentials=/home/coen/.smbcredentials,iocharset=utf8, 0 0

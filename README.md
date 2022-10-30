@@ -301,7 +301,7 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 
 Unmount disk
 ```console
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server.lan -u
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan -u
 ```
 
 #### Migration notes:
@@ -321,11 +321,11 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 
 1. SSH into one of the nodes in the cluster and start discovery 
     ```console
-    sudo iscsiadm -m discovery -t st -p storage-server.lan
+    sudo iscsiadm -m discovery -t st -p storage-server-lagg.lan
     ```
 2. Login to target 
     ```console
-    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server.lan --login
+    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --login
     ``` 
 3. See the device using ```lsblk```. In the following steps, assume sdd is the device name.
 4. Create a local mount point & mount to replay logfile ```sudo mkdir -vp /mnt/data-0 && sudo mount /dev/sdd /mnt/data-0/```
@@ -334,7 +334,7 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 7.  If needed run xfs repair ```sudo xfs_repair /dev/sdd```
 8.  Logout from target 
     ```console
-    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server.lan --logout
+    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --logout
     ```
 9.  Volumes are now ready to be mounted as PVCs.
 
