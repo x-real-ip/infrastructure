@@ -175,14 +175,14 @@ data:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: drone-private-registry
+  name: docker-deamon-json
   namespace: devops
   labels:
     app: drone-runner-kube
 data:
   daemon.json: |
     {
-      "insecure-registries" : ["harbor-registry.devops.svc.cluster.local:5000"]
+      "insecure-registries": ["harbor-registry.devops.svc.cluster.local:5000"]
     }
 
 ---
@@ -401,7 +401,7 @@ spec:
       volumes:
         - name: daemon-json
           configMap:
-            name: drone-private-registry
+            name: docker-deamon-json
         - emptyDir: {}
           name: storage
 ---
