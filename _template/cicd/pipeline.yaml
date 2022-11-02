@@ -44,7 +44,6 @@ steps:
         --tls-verify=$${TLSVERIFY} -f $${CONTAINERFILE} \
         -t $${REGISTRY_HOST}/$${DRONE_REPO_NAME}:latest \
         -t $${REGISTRY_HOST}/$${DRONE_REPO_NAME}:$${DRONE_BUILD_NUMBER} \
-        --layers=true $${CONTEXT}
       - |
         echo "Push image with latest tag..."
         buildah push --creds=$${USERNAME}:$${PASSWORD} \
@@ -62,32 +61,23 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: upgrade
+name: deploy
 
 depends_on:
   - build
 
 steps:
-  - name: upgrade kubernetes manifest
-    image: alpine:latest
+  - name: upgrade k8s manifest
+    image: alpine:3
     network_mode: host
     environment:
-      PUBLIC_REGISTRY_HOST: "harbor.k8s.lan/k8s"
-      YQ_VERSION: "v4.27.5"
+      REGISTRY_NAME: "k8s"
     commands:
-      - |
-        wget https://github.com/mikefarah/yq/releases/download/$${YQ_VERSION}/yq_linux_amd64 \
-        -O /usr/bin/yq \
-        && chmod +x /usr/bin/yq
-      - |
-        application="init-01-$${DRONE_REPO_NAME}" image="$${PUBLIC_REGISTRY_HOST}/init-01-$${DRONE_REPO_NAME}:$${DRONE_BUILD_NUMBER}" \
-        yq -i '(.spec | select(.template.spec.initContainers[]).template.spec.initContainers[] | select(.name == strenv(application)).image) |= strenv(image)' ./deploy/k8s/manifest.yaml
-      - |
-        application="$${DRONE_REPO_NAME}" image="$${PUBLIC_REGISTRY_HOST}/$${DRONE_REPO_NAME}:$${DRONE_BUILD_NUMBER}" \
-        yq -i '(.spec | select(.template.spec.containers[]).template.spec.containers[] | select(.name == strenv(application)).image) |= strenv(image)' ./deploy/k8s/manifest.yaml
-      - cat ./deploy/k8s/manifest.yaml
+      - sed -i -e
+        "s%/$${REGISTRY_NAME}/$${DRONE_REPO_NAME}:.*%/$${REGISTRY_NAME}/$${DRONE_REPO_NAME}:$${DRONE_BUILD_NUMBER}\"%1"
+        ./deploy/k8s/manifest.yaml
 
-  - name: push kubernetes manifest
+  - name: push k8s manifest
     image: appleboy/drone-git-push
     settings:
       remote_name: "git@github.com:${DRONE_REPO}"
@@ -98,6 +88,21 @@ steps:
       author_name: ci-bot
       ssh_key:
         from_secret: github_ssh_key
+
+  - name: apply k8s manifest
+    image: bitnami/kubectl
+    volumes:
+      - name: kubeconfig
+        path: /.kube
+    network_mode: host
+    commands:
+      - cat ./deploy/k8s/manifest.yaml
+      - kubectl apply -f ./deploy/k8s/manifest.yaml
+
+volumes:
+  - name: kubeconfig
+    host:
+      path: /var/lib/.kube
 
 ---
 kind: secret
