@@ -15,15 +15,15 @@ MANIFESTS=(
   03-metallb
   04-bitnami
   05-nginx
-  06-certificates
+  06-drone
   07-csi
   08-harbor
   09-node-feature-discovery
-  10-drone
+  10-certificates
+  11-secrets
 )
 
 export LC_ALL=C
-
 export manifest_location="/var/lib/rancher/k3s/server/manifests/"
 export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
@@ -36,7 +36,8 @@ apt update && apt upgrade -y &&
     git \
     sudo \
     apparmor \
-    qemu-guest-agent
+    qemu-guest-agent \
+    avahi-daemon
 
 # Set NTP client to pfSense as NTP server
 # Backup original timesyncd.conf
@@ -80,6 +81,27 @@ EOF
 systemctl restart multipath-tools
 systemctl enable open-iscsi.service
 systemctl start open-iscsi
+
+# Set Avahi-daemon
+# Backup original avahi-daemon.conf
+mv /etc/avahi/avahi-daemon.conf /etc/avahi/avahi-daemon.conf.bak
+cat <<EOF >/etc/avahi/avahi-daemon.conf
+[server]
+use-ipv4=yes
+use-ipv6=no
+ratelimit-interval-usec=1000000
+ratelimit-burst=1000
+[wide-area]
+enable-wide-area=yes
+[publish]
+publish-hinfo=no
+publish-workstation=no
+[reflector]
+enable-reflector=yes
+reflect-ipv=no
+[rlimits]
+#
+EOF
 
 # Create K3s /etc/rancher/k3s
 mkdir -p /etc/rancher/k3s/
