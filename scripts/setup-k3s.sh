@@ -33,7 +33,8 @@ apt update && apt upgrade -y &&
     unzip \
     git \
     sudo \
-    apparmor
+    apparmor \
+    qemu-guest-agent
 
 # Set NTP client to pfSense as NTP server
 # Backup original timesyncd.conf
@@ -48,6 +49,11 @@ systemctl restart systemd-timesyncd
 
 # Deactivate the swap
 swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+# Activate QEMU Guest
+systemctl enable qemu-guest-agent
+systemctl start qemu-guest-agent
 
 # Install ISCSI and dependencies
 echo -e "\nInstalling ISCSI and dependencies...\n"
