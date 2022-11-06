@@ -22,6 +22,8 @@ MANIFESTS=(
   10-drone
 )
 
+export LC_ALL=C
+
 export manifest_location="/var/lib/rancher/k3s/server/manifests/"
 export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
