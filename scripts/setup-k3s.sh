@@ -46,6 +46,9 @@ EOF
 
 systemctl restart systemd-timesyncd
 
+# Deactivate the swap
+swapoff -a
+
 # Install ISCSI and dependencies
 echo -e "\nInstalling ISCSI and dependencies...\n"
 apt install -y \
