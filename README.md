@@ -1,7 +1,6 @@
 # Kubernetes GitOps
 
 - [Kubernetes GitOps](#kubernetes-gitops)
-  - [Gitops hierarchy](#gitops-hierarchy)
   - [Setup](#setup)
     - [Bootstrap K3s cluster](#bootstrap-k3s-cluster)
     - [Local](#local)
@@ -17,16 +16,6 @@
       - [Migration notes:](#migration-notes)
       - [Repair PVC using iSCSI mounts:](#repair-pvc-using-iscsi-mounts)
   - [Node Feature Discovery](#node-feature-discovery)
-
-## Gitops hierarchy
-
-```
-├───────── deploy
-│  ├────── argocd             # Argocd applications
-│  ├────── k8s                # Bootstrap cluster k8s manifests
-│  ├────── tekton             # Tekton resources for CI piplines
-│  ├────── terraform          # Terraform plan to apply k8s VM cluster in Proxmox
-```
 
 ## Setup
 
@@ -49,10 +38,17 @@ nano /etc/hosts
 apt install curl -y
 ```
 
-4. Reboot the host machine
-5. Assing static ip in firewall/router for the VM's
-6. Reboot the host machine's
-7. ssh into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
+4. Set sbin
+```console
+cat >> /etc/profile.d/extra_paths.sh << \EOF 
+  PATH=$PATH:/sbin
+EOF
+```
+
+5. Reboot the host machine
+6. Assing static ip in firewall/router for the VM's
+7. Reboot the host machine's
+8. ssh into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
 
 ```console
 export k3s_token="<k3s_token>"
