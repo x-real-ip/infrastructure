@@ -10,36 +10,41 @@ set -e
 # List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster
 # See https://github.com/theautomation/kubernetes-gitops/tree/main/deploy/k8s
 MANIFESTS=(
-    01-namespaces
-    02-kube-vip
-    03-metallb
-    04-bitnami
-    05-nginx
-    06-certificates
-    07-csi
-    08-harbor
-    09-node-feature-discovery
-    10-drone
+  01-namespaces
+  02-kube-vip
+  03-metallb
+  04-bitnami
+  05-nginx
+  06-certificates
+  07-csi
+  08-harbor
+  09-node-feature-discovery
+  10-drone
 )
 
 export manifest_location="/var/lib/rancher/k3s/server/manifests/"
 export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
-# Set the system locale
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-# Set correct timezone.
-echo "Set timezone..."
-timedatectl set-timezone Europe/Amsterdam
-
 # Update and install packages.
 apt update && apt upgrade -y &&
   apt install -y \
+    curl \
     wget \
     unzip \
     git \
-    sudo
+    sudo \
+    apparmor
+
+# Set NTP client to pfSense as NTP server
+# Backup original timesyncd.conf
+mv /etc/systemd/timesyncd.conf /etc/systemd/timesyncd.conf.bak
+# Create custom timesyncd.conf
+cat <<EOF >/etc/systemd/timesyncd.conf
+[Time]
+NTP=192.168.100.1
+EOF
+
+systemctl restart systemd-timesyncd
 
 # Install ISCSI and dependencies
 echo -e "\nInstalling ISCSI and dependencies...\n"
@@ -131,7 +136,7 @@ EOF
 
     # Copy init manifests to init folder
     for m in "${MANIFESTS[@]}"; do
-    cp -rv ./kubernetes-gitops/deploy/k8s/"$m" "${manifest_location}"
+      cp -rv ./kubernetes-gitops/deploy/k8s/"$m" "${manifest_location}"
     done
 
     echo -e "\nInstalling k3s master and initializing the cluster...\n" &&
@@ -140,11 +145,11 @@ EOF
   else
 
     echo -e "\nInstalling k3s master and joining to cluster...\n" &&
-        # Append "--server" to k3s config.yaml for joining the cluster
-    cat <<EOF >>/etc/rancher/k3s/config.yaml
+      # Append "--server" to k3s config.yaml for joining the cluster
+      cat <<EOF >>/etc/rancher/k3s/config.yaml
 server: "https://${k3s_cluster_init_ip}:6443"
 EOF
-      curl -sfL https://get.k3s.io | sh
+    curl -sfL https://get.k3s.io | sh
   fi
   sleep 15 && echo -e "\nInstalling k3s on $HOSTNAME done.\n" &&
     kubectl get nodes -o wide
