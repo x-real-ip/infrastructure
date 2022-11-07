@@ -74,8 +74,6 @@ spec:
       labels:
         app: drone-runner-docker
 
-
-
 ---
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
