@@ -593,6 +593,7 @@ metadata:
     component: trivy
 spec:
   replicas: 1
+  priorityClassName: system-node-critical
   serviceName: harbor-trivy
   selector:
     matchLabels:
