@@ -37,7 +37,8 @@ apt update && apt upgrade -y &&
     sudo \
     apparmor \
     qemu-guest-agent \
-    avahi-daemon
+    avahi-daemon \
+    jq
 
 # Set NTP client to pfSense as NTP server
 # Backup original timesyncd.conf
