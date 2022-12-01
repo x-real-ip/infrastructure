@@ -1,0 +1,35 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: drone-add-cron
+  namespace: devops
+  labels:
+    app: drone-add-cron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drone-add-cron
+  template:
+    metadata:
+      labels:
+        app: drone-add-cron
+    spec:
+      containers:
+        - name: drone-add-cron
+          image: "docker.io/drone/cli"
+          imagePullPolicy: Always
+          resources: {}
+          command: ["/bin/drone", "info"]
+          env:
+            - name: DRONE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: drone-personal-token
+                  key: DRONE_PERSONAL_TOKEN
+                  optional: false
+            - name: DRONE_SERVER
+              value: "http://drone-server-svc.devops.svc.cluster.local:8080"
+      imagePullSecrets:
+        - name: harbor-registry-creds
