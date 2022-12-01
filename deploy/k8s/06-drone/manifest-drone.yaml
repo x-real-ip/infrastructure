@@ -98,7 +98,7 @@ metadata:
   namespace: devops
 spec:
   encryptedData:
-    DRONE_PERSONAL_TOKEN: AgCvh6efuFSDaDZfZKD62+hXohuikFUlcpiMqU9uYj3qniStrocKuYHKX/3hqVi9q+zU2ak5qtzBG0UjyJINPsvWkatqU1OHjInHrmcTuqIRHrkxzqpjzA4yE5DUHcVosW+gykKvxMzpXpQTvAwNukeJc2zysbMR+g6z+prfD+vw/h+hqn3MwKr4mWBs1HbnBjEwlmWv7dRrWrr35jUExYa/NhovYoeQij1KDb4t3GzM+TgJs6o+cVT6wr+SexEuawSBmQ+qPvsSzdRfYtTo+5lodWp2kXjb9IAiekXfYE9NKloCCXyCFK9SQGRdw1tEncoueJhFnpuDp2Rwxj8iB9MUEtJLFk27iPLGI4JePDT6UPo8b/x2NV98HLGiZM6Fb+PxU1kyZAAL/6xqZDiRZQz0O4qRsSfP48PFqj33TppyPke3JbOhROcvfDRo5QFEl7tq5aDHWTVrbrHOaPwXoQ6HMmj2uKrp/rWr56MLKFQKfHiUS9o1qXsYz5O+4ciZk3yxr5HiC9Bg+DY5F0Z85l4541GK9zywrcpWQ8DTlRlcX9V7QZllzdoKtZA54LHfJNf1U0H5AraG8Z6FFZ4ppgtaLYt0gDRTAGtHhbOHLtde0Xa39nQkiZh+XGNYlK3DcDYCKOlpbExSypu9GSxfLFc2NQd2mBEqoSGEAefQ9yMO5RzrS8/VJI//Q6J7480pOg7riUtYf6nAsv6DEYxigGGDhKQljk69fGdpaybgHkuYABE=
+    DRONE_PERSONAL_TOKEN: AgAkefUWBGYaC58coQBref25tRmTFOTx6jbik+8OJ2xt4i9bL4e3b/O3NtTXjmFpA0lCYOzhc27vx+H2xeJu2MMLQyXdpZXhFo3g+1JG5mGckKG1L8RW28wYsrBZrhOHEDTQvb0aRf/wPcVwxGKCP/Q1IDf2aG94kR1nE0BmBe7zAhQ8X2oDS21R4F0qKWnlP+MPcJg1yFYuzk5wWySvgXZblq+YFw9R6qmSspnFbGju3iSJHRS1kp8Q70MYK2DFyOW4jG3FwgA6+hKFGRWlS9Fnzk1B8mHhU61QVXBsiTnsDi7wBrrgjzozRK1flhVwh1OwbrQ/JzYT5cCYRIoDDvIQ2Yp6njklRg53ZFgUSFokgWcTpiNRsa3IsAsW0P+8jMoiUY2tRQQl3plQxUK7jhwhHZuTWEQE9fFPnOk61pGOMG3OItQAIzgVcS5kyL9WhpzfitHA8PhcDCT9JWUgn93Al+8mvqqnWtp/slE1HcnK+BPpiycEXfKpcFQinS7yUf/eSVS1rn/qU0nLkXTEiDyCynbgeleoUfN5qi0Ua4Q+WRC4+rpRGJfqelEX6PSSuy/FF9rxcTkHhBt4PykGPUiED9wg5HTxc/IXfS6CS/cbJGzTOBlbaeQMej52cHm9qGUXBq0LiM3PyD8f9iXbB+XZU4ggkb3LyJrS+5G1qr4OVT4+LOeTFFFdL+0Do/StNGSNA4PXnDPzQqVIibXmNzGkTJ3pn6MAn2iP22/KNSkB8Q==
   template:
     metadata:
       labels:
@@ -116,7 +116,6 @@ metadata:
 data:
   DRONE_SERVER_HOST: "drone.theautomation.nl"
   DRONE_SERVER_PROTO: "https"
-  DRONE_SERVER_PORT: ":80"
   DRONE_USER_FILTER: "theautomation"
   DRONE_TLS_AUTOCERT: "false"
   DRONE_LOGS_TRACE: "true"
@@ -133,8 +132,9 @@ metadata:
     app: drone-runner-docker
 data:
   DOCKER_HOST: "tcp://localhost:2375"
-  DRONE_RPC_HOST: "drone.theautomation.nl"
-  DRONE_RPC_PROTO: "https"
+  DRONE_RPC_HOST: "drone-server-svc.devops.svc.cluster.local:8080"
+  DRONE_RPC_PROTO: "http"
+  DRONE_RPC_SKIP_VERIFY: "true"
   DRONE_LOGS_TRACE: "true"
   DRONE_DEBUG: "true"
   DRONE_NAMESPACE_DEFAULT: "devops"
