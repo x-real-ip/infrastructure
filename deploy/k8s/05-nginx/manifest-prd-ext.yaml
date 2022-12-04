@@ -258,6 +258,7 @@ subjects:
   - kind: ServiceAccount
     name: ingress-nginx-prd-ext
     namespace: "prd-ext"
+
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -545,9 +546,9 @@ spec:
                   fieldPath: metadata.namespace
           securityContext:
             allowPrivilegeEscalation: false
-      restartPolicy: OnFailure
+        
       serviceAccountName: ingress-nginx-prd-ext-admission
-      nodeSelector: 
+      nodeSelector:
         kubernetes.io/os: linux
       securityContext:
         runAsNonRoot: true
@@ -597,7 +598,7 @@ spec:
             allowPrivilegeEscalation: false
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-prd-ext-admission
-      nodeSelector: 
+      nodeSelector:
         kubernetes.io/os: linux
       securityContext:
         runAsNonRoot: true
