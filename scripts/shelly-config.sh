@@ -6,7 +6,7 @@
 #
 
 domain="lan"
-ip_subnet="192.168.40"
+ip_subnet="10.0.40"
 ip_start="99"
 ip_end="140"
 
