@@ -12,15 +12,15 @@ set -e
 MANIFESTS=(
   01-namespaces
   02-kube-vip
-  03-metallb
-  04-bitnami
-  05-nginx
+  03-bitnami
+  04-secrets
+  05-metallb
   06-drone
   07-csi
-  08-harbor
-  09-node-feature-discovery
-  10-certificates
-  11-secrets
+  08-nginx
+  09-harbor
+  09-certificates
+  10-node-feature-discovery
 )
 
 export LC_ALL=C
