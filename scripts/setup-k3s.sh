@@ -46,7 +46,7 @@ mv /etc/systemd/timesyncd.conf /etc/systemd/timesyncd.conf.bak
 # Create custom timesyncd.conf
 cat <<EOF >/etc/systemd/timesyncd.conf
 [Time]
-NTP=192.168.100.1
+NTP=10.0.100.1
 EOF
 
 systemctl restart systemd-timesyncd
