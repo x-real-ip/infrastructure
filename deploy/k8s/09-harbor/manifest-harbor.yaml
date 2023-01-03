@@ -593,7 +593,6 @@ metadata:
     component: trivy
 spec:
   replicas: 1
-  priorityClassName: system-node-critical
   serviceName: harbor-trivy
   selector:
     matchLabels:
@@ -611,6 +610,7 @@ spec:
         runAsUser: 10000
         fsGroup: 10000
       automountServiceAccountToken: false
+      priorityClassName: system-node-critical
       containers:
         - name: trivy
           image: goharbor/trivy-adapter-photon:dev
@@ -749,6 +749,7 @@ spec:
         fsGroup: 999
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 120
+      priorityClassName: system-node-critical
       containers:
         - name: redis
           image: goharbor/redis-photon:dev
@@ -813,6 +814,7 @@ spec:
         fsGroup: 999
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 120
+      priorityClassName: system-node-critical
       initContainers:
         - name: "data-migrator"
           image: goharbor/harbor-db:dev
@@ -918,6 +920,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 120
+      priorityClassName: system-node-critical
       containers:
         - name: registry
           image: goharbor/registry-photon:dev
@@ -1041,6 +1044,7 @@ spec:
         runAsUser: 10000
         fsGroup: 10000
       automountServiceAccountToken: false
+      priorityClassName: system-node-critical
       containers:
         - name: portal
           image: goharbor/harbor-portal:dev
@@ -1104,6 +1108,7 @@ spec:
         fsGroup: 10000
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 120
+      priorityClassName: system-node-critical
       containers:
         - name: jobservice
           image: goharbor/harbor-jobservice:dev
@@ -1186,6 +1191,7 @@ spec:
         fsGroup: 10000
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 120
+      priorityClassName: system-node-critical
       containers:
         - name: core
           image: goharbor/harbor-core:dev

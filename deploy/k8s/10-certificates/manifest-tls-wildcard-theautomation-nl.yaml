@@ -3,7 +3,7 @@
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
-  name: cloudflare-tls
+  name: tls-wildcard-theautomation-nl
   namespace: tools
   annotations:
     sealedsecrets.bitnami.com/cluster-wide: "true"
@@ -14,7 +14,7 @@ spec:
   template:
     type: kubernetes.io/tls
     metadata:
-      name: cloudflare-tls
+      name: tls-wildcard-theautomation-nl
       namespace: tools
       annotations:
         sealedsecrets.bitnami.com/cluster-wide: "true"
@@ -23,7 +23,7 @@ spec:
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
-  name: cloudflare-tls
+  name: tls-wildcard-theautomation-nl
   namespace: home-automation
   annotations:
     sealedsecrets.bitnami.com/cluster-wide: "true"
@@ -34,7 +34,7 @@ spec:
   template:
     type: kubernetes.io/tls
     metadata:
-      name: cloudflare-tls
+      name: tls-wildcard-theautomation-nl
       namespace: home-automation
       annotations:
         sealedsecrets.bitnami.com/cluster-wide: "true"
@@ -43,7 +43,7 @@ spec:
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
-  name: cloudflare-tls
+  name: tls-wildcard-theautomation-nl
   namespace: devops
   annotations:
     sealedsecrets.bitnami.com/cluster-wide: "true"
@@ -54,7 +54,7 @@ spec:
   template:
     type: kubernetes.io/tls
     metadata:
-      name: cloudflare-tls
+      name: tls-wildcard-theautomation-nl
       namespace: devops
       annotations:
         sealedsecrets.bitnami.com/cluster-wide: "true"
