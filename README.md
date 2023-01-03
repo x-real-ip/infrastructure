@@ -53,9 +53,9 @@ EOF
 ```console
 export k3s_token="<k3s_token>"
 
-export k3s_cluster_init_ip="192.168.100.101"
+export k3s_cluster_init_ip="10.0.100.101"
 
-export k3s_vipip="192.168.100.100"
+export k3s_vipip="10.0.100.100"
 
 # tls.key base64 encoded string for Bitnami Sealed Secret
 export tls_key="<tls.key>"
@@ -80,7 +80,7 @@ Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl
 ```console
 mkdir -p ~/.kube/ \
 && scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-&& sed -i 's/127.0.0.1/192.168.100.100/g' ~/.kube/config
+&& sed -i 's/127.0.0.1/10.0.100.100/g' ~/.kube/config
 ```
 
 #### Bitnami Kubeseal
