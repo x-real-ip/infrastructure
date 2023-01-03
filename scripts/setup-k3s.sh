@@ -19,8 +19,8 @@ MANIFESTS=(
   07-csi
   08-nginx
   09-harbor
-  09-certificates
-  10-node-feature-discovery
+  10-certificates
+  11-node-feature-discovery
 )
 
 export LC_ALL=C
