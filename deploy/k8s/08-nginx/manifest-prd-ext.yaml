@@ -546,7 +546,7 @@ spec:
                   fieldPath: metadata.namespace
           securityContext:
             allowPrivilegeEscalation: false
-        
+      restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-prd-ext-admission
       nodeSelector:
         kubernetes.io/os: linux
