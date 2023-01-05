@@ -105,6 +105,11 @@ Decode a secret with config file data
 kubectl get secret <secret_name> -o jsonpath='{.data}' -n <namespace>
 ```
 
+Create secret from file
+```console
+kubectl create secret generic <secret name> --from-file=<secret filelocation> --dry-run=true  --output=yaml > secrets.yaml
+```
+
 Restart Pod
 ```console
 kubectl rollout restart deployment <deployment name> -n <namespace>
