@@ -132,6 +132,7 @@ disable:
 tls-san:
   - "${k3s_vipip}"
   - "k3s-cluster.lan"
+prefer-bundled-bin: true
 kubelet-arg:
   - "feature-gates=StatefulSetAutoDeletePVC=true"
 kube-apiserver-arg: 
