@@ -558,4 +558,4 @@ spec:
   tls:
     - hosts:
         - drone.theautomation.nl
-      secretName: cloudflare-tls
+      secretName: tls-wildcard-theautomation-nl
