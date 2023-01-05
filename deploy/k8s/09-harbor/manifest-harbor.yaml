@@ -593,6 +593,8 @@ metadata:
     component: trivy
 spec:
   replicas: 1
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
   serviceName: harbor-trivy
   selector:
     matchLabels:
@@ -731,6 +733,8 @@ metadata:
     component: redis
 spec:
   replicas: 1
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
   serviceName: harbor-redis
   selector:
     matchLabels:
@@ -796,6 +800,8 @@ metadata:
     component: database
 spec:
   replicas: 1
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
   serviceName: "harbor-database"
   selector:
     matchLabels:
