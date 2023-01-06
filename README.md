@@ -1,12 +1,11 @@
 # Kubernetes GitOps
 
 - [Kubernetes GitOps](#kubernetes-gitops)
-  - [Setup](#setup)
-    - [Bootstrap K3s cluster](#bootstrap-k3s-cluster)
-      - [Prepare nodes](#prepare-nodes)
-        - [Debian](#debian)
-        - [Rocky Linux](#rocky-linux)
-    - [Local](#local)
+  - [Setup k3s cluster](#setup-k3s-cluster)
+    - [Debian initialization and setup](#debian-initialization-and-setup)
+    - [Rocky Linux initialization and setup](#rocky-linux-initialization-and-setup)
+    - [Install k3s](#install-k3s)
+    - [Local initialization and setup](#local-initialization-and-setup)
       - [Kubectl](#kubectl)
       - [Bitnami Kubeseal](#bitnami-kubeseal)
   - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
@@ -20,74 +19,69 @@
       - [Repair PVC using iSCSI mounts:](#repair-pvc-using-iscsi-mounts)
   - [Node Feature Discovery](#node-feature-discovery)
 
-## Setup
+## Setup k3s cluster
 
-### Bootstrap K3s cluster
-
-#### Prepare nodes
-
-##### Debian
+### Debian initialization and setup
 
 1. Create VM's and install Debian on it. For example 3x master 1x worker nodes.
-2. SSH into each node en run below commands as root:
-3. Set hostname
+   SSH into each node en run below commands as root:
+2. Set hostname
 
-    ```console
-    hostnamectl set-hostname <hostname>
-    ```
+   ```console
+   hostnamectl set-hostname <hostname>
+   ```
 
-4. Set hostnames in `/etc/hosts`
+3. Set hostnames in `/etc/hosts`
 
-    ```
-    mv /etc/hosts /etc/hosts.bak
-    cat <<EOF >/etc/hosts
-    127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
-    10.0.100.201 k3s-mas-01 k3s-mas-01.lan
-    10.0.100.202 k3s-mas-02 k3s-mas-02.lan
-    10.0.100.203 k3s-mas-03 k3s-mas-03.lan
-    10.0.100.211 k3s-wor-01 k3s-wor-01.lan
-    EOF
-    ```
+   ```
+   mv /etc/hosts /etc/hosts.bak
+   cat <<EOF >/etc/hosts
+   127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+   10.0.100.201 k3s-mas-01 k3s-mas-01.lan
+   10.0.100.202 k3s-mas-02 k3s-mas-02.lan
+   10.0.100.203 k3s-mas-03 k3s-mas-03.lan
+   #10.0.100.211 k3s-wor-01 k3s-wor-01.lan
+   EOF
+   ```
 
-5. Install CURL
+4. Install CURL
 
-    ```
-    apt install curl -y
-    ```
+   ```
+   apt install curl -y
+   ```
 
-6. Set sbin (Debian)
+5. Set sbin (Debian)
 
-    ```console
-    cat >> /etc/profile.d/extra_paths.sh << \EOF
-    PATH=$PATH:/sbin
-    EOF
-    ```
+   ```console
+   cat >> /etc/profile.d/extra_paths.sh << \EOF
+   PATH=$PATH:/sbin
+   EOF
+   ```
 
-7. Reboot the host machine
-8. Assing static ip in firewall/router for the VM's
-9. Reboot the host machine's
-10. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
+6. Reboot the host machine
+7. Assing static ip in firewall/router for the VM's
+8. Reboot the host machine's
+9. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
 
-##### Rocky Linux
+### Rocky Linux initialization and setup
 
 1.  Create VM's and install the Rocky Linux OS on it. For example 3x master 1x worker nodes.
-2.  Login to each node and run the following commands:
-3.  Set hostname
+
+    Login to each node and run the following commands:
 
     ```console
     hostnamectl set-hostname <hostname>
     ```
 
-4.  Install `nano`
     ```console
     yum install nano -y
     ```
-5.  Set hostnames in `/etc/hosts`
 
-    ```
+    ```console
     mv /etc/hosts /etc/hosts.bak
     cat <<EOF >/etc/hosts
     127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+    127.0.0.1 ${HOSTNAME} ${HOSTNAME}.lan
     10.0.100.201 k3s-mas-01 k3s-mas-01.lan
     10.0.100.202 k3s-mas-02 k3s-mas-02.lan
     10.0.100.203 k3s-mas-03 k3s-mas-03.lan
@@ -95,26 +89,39 @@
     EOF
     ```
 
-6.  Reboot the node
-7.  Assing a static ip in firewall/router for the VM's
-8.  Reboot the node
-
+2.  Reboot the node.
     ```console
-    export k3s_token="<k3s_token>"
-
-    export k3s_cluster_init_ip="10.0.100.101"
-
-    export k3s_vipip="10.0.100.100"
-
-    # tls.key base64 encoded string for Bitnami Sealed Secret
-    export tls_key="<tls.key>"
-
-    curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | bash -
+    reboot
+    ```
+3.  Assing a static ip in firewall/router for the VM's.
+4.  Reboot the node.
+    ```console
+    reboot
     ```
 
-    After applying the above command on each node k3s is setup.
+### Install k3s
 
-### Local
+1. Run below commands to install k3s on the node.
+
+   ```console
+   # Set Linux distribution (debian/rocky-linux)
+   export distro="rocky-linux"
+
+   export k3s_token="<k3s_token>"
+
+   export k3s_cluster_init_ip="10.0.100.201"
+
+   export k3s_vipip="10.0.100.200"
+
+   # tls.key base64 encoded string for Bitnami Sealed Secret
+   export tls_key="<tls.key>"
+
+   curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s-${distro}.sh | bash -
+   ```
+
+After applying the above command on each node k3s is setup.
+
+### Local initialization and setup
 
 Flush dns cache
 
@@ -132,7 +139,7 @@ resolvectl flush-caches
 ```console
 mkdir -p ~/.kube/ \
 && scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-&& sed -i 's/127.0.0.1/10.0.100.100/g' ~/.kube/config
+&& sed -i 's/127.0.0.1/10.0.100.200/g' ~/.kube/config
 ```
 
 #### Bitnami Kubeseal
