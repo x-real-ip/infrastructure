@@ -3,6 +3,9 @@
 - [Kubernetes GitOps](#kubernetes-gitops)
   - [Setup](#setup)
     - [Bootstrap K3s cluster](#bootstrap-k3s-cluster)
+      - [Prepare nodes](#prepare-nodes)
+        - [Debian](#debian)
+        - [Rocky Linux](#rocky-linux)
     - [Local](#local)
       - [Kubectl](#kubectl)
       - [Bitnami Kubeseal](#bitnami-kubeseal)
@@ -21,59 +24,108 @@
 
 ### Bootstrap K3s cluster
 
-1. Create VM's and install debian on it. For example 3x master 2x worker nodes.
+#### Prepare nodes
+
+##### Debian
+
+1. Create VM's and install Debian on it. For example 3x master 1x worker nodes.
 2. SSH into each node en run below commands as root:
+3. Set hostname
 
-Set hostname
-```console 
-hostnamectl set-hostname <hostname>
-```
+    ```console
+    hostnamectl set-hostname <hostname>
+    ```
 
-Set hostname in ```/etc/hosts```
-```console
-nano /etc/hosts
-```
-3. Install CURL
-```
-apt install curl -y
-```
+4. Set hostnames in `/etc/hosts`
 
-4. Set sbin
-```console
-cat >> /etc/profile.d/extra_paths.sh << \EOF 
-  PATH=$PATH:/sbin
-EOF
-```
+    ```
+    mv /etc/hosts /etc/hosts.bak
+    cat <<EOF >/etc/hosts
+    127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+    10.0.100.201 k3s-mas-01 k3s-mas-01.lan
+    10.0.100.202 k3s-mas-02 k3s-mas-02.lan
+    10.0.100.203 k3s-mas-03 k3s-mas-03.lan
+    10.0.100.211 k3s-wor-01 k3s-wor-01.lan
+    EOF
+    ```
 
-5. Reboot the host machine
-6. Assing static ip in firewall/router for the VM's
-7. Reboot the host machine's
-8. ssh into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
+5. Install CURL
 
-```console
-export k3s_token="<k3s_token>"
+    ```
+    apt install curl -y
+    ```
 
-export k3s_cluster_init_ip="10.0.100.101"
+6. Set sbin (Debian)
 
-export k3s_vipip="10.0.100.100"
+    ```console
+    cat >> /etc/profile.d/extra_paths.sh << \EOF
+    PATH=$PATH:/sbin
+    EOF
+    ```
 
-# tls.key base64 encoded string for Bitnami Sealed Secret
-export tls_key="<tls.key>"
+7. Reboot the host machine
+8. Assing static ip in firewall/router for the VM's
+9. Reboot the host machine's
+10. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
 
-curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | bash -
-```
-7. After applying the above command on each node k3s is setup.
+##### Rocky Linux
+
+1.  Create VM's and install the Rocky Linux OS on it. For example 3x master 1x worker nodes.
+2.  Login to each node and run the following commands:
+3.  Set hostname
+
+    ```console
+    hostnamectl set-hostname <hostname>
+    ```
+
+4.  Install `nano`
+    ```console
+    yum install nano -y
+    ```
+5.  Set hostnames in `/etc/hosts`
+
+    ```
+    mv /etc/hosts /etc/hosts.bak
+    cat <<EOF >/etc/hosts
+    127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+    10.0.100.201 k3s-mas-01 k3s-mas-01.lan
+    10.0.100.202 k3s-mas-02 k3s-mas-02.lan
+    10.0.100.203 k3s-mas-03 k3s-mas-03.lan
+    #10.0.100.211 k3s-wor-01 k3s-wor-01.lan
+    EOF
+    ```
+
+6.  Reboot the node
+7.  Assing a static ip in firewall/router for the VM's
+8.  Reboot the node
+
+    ```console
+    export k3s_token="<k3s_token>"
+
+    export k3s_cluster_init_ip="10.0.100.101"
+
+    export k3s_vipip="10.0.100.100"
+
+    # tls.key base64 encoded string for Bitnami Sealed Secret
+    export tls_key="<tls.key>"
+
+    curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s.sh | bash -
+    ```
+
+    After applying the above command on each node k3s is setup.
 
 ### Local
 
 Flush dns cache
+
 ```console
 resolvectl flush-caches
 ```
 
 #### Kubectl
+
 1. Install kubectl on your local machine.
-Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
+   Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
 
 2. Copy the k3s config file from the master node to your local machine
 
@@ -84,7 +136,9 @@ mkdir -p ~/.kube/ \
 ```
 
 #### Bitnami Kubeseal
+
 Install Kubeseal locally to use Bitnami sealed serets in k8s.
+
 ```console
 sudo wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.19.1/kubeseal-0.19.1-linux-amd64.tar.gz
 
@@ -96,46 +150,56 @@ sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ## Kubernetes Cheatsheet
 
 Convert to BASE64
+
 ```console
 echo -n '<value>' | base64
 ```
 
 Decode a secret with config file data
+
 ```console
 kubectl get secret <secret_name> -o jsonpath='{.data}' -n <namespace>
 ```
 
 Create secret from file
+
 ```console
 kubectl create secret generic <secret name> --from-file=<secret filelocation> --dry-run=true  --output=yaml > secrets.yaml
 ```
 
 Restart Pod
+
 ```console
 kubectl rollout restart deployment <deployment name> -n <namespace>
 ```
 
 Change PV reclaim policy
+
 ```console
 kubectl patch pv <pv-name> -p "{\"spec\":{\"persistentVolumeReclaimPolicy\":\"Retain\"}}"
 ```
 
 Shell into pod
+
 ```console
 kubectl exec -it <pod_name> -- /bin/bash
 ```
 
 Copy to or from pod
+
 ```console
 kubectl cp <namespace>/<pod>:/tmp/foo /tmp/bar
 ```
 
 Reuse PV in PVC
-1. Remove the claimRef in the PV this will set the PV status from ```Released``` to ```Available```
+
+1. Remove the claimRef in the PV this will set the PV status from `Released` to `Available`
+
 ```console
 kubectl patch pv <pv_name> -p '{"spec":{"claimRef": null}}'
 ```
-2. Add ```volumeName``` in PVC
+
+2. Add `volumeName` in PVC
 
 ```yaml
 ---
@@ -161,6 +225,7 @@ spec:
 ### Maintain cluster node
 
 Use kubectl drain to gracefully terminate all pods on the node while marking the node as unschedulable
+
 ```console
 kubectl drain --ignore-daemonsets --delete-emptydir-data <nodename>
 ```
@@ -168,6 +233,7 @@ kubectl drain --ignore-daemonsets --delete-emptydir-data <nodename>
 To update node with k3s script [See bootstrap k3s](#bootstrap-k3s-cluster)
 
 Make the node schedulable again
+
 ```console
 kubectl uncordon <nodename>
 ```
@@ -183,6 +249,7 @@ kubectl apply -f https://raw.githubusercontent.com/rancher/system-upgrade-contro
 You should see the upgrade controller starting in `system-upgrade` namespace.
 
 2- Label the nodes you want to upgrade with the right label:
+
 ```
 kubectl label node <node-name> k3s-upgrade=true
 ```
@@ -207,23 +274,26 @@ spec:
     force: true
   upgrade:
     image: rancher/k3s-upgrade
-``` 
+```
 
 The upgrade controller should watch for this plan and execute the upgrade on the labeled nodes. For more information about system-upgrade-controller and plan options please visit [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller) official repo.
 
 ## Bitnami Sealed Secret
 
 Create TLS (unencrypted) secret
+
 ```
 kubectl create secret tls cloudflare-tls --key origin-ca.pk --cert origin-ca.crt --dry-run=client -o yaml > cloudflare-tls.yaml
 ```
 
 Encrypt secret with custom public certificate.
+
 ```console
 kubeseal --cert "./sealed-secret-tls-2.crt" --format=yaml < secret.yaml > sealed-secret.yaml
 ```
 
 Add sealed secret to configfile secret
+
 ```console
     echo -n <mypassword_value> | kubectl create secret generic <secretname> --dry-run=client --from-file=<password_key>=/dev/stdin -o json | kubeseal --cert ./sealed-secret-tls-2.crt -o yaml \
     -n democratic-csi --merge-into <secret>.yaml
@@ -253,6 +323,7 @@ AgAjLKpIYV+...
 ```
 
 Include the `sealedsecrets.bitnami.com/namespace-wide` annotation in the `SealedSecret`
+
 ```yaml
 metadata:
   annotations:
@@ -260,12 +331,12 @@ metadata:
 ```
 
 Include the `sealedsecrets.bitnami.com/cluster-wide` annotation in the `SealedSecret`
+
 ```yaml
 metadata:
   annotations:
     sealedsecrets.bitnami.com/cluster-wide: "true"
 ```
-
 
 [Github](https://github.com/bitnami-labs/sealed-secrets)
 
@@ -273,17 +344,19 @@ metadata:
 
 [Blogpost Tutorial](https://itsmetommy.com/2020/06/26/kubernetes-sealed-secrets/)
 
-
 ## Other
 
 Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
+
 ```
 local-zone: "k8s.lan" redirect
 local-data: "k8s.lan 86400 IN A 192.168.1.240"
 ```
 
 ### Rsync
+
 rsync exact copy
+
 ```console
 sudo rsync -axHAWXS --numeric-ids --info=progress2 /mnt/sourcePart/ /mnt/destPart
 ```
@@ -291,16 +364,19 @@ sudo rsync -axHAWXS --numeric-ids --info=progress2 /mnt/sourcePart/ /mnt/destPar
 ### ISCSI
 
 Discovering targets in iSCSI server
+
 ```console
 sudo iscsiadm --mode discovery -t sendtargets --portal storage-server-lagg.lan
 ```
 
 Mount disk
+
 ```console
 sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --login
 ```
 
 Unmount disk
+
 ```console
 sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan -u
 ```
@@ -320,28 +396,29 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 
 #### Repair PVC using iSCSI mounts:
 
-1. SSH into one of the nodes in the cluster and start discovery 
-    ```console
-    sudo iscsiadm -m discovery -t st -p storage-server-lagg.lan
-    ```
-2. Login to target 
-    ```console
-    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --login
-    ``` 
-3. See the device using ```lsblk```. In the following steps, assume sdd is the device name.
-4. Create a local mount point & mount to replay logfile ```sudo mkdir -vp /mnt/data-0 && sudo mount /dev/sdd /mnt/data-0/```
-5. Unmount the device ```sudo umount /mnt/data-0/```
-6. Run check / ncheck ```sudo xfs_repair -n /dev/sdd; sudo xfs_ncheck /dev/sdd``` If filesystem corruption was corrected due to replay of the logfile, the xfs_ncheck should produce a list of nodes and pathnames, instead of the errorlog.
-7.  If needed run xfs repair ```sudo xfs_repair /dev/sdd```
-8.  Logout from target 
-    ```console
-    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --logout
-    ```
-9.  Volumes are now ready to be mounted as PVCs.
-
+1. SSH into one of the nodes in the cluster and start discovery
+   ```console
+   sudo iscsiadm -m discovery -t st -p storage-server-lagg.lan
+   ```
+2. Login to target
+   ```console
+   sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --login
+   ```
+3. See the device using `lsblk`. In the following steps, assume sdd is the device name.
+4. Create a local mount point & mount to replay logfile `sudo mkdir -vp /mnt/data-0 && sudo mount /dev/sdd /mnt/data-0/`
+5. Unmount the device `sudo umount /mnt/data-0/`
+6. Run check / ncheck `sudo xfs_repair -n /dev/sdd; sudo xfs_ncheck /dev/sdd` If filesystem corruption was corrected due to replay of the logfile, the xfs_ncheck should produce a list of nodes and pathnames, instead of the errorlog.
+7. If needed run xfs repair `sudo xfs_repair /dev/sdd`
+8. Logout from target
+   ```console
+   sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --logout
+   ```
+9. Volumes are now ready to be mounted as PVCs.
 
 ## Node Feature Discovery
+
 Show node lables
+
 ```console
 kubectl get no -o json | jq .items[].metadata.labels
 ```
