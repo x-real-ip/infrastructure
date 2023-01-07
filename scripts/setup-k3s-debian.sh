@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -e
-
 # Install k3s and dependencies on Debian distro.
 # Writtin by Coen Stam.
 # github@theautomation.nl
 #
+
+set -e
 
 # List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster
 # See https://github.com/theautomation/kubernetes-gitops/tree/main/deploy/k8s
