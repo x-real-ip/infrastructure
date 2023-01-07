@@ -73,10 +73,6 @@
     hostnamectl set-hostname <hostname>
     ```
 
-    ```console
-    systemctl disable firewalld --now
-    ```
-
 2.  Assing a static ip in firewall/router for the VM's.
 3.  Reboot the node.
     ```console

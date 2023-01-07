@@ -2,13 +2,13 @@
 
 # Install k3s and dependencies on RHEL distro like Rocky Linux.
 # Writtin by Coen Stam.
-# github@theautomation.nl
+# github@theautomation.nl.
 #
 
 set -e
 
-# List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster
-# See https://github.com/theautomation/kubernetes-gitops/tree/main/deploy/k8s
+# List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster.
+# See https://github.com/theautomation/kubernetes-gitops/tree/main/deploy/k8s.
 MANIFESTS=(
   01-namespaces
   02-kube-vip
@@ -36,27 +36,41 @@ sudo dnf update -y && yum install -y \
   qemu-guest-agent \
   avahi \
   jq \
-  nfs-utils
+  nfs-utils \
+  container-selinux \
+  selinux-policy-base
 
-# # Set NTP client to pfSense as NTP server
-# # Backup original timesyncd.conf
-# mv /etc/systemd/timesyncd.conf /etc/systemd/timesyncd.conf.bak
-# # Create custom timesyncd.conf
-# cat <<EOF >/etc/systemd/timesyncd.conf
-# [Time]
-# NTP=10.0.100.1
-# EOF
-# systemctl restart systemd-timesyncd
+# Disable firewalld and enable nftables.
+systemctl stop firewalld
+systemctl disable firewalld
+systemctl enable nftables
+systemctl start nftables
 
-# Deactivate the swap
+# Set NTP client to pfSense as NTP server.
+# Backup original timesyncd.conf.
+mv /etc/ntp.conf /etc/ntp.conf.bak
+# Create custom timesyncd.conf.
+cat <<EOF >/etc/ntp.conf
+restrict default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
+restrict 127.0.0.1
+restrict -6 ::1
+server 10.0.100.1
+driftfile /var/lib/ntp/drift
+keys /etc/ntp/keys
+EOF
+systemctl enable ntpd.service
+systemctl start ntpd.service
+
+# Deactivate the swap.
 swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
-# Activate QEMU Guest
+# Activate QEMU Guest.
 systemctl enable qemu-guest-agent
 systemctl start qemu-guest-agent
 
-# Install ISCSI and dependencies
+# Install ISCSI and dependencies.
 echo -e "\nInstalling ISCSI and dependencies...\n"
 yum install -y \
   lsscsi \
@@ -64,18 +78,18 @@ yum install -y \
   sg3_utils \
   device-mapper-multipath
 
-# Enable multipathing
+# Enable multipathing.
 sudo mpathconf --enable --with_multipathd y
 
-# Ensure that iscsid and multipathd are running
+# Ensure that iscsid and multipathd are running.
 sudo systemctl enable iscsid multipathd
 sudo systemctl start iscsid multipathd
 
-# Start and enable iscsi
+# Start and enable iscsi.
 sudo systemctl enable iscsi
 sudo systemctl start iscsi
 
-# Create multipath config for ISCSI
+# Create multipath config for ISCSI.
 cat <<EOF >/etc/multipath.conf
 blacklist {
     devnode "sda"
@@ -89,8 +103,8 @@ EOF
 systemctl enable multipathd
 systemctl restart multipathd
 
-# Set Avahi-daemon
-# Backup original avahi-daemon.conf
+# Set Avahi-daemon.
+# Backup original avahi-daemon.conf.
 mv /etc/avahi/avahi-daemon.conf /etc/avahi/avahi-daemon.conf.bak
 cat <<EOF >/etc/avahi/avahi-daemon.conf
 [server]
@@ -110,10 +124,10 @@ reflect-ipv=no
 #
 EOF
 
-# Create K3s /etc/rancher/k3s
+# Create K3s /etc/rancher/k3s.
 mkdir -p /etc/rancher/k3s/
 
-# Create private registry yaml
+# Create private registry yaml.
 cat <<EOF >/etc/rancher/k3s/registries.yaml
 ---
 mirrors:
@@ -127,7 +141,7 @@ configs:
 
 EOF
 
-# Create basic k3s config.yaml
+# Create basic k3s config.yaml.
 cat <<EOF >/etc/rancher/k3s/config.yaml
 ---
 write-kubeconfig-mode: "0644"
@@ -145,20 +159,20 @@ kube-apiserver-arg:
   - "feature-gates=StatefulSetAutoDeletePVC=true"
 EOF
 
-# Install k3s
+# Install k3s.
 
 if [[ $HOSTNAME =~ mas ]]; then
   # Setup masters
   if [[ $HOSTNAME = "k3s-mas-01" ]]; then
-    # Append cluster init to k3s config.yaml
+    # Append cluster init to k3s config.yaml.
     cat <<EOF >>/etc/rancher/k3s/config.yaml
 cluster-init: true
 EOF
 
-    # Create dir for init manifests
+    # Create dir for init manifests.
     mkdir -p ${manifest_location}
 
-    # Create sealedsecret custom certificate in init repo folder
+    # Create sealedsecret custom certificate in init repo folder.
     cat <<EOF >/var/lib/rancher/k3s/server/manifests/sealed-secret-customkeys-2.yaml
 ---
 kind: Secret
@@ -177,7 +191,7 @@ EOF
     # Git clone
     git clone ${github_repo}
 
-    # Copy init manifests to init folder
+    # Copy init manifests to init folder.
     for m in "${MANIFESTS[@]}"; do
       cp -rv ./kubernetes-gitops/deploy/k8s/"$m" "${manifest_location}"
     done
@@ -188,7 +202,7 @@ EOF
   else
 
     echo -e "\nInstalling k3s master and joining to cluster...\n" &&
-      # Append "--server" to k3s config.yaml for joining the cluster
+      # Append "--server" to k3s config.yaml for joining the cluster.
       cat <<EOF >>/etc/rancher/k3s/config.yaml
 server: "https://${k3s_cluster_init_ip}:6443"
 EOF
@@ -197,7 +211,7 @@ EOF
   sleep 10 && echo -e "\nInstalling k3s on $HOSTNAME done.\n" &&
     kubectl get nodes -o wide
 else
-  # Setup workers
+  # Setup workers.
   echo -e "\nInstalling k3s workers and joining to cluster...\n" &&
     curl -sfL https://get.k3s.io | sh
 fi
