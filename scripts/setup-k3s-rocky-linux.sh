@@ -36,9 +36,7 @@ sudo dnf update -y && yum install -y \
   qemu-guest-agent \
   avahi \
   jq \
-  nfs-utils \
-  container-selinux \
-  selinux-policy-base
+  nfs-utils
 
 # Disable firewalld and enable nftables.
 systemctl stop firewalld
@@ -46,21 +44,8 @@ systemctl disable firewalld
 systemctl enable nftables
 systemctl start nftables
 
-# Set NTP client to pfSense as NTP server.
-# Backup original timesyncd.conf.
-mv /etc/ntp.conf /etc/ntp.conf.bak
-# Create custom timesyncd.conf.
-cat <<EOF >/etc/ntp.conf
-restrict default kod nomodify notrap nopeer noquery
-restrict -6 default kod nomodify notrap nopeer noquery
-restrict 127.0.0.1
-restrict -6 ::1
-server 10.0.100.1
-driftfile /var/lib/ntp/drift
-keys /etc/ntp/keys
-EOF
-systemctl enable ntpd.service
-systemctl start ntpd.service
+# Set timezone
+sudo timedatectl set-timezone Europe/Amsterdam
 
 # Deactivate the swap.
 swapoff -a
@@ -152,7 +137,7 @@ disable:
 tls-san:
   - "${k3s_vipip}"
   - "k3s-cluster.lan"
-prefer-bundled-bin: true
+# prefer-bundled-bin: true
 kubelet-arg:
   - "feature-gates=StatefulSetAutoDeletePVC=true"
 kube-apiserver-arg: 
@@ -160,7 +145,6 @@ kube-apiserver-arg:
 EOF
 
 # Install k3s.
-
 if [[ $HOSTNAME =~ mas ]]; then
   # Setup masters
   if [[ $HOSTNAME = "k3s-mas-01" ]]; then
