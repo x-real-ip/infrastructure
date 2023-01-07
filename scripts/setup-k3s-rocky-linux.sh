@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -e
-
 # Install k3s and dependencies on RHEL distro like Rocky Linux.
 # Writtin by Coen Stam.
 # github@theautomation.nl
 #
+
+set -e
 
 # List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster
 # See https://github.com/theautomation/kubernetes-gitops/tree/main/deploy/k8s
@@ -15,12 +15,12 @@ MANIFESTS=(
   03-bitnami
   04-secrets
   05-metallb
-  # 06-drone
-  # 07-csi
+  06-drone
+  07-csi
   08-nginx
-  # 09-harbor
+  09-harbor
   10-certificates
-  # 11-node-feature-discovery
+  11-node-feature-discovery
 )
 
 export manifest_location="/var/lib/rancher/k3s/server/manifests/"
@@ -28,14 +28,15 @@ export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
 # Update and install packages.
 sudo dnf update -y && yum install -y \
-    nano \
-    curl \
-    wget \
-    unzip \
-    git \
-    qemu-guest-agent \
-    avahi \
-    jq
+  nano \
+  curl \
+  wget \
+  unzip \
+  git \
+  qemu-guest-agent \
+  avahi \
+  jq \
+  nfs-utils
 
 # # Set NTP client to pfSense as NTP server
 # # Backup original timesyncd.conf
@@ -58,8 +59,21 @@ systemctl start qemu-guest-agent
 # Install ISCSI and dependencies
 echo -e "\nInstalling ISCSI and dependencies...\n"
 yum install -y \
+  lsscsi \
   iscsi-initiator-utils \
+  sg3_utils \
   device-mapper-multipath
+
+# Enable multipathing
+sudo mpathconf --enable --with_multipathd y
+
+# Ensure that iscsid and multipathd are running
+sudo systemctl enable iscsid multipathd
+sudo systemctl start iscsid multipathd
+
+# Start and enable iscsi
+sudo systemctl enable iscsi
+sudo systemctl start iscsi
 
 # Create multipath config for ISCSI
 cat <<EOF >/etc/multipath.conf
@@ -180,7 +194,7 @@ server: "https://${k3s_cluster_init_ip}:6443"
 EOF
     curl -sfL https://get.k3s.io | sh
   fi
-  sleep 15 && echo -e "\nInstalling k3s on $HOSTNAME done.\n" &&
+  sleep 10 && echo -e "\nInstalling k3s on $HOSTNAME done.\n" &&
     kubectl get nodes -o wide
 else
   # Setup workers

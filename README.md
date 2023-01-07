@@ -61,7 +61,7 @@
 6. Reboot the host machine
 7. Assing static ip in firewall/router for the VM's
 8. Reboot the host machine's
-9. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-master-01 VM.
+9. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-mas-01 VM.
 
 ### Rocky Linux initialization and setup
 
@@ -74,13 +74,21 @@
     ```
 
     ```console
-    yum install nano -y
+    systemctl disable firewalld --now
     ```
+
+2.  Assing a static ip in firewall/router for the VM's.
+3.  Reboot the node.
+    ```console
+    reboot
+    ```
+4.  SSH in to the node and run the following command:
 
     ```console
     mv /etc/hosts /etc/hosts.bak
     cat <<EOF >/etc/hosts
-    127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+    127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+    ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
     127.0.0.1 ${HOSTNAME} ${HOSTNAME}.lan
     10.0.100.201 k3s-mas-01 k3s-mas-01.lan
     10.0.100.202 k3s-mas-02 k3s-mas-02.lan
@@ -89,35 +97,31 @@
     EOF
     ```
 
-2.  Reboot the node.
-    ```console
-    reboot
-    ```
-3.  Assing a static ip in firewall/router for the VM's.
-4.  Reboot the node.
+5.  Reboot the node.
+
     ```console
     reboot
     ```
 
 ### Install k3s
 
-1. Run below commands to install k3s on the node.
+1.  SSH in to the node and run the following command.
 
-   ```console
-   # Set Linux distribution (debian/rocky-linux)
-   export distro="rocky-linux"
+    ```console
+    # Set Linux distribution (debian/rocky-linux)
+    export distro="rocky-linux"
 
-   export k3s_token="<k3s_token>"
+    export k3s_token="<k3s_token>"
 
-   export k3s_cluster_init_ip="10.0.100.201"
+    export k3s_cluster_init_ip="10.0.100.201"
 
-   export k3s_vipip="10.0.100.200"
+    export k3s_vipip="10.0.100.200"
 
-   # tls.key base64 encoded string for Bitnami Sealed Secret
-   export tls_key="<tls.key>"
+    # tls.key base64 encoded string for Bitnami Sealed Secret
+    export tls_key="<tls.key>"
 
-   curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s-${distro}.sh | bash -
-   ```
+    curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s-${distro}.sh | bash -
+    ```
 
 After applying the above command on each node k3s is setup.
 
@@ -138,7 +142,7 @@ resolvectl flush-caches
 
 ```console
 mkdir -p ~/.kube/ \
-&& scp coen@k3s-master-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
+&& scp root@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
 && sed -i 's/127.0.0.1/10.0.100.200/g' ~/.kube/config
 ```
 
