@@ -74,27 +74,7 @@
     ```
 
 2.  Assing a static ip in firewall/router for the VM's.
-3.  Reboot the node.
-    ```console
-    reboot
-    ```
-4.  SSH in to the node and run the following command:
-
-    ```console
-    mv /etc/hosts /etc/hosts.bak
-    cat <<EOF >/etc/hosts
-    127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-    ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-    127.0.0.1 ${HOSTNAME} ${HOSTNAME}.lan
-    10.0.100.201 k3s-mas-01 k3s-mas-01.lan
-    10.0.100.202 k3s-mas-02 k3s-mas-02.lan
-    10.0.100.203 k3s-mas-03 k3s-mas-03.lan
-    #10.0.100.211 k3s-wor-01 k3s-wor-01.lan
-    EOF
-    ```
-
-5.  Reboot the node.
-
+3.  Reboot the node and check if it has the desired static ip. ```ip a``` 
     ```console
     reboot
     ```
@@ -136,11 +116,11 @@ resolvectl flush-caches
 
 2. Copy the k3s config file from the master node to your local machine
 
-```console
-mkdir -p ~/.kube/ \
-&& scp root@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-&& sed -i 's/127.0.0.1/10.0.100.200/g' ~/.kube/config
-```
+    ```console
+    mkdir -p ~/.kube/ \
+    && scp root@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
+    && sed -i 's/127.0.0.1/10.0.100.200/g' ~/.kube/config
+    ```
 
 #### Bitnami Kubeseal
 
@@ -171,7 +151,7 @@ kubectl get secret <secret_name> -o jsonpath='{.data}' -n <namespace>
 Create secret from file
 
 ```console
-kubectl create secret generic <secret name> --from-file=<secret filelocation> --dry-run=true  --output=yaml > secrets.yaml
+kubectl create secret generic <secret name> --from-file=<secret filelocation> --dry-run=client  --output=yaml > secrets.yaml
 ```
 
 Restart Pod
