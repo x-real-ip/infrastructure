@@ -15,7 +15,7 @@ MANIFESTS=(
   03-bitnami
   04-secrets
   05-metallb
-  06-drone
+  # 06-drone
   07-csi
   08-nginx
   09-harbor
@@ -192,7 +192,7 @@ server: "https://${k3s_cluster_init_ip}:6443"
 EOF
     curl -sfL https://get.k3s.io | sh
   fi
-  sleep 10 && echo -e "\nInstalling k3s on $HOSTNAME done.\n" &&
+  sleep 12 && echo -e "\nInstalling k3s on $HOSTNAME done.\n" &&
     kubectl get nodes -o wide
 else
   # Setup workers.
