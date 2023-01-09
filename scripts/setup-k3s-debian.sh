@@ -6,7 +6,6 @@
 #
 
 set -e
-DEBIAN_FRONTEND=noninteractive
 
 # List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster.
 # See https://github.com/theautomation/kubernetes-gitops/tree/main/deploy/k8s.
