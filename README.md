@@ -31,8 +31,8 @@
    sudo hostnamectl set-hostname <hostname>
    ```
 
-3. Reboot
-4. Assing static ip in firewall/router for the VM's
+3. Assing static ip in firewall/router for the VM's
+4. Reboot
 5. SSH into each node en run below commands as root
 6. Set hostnames in `/etc/hosts`
 
@@ -48,7 +48,7 @@
    ```
 
 7. Reboot
-9. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-mas-01 VM.
+8. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-mas-01 VM.
 
 ### Rocky Linux initialization and setup
 
