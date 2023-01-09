@@ -117,7 +117,7 @@ resolvectl flush-caches
 
    ```console
    mkdir -p ~/.kube/ \
-   && scp root@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
+   && scp coen@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
    && sed -i 's/127.0.0.1/10.0.100.200/g' ~/.kube/config
    ```
 
