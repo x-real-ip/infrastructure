@@ -7,15 +7,15 @@
 
 set -e
 
-# List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster
-# See https://github.com/theautomation/kubernetes-gitops/tree/main/deploy/k8s
+# List of all Kubernetes manifest yaml's, this will be applied when init k3s cluster.
+# See https://github.com/theautomation/kubernetes-gitops/tree/main/deploy/k8s.
 MANIFESTS=(
   01-namespaces
   02-kube-vip
   03-bitnami
   04-secrets
   05-metallb
-  06-drone
+  # 06-drone
   07-csi
   08-nginx
   09-harbor
@@ -23,13 +23,12 @@ MANIFESTS=(
   11-node-feature-discovery
 )
 
-export LC_ALL=C
 export manifest_location="/var/lib/rancher/k3s/server/manifests/"
 export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
 # Update and install packages.
-apt update && apt upgrade -y &&
-  apt install -y \
+sudo apt update && sudo apt upgrade -y &&
+  sudo apt install -y \
     curl \
     wget \
     unzip \
@@ -139,9 +138,9 @@ kube-apiserver-arg:
   - "feature-gates=StatefulSetAutoDeletePVC=true"
 EOF
 
-if [[ $HOSTNAME =~ master ]]; then
+if [[ $HOSTNAME =~ mas ]]; then
   # Setup masters
-  if [[ $HOSTNAME = "k3s-master-01" ]]; then
+  if [[ $HOSTNAME = "k3s-mas-01" ]]; then
     # Append cluster init to k3s config.yaml
     cat <<EOF >>/etc/rancher/k3s/config.yaml
 cluster-init: true
