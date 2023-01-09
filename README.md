@@ -28,39 +28,26 @@
 2. Set hostname
 
    ```console
-   hostnamectl set-hostname <hostname>
+   sudo hostnamectl set-hostname <hostname>
    ```
 
-3. Set hostnames in `/etc/hosts`
+3. Reboot
+4. Assing static ip in firewall/router for the VM's
+5. SSH into each node en run below commands as root
+6. Set hostnames in `/etc/hosts`
 
    ```
-   mv /etc/hosts /etc/hosts.bak
+   sudo mv /etc/hosts /etc/hosts.bak
    cat <<EOF >/etc/hosts
-   127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+   127.0.0.1 localhost
+   127.0.1.1 ${HOSTNAME}
    10.0.100.201 k3s-mas-01 k3s-mas-01.lan
    10.0.100.202 k3s-mas-02 k3s-mas-02.lan
    10.0.100.203 k3s-mas-03 k3s-mas-03.lan
-   #10.0.100.211 k3s-wor-01 k3s-wor-01.lan
    EOF
    ```
 
-4. Install CURL
-
-   ```
-   apt install curl -y
-   ```
-
-5. Set sbin (Debian)
-
-   ```console
-   cat >> /etc/profile.d/extra_paths.sh << \EOF
-   PATH=$PATH:/sbin
-   EOF
-   ```
-
-6. Reboot the host machine
-7. Assing static ip in firewall/router for the VM's
-8. Reboot the host machine's
+7. Reboot
 9. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-mas-01 VM.
 
 ### Rocky Linux initialization and setup
@@ -73,8 +60,20 @@
     hostnamectl set-hostname <hostname>
     ```
 
-2.  Assing a static ip in firewall/router for the VM's.
-3.  Reboot the node and check if it has the desired static ip. ```ip a``` 
+2.  Set hostnames in `/etc/hosts`
+
+    ```
+    mv /etc/hosts /etc/hosts.bak
+    cat <<EOF >/etc/hosts
+    127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+    10.0.100.201 k3s-mas-01 k3s-mas-01.lan
+    10.0.100.202 k3s-mas-02 k3s-mas-02.lan
+    10.0.100.203 k3s-mas-03 k3s-mas-03.lan
+    EOF
+    ```
+
+3.  Assing a static ip in firewall/router for the VM's.
+4.  Reboot the node and check if it has the desired static ip. `ip a`
     ```console
     reboot
     ```
@@ -116,11 +115,11 @@ resolvectl flush-caches
 
 2. Copy the k3s config file from the master node to your local machine
 
-    ```console
-    mkdir -p ~/.kube/ \
-    && scp root@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-    && sed -i 's/127.0.0.1/10.0.100.200/g' ~/.kube/config
-    ```
+   ```console
+   mkdir -p ~/.kube/ \
+   && scp root@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
+   && sed -i 's/127.0.0.1/10.0.100.200/g' ~/.kube/config
+   ```
 
 #### Bitnami Kubeseal
 
