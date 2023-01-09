@@ -1,4 +1,0 @@
-kubectl drain
-
-7993 request.go:601] Waited for 1.80441774s due to client-side throttling, not priority and fairness, request: GET:https://192.168.1.100:6443/api/v1/namespaces/prd-ext/pods/ingress
-83542 request.go:601] Waited for 1.000141945s due to client-side throttling, not priority and fairness, request: POST:https://192.168.1.100:6443/api/v1/namespaces/devops/pods/harbor

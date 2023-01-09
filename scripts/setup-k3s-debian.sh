@@ -49,14 +49,16 @@ NTP=10.0.100.1
 EOF
 
 systemctl restart systemd-timesyncd
+systemctl enable systemd-timesyncd
 
 # Deactivate the swap
 swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
 # Activate QEMU Guest
-systemctl enable qemu-guest-agent
 systemctl start qemu-guest-agent
+systemctl enable qemu-guest-agent
+
 
 # Install ISCSI and dependencies
 echo -e "\nInstalling ISCSI and dependencies...\n"
