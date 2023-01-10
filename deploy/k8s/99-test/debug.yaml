@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug
+  namespace: home-automation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debug
+  template:
+    metadata:
+      labels:
+        app: debug
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: debug
+          image: "harbor.k8s.lan/k8s/shelly-init:latest"
+          resources: {}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "sleep 3600"
+      imagePullSecrets:
+        - name: harbor-registry-creds
