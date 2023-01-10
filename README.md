@@ -27,9 +27,9 @@
    SSH into each node en run below commands as root:
 2. Set hostname
 
-   ```console
-   sudo hostnamectl set-hostname <hostname>
-   ```
+    ```console
+    sudo hostnamectl set-hostname <hostname>
+    ```
 
 3. Assing static ip in firewall/router for the VM's
 4. Reboot
@@ -87,7 +87,7 @@ resolvectl flush-caches
 
    ```console
    mkdir -p ~/.kube/ \
-   && scp coen@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
+   && scp root@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
    && sed -i 's/127.0.0.1/10.0.100.200/g' ~/.kube/config
    ```
 
