@@ -33,22 +33,7 @@
 
 3. Assing static ip in firewall/router for the VM's
 4. Reboot
-5. SSH into each node en run below commands as root
-6. Set hostnames in `/etc/hosts`
-
-   ```
-   sudo mv /etc/hosts /etc/hosts.bak
-   cat <<EOF >/etc/hosts
-   127.0.0.1 localhost
-   127.0.1.1 ${HOSTNAME}
-   10.0.100.201 k3s-mas-01 k3s-mas-01.lan
-   10.0.100.202 k3s-mas-02 k3s-mas-02.lan
-   10.0.100.203 k3s-mas-03 k3s-mas-03.lan
-   EOF
-   ```
-
-7. Reboot
-8. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-mas-01 VM.
+5. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-mas-01 VM.
 
 ### Rocky Linux initialization and setup
 
@@ -60,23 +45,8 @@
     hostnamectl set-hostname <hostname>
     ```
 
-2.  Set hostnames in `/etc/hosts`
-
-    ```
-    mv /etc/hosts /etc/hosts.bak
-    cat <<EOF >/etc/hosts
-    127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-    10.0.100.201 k3s-mas-01 k3s-mas-01.lan
-    10.0.100.202 k3s-mas-02 k3s-mas-02.lan
-    10.0.100.203 k3s-mas-03 k3s-mas-03.lan
-    EOF
-    ```
-
-3.  Assing a static ip in firewall/router for the VM's.
-4.  Reboot the node and check if it has the desired static ip. `ip a`
-    ```console
-    reboot
-    ```
+2.  Assing a static ip in firewall/router for the VM's.
+3.  Reboot the node and check if it has the desired static ip. `ip a`
 
 ### Install k3s
 
