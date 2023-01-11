@@ -27,13 +27,12 @@ export manifest_location="/var/lib/rancher/k3s/server/manifests/"
 export github_repo="https://github.com/theautomation/kubernetes-gitops.git"
 
 # Update and install packages.
-sudo apt update && sudo apt upgrade -y &&
-  sudo apt install -y \
+apt update && apt upgrade -y &&
+  apt install -y \
     curl \
     wget \
     unzip \
     git \
-    sudo \
     apparmor \
     qemu-guest-agent \
     avahi-daemon \
@@ -53,12 +52,11 @@ systemctl enable systemd-timesyncd
 
 # Deactivate the swap
 swapoff -a
-sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
 # Activate QEMU Guest
 systemctl start qemu-guest-agent
 systemctl enable qemu-guest-agent
-
 
 # Install ISCSI and dependencies
 echo -e "\nInstalling ISCSI and dependencies...\n"
