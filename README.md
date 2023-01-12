@@ -1,9 +1,10 @@
 # Kubernetes GitOps
 
 - [Kubernetes GitOps](#kubernetes-gitops)
+  - [Setting up VM hosts](#setting-up-vm-hosts)
   - [Setup k3s cluster](#setup-k3s-cluster)
-    - [Debian initialization and setup](#debian-initialization-and-setup)
     - [Rocky Linux initialization and setup](#rocky-linux-initialization-and-setup)
+    - [Alpine initialization and setup](#alpine-initialization-and-setup)
     - [Install k3s](#install-k3s)
     - [Local initialization and setup](#local-initialization-and-setup)
       - [Kubectl](#kubectl)
@@ -19,21 +20,25 @@
       - [Repair PVC using iSCSI mounts:](#repair-pvc-using-iscsi-mounts)
   - [Node Feature Discovery](#node-feature-discovery)
 
-## Setup k3s cluster
+## Setting up VM hosts
 
-### Debian initialization and setup
-
-1. Create VM's and install Debian on it. For example 3x master 1x worker nodes.
-   SSH into each node en run below commands as root:
-2. Set hostname
-
+1. Create VM from template and bootup.
+2. Add static ip via pfSense.
+3. Login to the VM and set hostname.
     ```console
     sudo hostnamectl set-hostname <hostname>
     ```
+4. Reboot.
+5. Copy SSH keys to host(s).
+    ```console
+    ssh-copy-id -i ~/.ssh/ansible.pub root@<hostname>
+    ```
 
-3. Assing static ip in firewall/router for the VM's
-4. Reboot
-5. SSH into the k3s nodes and apply below, the tls_key is only needed in the k3s-mas-01 VM.
+## Setup k3s cluster
+
+
+
+
 
 ### Rocky Linux initialization and setup
 
@@ -48,25 +53,49 @@
 2.  Assing a static ip in firewall/router for the VM's.
 3.  Reboot the node and check if it has the desired static ip. `ip a`
 
+### Alpine initialization and setup
+
+1. Clone the k3s VM template
+2. Add static IP and hostname in pfSense DHCP
+3. Login to the console of the vm and run the following commands:
+   ```console
+   apk add nano
+   ```
+   ```console
+   echo "<hostname>" > /etc/hostname
+   ```
+   ```console
+   nano /etc/hosts
+   ```
+   Edit the hosts file by replacing `<hostname>` with the real hostname:
+   ```
+   127.0.0.1	<hostname>.lan <hostname> localhost.localdomain localhost
+   ::1		localhost localhost.localdomain
+   ```
+   ```console
+   reboot
+   ```
+4. Now you can SSH into the machine en install K3s
+
 ### Install k3s
 
 1.  SSH in to the node and run the following command.
 
-    ```console
-    # Set Linux distribution (debian/rocky-linux)
-    export distro="rocky-linux"
+```console
+# Set Linux distribution (debian/rocky-linux/alpine)
+export distro="<distro>"
 
-    export k3s_token="<k3s_token>"
+export k3s_token="<k3s_token>"
 
-    export k3s_cluster_init_ip="10.0.100.201"
+export k3s_cluster_init_ip="10.0.100.201"
 
-    export k3s_vipip="10.0.100.200"
+export k3s_vipip="10.0.100.200"
 
-    # tls.key base64 encoded string for Bitnami Sealed Secret
-    export tls_key="<tls.key>"
+# tls.key base64 encoded string for Bitnami Sealed Secret
+export tls_key="<tls.key>"
 
-    curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s-${distro}.sh | bash -
-    ```
+curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s-${distro}.sh | bash -
+```
 
 After applying the above command on each node k3s is setup.
 
