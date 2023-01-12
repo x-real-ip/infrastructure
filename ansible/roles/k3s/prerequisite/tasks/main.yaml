@@ -1,0 +1,128 @@
+---
+- name: Install the latest version packages
+  ansible.builtin.dnf:
+    name:
+      - nano
+      - qemu-guest-agent
+      - avahi
+      - nfs-utils
+      - lsscsi
+      - iscsi-initiator-utils
+      - sg3_utils
+      - device-mapper-multipath
+    state: latest
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+
+- name: Set SELinux to disabled state
+  ansible.builtin.selinux:
+    state: disabled
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+
+- name: Enable IPv4 forwarding
+  ansible.builtin.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    reload: yes
+
+- name: Enable IPv6 forwarding
+  ansible.builtin.sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: "1"
+    state: present
+    reload: yes
+  when: ansible_all_ipv6_addresses
+
+- name: Add br_netfilter to /etc/modules-load.d/
+  ansible.builtin.copy:
+    content: "br_netfilter"
+    dest: /etc/modules-load.d/br_netfilter.conf
+    mode: "u=rw,g=,o="
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+
+- name: Load br_netfilter
+  ansible.builtin.modprobe:
+    name: br_netfilter
+    state: present
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+
+- name: Set bridge-nf-call-iptables (just to be sure)
+  ansible.builtin.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+    reload: yes
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+  loop:
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+
+- name: Add /usr/local/bin to sudo secure_path
+  ansible.builtin.lineinfile:
+    line: "Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin"
+    regexp: "Defaults(\\s)*secure_path(\\s)*="
+    state: present
+    insertafter: EOF
+    path: /etc/sudoers
+    validate: "visudo -cf %s"
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+
+- name: Enable qemu-guest-agent
+  ansible.builtin.systemd:
+    name: qemu-guest-agent.service
+    state: started
+    enabled: yes
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+
+- name: Creating a multipath.conf file
+  ansible.builtin.copy:
+    dest: "/etc/multipath.conf"
+    content: |
+      blacklist {
+          devnode "sda"
+      }
+      defaults {
+          user_friendly_names yes
+          find_multipaths yes
+      }
+
+- name: Enable iscsid
+  ansible.builtin.systemd:
+    name: iscsid.service
+    state: started
+    enabled: yes
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+
+- name: Enable multipathd
+  ansible.builtin.systemd:
+    name: multipathd.service
+    state: started
+    enabled: yes
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+
+- name: Creating a avahi-daemon.conf file
+  ansible.builtin.copy:
+    dest: "/etc/avahi/avahi-daemon.conf"
+    content: |
+      [server]
+      use-ipv4=yes
+      use-ipv6=no
+      ratelimit-interval-usec=1000000
+      ratelimit-burst=1000
+      [wide-area]
+      enable-wide-area=yes
+      [publish]
+      publish-hinfo=no
+      publish-workstation=no
+      [reflector]
+      enable-reflector=yes
+      reflect-ipv=no
+      [rlimits]
+      #
+
+- name: Enable Avahi mDNS/DNS-SD Stack
+  ansible.builtin.systemd:
+    name: avahi-daemon.service
+    state: started
+    enabled: yes
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']

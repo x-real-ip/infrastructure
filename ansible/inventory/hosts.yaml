@@ -1,0 +1,5 @@
+---
+k3s_masters:
+  hosts:
+    k3s-master-01.lan:
+      ansible_user: root
