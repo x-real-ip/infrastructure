@@ -1,0 +1,17 @@
+- name: Check Confirmation
+  fail: msg="Playbook run confirmation failed"
+  when: confirmation != "YES"
+
+- name: DNF update the system
+  dnf:
+    name:  "*"
+    state: latest
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+
+- name: Reboot required
+  command: "/usr/bin/needs-restarting -r"
+  register: reboot_required
+  ignore_errors: True
+  changed_when: False
+  failed_when: reboot_required.rc == 2
+  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']

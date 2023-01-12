@@ -1,0 +1,13 @@
+---
+- hosts: k3s_masters
+  gather_facts: yes
+  become: yes
+  vars_prompt:
+    name: "confirmation"
+    prompt: "Are you sure you want to Update with reboots? Answer with 'YES'"
+    default: "NO"
+    private: no
+  tasks:
+  roles:
+    - role: k3s/prerequisite
+    - role: k3s/download
