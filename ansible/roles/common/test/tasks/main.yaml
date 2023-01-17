@@ -1,0 +1,11 @@
+---
+# - name: Print all available facts
+#   ansible.builtin.debug:
+#     var: ansible_facts
+
+- name: Test hosts list
+  ansible.builtin.debug:
+    msg: "{{ hostvars['odroid-c4.lan']['ansible_eth0']['ipv4']['address'] }}"
+
+# - name: Return motd to registered var
+#   ansible.builtin.command: echo {{ hostvars[groups['odroid'][0]]['ansible_eth0']['ipv4']['address'] }} >> /etc/test
