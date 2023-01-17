@@ -1,4 +1,9 @@
 ---
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ system_timezone }}"
+  when: (system_timezone is defined) and (system_timezone != "Your/Timezone")
+
 - name: Install the latest version packages
   ansible.builtin.dnf:
     name:
@@ -11,12 +16,12 @@
       - sg3_utils
       - device-mapper-multipath
     state: latest
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+  when: ansible_os_family == "RedHat"
 
 - name: Set SELinux to disabled state
-  ansible.builtin.selinux:
+  ansible.posix.selinux:
     state: disabled
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+  when: ansible_os_family == "RedHat"
 
 - name: Enable IPv4 forwarding
   ansible.builtin.sysctl:
@@ -38,13 +43,13 @@
     content: "br_netfilter"
     dest: /etc/modules-load.d/br_netfilter.conf
     mode: "u=rw,g=,o="
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+  when: ansible_os_family == "RedHat"
 
 - name: Load br_netfilter
   ansible.builtin.modprobe:
     name: br_netfilter
     state: present
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+  when: ansible_os_family == "RedHat"
 
 - name: Set bridge-nf-call-iptables (just to be sure)
   ansible.builtin.sysctl:
@@ -52,7 +57,7 @@
     value: "1"
     state: present
     reload: yes
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+  when: ansible_os_family == "RedHat"
   loop:
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
@@ -65,14 +70,13 @@
     insertafter: EOF
     path: /etc/sudoers
     validate: "visudo -cf %s"
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+  when: ansible_os_family == "RedHat"
 
 - name: Enable qemu-guest-agent
   ansible.builtin.systemd:
     name: qemu-guest-agent.service
     state: started
-    enabled: yes
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+    enabled: true
 
 - name: Creating a multipath.conf file
   ansible.builtin.copy:
@@ -90,15 +94,13 @@
   ansible.builtin.systemd:
     name: iscsid.service
     state: started
-    enabled: yes
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+    enabled: true
 
 - name: Enable multipathd
   ansible.builtin.systemd:
     name: multipathd.service
     state: started
-    enabled: yes
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+    enabled: true
 
 - name: Creating a avahi-daemon.conf file
   ansible.builtin.copy:
@@ -124,5 +126,5 @@
   ansible.builtin.systemd:
     name: avahi-daemon.service
     state: started
-    enabled: yes
-  when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux', 'Rocky']
+    enabled: true
+  when: ansible_os_family == "RedHat"

@@ -1,0 +1,13 @@
+---
+- name: Gather facts from collectors
+  hosts: odroid-c4.lan
+  tasks: []
+
+- name: Play for the desired state of the proxmox servers
+  hosts: proxmox
+  gather_facts: true
+  become: true
+  roles:
+    - role: common/test
+    - role: common/debian_os_update
+    - role: proxmox/qdevice

@@ -1,0 +1,9 @@
+---
+- name: Play to setup Odroid-C4
+  hosts: odroid-c4.lan
+  gather_facts: true
+  become: true
+  roles:
+    - role: common/debian_os_update
+    - role: odroid/prerequisite
+    - role: odroid/qdevice

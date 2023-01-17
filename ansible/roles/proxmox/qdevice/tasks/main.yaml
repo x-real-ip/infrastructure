@@ -1,0 +1,6 @@
+---
+- name: Install corosync-qdevice
+  ansible.builtin.apt:
+    name:
+      - corosync-qdevice
+    state: present
