@@ -1,0 +1,24 @@
+---
+- name: Copy the file from Odroid to proxmox using Method Pull
+  tags: sync-pull
+  synchronize:
+    src: "/home/ansible/.ssh/id_rsa.pub"
+    dest: "{{ item }}"
+    mode: pull
+  delegate_to: "{{groups['app'][1]}}"
+  register: syncfile
+  run_once: true
+  with_items:
+    - "/tmp/app01-to-app02.jar"
+
+# - name: Install pexpect
+#   pip:
+#     name: pexpect
+
+# - name: Add Qdevice and except fingerprint
+#   ansible.builtin.expect:
+#     command: pvecm qdevice setup {{ hostvars['odroid-c4.lan']['ansible_eth0']['ipv4']['address'] }} -f
+#     echo: true
+#     timeout: 20
+#     responses:
+#       "Are you sure you want to continue connecting (yes/no/[fingerprint])?": "yes"

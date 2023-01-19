@@ -4,6 +4,35 @@
   gather_facts: true
   become: true
   roles:
-    - role: common/debian_os_update
-    - role: odroid/prerequisite
-    - role: odroid/qdevice
+  vars_prompt:
+    - name: new_root_password
+      prompt: Enter new root password
+      private: true
+      encrypt: sha512_crypt
+      confirm: true
+
+  tasks:
+    - name: Set timezone
+      community.general.timezone:
+        name: "{{ system_timezone }}"
+      when: (system_timezone is defined) and (system_timezone != "Your/Timezone")
+
+    - name: Permit root login
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        search_string: '#PermitRootLogin without-password'
+        line: PermitRootLogin yes
+        state: present
+
+    - name: Change user password
+      ansible.builtin.user:
+        name: root
+        update_password: always
+        password: "{{ new_root_password }}"
+
+    - name: Install corosync packages
+      ansible.builtin.apt:
+        name:
+          - corosync-qnetd
+          - corosync-qdevice
+        state: present

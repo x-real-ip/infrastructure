@@ -1,5 +1,5 @@
 ---
-- name: Gather facts from collectors
+- name: Gather facts from odroid
   hosts: odroid-c4.lan
   tasks: []
 
@@ -8,6 +8,14 @@
   gather_facts: true
   become: true
   roles:
-    - role: common/test
     - role: common/debian_os_update
-    - role: proxmox/qdevice
+    - role: proxmox/qdevice_install
+
+- name: Play to add a Qdevice to one Proxmox node
+  hosts: pve-a
+  gather_facts: true
+  become: true
+  roles:
+    - role: proxmox/qdevice_setup
+
+- name: Copy pub key to odroid

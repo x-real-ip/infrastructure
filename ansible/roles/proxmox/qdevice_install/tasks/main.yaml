@@ -1,0 +1,8 @@
+---
+- name: Install corosync-qdevice and dependencies
+  ansible.builtin.apt:
+    update_cache: yes
+    name:
+      - corosync-qdevice
+      - python3-pip
+    state: present
