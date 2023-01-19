@@ -1,7 +1,0 @@
----
-- name: Install corosync packages
-  ansible.builtin.apt:
-    name:
-      - corosync-qnetd
-      - corosync-qdevice
-    state: present
