@@ -1,0 +1,67 @@
+---
+- name: Play to setup Qdevice for proxmox
+  hosts: odroid-c4.lan
+  gather_facts: true
+  remote_user: odroid
+  become: true
+  vars:
+    ansible_user: odroid
+    hostname: odroid-c4
+  tasks:
+    # - name: Show facts available on the system
+    #   ansible.builtin.debug:
+    #     var: ansible_facts
+
+    - name: Update apt repo and cache on
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+        upgrade: dist
+
+    - name: Install dbus
+      ansible.builtin.apt:
+        name:
+          - dbus
+        state: present
+
+    - name: Enable service dbus, and not touch the state
+      ansible.builtin.service:
+        name: dbus
+        enabled: true
+        state: started
+
+    - name: Enable service dbus.socket, and not touch the state
+      ansible.builtin.service:
+        name: dbus.socket
+        enabled: true
+        state: started
+
+    - name: Set hostname
+      ansible.builtin.hostname:
+        name: "{{ hostname }}"
+      register: hostname
+      notify:
+        - Restart host
+
+    - name: Set timezone
+      community.general.timezone:
+        name: "{{ system_timezone }}"
+      when: (system_timezone is defined) and (system_timezone != "Your/Timezone")
+
+    - name: Install corosync packages
+      ansible.builtin.apt:
+        name:
+          - corosync-qnetd
+          - corosync-qdevice
+        state: present
+
+    - name: Check if reboot required
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+      notify:
+        - Restart host
+
+  handlers:
+    - name: Restart host
+      ansible.builtin.reboot:

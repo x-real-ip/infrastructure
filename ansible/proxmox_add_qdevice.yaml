@@ -1,0 +1,48 @@
+---
+- name: Gather facts from odroid-c4
+  hosts: odroid-c4.lan
+  gather_facts: true
+  remote_user: odroid
+  # become: true
+  vars:
+    ansible_user: odroid
+
+- name: Play to add odroid as qdevice
+  hosts: proxmox
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Install corosync-qdevice and dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - corosync-qdevice
+          - python3-pip
+        state: present
+
+    - name: Install pexpect
+      ansible.builtin.pip:
+        name: pexpect
+
+    # - name: Add Qdevice and except fingerprint
+    #   ansible.builtin.expect:
+    #     command: pvecm qdevice setup {{ hostvars['odroid-c4.lan']['ansible_eth0']['ipv4']['address'] }} -f
+    #     echo: true
+    #     timeout: 20
+    #     responses:
+    #       "Are you sure you want to continue connecting (yes/no/[fingerprint])?": "yes"
+
+    # - name: Except SSH odroid-c4 fingerprint
+    #   ansible.builtin.expect:
+    #     echo: true
+    #     timeout: 20
+    #     command: pvecm qdevice setup {{ hostvars['odroid-c4.lan']['ansible_eth0']['ipv4']['address'] }} -f
+    #     responses:
+    #       "Are you sure you want to continue connecting (yes/no/[fingerprint])?": "yes"
+    #       "password: ": "{{ password }}"
+
+    - name: Put SSH public key in variable
+      ansible.builtin.command: cat ~/.ssh/id_rsa.pub
+      register: pve_a_pubkey
+      changed_when: pve_a_pubkey.rc != 0
+      when: ansible_hostname == 'pve-a'
