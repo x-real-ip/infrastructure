@@ -1,0 +1,26 @@
+---
+- name: "Play for localhost"
+  hosts: localhost
+  connection: local
+  become: true
+  tasks:
+    - name: Update apt repo and cache on
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+        upgrade: dist
+
+    - name: Install bottle python package
+      ansible.builtin.pip:
+        name: passlib
+
+    - name: Install apt packages
+      ansible.builtin.apt:
+        pkg:
+          - pinta
+          - curl
+          - code
+          - git
+          - brave-browser
+        autoclean: true
+        autoremove: true
