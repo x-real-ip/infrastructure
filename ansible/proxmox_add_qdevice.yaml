@@ -1,16 +1,9 @@
 ---
-- name: Gather facts from odroid-c4
-  hosts: odroid-c4.lan
-  gather_facts: true
-  remote_user: odroid
-  # become: true
-  vars:
-    ansible_user: odroid
-
 - name: Play to add odroid as qdevice
-  hosts: proxmox
+  hosts: proxmox:odroid
   gather_facts: true
   become: true
+  strategy: linear
   tasks:
     - name: Install corosync-qdevice and dependencies
       ansible.builtin.apt:
@@ -19,10 +12,12 @@
           - corosync-qdevice
           - python3-pip
         state: present
+      when: ansible_hostname != "odroid-c4"
 
     - name: Install pexpect
       ansible.builtin.pip:
         name: pexpect
+      when: ansible_hostname != "odroid-c4"
 
     # - name: Add Qdevice and except fingerprint
     #   ansible.builtin.expect:
@@ -45,4 +40,12 @@
       ansible.builtin.command: cat ~/.ssh/id_rsa.pub
       register: pve_a_pubkey
       changed_when: pve_a_pubkey.rc != 0
-      when: ansible_hostname == 'pve-a'
+      delegate_to: pve-a
+      run_once: true
+
+    - name: Add a line to a file if the file does not exist, without passing regexp
+      ansible.builtin.lineinfile:
+        path: "/home/odroid/.ssh/authorized_keys.bak"
+        line: "{{ pve_a_pubkey.stdout }}"
+        create: true
+      when: ansible_hostname == "odroid-c4"

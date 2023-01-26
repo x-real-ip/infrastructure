@@ -1,11 +1,9 @@
 ---
 - name: Play to setup Qdevice for proxmox
-  hosts: odroid-c4.lan
+  hosts: odroid
   gather_facts: true
-  remote_user: odroid
   become: true
   vars:
-    ansible_user: odroid
     hostname: odroid-c4
   tasks:
     # - name: Show facts available on the system
