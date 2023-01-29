@@ -16,24 +16,6 @@
         cache_valid_time: 3600
         upgrade: dist
 
-    - name: Install dbus
-      ansible.builtin.apt:
-        name:
-          - dbus
-        state: present
-
-    - name: Enable service dbus, and not touch the state
-      ansible.builtin.service:
-        name: dbus
-        enabled: true
-        state: started
-
-    - name: Enable service dbus.socket, and not touch the state
-      ansible.builtin.service:
-        name: dbus.socket
-        enabled: true
-        state: started
-
     - name: Set hostname
       ansible.builtin.hostname:
         name: "{{ hostname }}"
