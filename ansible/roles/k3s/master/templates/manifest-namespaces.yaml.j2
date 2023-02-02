@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb-system
+
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: democratic-csi
+
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: devops
+
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: home-automation
+
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: tools
+
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: prd-int
+  labels:
+    app: ingress-nginx
+
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: prd-ext
+  labels:
+    app: ingress-nginx
+
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: media

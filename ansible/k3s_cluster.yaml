@@ -8,7 +8,7 @@
     - role: k3s/download
 
 - name: Play to add specific settings for the k3s masters only
-  hosts: k3s_masters
+  hosts: k3s_master
   become: true
   roles:
     - role: k3s/master
