@@ -516,7 +516,7 @@ spec:
     spec:
       containers:
         - name: create
-          image: "registry.k8s.io/ingress-nginx/kube-webhook-certgen:{{ ingress_nginx_controller_tag_version }}"
+          image: "registry.k8s.io/ingress-nginx/kube-webhook-certgen:{{ ingress_nginx_kube_webhook_certgen_tag_version }}"
           imagePullPolicy: IfNotPresent
           args:
             - create

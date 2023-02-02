@@ -4,24 +4,26 @@
     name: "{{ system_timezone }}"
   when: (system_timezone is defined) and (system_timezone != "Your/Timezone")
 
+- name: Update apt repo and cache on
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: dist
+
 - name: Install the latest version packages
-  ansible.builtin.dnf:
+  ansible.builtin.apt:
     name:
       - nano
       - qemu-guest-agent
-      - avahi
-      - nfs-utils
+      - apparmor
+      - open-iscsi
+      - avahi-daemon
+      - jq
       - lsscsi
-      - iscsi-initiator-utils
-      - sg3_utils
-      - device-mapper-multipath
+      - sg3-utils
+      - multipath-tools
+      - scsitools
     state: latest
-  when: ansible_os_family == "RedHat"
-
-- name: Set SELinux to disabled state
-  ansible.posix.selinux:
-    state: disabled
-  when: ansible_os_family == "RedHat"
 
 - name: Enable IPv4 forwarding
   ansible.builtin.sysctl:
@@ -38,45 +40,11 @@
     reload: true
   when: ansible_all_ipv6_addresses
 
-- name: Add br_netfilter to /etc/modules-load.d/
-  ansible.builtin.copy:
-    content: "br_netfilter"
-    dest: /etc/modules-load.d/br_netfilter.conf
-    mode: "u=rw,g=,o="
-  when: ansible_os_family == "RedHat"
-
-- name: Load br_netfilter
-  ansible.builtin.modprobe:
-    name: br_netfilter
-    state: present
-  when: ansible_os_family == "RedHat"
-
-- name: Set bridge-nf-call-iptables (just to be sure)
-  ansible.builtin.sysctl:
-    name: "{{ item }}"
-    value: "1"
-    state: present
-    reload: true
-  when: ansible_os_family == "RedHat"
-  loop:
-    - net.bridge.bridge-nf-call-iptables
-    - net.bridge.bridge-nf-call-ip6tables
-
-- name: Add /usr/local/bin to sudo secure_path
-  ansible.builtin.lineinfile:
-    line: "Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin"
-    regexp: "Defaults(\\s)*secure_path(\\s)*="
-    state: present
-    insertafter: EOF
-    path: /etc/sudoers
-    validate: "visudo -cf %s"
-  when: ansible_os_family == "RedHat"
-
-- name: Enable qemu-guest-agent
-  ansible.builtin.systemd:
-    name: qemu-guest-agent.service
-    state: started
-    enabled: true
+# - name: Enable qemu-guest-agent
+#   ansible.builtin.systemd:
+#     name: qemu-guest-agent.service
+#     state: started
+#     enabled: true
 
 - name: Creating a multipath.conf file
   ansible.builtin.copy:
@@ -122,10 +90,3 @@
 #       reflect-ipv=no
 #       [rlimits]
 #       #
-
-# - name: Enable Avahi mDNS/DNS-SD Stack
-#   ansible.builtin.systemd:
-#     name: avahi-daemon.service
-#     state: started
-#     enabled: true
-#   when: ansible_os_family == "RedHat"

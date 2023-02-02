@@ -1,7 +1,7 @@
 ---
 k3s_version: v1.25.5+k3s2
 systemd_dir: /etc/systemd/system
-master_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_host'] | default(groups['master'][0]) }}"
+master_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_host'] | default(groups['k3s_master'][0]) }}"
 
 # The IP on which the node is reachable in the cluster.
 # Here, a sensible default is provided, you can still override
