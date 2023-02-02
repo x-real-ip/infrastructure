@@ -1,0 +1,49 @@
+---
+k3s_version: v1.25.5+k3s2
+systemd_dir: /etc/systemd/system
+master_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_host'] | default(groups['master'][0]) }}"
+
+# The IP on which the node is reachable in the cluster.
+# Here, a sensible default is provided, you can still override
+# it for each of your hosts, though.
+k3s_node_ip: '{{ ansible_facts[flannel_iface]["ipv4"]["address"] }}'
+
+k3s_token: ""
+
+sealed_secret_customkeys_2_tls_key: ""
+
+# interface which will be used for flannel
+flannel_iface: "ens18"
+
+# apiserver_endpoint is virtual ip-address which will be configured on each master
+apiserver_endpoint: "10.0.100.100"
+
+extra_args: >-
+  --flannel-iface={{ flannel_iface }}
+  --node-ip={{ k3s_node_ip }}
+  --kube-apiserver-arg=feature-gates=StatefulSetAutoDeletePVC=true
+  --kubelet-arg=feature-gates=StatefulSetAutoDeletePVC=true
+extra_server_args: >-
+  {{ extra_args }}
+  --tls-san {{ apiserver_endpoint }}
+  --disable servicelb
+  --disable traefik
+extra_agent_args: >-
+  {{ extra_args }}
+
+registry_host: "harbor.k8s.lan"
+
+metallb_int_lan_ip: 10.0.100.240/32
+metallb_ext_lan_ip: 10.0.100.250/32
+
+kube_vip_tag_version: "v0.5.8"
+
+sealed_secrets_controller_tag_version: "v0.19.4"
+
+metallb_speaker_tag_version: "v0.13.7"
+metallb_controller_tag_version: "v0.13.7"
+
+ingress_nginx_controller_tag_version: "v1.5.1"
+ingress_nginx_kube_webhook_certgen_tag_version: "v20220916-gd32f8c343"
+
+node_feature_discovery_tag_version: "master"

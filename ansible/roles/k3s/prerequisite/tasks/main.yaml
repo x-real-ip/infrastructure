@@ -28,14 +28,14 @@
     name: net.ipv4.ip_forward
     value: "1"
     state: present
-    reload: yes
+    reload: true
 
 - name: Enable IPv6 forwarding
   ansible.builtin.sysctl:
     name: net.ipv6.conf.all.forwarding
     value: "1"
     state: present
-    reload: yes
+    reload: true
   when: ansible_all_ipv6_addresses
 
 - name: Add br_netfilter to /etc/modules-load.d/
@@ -56,7 +56,7 @@
     name: "{{ item }}"
     value: "1"
     state: present
-    reload: yes
+    reload: true
   when: ansible_os_family == "RedHat"
   loop:
     - net.bridge.bridge-nf-call-iptables
@@ -80,6 +80,7 @@
 
 - name: Creating a multipath.conf file
   ansible.builtin.copy:
+    mode: 0644
     dest: "/etc/multipath.conf"
     content: |
       blacklist {
@@ -102,29 +103,29 @@
     state: started
     enabled: true
 
-- name: Creating a avahi-daemon.conf file
-  ansible.builtin.copy:
-    dest: "/etc/avahi/avahi-daemon.conf"
-    content: |
-      [server]
-      use-ipv4=yes
-      use-ipv6=no
-      ratelimit-interval-usec=1000000
-      ratelimit-burst=1000
-      [wide-area]
-      enable-wide-area=yes
-      [publish]
-      publish-hinfo=no
-      publish-workstation=no
-      [reflector]
-      enable-reflector=yes
-      reflect-ipv=no
-      [rlimits]
-      #
+# - name: Creating a avahi-daemon.conf file
+#   ansible.builtin.copy:
+#     dest: "/etc/avahi/avahi-daemon.conf"
+#     content: |
+#       [server]
+#       use-ipv4=yes
+#       use-ipv6=no
+#       ratelimit-interval-usec=1000000
+#       ratelimit-burst=1000
+#       [wide-area]
+#       enable-wide-area=yes
+#       [publish]
+#       publish-hinfo=no
+#       publish-workstation=no
+#       [reflector]
+#       enable-reflector=yes
+#       reflect-ipv=no
+#       [rlimits]
+#       #
 
-- name: Enable Avahi mDNS/DNS-SD Stack
-  ansible.builtin.systemd:
-    name: avahi-daemon.service
-    state: started
-    enabled: true
-  when: ansible_os_family == "RedHat"
+# - name: Enable Avahi mDNS/DNS-SD Stack
+#   ansible.builtin.systemd:
+#     name: avahi-daemon.service
+#     state: started
+#     enabled: true
+#   when: ansible_os_family == "RedHat"

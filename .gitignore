@@ -1,1 +1,3 @@
 *sealed-secret-customkeys.yaml
+**/*k3s_cluster.yaml
+ansible/inventory/group_vars/k3s_cluster.yaml

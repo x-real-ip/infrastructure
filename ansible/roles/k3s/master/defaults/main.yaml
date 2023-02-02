@@ -1,11 +1,10 @@
 ---
-ansible_user: ansible
 server_init_args: >-
-  {% if groups['k3s_masters'] | length > 1 %}
-    {% if ansible_hostname == hostvars[groups['k3s_masters'][0]]['ansible_hostname'] %}
+  {% if groups['k3s_master'] | length > 1 %}
+    {% if ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname'] %}
       --cluster-init
     {% else %}
-      --server https://{{ hostvars[groups['k3s_masters'][0]].k3s_node_ip }}:6443
+      --server https://{{ hostvars[groups['k3s_master'][0]].k3s_node_ip }}:6443
     {% endif %}
     --token {{ k3s_token }}
   {% endif %}
