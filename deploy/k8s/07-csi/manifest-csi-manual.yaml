@@ -241,7 +241,7 @@ spec:
             - name: extra-ca-certs
               mountPath: /tmp/certs
         - name: csi-proxy
-          image: docker.io/democraticcsi/csi-grpc-proxy:v0.4.2
+          image: docker.io/democraticcsi/csi-grpc-proxy:latest
           env:
             - name: BIND_TO
               value: "unix:///csi-data/csi.sock"
@@ -251,7 +251,7 @@ spec:
             - mountPath: /csi-data
               name: socket-dir
         - name: driver-registrar
-          image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.0
+          image: k8s.gcr.io/sig-storage/csi-node-driver-registrar:latest
           args:
             - --v=5
             - --csi-address=/csi-data/csi.sock
