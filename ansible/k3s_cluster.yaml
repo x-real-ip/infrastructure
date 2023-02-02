@@ -11,4 +11,4 @@
   hosts: k3s_master
   become: true
   roles:
-    - role: k3s/master
+    - role: k3s/k3s_master
