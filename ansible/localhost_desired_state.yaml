@@ -25,5 +25,6 @@
           - git
           - brave-browser
           - python3
+          - vlc
         autoclean: true
         autoremove: true
