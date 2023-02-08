@@ -1,16 +1,16 @@
 ---
 - name: Clean previous runs of k3s-init
-  systemd:
+  ansible.builtin.systemd:
     name: k3s-init
     state: stopped
   failed_when: false
 
 - name: Clean previous runs of k3s-init
-  command: systemctl reset-failed k3s-init
+  ansible.builtin.command: systemctl reset-failed k3s-init
   failed_when: false
   changed_when: false
   args:
-    warn: false  # The ansible systemd module does not support reset-failed
+    warn: false # The ansible systemd module does not support reset-failed
 
 - name: Create manifests directory on first master
   ansible.builtin.file:
@@ -52,6 +52,15 @@
   ansible.builtin.template:
     src: "secrets-harbor-registry-creds.yaml.j2"
     dest: "/var/lib/rancher/k3s/server/manifests/secrets-harbor-registry-creds.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Copy harbor manifest to first master
+  ansible.builtin.template:
+    src: "manifest-harbor.yaml.j2"
+    dest: "/var/lib/rancher/k3s/server/manifests/manifest-harbor.yaml"
     owner: root
     group: root
     mode: 0644
@@ -138,6 +147,24 @@
     mode: 0644
   when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
+- name: Copy drone pipeline secrets manifest to first master
+  ansible.builtin.template:
+    src: "manifest-drone-pipeline-secrets.yaml.j2"
+    dest: "/var/lib/rancher/k3s/server/manifests/manifest-drone-pipeline-secrets.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Copy drone manifest to first master
+  ansible.builtin.template:
+    src: "manifest-drone.yaml.j2"
+    dest: "/var/lib/rancher/k3s/server/manifests/manifest-drone.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
 - name: Create directory k3s
   ansible.builtin.file:
     path: "/etc/rancher/k3s/"
@@ -154,17 +181,18 @@
     mode: 0644
 
 - name: Init cluster inside the transient k3s-init service
-  command:
+  ansible.builtin.command:
     cmd: "systemd-run -p RestartSec=2 \
-                      -p Restart=on-failure \
-                      --unit=k3s-init \
-                      k3s server {{ server_init_args }}"
+      -p Restart=on-failure \
+      --unit=k3s-init \
+      k3s server {{ server_init_args }}"
     creates: "{{ systemd_dir }}/k3s.service"
 
 - name: Verification
+  when: not ansible_check_mode
   block:
     - name: Verify that all nodes actually joined (check k3s-init.service if this fails)
-      command:
+      ansible.builtin.command:
         cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
       register: nodes
       until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s_master'] | length)
@@ -173,17 +201,16 @@
       changed_when: false
   always:
     - name: Save logs of k3s-init.service
-      include_tasks: fetch_k3s_init_logs.yml
+      ansible.builtin.include_tasks: fetch_k3s_init_logs.yml
       when: log_destination
       vars:
         log_destination: >-
           {{ lookup('ansible.builtin.env', 'ANSIBLE_K3S_LOG_DIR', default=False) }}
     - name: Kill the temporary service used for initialization
-      systemd:
+      ansible.builtin.systemd:
         name: k3s-init
         state: stopped
       failed_when: false
-  when: not ansible_check_mode
 
 - name: Copy K3s service file
   register: k3s_service
@@ -245,7 +272,7 @@
     mode: "u=rw,g=,o="
 
 - name: Configure kubectl cluster to {{ endpoint_url }}
-  command: >-
+  ansible.builtin.command: >-
     k3s kubectl config set-cluster default
       --server={{ endpoint_url }}
       --kubeconfig {{ ansible_user_dir }}/.kube/config
@@ -253,10 +280,13 @@
   vars:
     endpoint_url: >-
       https://{{ apiserver_endpoint | ansible.utils.ipwrap }}:6443
-  # Deactivated linter rules:
-  #   - jinja[invalid]: As of version 6.6.0, ansible-lint complains that the input to ipwrap
-  #                     would be undefined. This will not be the case during playbook execution.
-  # noqa jinja[invalid]
+
+- name: Copy config file to user localhost home directory
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "~/.kube/config"
+    flat: true
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
 - name: Create kubectl symlink
   ansible.builtin.file:
@@ -270,6 +300,27 @@
     dest: /usr/local/bin/crictl
     state: link
 
+- name: Read config file as base64 for Drone
+  ansible.builtin.slurp:
+    src: "{{ ansible_user_dir }}/.kube/config"
+  register: kubeconfig
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Copy kube config secret file with kube config value for Drone
+  ansible.builtin.template:
+    src: "drone-kubeconfig-secret.yaml.j2"
+    dest: "/var/lib/rancher/k3s/server/manifests/drone-kubeconfig-secret.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Configure kubectl cluster to {{ endpoint_url }}
+  ansible.builtin.command: >-
+    k3s kubectl apply -f /var/lib/rancher/k3s/server/manifests/drone-kubeconfig-secret.yaml
+  changed_when: true
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
 - name: Get contents of manifests folder
   ansible.builtin.find:
     paths: /var/lib/rancher/k3s/server/manifests
@@ -281,7 +332,6 @@
     paths: /var/lib/rancher/k3s/server/manifests
     file_type: directory
   register: k3s_server_manifests_directories
-
 # - name: Remove manifests and folders that are only needed for bootstrapping cluster so k3s doesn't auto apply on start
 #   file:
 #     path: "{{ item.path }}"
