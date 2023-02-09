@@ -1,0 +1,38 @@
+---
+- name: "Play to setup all shelly devices"
+  hosts: localhost
+  connection: local
+  vars:
+    coiot_enable: "true"
+    coiot_peer: "10.0.100.240"
+    sntp_enable: "true"
+    sntp_server: "10.0.40.1"
+  tasks:
+    - name: Enable/disable coiot and set peer
+      ansible.builtin.uri:
+        url: http://{{ item }}/settings?coiot_enable={{ coiot_enable }}&coiot_peer={{ coiot_peer }}
+      loop: "{{ groups['shelly'] }}"
+
+    - name: Enable/disable sntp and set address
+      ansible.builtin.uri:
+        url: http://{{ item }}/settings?sntp_enable={{ sntp_enable }}&sntp_server={{ sntp_server }}
+      loop: "{{ groups['shelly'] }}"
+
+
+    #     - name: Check that you can connect (GET) to a page and it returns a status 200
+    #       ansible.builtin.uri:
+    #         url: http://{{ item }}/settings
+    #         body_format: json
+    #         method: POST
+    #         return_content: true
+    #       register: content
+    #       # until: result.json.status == "UP"
+    #       loop: "{{ groups['shelly'] }}"
+
+
+    - name: Print returned json dictionary
+      ansible.builtin.debug:
+        var: content.results[0].json.coiot.enabled
+#     # - name: Print returned json dictionary
+#     #   ansible.builtin.debug:
+#     #     var: content

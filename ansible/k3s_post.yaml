@@ -1,0 +1,26 @@
+---
+- name: Play to add specific settings for the k3s masters only
+  hosts: k3s_master
+  become: true
+  tasks:
+    - name: Get contents of manifests folder
+      ansible.builtin.find:
+        paths: /var/lib/rancher/k3s/server/manifests
+        file_type: file
+      register: k3s_server_manifests
+
+    - name: Get sub dirs of manifests folder
+      ansible.builtin.find:
+        paths: /var/lib/rancher/k3s/server/manifests
+        file_type: directory
+      register: k3s_server_manifests_directories
+
+    - name: Remove manifests and folders that are only needed for bootstrapping cluster so k3s doesn't auto apply on start
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items:
+        - "{{ k3s_server_manifests.files }}"
+        - "{{ k3s_server_manifests_directories.files }}"
+      loop_control:
+        label: "{{ item.path }}"
