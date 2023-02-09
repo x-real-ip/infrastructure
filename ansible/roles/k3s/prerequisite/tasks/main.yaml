@@ -10,7 +10,7 @@
     cache_valid_time: 3600
     upgrade: dist
 
-- name: Install the latest version packages
+- name: Install the latest version of some packages
   ansible.builtin.apt:
     name:
       - nano
@@ -26,25 +26,25 @@
     state: latest
 
 - name: Enable IPv4 forwarding
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: "1"
     state: present
     reload: true
 
 - name: Enable IPv6 forwarding
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
     name: net.ipv6.conf.all.forwarding
     value: "1"
     state: present
     reload: true
   when: ansible_all_ipv6_addresses
 
-# - name: Enable qemu-guest-agent
-#   ansible.builtin.systemd:
-#     name: qemu-guest-agent.service
-#     state: started
-#     enabled: true
+- name: Enable qemu-guest-agent
+  ansible.builtin.systemd:
+    name: qemu-guest-agent.service
+    state: started
+    enabled: true
 
 - name: Creating a multipath.conf file
   ansible.builtin.copy:
@@ -71,22 +71,13 @@
     state: started
     enabled: true
 
-# - name: Creating a avahi-daemon.conf file
-#   ansible.builtin.copy:
-#     dest: "/etc/avahi/avahi-daemon.conf"
-#     content: |
-#       [server]
-#       use-ipv4=yes
-#       use-ipv6=no
-#       ratelimit-interval-usec=1000000
-#       ratelimit-burst=1000
-#       [wide-area]
-#       enable-wide-area=yes
-#       [publish]
-#       publish-hinfo=no
-#       publish-workstation=no
-#       [reflector]
-#       enable-reflector=yes
-#       reflect-ipv=no
-#       [rlimits]
-#       #
+- name: Extend the logical volume to consume all remaining space in the volume group
+  community.general.lvol:
+    vg: ubuntu-vg
+    lv: ubuntu-lv
+    size: +100%FREE
+
+- name: Resize ubuntu-lv filesystem
+  ansible.builtin.command: resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+  register: resize_output
+  changed_when: resize_output.rc != 0
