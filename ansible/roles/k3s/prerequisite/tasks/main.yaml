@@ -23,6 +23,7 @@
       - sg3-utils
       - multipath-tools
       - scsitools
+      - parted
     state: latest
 
 - name: Enable IPv4 forwarding
