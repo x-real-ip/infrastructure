@@ -27,6 +27,7 @@
           - python3
           - vlc
           - adb
+          - exiftool
         autoclean: true
         autoremove: true
 
