@@ -1240,7 +1240,7 @@ spec:
         runAsUser: 65534
       containers:
         - name: controller
-          image: quay.io/metallb/controller:{{ metallb_controller_tag_version }}
+          image: quay.io/metallb/controller:v0.13.7
           args:
             - --port=7472
             - --log-level=info
@@ -1544,7 +1544,7 @@ spec:
       hostNetwork: true
       containers:
         - name: speaker
-          image: quay.io/metallb/speaker:{{ metallb_speaker_tag_version }}
+          image: quay.io/metallb/speaker:v0.13.7
           args:
             - --port=7472
             - --log-level=info

@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: ingress-nginx-prd-int
-  namespace: prd-int
+  name: ingress-nginx-prd-ext
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: controller
 automountServiceAccountToken: true
@@ -15,11 +15,11 @@ automountServiceAccountToken: true
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: ingress-nginx-prd-int-admission
-  namespace: prd-int
+  name: ingress-nginx-prd-ext-admission
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: admission-webhook
 
@@ -27,11 +27,11 @@ metadata:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ingress-nginx-prd-int
-  namespace: prd-int
+  name: ingress-nginx-prd-ext
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: controller
 rules:
@@ -124,11 +124,11 @@ rules:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ingress-nginx-prd-int-admission
-  namespace: prd-int
+  name: ingress-nginx-prd-ext-admission
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: admission-webhook
 rules:
@@ -144,10 +144,10 @@ rules:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ingress-nginx-prd-int
+  name: ingress-nginx-prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
 rules:
   - apiGroups:
@@ -217,10 +217,10 @@ rules:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ingress-nginx-prd-int-admission
+  name: ingress-nginx-prd-ext-admission
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: admission-webhook
 rules:
@@ -236,107 +236,88 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ingress-nginx-prd-int
-  namespace: prd-int
+  name: ingress-nginx-prd-ext
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: controller
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: ingress-nginx-prd-int
+  name: ingress-nginx-prd-ext
 subjects:
   - kind: ServiceAccount
-    name: ingress-nginx-prd-int
-    namespace: "prd-int"
+    name: ingress-nginx-prd-ext
+    namespace: "prd-ext"
+
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ingress-nginx-prd-int-admission
-  namespace: prd-int
+  name: ingress-nginx-prd-ext-admission
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: admission-webhook
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: ingress-nginx-prd-int-admission
+  name: ingress-nginx-prd-ext-admission
 subjects:
   - kind: ServiceAccount
-    name: ingress-nginx-prd-int-admission
-    namespace: "prd-int"
+    name: ingress-nginx-prd-ext-admission
+    namespace: "prd-ext"
 
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ingress-nginx-prd-int
+  name: ingress-nginx-prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ingress-nginx-prd-int
+  name: ingress-nginx-prd-ext
 subjects:
   - kind: ServiceAccount
-    name: ingress-nginx-prd-int
-    namespace: "prd-int"
+    name: ingress-nginx-prd-ext
+    namespace: "prd-ext"
 
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ingress-nginx-prd-int-admission
+  name: ingress-nginx-prd-ext-admission
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: admission-webhook
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ingress-nginx-prd-int-admission
+  name: ingress-nginx-prd-ext-admission
 subjects:
   - kind: ServiceAccount
-    name: ingress-nginx-prd-int-admission
-    namespace: "prd-int"
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: tcp-services
-  namespace: prd-int
-data:
-  22000: "tools/syncthing:22000"
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: udp-services
-  namespace: prd-int
-data:
-  "5683": home-automation/home-assistant-coiot:5683
-  "22000": tools/syncthing:22000
-  "21027": tools/syncthing:21027
+    name: ingress-nginx-prd-ext-admission
+    namespace: "prd-ext"
 
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: ingress-nginx-prd-int-controller
-  namespace: prd-int
+  name: ingress-nginx-prd-ext-controller
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: controller
 data:
@@ -346,11 +327,11 @@ data:
 kind: Service
 apiVersion: v1
 metadata:
-  name: ingress-nginx-prd-int-controller-admission
-  namespace: prd-int
+  name: ingress-nginx-prd-ext-controller-admission
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: controller
 spec:
@@ -362,22 +343,22 @@ spec:
       appProtocol: https
   selector:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/component: controller
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: ingress-nginx-prd-int-controller
-  namespace: prd-int
+  name: ingress-nginx-prd-ext-controller
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: controller
   annotations:
-    metallb.universe.tf/address-pool: prd-int-lan-ips
+    metallb.universe.tf/address-pool: prd-ext-lan-ips
 spec:
   type: LoadBalancer
   ipFamilyPolicy: SingleStack
@@ -394,43 +375,27 @@ spec:
       protocol: TCP
       targetPort: https
       appProtocol: https
-    - name: home-assistant-coiot
-      port: 5683
-      targetPort: 5683
-      protocol: UDP
-    - name: syncthing-disc
-      port: 21027
-      targetPort: 21027
-      protocol: UDP
-    - name: syncthing-udp
-      port: 22000
-      targetPort: 22000
-      protocol: UDP
-    - name: syncthing-tcp
-      port: 22000
-      targetPort: 22000
-      protocol: TCP
   selector:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/component: controller
 
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: ingress-nginx-prd-int-controller
-  namespace: prd-int
+  name: ingress-nginx-prd-ext-controller
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: controller
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: ingress-nginx
-      app.kubernetes.io/instance: ingress-nginx-prd-int
+      app.kubernetes.io/instance: ingress-nginx-prd-ext
       app.kubernetes.io/component: controller
   replicas: 1
   revisionHistoryLimit: 10
@@ -439,13 +404,13 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: ingress-nginx
-        app.kubernetes.io/instance: ingress-nginx-prd-int
+        app.kubernetes.io/instance: ingress-nginx-prd-ext
         app.kubernetes.io/component: controller
     spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: controller
-          image: "registry.k8s.io/ingress-nginx/controller:{{ ingress_nginx_controller_tag_version }}"
+          image: "registry.k8s.io/ingress-nginx/controller:v1.3.1"
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
@@ -454,16 +419,14 @@ spec:
                   - /wait-shutdown
           args:
             - /nginx-ingress-controller
-            - --publish-service=$(POD_NAMESPACE)/ingress-nginx-prd-int-controller
+            - --publish-service=$(POD_NAMESPACE)/ingress-nginx-prd-ext-controller
             - --election-id=ingress-controller-leader
-            - --controller-class=k8s.io/ingress-nginx-prd-int
-            - --ingress-class=nginx-private
-            - --configmap=$(POD_NAMESPACE)/ingress-nginx-prd-int-controller
+            - --controller-class=k8s.io/ingress-nginx-prd-ext
+            - --ingress-class=nginx-public
+            - --configmap=$(POD_NAMESPACE)/ingress-nginx-prd-ext-controller
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
-            - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
-            - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
           securityContext:
             capabilities:
               drop:
@@ -523,43 +486,43 @@ spec:
               memory: 90Mi
       nodeSelector:
         kubernetes.io/os: linux
-      serviceAccountName: ingress-nginx-prd-int
+      serviceAccountName: ingress-nginx-prd-ext
       terminationGracePeriodSeconds: 300
       volumes:
         - name: webhook-cert
           secret:
-            secretName: ingress-nginx-prd-int-admission
+            secretName: ingress-nginx-prd-ext-admission
 
 ---
 kind: Job
 apiVersion: batch/v1
 metadata:
-  name: ingress-nginx-prd-int-admission-create
-  namespace: prd-int
+  name: ingress-nginx-prd-ext-admission-create
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: admission-webhook
 spec:
   template:
     metadata:
-      name: ingress-nginx-prd-int-admission-create
+      name: ingress-nginx-prd-ext-admission-create
       labels:
         app.kubernetes.io/name: ingress-nginx
-        app.kubernetes.io/instance: ingress-nginx-prd-int
+        app.kubernetes.io/instance: ingress-nginx-prd-ext
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/component: admission-webhook
     spec:
       containers:
         - name: create
-          image: "registry.k8s.io/ingress-nginx/kube-webhook-certgen:{{ ingress_nginx_kube_webhook_certgen_tag_version }}"
+          image: "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343"
           imagePullPolicy: IfNotPresent
           args:
             - create
-            - --host=ingress-nginx-prd-int-controller-admission,ingress-nginx-prd-int-controller-admission.$(POD_NAMESPACE).svc
+            - --host=ingress-nginx-prd-ext-controller-admission,ingress-nginx-prd-ext-controller-admission.$(POD_NAMESPACE).svc
             - --namespace=$(POD_NAMESPACE)
-            - --secret-name=ingress-nginx-prd-int-admission
+            - --secret-name=ingress-nginx-prd-ext-admission
           env:
             - name: POD_NAMESPACE
               valueFrom:
@@ -568,7 +531,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
       restartPolicy: OnFailure
-      serviceAccountName: ingress-nginx-prd-int-admission
+      serviceAccountName: ingress-nginx-prd-ext-admission
       nodeSelector:
         kubernetes.io/os: linux
       securityContext:
@@ -580,33 +543,33 @@ spec:
 kind: Job
 apiVersion: batch/v1
 metadata:
-  name: ingress-nginx-prd-int-admission-patch
-  namespace: prd-int
+  name: ingress-nginx-prd-ext-admission-patch
+  namespace: prd-ext
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: admission-webhook
 spec:
   template:
     metadata:
-      name: ingress-nginx-prd-int-admission-patch
+      name: ingress-nginx-prd-ext-admission-patch
       labels:
         app.kubernetes.io/name: ingress-nginx
-        app.kubernetes.io/instance: ingress-nginx-prd-int
+        app.kubernetes.io/instance: ingress-nginx-prd-ext
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/component: admission-webhook
     spec:
       containers:
         - name: patch
-          image: "registry.k8s.io/ingress-nginx/kube-webhook-certgen:{{ ingress_nginx_kube_webhook_certgen_tag_version }}"
+          image: "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20220916-gd32f8c343"
           imagePullPolicy: IfNotPresent
           args:
             - patch
-            - --webhook-name=ingress-nginx-prd-int-admission
+            - --webhook-name=ingress-nginx-prd-ext-admission
             - --namespace=$(POD_NAMESPACE)
             - --patch-mutating=false
-            - --secret-name=ingress-nginx-prd-int-admission
+            - --secret-name=ingress-nginx-prd-ext-admission
             - --patch-failure-policy=Fail
           env:
             - name: POD_NAMESPACE
@@ -616,7 +579,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
       restartPolicy: OnFailure
-      serviceAccountName: ingress-nginx-prd-int-admission
+      serviceAccountName: ingress-nginx-prd-ext-admission
       nodeSelector:
         kubernetes.io/os: linux
       securityContext:
@@ -628,23 +591,23 @@ spec:
 kind: IngressClass
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: nginx-private
+  name: nginx-public
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: controller
 spec:
-  controller: k8s.io/ingress-nginx-prd-int
+  controller: k8s.io/ingress-nginx-prd-ext
 
 ---
 kind: ValidatingWebhookConfiguration
 apiVersion: admissionregistration.k8s.io/v1
 metadata:
-  name: ingress-nginx-prd-int-admission
+  name: ingress-nginx-prd-ext-admission
   labels:
     app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx-prd-int
+    app.kubernetes.io/instance: ingress-nginx-prd-ext
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: admission-webhook
 webhooks:
@@ -666,6 +629,6 @@ webhooks:
       - v1
     clientConfig:
       service:
-        namespace: "prd-int"
-        name: ingress-nginx-prd-int-controller-admission
+        namespace: "prd-ext"
+        name: ingress-nginx-prd-ext-controller-admission
         path: /networking/v1/ingresses

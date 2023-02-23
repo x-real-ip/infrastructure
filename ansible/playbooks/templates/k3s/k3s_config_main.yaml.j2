@@ -1,0 +1,12 @@
+---
+write-kubeconfig-mode: "0644"
+token: "{{ k3s_token }}"
+disable:
+  - "traefik"
+  - "servicelb"
+tls-san:
+  - "{{ apiserver_endpoint }}"
+kubelet-arg:
+  - "feature-gates=StatefulSetAutoDeletePVC=true"
+kube-apiserver-arg: 
+  - "feature-gates=StatefulSetAutoDeletePVC=true"
