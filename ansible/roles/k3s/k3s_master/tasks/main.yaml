@@ -21,14 +21,7 @@
     mode: 0644
   when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
-- name: Copy namespaces manifest to first master
-  ansible.builtin.template:
-    src: "manifest-namespaces.yaml.j2"
-    dest: "/var/lib/rancher/k3s/server/manifests/manifest-namespaces.yaml"
-    owner: root
-    group: root
-    mode: 0644
-  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
 
 - name: Copy kube-vip manifest to first master
   ansible.builtin.template:
@@ -165,140 +158,140 @@
     mode: 0644
   when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
-- name: Create directory k3s
-  ansible.builtin.file:
-    path: "/etc/rancher/k3s/"
-    state: directory
-    owner: "{{ ansible_user_id }}"
-    mode: "0755"
+# - name: Create directory k3s
+#   ansible.builtin.file:
+#     path: "/etc/rancher/k3s/"
+#     state: directory
+#     owner: "{{ ansible_user_id }}"
+#     mode: "0755"
 
-- name: Copy registries.yaml file
-  ansible.builtin.template:
-    src: "registries.yaml.j2"
-    dest: "/etc/rancher/k3s/registries.yaml"
-    owner: root
-    group: root
-    mode: 0644
+# - name: Copy registries.yaml file
+#   ansible.builtin.template:
+#     src: "registries.yaml.j2"
+#     dest: "/etc/rancher/k3s/registries.yaml"
+#     owner: root
+#     group: root
+#     mode: 0644
 
-- name: Init cluster inside the transient k3s-init service
-  ansible.builtin.command:
-    cmd: "systemd-run -p RestartSec=2 \
-      -p Restart=on-failure \
-      --unit=k3s-init \
-      k3s server {{ server_init_args }}"
-    creates: "{{ systemd_dir }}/k3s.service"
+# - name: Init cluster inside the transient k3s-init service
+#   ansible.builtin.command:
+#     cmd: "systemd-run -p RestartSec=2 \
+#       -p Restart=on-failure \
+#       --unit=k3s-init \
+#       k3s server {{ server_init_args }}"
+#     creates: "{{ systemd_dir }}/k3s.service"
 
-- name: Verification
-  when: not ansible_check_mode
-  block:
-    - name: Verify that all nodes actually joined (check k3s-init.service if this fails)
-      ansible.builtin.command:
-        cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
-      register: nodes
-      until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s_master'] | length)
-      retries: "{{ retry_count | default(20) }}"
-      delay: 10
-      changed_when: false
-  always:
-    - name: Save logs of k3s-init.service
-      ansible.builtin.include_tasks: fetch_k3s_init_logs.yml
-      when: log_destination
-      vars:
-        log_destination: >-
-          {{ lookup('ansible.builtin.env', 'ANSIBLE_K3S_LOG_DIR', default=False) }}
-    - name: Kill the temporary service used for initialization
-      ansible.builtin.systemd:
-        name: k3s-init
-        state: stopped
-      failed_when: false
+# - name: Verification
+#   when: not ansible_check_mode
+#   block:
+#     - name: Verify that all nodes actually joined (check k3s-init.service if this fails)
+#       ansible.builtin.command:
+#         cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
+#       register: nodes
+#       until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s_master'] | length)
+#       retries: "{{ retry_count | default(20) }}"
+#       delay: 10
+#       changed_when: false
+#   always:
+#     - name: Save logs of k3s-init.service
+#       ansible.builtin.include_tasks: fetch_k3s_init_logs.yml
+#       when: log_destination
+#       vars:
+#         log_destination: >-
+#           {{ lookup('ansible.builtin.env', 'ANSIBLE_K3S_LOG_DIR', default=False) }}
+#     - name: Kill the temporary service used for initialization
+#       ansible.builtin.systemd:
+#         name: k3s-init
+#         state: stopped
+#       failed_when: false
 
-- name: Copy K3s service file
-  register: k3s_service
-  ansible.builtin.template:
-    src: "k3s.service.j2"
-    dest: "{{ systemd_dir }}/k3s.service"
-    owner: root
-    group: root
-    mode: 0644
+# - name: Copy K3s service file
+#   register: k3s_service
+#   ansible.builtin.template:
+#     src: "k3s.service.j2"
+#     dest: "{{ systemd_dir }}/k3s.service"
+#     owner: root
+#     group: root
+#     mode: 0644
 
-- name: Enable and check K3s service
-  ansible.builtin.systemd:
-    name: k3s
-    daemon_reload: true
-    state: restarted
-    enabled: true
+# - name: Enable and check K3s service
+#   ansible.builtin.systemd:
+#     name: k3s
+#     daemon_reload: true
+#     state: restarted
+#     enabled: true
 
-- name: Wait for node-token
-  ansible.builtin.wait_for:
-    path: /var/lib/rancher/k3s/server/node-token
+# - name: Wait for node-token
+#   ansible.builtin.wait_for:
+#     path: /var/lib/rancher/k3s/server/node-token
 
-- name: Register node-token file access mode
-  ansible.builtin.stat:
-    path: /var/lib/rancher/k3s/server
-  register: p
+# - name: Register node-token file access mode
+#   ansible.builtin.stat:
+#     path: /var/lib/rancher/k3s/server
+#   register: p
 
-- name: Change file access node-token
-  ansible.builtin.file:
-    path: /var/lib/rancher/k3s/server
-    mode: "g+rx,o+rx"
+# - name: Change file access node-token
+#   ansible.builtin.file:
+#     path: /var/lib/rancher/k3s/server
+#     mode: "g+rx,o+rx"
 
-- name: Read node-token from master
-  ansible.builtin.slurp:
-    src: /var/lib/rancher/k3s/server/node-token
-  register: node_token
+# - name: Read node-token from master
+#   ansible.builtin.slurp:
+#     src: /var/lib/rancher/k3s/server/node-token
+#   register: node_token
 
-- name: Store Master node-token
-  ansible.builtin.set_fact:
-    token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
+# - name: Store Master node-token
+#   ansible.builtin.set_fact:
+#     token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
 
-- name: Restore node-token file access
-  ansible.builtin.file:
-    path: /var/lib/rancher/k3s/server
-    mode: "{{ p.stat.mode }}"
+# - name: Restore node-token file access
+#   ansible.builtin.file:
+#     path: /var/lib/rancher/k3s/server
+#     mode: "{{ p.stat.mode }}"
 
-- name: Create directory .kube
-  ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.kube"
-    state: directory
-    owner: "{{ ansible_user_id }}"
-    mode: "u=rwx,g=rx,o="
+# - name: Create directory .kube
+#   ansible.builtin.file:
+#     path: "{{ ansible_user_dir }}/.kube"
+#     state: directory
+#     owner: "{{ ansible_user_id }}"
+#     mode: "u=rwx,g=rx,o="
 
-- name: Copy config file to user home directory
-  ansible.builtin.copy:
-    src: /etc/rancher/k3s/k3s.yaml
-    dest: "{{ ansible_user_dir }}/.kube/config"
-    remote_src: true
-    owner: "{{ ansible_user_id }}"
-    mode: "u=rw,g=,o="
+# - name: Copy config file to user home directory
+#   ansible.builtin.copy:
+#     src: /etc/rancher/k3s/k3s.yaml
+#     dest: "{{ ansible_user_dir }}/.kube/config"
+#     remote_src: true
+#     owner: "{{ ansible_user_id }}"
+#     mode: "u=rw,g=,o="
 
-- name: Configure kubectl cluster to {{ endpoint_url }}
-  ansible.builtin.command: >-
-    k3s kubectl config set-cluster default
-      --server={{ endpoint_url }}
-      --kubeconfig {{ ansible_user_dir }}/.kube/config
-  changed_when: true
-  vars:
-    endpoint_url: >-
-      https://{{ apiserver_endpoint | ansible.utils.ipwrap }}:6443
+# - name: Configure kubectl cluster to {{ endpoint_url }}
+#   ansible.builtin.command: >-
+#     k3s kubectl config set-cluster default
+#       --server={{ endpoint_url }}
+#       --kubeconfig {{ ansible_user_dir }}/.kube/config
+#   changed_when: true
+#   vars:
+#     endpoint_url: >-
+#       https://{{ apiserver_endpoint | ansible.utils.ipwrap }}:6443
 
-- name: Copy config file to user localhost home directory
-  ansible.builtin.fetch:
-    src: /etc/rancher/k3s/k3s.yaml
-    dest: "~/.kube/config"
-    flat: true
-  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+# - name: Copy config file to user localhost home directory
+#   ansible.builtin.fetch:
+#     src: /etc/rancher/k3s/k3s.yaml
+#     dest: "~/.kube/config"
+#     flat: true
+#   when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
-- name: Create kubectl symlink
-  ansible.builtin.file:
-    src: /usr/local/bin/k3s
-    dest: /usr/local/bin/kubectl
-    state: link
+# - name: Create kubectl symlink
+#   ansible.builtin.file:
+#     src: /usr/local/bin/k3s
+#     dest: /usr/local/bin/kubectl
+#     state: link
 
-- name: Create crictl symlink
-  ansible.builtin.file:
-    src: /usr/local/bin/k3s
-    dest: /usr/local/bin/crictl
-    state: link
+# - name: Create crictl symlink
+#   ansible.builtin.file:
+#     src: /usr/local/bin/k3s
+#     dest: /usr/local/bin/crictl
+#     state: link
 
 - name: Read config file as base64 for Drone
   ansible.builtin.slurp:
