@@ -3,8 +3,6 @@
 - [Kubernetes GitOps](#kubernetes-gitops)
   - [Setting up VM hosts](#setting-up-vm-hosts)
   - [Setup k3s cluster](#setup-k3s-cluster)
-    - [Rocky Linux initialization and setup](#rocky-linux-initialization-and-setup)
-    - [Alpine initialization and setup](#alpine-initialization-and-setup)
     - [Install k3s](#install-k3s)
     - [Local initialization and setup](#local-initialization-and-setup)
       - [Kubectl](#kubectl)
@@ -25,57 +23,13 @@
 1. Create VM from template and bootup.
 2. Add static ip via pfSense.
 3. Login to the VM and set hostname.
-    ```console
-    sudo hostnamectl set-hostname <hostname>
-    ```
+   ```console
+   hostnamectl set-hostname <hostname>
+   ```
 4. Reboot.
-5. Copy SSH keys to host(s).
-    ```console
-    ssh-copy-id -i ~/.ssh/ansible.pub root@<hostname>
-    ```
+5. Set this hostname in the ansible inventory hosts.ini file.
 
 ## Setup k3s cluster
-
-
-
-
-
-### Rocky Linux initialization and setup
-
-1.  Create VM's and install the Rocky Linux OS on it. For example 3x master 1x worker nodes.
-
-    Login to each node and run the following commands:
-
-    ```console
-    hostnamectl set-hostname <hostname>
-    ```
-
-2.  Assing a static ip in firewall/router for the VM's.
-3.  Reboot the node and check if it has the desired static ip. `ip a`
-
-### Alpine initialization and setup
-
-1. Clone the k3s VM template
-2. Add static IP and hostname in pfSense DHCP
-3. Login to the console of the vm and run the following commands:
-   ```console
-   apk add nano
-   ```
-   ```console
-   echo "<hostname>" > /etc/hostname
-   ```
-   ```console
-   nano /etc/hosts
-   ```
-   Edit the hosts file by replacing `<hostname>` with the real hostname:
-   ```
-   127.0.0.1	<hostname>.lan <hostname> localhost.localdomain localhost
-   ::1		localhost localhost.localdomain
-   ```
-   ```console
-   reboot
-   ```
-4. Now you can SSH into the machine en install K3s
 
 ### Install k3s
 
