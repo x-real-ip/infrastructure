@@ -1,0 +1,67 @@
+- name: Download metallb manifests from github to the first master node
+  ansible.builtin.get_url:
+    url: "{{ github_infra_manifests }}/{{ item }}.yaml"
+    dest: ~/{{ item }}.yaml
+    mode: "0664"
+  with_items:
+    - metallb
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Apply metallb manifests to the first master node
+  kubernetes.core.k8s:
+    state: present
+    src: ~/{{ item }}.yaml
+  with_items:
+    - metallb
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Test metallb-system namespace
+  ansible.builtin.command: >-
+    k3s kubectl -n metallb-system
+  changed_when: false
+  with_items: "{{ groups['master'] }}"
+  run_once: true
+
+- name: Wait for MetalLB resources
+  ansible.builtin.command: >-
+    k3s kubectl wait {{ item.resource }}
+    --namespace='metallb-system'
+    {% if item.name | default(False) -%}{{ item.name }}{%- endif %}
+    {% if item.selector | default(False) -%}--selector='{{ item.selector }}'{%- endif %}
+    {% if item.condition | default(False) -%}{{ item.condition }}{%- endif %}
+    --timeout='{{ metal_lb_available_timeout }}'
+  changed_when: false
+  run_once: true
+  with_items:
+    - description: controller
+      resource: deployment
+      name: controller
+      condition: --for condition=Available=True
+    - description: webhook service
+      resource: pod
+      selector: component=controller
+      condition: --for=jsonpath='{.status.phase}'=Running
+    - description: pods in replica sets
+      resource: pod
+      selector: component=controller,app=metallb
+      condition: --for condition=Ready
+    - description: ready replicas of controller
+      resource: replicaset
+      selector: component=controller,app=metallb
+      condition: --for=jsonpath='{.status.readyReplicas}'=1
+    - description: fully labeled replicas of controller
+      resource: replicaset
+      selector: component=controller,app=metallb
+      condition: --for=jsonpath='{.status.fullyLabeledReplicas}'=1
+    - description: available replicas of controller
+      resource: replicaset
+      selector: component=controller,app=metallb
+      condition: --for=jsonpath='{.status.availableReplicas}'=1
+  loop_control:
+    label: "{{ item.description }}"
+
+- name: Read metallb-addresspool template file and apply to the k3s cluster
+  kubernetes.core.k8s:
+    state: present
+    template: "metallb-addresspool.yaml.j2"
+  run_once: true
