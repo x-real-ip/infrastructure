@@ -1,0 +1,81 @@
+---
+- name: Create directory k3s
+  ansible.builtin.file:
+    path: "/etc/rancher/k3s/"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: 0755
+
+- name: Copy registries.yaml file
+  ansible.builtin.template:
+    src: "registries.yaml.j2"
+    dest: "/etc/rancher/k3s/registries.yaml"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy main config.yaml file
+  ansible.builtin.template:
+    src: "k3s_config_main.yaml.j2"
+    dest: "/etc/rancher/k3s/config.yaml"
+    owner: root
+    group: root
+    mode: 0644
+    force: false
+
+- name: Add init flag to config file only on first master
+  ansible.builtin.lineinfile:
+    path: "/etc/rancher/k3s/config.yaml"
+    line: "cluster-init: true"
+    create: true
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Add server flag config file on all master nodes except the first
+  ansible.builtin.lineinfile:
+    path: "/etc/rancher/k3s/config.yaml"
+    line: "server: https://{{ server_ip }}:6443"
+    create: true
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname | regex_search("^k3s-mas(.*)$") and ansible_hostname != hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Download k3s install script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: "/etc/rancher/k3s/k3s_install.sh"
+    mode: 0775
+
+- name: Run k3s install script on first master node
+  ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh"
+  register: output
+  changed_when: output.rc != 0
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Wait for first master node to be ready so other nodes can join
+  ansible.builtin.command: "kubectl get nodes"
+  register: nodes
+  until:
+    - '" Ready "  in nodes.stdout'
+  retries: 10
+  delay: 4
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Run k3s install script on the other nodes
+  ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh"
+  register: output
+  changed_when: output.rc != 0
+  when: ansible_hostname != hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Verify that all nodes actually joined
+  ansible.builtin.command:
+    cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
+  register: nodes
+  until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s_master'] | length)
+  retries: "{{ retry_count | default(20) }}"
+  delay: 10
+  changed_when: false
+  failed_when: false
