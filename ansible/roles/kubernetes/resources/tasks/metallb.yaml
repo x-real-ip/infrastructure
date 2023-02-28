@@ -15,13 +15,6 @@
     - metallb
   when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
-- name: Test metallb-system namespace
-  ansible.builtin.command: >-
-    k3s kubectl -n metallb-system
-  changed_when: false
-  with_items: "{{ groups['master'] }}"
-  run_once: true
-
 - name: Wait for MetalLB resources
   ansible.builtin.command: >-
     k3s kubectl wait {{ item.resource }}
@@ -29,13 +22,13 @@
     {% if item.name | default(False) -%}{{ item.name }}{%- endif %}
     {% if item.selector | default(False) -%}--selector='{{ item.selector }}'{%- endif %}
     {% if item.condition | default(False) -%}{{ item.condition }}{%- endif %}
-    --timeout='{{ metal_lb_available_timeout }}'
+    --timeout='120s'
   changed_when: false
   run_once: true
   with_items:
     - description: controller
       resource: deployment
-      name: controller
+      name: metallb-controller
       condition: --for condition=Available=True
     - description: webhook service
       resource: pod

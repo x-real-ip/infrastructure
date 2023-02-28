@@ -60,12 +60,13 @@
   until:
     - '" Ready "  in nodes.stdout'
   retries: 10
-  delay: 4
+  delay: 10
   when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
-- name: Run k3s install script on the other nodes
+- name: Run k3s install script on the other nodes one by one
   ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh"
   register: output
+  throttle: 1
   changed_when: output.rc != 0
   when: ansible_hostname != hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
