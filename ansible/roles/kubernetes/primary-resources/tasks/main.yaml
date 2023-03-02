@@ -1,39 +1,65 @@
 ---
-- name: Create directory .kube
-  ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.kube"
-    state: directory
-    owner: "{{ ansible_user_id }}"
-    mode: "u=rwx,g=rx,o="
+# - name: Create directory .kube
+#   ansible.builtin.file:
+#     path: "{{ ansible_user_dir }}/.kube"
+#     state: directory
+#     owner: "{{ ansible_user_id }}"
+#     mode: "u=rwx,g=rx,o="
 
-- name: Copy kube config file to user home directory
-  ansible.builtin.copy:
-    src: /etc/rancher/k3s/k3s.yaml
-    dest: "{{ ansible_user_dir }}/.kube/config"
-    remote_src: true
-    owner: "{{ ansible_user_id }}"
-    mode: "u=rw,g=,o="
+# - name: Copy kube config file to user home directory
+#   ansible.builtin.copy:
+#     src: /etc/rancher/k3s/k3s.yaml
+#     dest: "{{ ansible_user_dir }}/.kube/config"
+#     remote_src: true
+#     owner: "{{ ansible_user_id }}"
+#     mode: "u=rw,g=,o="
 
-- name: Create Kubernetes namespaces
-  kubernetes.core.k8s:
-    name: "{{ item }}"
-    api_version: v1
-    kind: Namespace
-    state: present
-  loop: "{{ kubernetes_namespaces }}"
-  run_once: true
+# - name: Create Kubernetes namespaces
+#   kubernetes.core.k8s:
+#     name: "{{ item }}"
+#     api_version: v1
+#     kind: Namespace
+#     state: present
+#   loop: "{{ kubernetes_namespaces }}"
+#   run_once: true
 
-- name: Deploy kube-vip
-  ansible.builtin.include_tasks: kube_vip.yaml
-  when: apiserver_endpoint and flannel_iface and kube_vip_tag_version is defined
+# - name: Deploy Kube-VIP
+#   ansible.builtin.include_tasks: kube_vip.yaml
+#   when: apiserver_endpoint and flannel_iface and kube_vip_tag_version is defined
 
-- name: Deploy metallb
-  ansible.builtin.include_tasks: metallb.yaml
-  when: metallb_int_lan_ip and metallb_ext_lan_ip is defined
+# - name: Deploy Metallb
+#   ansible.builtin.include_tasks: metallb.yaml
+#   when: metallb_int_lan_ip and metallb_ext_lan_ip is defined
 
-- name: Deploy bitnami-sealed-secret
+- name: Deploy Bitnami Sealed Secret
   ansible.builtin.include_tasks: bitnami-sealed-secret.yaml
   when: sealed_secret_customkeys_2_tls_key is defined
+  loop_control:
+    loop_var: "{{ github_repo_name }}"
+  vars:
+    github_repo_name: "bitnami-sealed-secrets-manifest"
+
+# - name: Deploy TLS certificates
+#   ansible.builtin.include_tasks: tls-certificates.yaml
+#   when: '"bitnami-sealed-secrets-manifest" in infra_github_manifests'
+
+# - name: Deploy NGINX ingress controller
+#   ansible.builtin.include_tasks: nginx-ingress-controller.yaml
+
+# - name: Deploy csi-driver
+#   ansible.builtin.include_tasks: csi-driver.yaml
+
+# - name: Deploy private registry credentials
+#   ansible.builtin.include_tasks: registry-credentials.yaml
+
+# - name: Deploy Harbor
+#   ansible.builtin.include_tasks: harbor.yaml
+
+# - name: Deploy Drone
+#   ansible.builtin.include_tasks: drone.yaml
+
+# - name: Deploy Feature discovery
+#   ansible.builtin.include_tasks: feature-discovery.yaml
 
 # - name: Configure cluster IP in the kube config file to {{ endpoint_url }}
 #   ansible.builtin.command: >-

@@ -4,12 +4,17 @@
 #   become: true
 #   roles:
 #     - "../roles/common/basic"
-#     - "../roles/kubernetes/os"
-#     - "../roles/kubernetes/k3s"
+#     - "../roles/kubernetes/pre"
 
-- name: Play to add settings for the k3s masters
+# - name: Install k3s (masters and workers)
+#   hosts: k3s_cluster
+#   become: true
+#   serial: 1
+#   roles:
+#     - "../roles/kubernetes/install"
+
+- name: Play to apply primary resources to the k3s cluster
   hosts: k3s_master
-  gather_facts: true
   become: true
   roles:
-    - "../roles/kubernetes/resources"
+    - "../roles/kubernetes/primary-resources"

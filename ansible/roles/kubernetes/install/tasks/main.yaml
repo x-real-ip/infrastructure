@@ -1,0 +1,22 @@
+---
+- name: Download k3s install script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: "/etc/rancher/k3s/k3s_install.sh"
+    mode: 0775
+
+- name: Run k3s install script
+  ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh"
+  register: output
+  changed_when: output.rc != 0
+
+- name: Wait for node to become ready
+  kubernetes.core.k8s_info:
+    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+    kind: node
+    label_selectors:
+      - "kubernetes.io/hostname = {{ ansible_hostname }}"
+    wait: true
+    wait_condition:
+      type: Ready
+      status: "True"
