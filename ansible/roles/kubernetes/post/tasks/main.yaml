@@ -1,0 +1,10 @@
+---
+- name: Verify that all nodes actually joined
+  ansible.builtin.command:
+    cmd: kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
+  register: nodes
+  until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s_master'] | length)
+  retries: 20
+  delay: 10
+  changed_when: false
+  failed_when: false

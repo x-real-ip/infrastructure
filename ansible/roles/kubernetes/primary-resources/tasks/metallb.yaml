@@ -1,0 +1,39 @@
+- name: Download metallb manifests from github to the first master node
+  ansible.builtin.get_url:
+    url: "{{ github_infra_manifests }}/{{ item }}.yaml"
+    dest: ~/{{ item }}.yaml
+    mode: "0664"
+  with_items:
+    - metallb
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Apply metallb manifests to the first master node
+  kubernetes.core.k8s:
+    state: present
+    src: ~/{{ item }}.yaml
+  with_items:
+    - metallb
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Validate if metallb controller pod is ready
+  kubernetes.core.k8s_info:
+    kind: Pod
+    name: metallb-controller
+    namespace: metallb-system
+    label_selectors:
+      - "app.kubernetes.io/name = metallb"
+      - "app.kubernetes.io/component = controller"
+    validate:
+      fail_on_error: true
+      strict: true
+    wait: true
+    wait_condition:
+      type: Ready
+      status: "True"
+  run_once: true
+
+- name: Read metallb-addresspool template file and apply to the k3s cluster
+  kubernetes.core.k8s:
+    state: present
+    template: "metallb-addresspool.yaml.j2"
+  run_once: true

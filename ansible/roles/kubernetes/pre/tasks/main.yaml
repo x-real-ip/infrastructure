@@ -20,14 +20,18 @@
       - jq
     state: latest
 
-- name: Install python packages
+- name: >-
+    Install kubernetes python packages for Ansible kubernetes.core.k8s module
   ansible.builtin.pip:
     name:
       - kubernetes
+      - kubernetes-validate
 
 - name: Set SELinux to disabled state
   ansible.posix.selinux:
     state: disabled
+  register: selinux
+  notify: Reboot
   when: ansible_os_family == "RedHat"
 
 - name: Enable IPv4 forwarding
@@ -127,3 +131,46 @@
           user_friendly_names yes
           find_multipaths yes
       }
+
+- name: Create directory k3s
+  ansible.builtin.file:
+    path: "/etc/rancher/k3s/config.yaml.d/"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: 0755
+
+- name: Copy registries.yaml file
+  ansible.builtin.template:
+    src: "registries.yaml.j2"
+    dest: "/etc/rancher/k3s/registries.yaml"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy main config file to all k3s nodes
+  ansible.builtin.template:
+    src: "k3s-config-main.yaml.j2"
+    dest: "/etc/rancher/k3s/config.yaml.d/main-config.yaml"
+    owner: root
+    group: root
+    mode: 0644
+    force: false
+
+- name: Copy init config file to the first k3s master
+  ansible.builtin.copy:
+    src: "k3s-config-init.yaml"
+    dest: "/etc/rancher/k3s/config.yaml.d/init-config.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+- name: Copy join config file to all k3 nodes except the first
+  ansible.builtin.template:
+    src: "k3s-config-join.yaml.j2"
+    dest: "/etc/rancher/k3s/config.yaml.d/join-config.yaml"
+    owner: root
+    group: root
+    mode: 0644
+    force: false
+  when: ansible_hostname != hostvars[groups['k3s_master'][0]]['ansible_hostname']
