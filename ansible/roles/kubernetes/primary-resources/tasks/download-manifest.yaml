@@ -1,7 +1,0 @@
----
-- name: Download manifests from github to the first master node
-  ansible.builtin.get_url:
-    url: "{{ github_infra_manifests_url }}/{{ github_repo_name }}.yaml"
-    dest: ~/{{ github_repo_name }}.yaml
-    mode: "0664"
-  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
