@@ -338,28 +338,28 @@ spec:
       namespace: devops
     type: Opaque
 
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: "harbor-registryctl"
-  namespace: devops
-  labels:
-    release: harbor
-    app: "harbor"
-type: Opaque
-data:
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: "harbor-registryctl"
+#   namespace: devops
+#   labels:
+#     release: harbor
+#     app: "harbor"
+# type: Opaque
+# data:
 
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: "harbor-registryctl"
-  namespace: devops
-  labels:
-    release: harbor
-    app: "harbor"
-data:
+# ---
+# kind: ConfigMap
+# apiVersion: v1
+# metadata:
+#   name: "harbor-registryctl"
+#   namespace: devops
+#   labels:
+#     release: harbor
+#     app: "harbor"
+# data:
 
 ---
 kind: ConfigMap
@@ -677,7 +677,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /home/scanner/.cache
-              subPath:
               readOnly: false
           livenessProbe:
             httpGet:
@@ -771,6 +770,7 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/redis
+          resources: {}
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -869,6 +869,7 @@ spec:
               mountPath: /var/lib/postgresql/data
             - name: shm-volume
               mountPath: /dev/shm
+          resources: {}
       volumes:
         - name: shm-volume
           emptyDir:
@@ -961,6 +962,7 @@ spec:
             - name: registry-config
               mountPath: /etc/registry/config.yml
               subPath: config.yml
+          resources: {}
         - name: registryctl
           image: goharbor/harbor-registryctl:dev
           imagePullPolicy: IfNotPresent
@@ -1007,6 +1009,7 @@ spec:
             - name: registry-config
               mountPath: /etc/registryctl/config.yml
               subPath: ctl-config.yml
+          resources: {}
       volumes:
         - name: registry-htpasswd
           secret:
@@ -1075,6 +1078,7 @@ spec:
             - name: portal-config
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
+          resources: {}
       volumes:
         - name: portal-config
           configMap:
@@ -1152,10 +1156,9 @@ spec:
               subPath: config.yml
             - name: job-logs
               mountPath: /var/log/jobs
-              subPath:
             - name: job-scandata-exports
               mountPath: /var/scandata_exports
-              subPath:
+          resources: {}
       volumes:
         - name: jobservice-config
           configMap:
@@ -1254,6 +1257,7 @@ spec:
               subPath: tls.key
             - name: psc
               mountPath: /etc/core/token
+          resources: {}
       volumes:
         - name: config
           configMap:
