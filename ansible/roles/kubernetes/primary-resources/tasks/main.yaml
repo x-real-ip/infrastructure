@@ -31,23 +31,34 @@
 #   ansible.builtin.include_tasks: metallb.yaml
 #   when: metallb_int_lan_ip and metallb_ext_lan_ip is defined
 
-- name: Deploy Bitnami Sealed Secret
-  ansible.builtin.include_tasks: bitnami-sealed-secret.yaml
-  when: sealed_secret_customkeys_2_tls_key is defined
+- name: Deploy and validate manifests
+  ansible.builtin.include_tasks: "{{ item.name }}.yaml"
   loop_control:
-    loop_var: "{{ github_repo_name }}"
-  vars:
-    github_repo_name: "bitnami-sealed-secrets-manifest"
+    label: "{{ item.name }}"
+  with_items:
+    - name: "bitnami-sealed-secrets"
+      source: "github"
+      namespace: "kube-system"
+    - name: "tls-wildcard-k8s-lan"
+      source: "github"
+    - name: "tls-wildcard-theautomation-nl"
+      source: "github"
+    - name: "nginx-ingress-prd-int"
+      source: "github"
+      namespace: "prd-int"
+    - name: "nginx-ingress-prd-ext"
+      source: "github"
+      namespace: "prd-ext"
+    - name: "democratic-csi-manual"
+      source: "github"
+      namespace: "democratic-csi"
+    - name: "harbor-secrets-registry-creds"
+      source: "github"
+    - name: "harbor"
+      source: "github"
+      namespace: "devops"
+  run_once: true
 
-# - name: Deploy TLS certificates
-#   ansible.builtin.include_tasks: tls-certificates.yaml
-#   when: '"bitnami-sealed-secrets-manifest" in infra_github_manifests'
-
-# - name: Deploy NGINX ingress controller
-#   ansible.builtin.include_tasks: nginx-ingress-controller.yaml
-
-# - name: Deploy csi-driver
-#   ansible.builtin.include_tasks: csi-driver.yaml
 
 # - name: Deploy private registry credentials
 #   ansible.builtin.include_tasks: registry-credentials.yaml
