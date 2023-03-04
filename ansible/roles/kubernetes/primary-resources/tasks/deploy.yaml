@@ -1,0 +1,18 @@
+---
+- name: Download manifest from github and apply to the k3s cluster
+  block:
+    - name: Download {{ item.name }}
+      ansible.builtin.get_url:
+        url: "{{ github_infra_manifests_url }}/{{ item.name }}.yaml"
+        dest: ~/{{ item.name }}.yaml
+        mode: "0664"
+
+    - name: Apply {{ item.name }}
+      kubernetes.core.k8s:
+        apply: true
+        state: present
+        src: ~/{{ item.name }}.yaml
+        validate:
+          fail_on_error: true
+          strict: true
+  when: ansible_hostname == hostvars[groups["k3s_master"][0]]["ansible_hostname"]
