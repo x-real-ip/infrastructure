@@ -17,4 +17,4 @@
   hosts: k3s_master
   become: true
   roles:
-    - "../roles/kubernetes/primary-resources"
+    - "../roles/kubernetes/post"
