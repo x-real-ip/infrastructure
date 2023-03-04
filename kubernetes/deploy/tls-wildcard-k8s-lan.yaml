@@ -1,3 +1,4 @@
+# Clusterwide, changing namespace is allowed
 ---
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
