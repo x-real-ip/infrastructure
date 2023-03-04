@@ -8,3 +8,127 @@
   delay: 10
   changed_when: false
   failed_when: false
+
+- name: Create directory .kube
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.kube"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: "u=rwx,g=rx,o="
+
+- name: Copy kube config file to user home directory
+  ansible.builtin.copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "{{ ansible_user_dir }}/.kube/config"
+    remote_src: true
+    owner: "{{ ansible_user_id }}"
+    mode: "u=rw,g=,o="
+
+- name: Create Kubernetes namespaces
+  kubernetes.core.k8s:
+    name: "{{ item }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+  loop: "{{ kubernetes_namespaces }}"
+  run_once: true
+
+# - name: Deploy Kube-VIP
+#   ansible.builtin.include_tasks: kube_vip.yaml
+#   when: apiserver_endpoint and flannel_iface and kube_vip_tag_version is defined
+
+# - name: Deploy Metallb
+#   ansible.builtin.include_tasks: metallb.yaml
+#   when: metallb_int_lan_ip and metallb_ext_lan_ip is defined
+
+- name: Deploy and validate resources to the k3s cluster
+  ansible.builtin.include_tasks: "primary-resources/{{ item.name }}.yaml"
+  loop_control:
+    label: "{{ item.name }}"
+  with_items:
+    - name: "bitnami-sealed-secrets"
+      source: "github"
+      namespace: "kube-system"
+    - name: "tls-wildcard-k8s-lan"
+      source: "github"
+    - name: "tls-wildcard-theautomation-nl"
+      source: "github"
+    - name: "nginx-ingress-prd-int"
+      source: "github"
+      namespace: "prd-int"
+    - name: "nginx-ingress-prd-ext"
+      source: "github"
+      namespace: "prd-ext"
+    - name: "democratic-csi-manual"
+      source: "github"
+      namespace: "democratic-csi"
+    - name: "harbor-secrets-registry-creds"
+      source: "github"
+    - name: "harbor"
+      source: "github"
+      namespace: "devops"
+  run_once: true
+
+
+# - name: Deploy private registry credentials
+#   ansible.builtin.include_tasks: registry-credentials.yaml
+
+# - name: Deploy Harbor
+#   ansible.builtin.include_tasks: harbor.yaml
+
+# - name: Deploy Drone
+#   ansible.builtin.include_tasks: drone.yaml
+
+# - name: Deploy Feature discovery
+#   ansible.builtin.include_tasks: feature-discovery.yaml
+
+# - name: Configure cluster IP in the kube config file to {{ endpoint_url }}
+#   ansible.builtin.command: >-
+#     k3s kubectl config set-cluster default
+#       --server={{ endpoint_url }}
+#       --kubeconfig {{ ansible_user_dir }}/.kube/config
+#   changed_when: true
+#   vars:
+#     endpoint_url: >-
+#       https://{{ apiserver_endpoint }}:6443
+
+# - name: Copy config file to the home directory of this local device
+#   ansible.builtin.fetch:
+#     src: "{{ ansible_user_dir }}/.kube/config"
+#     dest: "~/.kube/config"
+#     flat: true
+#   run_once: true
+
+# - name: Read kube config file as base64(slurp) for drone secret
+#   ansible.builtin.slurp:
+#     src: "{{ ansible_user_dir }}/.kube/config"
+#   register: base64_kubeconfig
+#   run_once: true
+
+# - name: Apply drone kube config secret to the k3s cluster
+#   kubernetes.core.k8s:
+#     state: present
+#     template: "drone-kubeconfig-secret.yaml.j2"
+#   run_once: true
+
+# # - name: Read template files from the Ansible controller file system and apply to the cluster
+# #   kubernetes.core.k8s:
+# #     state: present
+# #     template: "./k3s/manifests/{{ item }}.yaml.j2"
+# #   loop: "{{ infra_template_manifests }}"
+# #   when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+
+# # - name: Download infrastructure manifests from github to the first master node
+# #   ansible.builtin.get_url:
+# #     url: "{{ github_infra_manifests }}/{{ item }}.yaml"
+# #     dest: ~/{{ item }}.yaml
+# #     mode: "0664"
+# #   when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+# #   loop: "{{ infra_github_manifests }}"
+
+# # - name: Apply infrastructure manifests from github to the first master node
+# #   kubernetes.core.k8s:
+# #     state: present
+# #     src: ~/{{ item }}.yaml
+# #   when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+# #   loop: "{{ infra_github_manifests }}"
