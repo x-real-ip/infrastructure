@@ -70,12 +70,6 @@
   run_once: true
 
 
-# - name: Deploy private registry credentials
-#   ansible.builtin.include_tasks: registry-credentials.yaml
-
-# - name: Deploy Harbor
-#   ansible.builtin.include_tasks: harbor.yaml
-
 # - name: Deploy Drone
 #   ansible.builtin.include_tasks: drone.yaml
 
