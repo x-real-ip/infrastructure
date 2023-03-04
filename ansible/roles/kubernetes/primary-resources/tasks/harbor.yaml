@@ -1,0 +1,27 @@
+---
+- name: Test namespace {{ item.namespace }}
+  ansible.builtin.include_tasks: namespace.yaml
+  when: item.namespace is defined
+
+- name: Download manifest from github and apply to the k3s cluster for {{ item.name }}
+  ansible.builtin.include_tasks: deploy.yaml
+  when: '"github" in item.source'
+
+- name: Validate if pod is ready for {{ item.name }}
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "devops"
+    label_selectors:
+      - "{{ label }}"
+    wait: true
+    wait_condition:
+      type: Ready
+      status: "True"
+  loop_control:
+    loop_var: label
+  vars:
+    label:
+      - "component=registry"
+      - "component=portal"
+      - "component=jobservice"
+      - "component=core"
