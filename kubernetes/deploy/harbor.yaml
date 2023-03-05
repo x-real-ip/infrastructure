@@ -338,28 +338,28 @@ spec:
       namespace: devops
     type: Opaque
 
-# ---
-# apiVersion: v1
-# kind: Secret
-# metadata:
-#   name: "harbor-registryctl"
-#   namespace: devops
-#   labels:
-#     release: harbor
-#     app: "harbor"
-# type: Opaque
-# data:
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "harbor-registryctl"
+  namespace: devops
+  labels:
+    release: harbor
+    app: "harbor"
+type: Opaque
+data: {}
 
-# ---
-# kind: ConfigMap
-# apiVersion: v1
-# metadata:
-#   name: "harbor-registryctl"
-#   namespace: devops
-#   labels:
-#     release: harbor
-#     app: "harbor"
-# data:
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "harbor-registryctl"
+  namespace: devops
+  labels:
+    release: harbor
+    app: "harbor"
+data: {}
 
 ---
 kind: ConfigMap
