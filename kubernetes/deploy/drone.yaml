@@ -357,9 +357,6 @@ spec:
             - mountPath: /var/lib/docker
               name: storage
               subPath: docker
-            - mountPath: /etc/docker/daemon.json
-              name: daemon-json
-              subPath: daemon.json
             - mountPath: /var/lib/.kube/config
               name: kubeconfig
               subPath: config
