@@ -7,21 +7,22 @@
   ansible.builtin.include_tasks: deploy.yaml
   when: '"github" in item.source'
 
-- name: Validate if pod is ready for {{ item.name }}
+- name: Validate if pods are ready for {{ item.name }}
   kubernetes.core.k8s_info:
     kind: Pod
     namespace: "devops"
     label_selectors:
-      - "{{ label }}"
+      - "{{ labels }}"
     wait: true
     wait_condition:
       type: Ready
       status: "True"
+    wait_sleep: 10
+    wait_timeout: 360
+  with_items:
+    - "component=registry"
+    - "component=portal"
+    - "component=jobservice"
+    - "component=core"
   loop_control:
-    loop_var: label
-  vars:
-    label:
-      - "component=registry"
-      - "component=portal"
-      - "component=jobservice"
-      - "component=core"
+    loop_var: labels
