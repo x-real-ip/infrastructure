@@ -386,9 +386,6 @@ spec:
           resources: {}
       serviceAccountName: drone-runner-docker
       volumes:
-        - configMap:
-            name: docker-deamon-json
-          name: daemon-json
         - name: kubeconfig
           secret:
             secretName: kubeconfig
