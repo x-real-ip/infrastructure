@@ -23,9 +23,6 @@
     label_selectors:
       - "app.kubernetes.io/name = metallb"
       - "app.kubernetes.io/component = controller"
-    validate:
-      fail_on_error: true
-      strict: true
     wait: true
     wait_condition:
       type: Ready
