@@ -1,5 +1,5 @@
 ---
 - name: Test namespace {{ item.namespace }}
-  command: >-
+  ansible.builtin.command: >-
     kubectl -n {{ item.namespace }}
   changed_when: false
