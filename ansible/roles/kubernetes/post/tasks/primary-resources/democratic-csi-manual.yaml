@@ -7,7 +7,7 @@
   ansible.builtin.include_tasks: deploy.yaml
   when: '"github" in item.source'
 
-- name: Validate if pods of DaemonSet are running for {{ item.name }}
+- name: Validate if pods of DaemonSet are running | {{ item.name }}
   kubernetes.core.k8s_info:
     kind: Pod
     namespace: "democratic-csi"
