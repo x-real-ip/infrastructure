@@ -16,3 +16,13 @@
   retries: 15
   delay: 3
   run_once: true
+
+- name: Configure cluster IP in the kube config file to {{ endpoint_url }}
+  ansible.builtin.command: >-
+    k3s kubectl config set-cluster default
+      --server={{ endpoint_url }}
+      --kubeconfig {{ ansible_user_dir }}/.kube/config
+  changed_when: true
+  vars:
+    endpoint_url: >-
+      https://{{ apiserver_endpoint }}:6443
