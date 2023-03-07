@@ -7,7 +7,7 @@
   ansible.builtin.include_tasks: deploy.yaml
   when: '"github" in item.source'
 
-- name: Validate deployment for {{ item.name }}
+- name: Validate deployment | {{ item.name }}
   kubernetes.core.k8s_info:
     kind: Deployment
     name: ingress-nginx-prd-ext-controller
@@ -19,7 +19,7 @@
       type: Available
       status: "True"
 
-- name: Validate if pod is ready for {{ item.name }}
+- name: Validate if pod is ready | {{ item.name }}
   kubernetes.core.k8s_info:
     kind: Pod
     namespace: "prd-ext"
