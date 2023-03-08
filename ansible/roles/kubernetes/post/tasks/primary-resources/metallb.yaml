@@ -1,28 +1,29 @@
-- name: Download metallb manifests from github to the first master node
-  ansible.builtin.get_url:
-    url: "{{ github_infra_manifests }}/{{ item }}.yaml"
-    dest: ~/{{ item }}.yaml
-    mode: "0664"
-  with_items:
-    - metallb
-  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+---
+- name: Download manifest from github and apply to the k3s cluster
+  when: ansible_hostname == hostvars[groups["k3s_master"][0]]["ansible_hostname"]
+  block:
+    - name: Download | {{ item.name }}
+      ansible.builtin.get_url:
+        url: "{{ github_infra_manifests_url }}/{{ item.name }}.yaml"
+        dest: "{{ temp_dir }}/{{ item.name }}.yaml"
+        mode: "0664"
 
-- name: Apply metallb manifests to the first master node
-  kubernetes.core.k8s:
-    state: present
-    src: ~/{{ item }}.yaml
-  with_items:
-    - metallb
-  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+    - name: Apply | {{ item.name }}
+      kubernetes.core.k8s:
+        apply: true
+        state: present
+        src: "{{ temp_dir }}/{{ item.name }}.yaml"
+        validate:
+          fail_on_error: true
 
-- name: Validate if metallb controller pod is ready
+- name: Validate if pod is ready | {{ item.name }}
   kubernetes.core.k8s_info:
     kind: Pod
     name: metallb-controller
     namespace: metallb-system
     label_selectors:
-      - "app.kubernetes.io/name = metallb"
-      - "app.kubernetes.io/component = controller"
+      - "app.kubernetes.io/name=metallb"
+      - "app.kubernetes.io/component=controller"
     wait: true
     wait_condition:
       type: Ready

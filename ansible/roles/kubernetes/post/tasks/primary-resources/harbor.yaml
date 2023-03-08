@@ -3,11 +3,11 @@
   ansible.builtin.include_tasks: namespace.yaml
   when: item.namespace is defined
 
-- name: Download manifest from github and apply to the k3s cluster for {{ item.name }}
+- name: Download manifest from github and apply to the k3s cluster | {{ item.name }}
   ansible.builtin.include_tasks: deploy.yaml
   when: '"github" in item.source'
 
-- name: Validate if pods are ready for {{ item.name }}
+- name: Validate if pods are ready | {{ item.name }}
   kubernetes.core.k8s_info:
     kind: Pod
     namespace: "devops"

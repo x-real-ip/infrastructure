@@ -36,16 +36,3 @@
         url: https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
         dest: /usr/local/bin/yq
         mode: a+x
-
-# - name: "Play for k3s kube config"
-#   hosts: localhost
-#   connection: local
-#   become: true
-#   become_user: coen
-#   tasks:
-#     - name: Replace localhost ip to apiserver endpoint in kube config file
-#       ansible.builtin.lineinfile:
-#         path: "~/.kube/config"
-#         search_string: "    server: https://127.0.0.1:6443"
-#         line: "    server: https://{{ hostvars[groups['k3s_cluster'][0]].apiserver_endpoint }}:6443"
-#         state: present

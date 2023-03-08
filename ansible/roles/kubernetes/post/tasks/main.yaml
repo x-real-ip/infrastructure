@@ -37,17 +37,24 @@
   ansible.builtin.include_tasks: "primary-resources/kube-vip.yaml"
   when: apiserver_endpoint and flannel_iface and kube_vip_tag_version is defined
 
-# - name: Deploy Metallb
-#   ansible.builtin.include_tasks: metallb.yaml
-#   when: metallb_int_lan_ip and metallb_ext_lan_ip is defined
-
 - name: Deploy and validate resources to the k3s cluster and remove temp files
   block:
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: "{{ temp_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 0644
+
     - name: Deploy and validate resources to the k3s cluster
       ansible.builtin.include_tasks: "primary-resources/{{ item.name }}.yaml"
       loop_control:
         label: "{{ item.name }}"
       with_items:
+        - name: "metallb"
+          source: "github"
+          namespace: "metallb-system"
         - name: "bitnami-sealed-secrets"
           source: "github"
           namespace: "kube-system"
@@ -81,10 +88,9 @@
       run_once: true
   always:
     - name: Delete temp content & directory
-      file:
+      ansible.builtin.file:
         state: absent
         path: "{{ temp_dir }}/"
-
 
 - name: Get contents of manifests folder
   ansible.builtin.find:
@@ -107,3 +113,10 @@
     - "{{ k3s_server_manifests_directories.files }}"
   loop_control:
     label: "{{ item.path }}"
+
+- name: Copy config file to the home directory of this local device
+  ansible.builtin.fetch:
+    src: "{{ ansible_user_dir }}/.kube/config"
+    dest: "~/.kube/config"
+    flat: true
+  run_once: true
