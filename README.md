@@ -32,12 +32,12 @@
 
 ### Install k3s
 
-1.  Run the Ansible `k3s_install` playbook with `./ansible/run/kubernetes/k3s_install.sh`. This Ansible playbook will install K3s and all primary infrastructure application like metallb, nginx, Bitnami Sealed Secrets, CSI.
-2.  Run `k3s_apps` playbook with `./ansible/run/kubernetes/k3s_apps.sh` to install secondary application to the k3s cluster (optional).
+1.  Run the Ansible `k3s_install` playbook with `./ansible/run/kubernetes/k3s_install.sh`. This Ansible playbook will install K3s and all primary infrastructure applications like Metallb loadbalancer, NGINX ingress controller, Bitnami Sealed Secrets, Democratic-CSI.
+2.  Run `k3s_apps` playbook with `./ansible/run/kubernetes/k3s_apps.sh` to install secondary applications to the k3s cluster (optional).
 
 ### Local initialization and setup
 
-Flush dns cache
+Flush dns cache, needed when the same hostnames are used in previous machines (optional).
 
 ```console
 resolvectl flush-caches
@@ -70,7 +70,7 @@ sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 
 ### Kubernetes Cheatsheet
 
-Use kubectl drain to gracefully terminate all pods on the node while marking the node as unschedulable
+Drain and terminate all pods gracefully on the node while marking the node as unschedulable
 
 ```console
 kubectl drain --ignore-daemonsets --delete-emptydir-data <nodename>
