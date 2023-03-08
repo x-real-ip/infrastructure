@@ -1,9 +1,10 @@
 ---
 - name: Download manifest from github and apply to the k3s cluster
+  when: ansible_hostname == hostvars[groups["k3s_master"][0]]["ansible_hostname"]
   block:
     - name: Create manifests directory on first master
       ansible.builtin.file:
-        path: ~/temp
+        path: "{{ temp_dir }}"
         state: directory
         owner: root
         group: root
@@ -24,4 +25,3 @@
         validate:
           fail_on_error: true
           strict: true
-  when: ansible_hostname == hostvars[groups["k3s_master"][0]]["ansible_hostname"]
