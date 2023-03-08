@@ -80,30 +80,11 @@
           namespace: "devops"
       run_once: true
   always:
-    - name: Get contents of temp folder
-      ansible.builtin.find:
-        paths: /var/lib/rancher/k3s/server/manifests
-        file_type: file
-      register: k3s_server_manifests
-
-    - name: Get sub dirs of temp folder
-      ansible.builtin.find:
-        paths: /var/lib/rancher/k3s/server/manifests
-        file_type: directory
-      register: k3s_server_manifests_directories
-
-    - name: Remove downloaded temp files from temp folder
-      ansible.builtin.file:
-        path: "{{ item.path }}"
+    - name: Delete temp content & directory
+      file:
         state: absent
-      with_items:
-        - "{{ k3s_server_manifests.files }}"
-        - "{{ k3s_server_manifests_directories.files }}"
-      loop_control:
-        label: "{{ item.path }}"
+        path: "{{ temp_dir }}/"
 
-# - name: Deploy Feature discovery
-#   ansible.builtin.include_tasks: feature-discovery.yaml
 
 - name: Get contents of manifests folder
   ansible.builtin.find:
