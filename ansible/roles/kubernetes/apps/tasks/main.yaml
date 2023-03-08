@@ -14,15 +14,21 @@
       loop_control:
         label: "{{ item.name }}"
       with_items:
-        # - name: "bitwarden"
-        #   source: "github"
-        #   namespace: "tools"
-        # - name: "dsmr-reader"
-        #   source: "github"
-        #   namespace: "home-automation"
-        # - name: "esphome"
-        #   source: "github"
-        #   namespace: "home-automation"
+        - name: "protonmail-bridge"
+          source: "github"
+          namespace: "tools"
+        - name: "bitwarden"
+          source: "github"
+          namespace: "tools"
+        - name: "radicale"
+          source: "github"
+          namespace: "tools"
+        - name: "dsmr-reader"
+          source: "github"
+          namespace: "home-automation"
+        - name: "esphome"
+          source: "github"
+          namespace: "home-automation"
         - name: "mosquitto"
           source: "github"
           namespace: "home-automation"
@@ -35,9 +41,9 @@
         - name: "zwavejs2mqtt"
           source: "github"
           namespace: "home-automation"
-        # - name: "home-assistant"
-        #   source: "github"
-        #   namespace: "home-automation"
+        - name: "home-assistant"
+          source: "github"
+          namespace: "home-automation"
         - name: "immich"
           source: "github"
           namespace: "tools"
@@ -47,16 +53,6 @@
         - name: "paperless"
           source: "github"
           namespace: "tools"
-        - name: "protonmail-bridge"
-          source: "github"
-          namespace: "tools"
-        - name: "radicale"
-          source: "github"
-          namespace: "tools"
-
-          
-
-
       run_once: true
   always:
     - name: Delete temp content & directory
