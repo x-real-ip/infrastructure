@@ -1,27 +1,28 @@
-# Kubernetes GitOps
+# infrastructure
 
-- [Kubernetes GitOps](#kubernetes-gitops)
-  - [Setting up VM hosts](#setting-up-vm-hosts)
-  - [Setup k3s cluster](#setup-k3s-cluster)
+- [infrastructure](#infrastructure)
+  - [Kubernetes](#kubernetes)
+    - [Setting up VM hosts on Proxmox](#setting-up-vm-hosts-on-proxmox)
     - [Install k3s](#install-k3s)
     - [Local initialization and setup](#local-initialization-and-setup)
       - [Kubectl](#kubectl)
       - [Bitnami Kubeseal](#bitnami-kubeseal)
-  - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
-    - [Maintain cluster node](#maintain-cluster-node)
+    - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
     - [Upgrade K3s](#upgrade-k3s)
-  - [Bitnami Sealed Secret](#bitnami-sealed-secret)
-  - [Other](#other)
-    - [Rsync](#rsync)
-    - [ISCSI](#iscsi)
-      - [Migration notes:](#migration-notes)
-      - [Repair PVC using iSCSI mounts:](#repair-pvc-using-iscsi-mounts)
-  - [Node Feature Discovery](#node-feature-discovery)
+    - [Bitnami Sealed Secret](#bitnami-sealed-secret)
+    - [Network](#network)
+    - [Node Feature Discovery](#node-feature-discovery)
+  - [Rsync](#rsync)
+  - [ISCSI](#iscsi)
+    - [Repair iSCSI share](#repair-iscsi-share)
+  - [Ansible](#ansible)
 
-## Setting up VM hosts
+## Kubernetes
+
+### Setting up VM hosts on Proxmox
 
 1. Create VM from template and bootup.
-2. Add static ip via pfSense.
+2. Set static ip for the VM in the DHCP server.
 3. Login to the VM and set hostname.
    ```console
    hostnamectl set-hostname <hostname>
@@ -29,29 +30,10 @@
 4. Reboot.
 5. Set this hostname in the ansible inventory hosts.ini file.
 
-## Setup k3s cluster
-
 ### Install k3s
 
-1.  SSH in to the node and run the following command.
-
-```console
-# Set Linux distribution (debian/rocky-linux/alpine)
-export distro="<distro>"
-
-export k3s_token="<k3s_token>"
-
-export k3s_cluster_init_ip="10.0.100.201"
-
-export k3s_vipip="10.0.100.200"
-
-# tls.key base64 encoded string for Bitnami Sealed Secret
-export tls_key="<tls.key>"
-
-curl -sfL https://raw.githubusercontent.com/theautomation/kubernetes-gitops/main/scripts/setup-k3s-${distro}.sh | bash -
-```
-
-After applying the above command on each node k3s is setup.
+1.  Run the Ansible `k3s_install` playbook with `./ansible/run/kubernetes/k3s_install.sh`. This Ansible playbook will install K3s and all primary infrastructure application like metallb, nginx, Bitnami Sealed Secrets, CSI.
+2.  Run `k3s_apps` playbook with `./ansible/run/kubernetes/k3s_apps.sh` to install secondary application to the k3s cluster (optional).
 
 ### Local initialization and setup
 
@@ -86,7 +68,25 @@ sudo tar xzvf kubeseal-0.19.1-linux-amd64.tar.gz
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
 
-## Kubernetes Cheatsheet
+### Kubernetes Cheatsheet
+
+Use kubectl drain to gracefully terminate all pods on the node while marking the node as unschedulable
+
+```console
+kubectl drain --ignore-daemonsets --delete-emptydir-data <nodename>
+```
+
+Make the node unschedulable
+
+```console
+kubectl cordon <nodename>
+```
+
+Make the node schedulable
+
+```console
+kubectl uncordon <nodename>
+```
 
 Convert to BASE64
 
@@ -161,25 +161,9 @@ spec:
   volumeName: pvc-iscsi-home-assistant-data
 ```
 
-### Maintain cluster node
-
-Use kubectl drain to gracefully terminate all pods on the node while marking the node as unschedulable
-
-```console
-kubectl drain --ignore-daemonsets --delete-emptydir-data <nodename>
-```
-
-To update node with k3s script [See bootstrap k3s](#bootstrap-k3s-cluster)
-
-Make the node schedulable again
-
-```console
-kubectl uncordon <nodename>
-```
-
 ### Upgrade K3s
 
-1- To use the image with the system-upgrade-controller, you have first to run the controller either directly or deploy it on the k3s cluster:
+1. To use the image with the system-upgrade-controller, you have first to run the controller either directly or deploy it on the k3s cluster:
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/rancher/system-upgrade-controller/master/manifests/system-upgrade-controller.yaml
@@ -187,13 +171,13 @@ kubectl apply -f https://raw.githubusercontent.com/rancher/system-upgrade-contro
 
 You should see the upgrade controller starting in `system-upgrade` namespace.
 
-2- Label the nodes you want to upgrade with the right label:
+2. Label the nodes you want to upgrade with the right label:
 
 ```
 kubectl label node <node-name> k3s-upgrade=true
 ```
 
-3- Run the upgrade plan in the k3s cluster
+3. Run the upgrade plan in the k3s cluster
 
 ```
 ---
@@ -217,7 +201,7 @@ spec:
 
 The upgrade controller should watch for this plan and execute the upgrade on the labeled nodes. For more information about system-upgrade-controller and plan options please visit [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller) official repo.
 
-## Bitnami Sealed Secret
+### Bitnami Sealed Secret
 
 Create TLS (unencrypted) secret
 
@@ -283,7 +267,7 @@ metadata:
 
 [Blogpost Tutorial](https://itsmetommy.com/2020/06/26/kubernetes-sealed-secrets/)
 
-## Other
+### Network
 
 Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
 
@@ -292,7 +276,15 @@ local-zone: "k8s.lan" redirect
 local-data: "k8s.lan 86400 IN A 192.168.1.240"
 ```
 
-### Rsync
+### Node Feature Discovery
+
+Show node lables
+
+```console
+kubectl get no -o json | jq .items[].metadata.labels
+```
+
+## Rsync
 
 rsync exact copy
 
@@ -300,7 +292,7 @@ rsync exact copy
 sudo rsync -axHAWXS --numeric-ids --info=progress2 /mnt/sourcePart/ /mnt/destPart
 ```
 
-### ISCSI
+## ISCSI
 
 Discovering targets in iSCSI server
 
@@ -320,20 +312,7 @@ Unmount disk
 sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan -u
 ```
 
-#### Migration notes:
-
-1. create iscsi zvol
-2. make iscsi share
-3. make pv
-4. make pvc
-5. apply k8s deployment (to let it write data to zvol)
-6. delete k8s deployment
-7. mount old iscsi driver
-8. rsync to temporary folder
-9. mount new drive
-10. rsync old files to new drive
-
-#### Repair PVC using iSCSI mounts:
+### Repair iSCSI share
 
 1. SSH into one of the nodes in the cluster and start discovery
    ```console
@@ -354,10 +333,4 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
    ```
 9. Volumes are now ready to be mounted as PVCs.
 
-## Node Feature Discovery
-
-Show node lables
-
-```console
-kubectl get no -o json | jq .items[].metadata.labels
-```
+## Ansible
