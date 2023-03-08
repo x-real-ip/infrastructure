@@ -1,0 +1,65 @@
+---
+- name: Deploy and validate resources to the k3s cluster and remove the used temp files afterwards
+  block:
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: "{{ temp_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Deploy and validate resources to the k3s cluster
+      ansible.builtin.include_tasks: "secondary-resources/{{ item.name }}.yaml"
+      loop_control:
+        label: "{{ item.name }}"
+      with_items:
+        # - name: "bitwarden"
+        #   source: "github"
+        #   namespace: "tools"
+        # - name: "dsmr-reader"
+        #   source: "github"
+        #   namespace: "home-automation"
+        # - name: "esphome"
+        #   source: "github"
+        #   namespace: "home-automation"
+        - name: "mosquitto"
+          source: "github"
+          namespace: "home-automation"
+        - name: "node-red"
+          source: "github"
+          namespace: "home-automation"
+        - name: "ser2net"
+          source: "github"
+          namespace: "home-automation"
+        - name: "zwavejs2mqtt"
+          source: "github"
+          namespace: "home-automation"
+        # - name: "home-assistant"
+        #   source: "github"
+        #   namespace: "home-automation"
+        - name: "immich"
+          source: "github"
+          namespace: "tools"
+        - name: "media-entertainment"
+          source: "github"
+          namespace: "media"
+        - name: "paperless"
+          source: "github"
+          namespace: "tools"
+        - name: "protonmail-bridge"
+          source: "github"
+          namespace: "tools"
+        - name: "radicale"
+          source: "github"
+          namespace: "tools"
+
+          
+
+
+      run_once: true
+  always:
+    - name: Delete temp content & directory
+      ansible.builtin.file:
+        state: absent
+        path: "{{ temp_dir }}/"

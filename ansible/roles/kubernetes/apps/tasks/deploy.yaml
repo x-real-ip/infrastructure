@@ -1,18 +1,11 @@
 ---
 - name: Download manifest from github and apply to the k3s cluster
-  when: ansible_hostname == hostvars[groups["k3s_master"][0]]["ansible_hostname"]
+  when: ansible_hostname == hostvars[groups["k3s_master"][0]]["ansible_hostname"] and item.source == "github"
   block:
-    - name: Create a directory if it does not exist
-      ansible.builtin.file:
-        path: "{{ temp_dir }}"
-        state: directory
-        owner: root
-        group: root
-        mode: 0644
-
     - name: Download manifest | {{ item.name }}
       ansible.builtin.get_url:
-        url: "{{ github_infra_manifests_url }}/{{ item.name }}.yaml"
+        force: true
+        url: "https://raw.githubusercontent.com/theautomation/{{ item.name }}/main/deploy/k8s/manifest.yaml"
         dest: "{{ temp_dir }}/{{ item.name }}.yaml"
         mode: "0664"
 
