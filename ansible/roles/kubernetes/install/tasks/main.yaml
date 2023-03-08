@@ -7,11 +7,11 @@
 
 - name: Run k3s install script
   ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh"
-  retries: 3
-  delay: 5
   register: output
   changed_when: output.rc != 0
   until: output.rc == 0
+  retries: 3
+  delay: 5
 
 - name: Wait for node to become ready
   kubernetes.core.k8s_info:
@@ -23,3 +23,5 @@
     wait_condition:
       type: Ready
       status: "True"
+  retries: 3
+  delay: 5
