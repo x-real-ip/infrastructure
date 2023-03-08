@@ -1,0 +1,23 @@
+---
+- name: Test namespace {{ item.namespace }}
+  ansible.builtin.include_tasks: namespace.yaml
+  when: item.namespace is defined
+
+- name: Download manifest from github and apply to the k3s cluster
+  ansible.builtin.include_tasks: deploy.yaml
+
+- name: Validate if pods are ready | {{ item.name }}
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ item.namespace }}"
+    label_selectors:
+      - "{{ labels }}"
+    wait: true
+    wait_condition:
+      type: Ready
+      status: "True"
+  with_items:
+    - "app=zwavejs2mqtt-eu"
+    - "app=zwavejs2mqtt-us"
+  loop_control:
+    loop_var: labels

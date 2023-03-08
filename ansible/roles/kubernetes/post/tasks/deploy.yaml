@@ -4,6 +4,7 @@
   block:
     - name: Download manifest | {{ item.name }}
       ansible.builtin.get_url:
+        force: true
         url: "{{ github_infra_manifests_url }}/{{ item.name }}.yaml"
         dest: "{{ temp_dir }}/{{ item.name }}.yaml"
         mode: "0664"
