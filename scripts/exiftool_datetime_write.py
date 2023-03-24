@@ -23,3 +23,7 @@ for filename in os.listdir(folder_path):
         command = ["exiftool", "-DateTimeOriginal=" +
                    datetime_str, os.path.join(folder_path, filename)]
         subprocess.run(command)
+        # set the DateTimeOriginal tag to the date/time information
+        command = ["exiftool", "-CreateDate=" +
+                   datetime_str, os.path.join(folder_path, filename)]
+        subprocess.run(command)
