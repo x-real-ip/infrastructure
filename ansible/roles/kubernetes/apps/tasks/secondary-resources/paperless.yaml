@@ -18,7 +18,6 @@
       status: "True"
   with_items:
     - "app=paperless-postgresql"
-    - "app=paperless-redis-master"
     - "app=paperless"
   loop_control:
     loop_var: labels
