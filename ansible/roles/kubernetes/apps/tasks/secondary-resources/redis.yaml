@@ -17,7 +17,6 @@
       type: Ready
       status: "True"
   with_items:
-    - "app=paperless-postgresql"
-    - "app=paperless"
+    - "app={{ item.name }}"
   loop_control:
     loop_var: labels

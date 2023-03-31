@@ -18,7 +18,6 @@
       status: "True"
   with_items:
     - "app=immich-postgresql"
-    - "app=immich-redis-master"
     - "app=immich-machine-learning"
     - "app=immich-microservice"
     - "app=immich-proxy"

@@ -14,6 +14,9 @@
       loop_control:
         label: "{{ item.name }}"
       with_items:
+        - name: "redis"
+          source: "github"
+          namespace: "tools"
         - name: "protonmail-bridge"
           source: "github"
           namespace: "tools"
