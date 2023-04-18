@@ -18,10 +18,12 @@
       status: "True"
   with_items:
     - "app=immich-postgresql"
-    - "app=immich-machine-learning"
-    - "app=immich-microservice"
-    - "app=immich-proxy"
     - "app=immich-server"
+    - "app=immich-microservice"
+    - "app=immich-machine-learning"
+    - "app=immich-typesense"
+    - "app=immich-proxy"
     - "app=immich-web"
+
   loop_control:
     loop_var: labels
