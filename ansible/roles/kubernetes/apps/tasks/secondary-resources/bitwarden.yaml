@@ -11,7 +11,10 @@
     kind: Pod
     namespace: "{{ item.namespace }}"
     label_selectors:
-      - "app=vaultwarden"
+      - "app.kubernetes.io/name=vaultwarden"
+      - "app.kubernetes.io/component=server"
+      - "app.kubernetes.io/instance=production"
+      - "app.kubernetes.io/part-of=vaultwarden"
     wait: true
     wait_condition:
       type: Ready
