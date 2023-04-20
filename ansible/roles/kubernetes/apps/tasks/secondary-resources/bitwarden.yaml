@@ -11,11 +11,20 @@
     kind: Pod
     namespace: "{{ item.namespace }}"
     label_selectors:
-      - "app.kubernetes.io/name=vaultwarden"
-      - "app.kubernetes.io/component=server"
-      - "app.kubernetes.io/instance=production"
-      - "app.kubernetes.io/part-of=vaultwarden"
+      - app.kubernetes.io/name={{ labels.name }}
+      - app.kubernetes.io/component={{ labels.component }}
+      - app.kubernetes.io/instance={{ labels.instance }}
+      - app.kubernetes.io/part-of={{ labels.part_of }}
     wait: true
     wait_condition:
       type: Ready
       status: "True"
+  loop_control:
+    loop_var: labels
+  with_items:
+    - {
+        name: "vaultwarden",
+        component: "server",
+        instance: "production",
+        part_of: "vaultwarden",
+      }
