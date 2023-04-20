@@ -24,6 +24,5 @@
     - "app=immich-typesense"
     - "app=immich-proxy"
     - "app=immich-web"
-
   loop_control:
     loop_var: labels
