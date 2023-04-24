@@ -1,0 +1,21 @@
+---
+- name: Update apt repo and cache on
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: dist
+
+- name: Install apt packages
+  ansible.builtin.apt:
+    pkg:
+      - pinta
+      - curl
+      - code
+      - git
+      - brave-browser
+      - python3
+      - vlc
+      - adb
+      - exiftool
+    autoclean: true
+    autoremove: true

@@ -1,0 +1,21 @@
+---
+- name: Add users for desktop
+  ansible.builtin.import_tasks: add_users.yaml
+
+- name: Install usual apt packages
+  ansible.builtin.import_tasks: install_apt_packages.yaml
+
+- name: Intall balenaEtcher
+  ansible.builtin.import_tasks: install_balenaetcher.yaml
+
+- name: Intall jq
+  ansible.builtin.import_tasks: install_jq.yaml
+
+- name: Intall Python packages
+  ansible.builtin.import_tasks: install_python_packages.yaml
+
+- name: Intall OnlyOffice
+  ansible.builtin.import_tasks: install_onlyoffice.yaml
+
+- name: Unintall usual apt packages
+  ansible.builtin.import_tasks: uninstall_apt_packages.yaml

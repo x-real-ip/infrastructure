@@ -1,6 +1,6 @@
 #!/bin/bash
 
-playbook="local.yaml"
+playbook="desktops_desired_state.yaml"
 
 export ANSIBLE_CONFIG="${PWD}/../../ansible.cfg"
 
