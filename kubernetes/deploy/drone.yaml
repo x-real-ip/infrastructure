@@ -250,7 +250,6 @@ spec:
       containers:
         - name: drone-server
           image: "drone/drone:2"
-          resources: {}
           ports:
             - name: http
               containerPort: 80
@@ -281,6 +280,7 @@ spec:
             - name: drone-server-data
               mountPath: /data
               subPath: ""
+          resources: {}
       volumes:
         - name: drone-server-data
           persistentVolumeClaim:
@@ -308,7 +308,6 @@ spec:
       containers:
         - name: drone-runner-docker
           image: "drone/drone-runner-docker:1.8.1"
-          resources: {}
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
@@ -332,9 +331,9 @@ spec:
           readinessProbe:
             tcpSocket:
               port: tcp
+          resources: {}
         - name: dind
           image: "docker:20-dind"
-          resources: {}
           imagePullPolicy: IfNotPresent
           command:
             - dockerd
@@ -371,9 +370,9 @@ spec:
             - name: kubeconfig
               mountPath: /var/lib/.kube/config
               subPath: config
+          resources: {}
         - name: gc
           image: "drone/gc:1.0.0"
-          resources: {}
           imagePullPolicy: IfNotPresent
           env:
             - name: DOCKER_HOST
@@ -392,6 +391,7 @@ spec:
               value: ""
             - name: GC_INTERVAL
               value: "5m"
+          resources: {}
       volumes:
         - name: daemon-json
           configMap:
@@ -453,8 +453,7 @@ spec:
           imagePullPolicy: Always
           resources: {}
           command: ["/bin/bash", "-c"]
-          args:
-            [
+          args: [
               "IFS=','; curl -sf -m 5 ${DRONE_SERVER}/healthz | grep 'OK' && sleep 3 || exit 10; \
               for r in ${REPOS}; do command=$(drone cron add --branch ${DEFAULT_BRANCH} ${ORGANIZATION}/${r} schedule-from-job ${SCHEDULE} 2>&1); \
               if grep -q 'UNIQUE' <<<$command; then echo 'Cron for '${r}' has already been set'; elif grep -q 'no such host' <<<$command; \
@@ -466,7 +465,7 @@ spec:
                 secretKeyRef:
                   name: drone-personal-token
                   key: DRONE_PERSONAL_TOKEN
-                  optional: false 
+                  optional: false
             - name: DRONE_SERVER
               value: "http://drone-server-svc.devops.svc.cluster.local:8080"
             - name: ORGANIZATION
