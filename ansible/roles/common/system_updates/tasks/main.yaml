@@ -1,11 +1,11 @@
 ---
-# - name: Print all available facts
-#   ansible.builtin.debug:
-#     var: ansible_facts
+- name: Update package list
+  ansible.builtin.dnf:
+    update_cache: yes
+  when: ansible_os_family == "RedHat"
 
-- name: Test hosts list
-  ansible.builtin.debug:
-    msg: "{{ hostvars['odroid-c4.lan']['ansible_eth0']['ipv4']['address'] }}"
-
-# - name: Return motd to registered var
-#   ansible.builtin.command: echo {{ hostvars[groups['odroid'][0]]['ansible_eth0']['ipv4']['address'] }} >> /etc/test
+- name: Upgrade packages
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+  when: ansible_os_family == "RedHat"
