@@ -18,6 +18,7 @@
       - device-mapper-multipath
       - pip
       - jq
+      - yum-utils
     state: latest
 
 - name: >-

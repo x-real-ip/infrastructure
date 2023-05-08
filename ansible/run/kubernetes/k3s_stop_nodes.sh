@@ -1,6 +1,6 @@
 #!/bin/bash
 
-playbook="k3s_cordon_nodes.yaml"
+playbook="k3s_stop_all_nodes.yaml"
 
 export ANSIBLE_CONFIG="${PWD}/../../ansible.cfg"
 
