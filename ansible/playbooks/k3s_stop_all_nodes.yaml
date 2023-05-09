@@ -2,11 +2,17 @@
 - name: Cordon all k3s nodes
   hosts: k3s_cluster
   become: true
-  roles:
-    - "../roles/kubernetes/cordon_nodes"
+  tasks:
+    - name: Cordon nodes
+      ansible.builtin.import_role:
+        name: "../roles/kubernetes/maintenance"
+        tasks_from: cordon
 
 - name: Drain all k3s nodes
   hosts: k3s_cluster
   become: true
-  roles:
-    - "../roles/kubernetes/maintenance/tasks/drain_nodes.yaml"
+  tasks:
+    - name: Drain nodes
+      ansible.builtin.import_role:
+        name: "../roles/kubernetes/maintenance"
+        tasks_from: drain
