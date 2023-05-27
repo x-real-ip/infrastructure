@@ -1,8 +1,5 @@
 ---
-- name: Drain node
-  kubernetes.core.k8s_drain:
-    state: drain
-    name: "{{ ansible_hostname }}"
-    delete_options:
-      delete_emptydir_data: true
-      ignore_daemonsets: true
+- name: Drain Nodes
+  ansible.builtin.command: kubectl drain "{{ ansible_hostname }}" --ignore-daemonsets --delete-local-data
+  register: drain_output
+  changed_when: "'is already cordoned' not in drain_output.stderr"
