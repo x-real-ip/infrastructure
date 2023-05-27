@@ -16,7 +16,7 @@
     wait_sleep: 15
     wait_timeout: 1800
   loop: "{{ kubernetes_namespaces }}"
-  when: item != "home-automation" # Skip home-automation namespace because some pods are required to run only on a specic node
+  when: item != "home-automation" # Skip home-automation namespace because some pods are required to run only on a specific node
 
 - name: Update system
   ansible.builtin.import_role:
