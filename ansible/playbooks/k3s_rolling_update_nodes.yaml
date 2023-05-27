@@ -5,4 +5,4 @@
   serial: 1
   any_errors_fatal: true
   roles:
-    - "../roles/kubernetes/maintenance"
+    - "kubernetes/maintenance"
