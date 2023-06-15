@@ -14,8 +14,10 @@
       - git
       - brave-browser
       - python3
+      - python3-virtualenv
       - vlc
       - adb
       - exiftool
+      - podman
     autoclean: true
     autoremove: true
