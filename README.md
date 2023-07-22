@@ -14,7 +14,6 @@
   - [Rsync](#rsync)
   - [ISCSI](#iscsi)
     - [Repair iSCSI share](#repair-iscsi-share)
-  - [Ansible](#ansible)
 
 ## Kubernetes
 
@@ -44,16 +43,7 @@ resolvectl flush-caches
 
 #### Kubectl
 
-1. Install kubectl on your local machine.
-   Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
-
-2. Copy the k3s config file from the master node to your local machine
-
-   ```console
-   mkdir -p ~/.kube/ \
-   && scp root@k3s-mas-01.lan:/etc/rancher/k3s/k3s.yaml ~/.kube/config \
-   && sed -i 's/127.0.0.1/10.0.100.200/g' ~/.kube/config
-   ```
+Install kubectl on your local machine. Read the [following page](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to know how to install kubectl on Linux.
 
 #### Bitnami Kubeseal
 
@@ -228,7 +218,7 @@ metadata:
 
 ### Network
 
-Add A record in pfSense to bind a domainname for redirecting internal traffic into k8s private ingress controller.
+Add A record in pfSense to bind specific domain (`*.k8s.lan`) for redirecting internal traffic into k8s private ingress controller.
 
 ```
 local-zone: "k8s.lan" redirect
@@ -291,5 +281,3 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --logout
    ```
 9. Volumes are now ready to be mounted as PVCs.
-
-## Ansible
