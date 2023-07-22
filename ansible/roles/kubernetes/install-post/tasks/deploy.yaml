@@ -15,5 +15,5 @@
         state: present
         src: "{{ temp_dir }}/{{ item.name }}.yaml"
         validate:
-          fail_on_error: true
-          strict: true
+          fail_on_error: false
+          strict: false

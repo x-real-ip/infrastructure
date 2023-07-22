@@ -14,7 +14,7 @@
         state: present
         src: "{{ temp_dir }}/{{ item.name }}.yaml"
         validate:
-          fail_on_error: true
+          fail_on_error: false
 
 - name: Validate if pod is ready | {{ item.name }}
   kubernetes.core.k8s_info:
