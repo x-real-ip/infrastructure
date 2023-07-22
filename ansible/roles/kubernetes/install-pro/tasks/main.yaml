@@ -4,6 +4,7 @@
     url: https://get.k3s.io
     dest: "/etc/rancher/k3s/k3s_install.sh"
     mode: 0775
+    force: true
 
 - name: Run k3s install script
   ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh"
