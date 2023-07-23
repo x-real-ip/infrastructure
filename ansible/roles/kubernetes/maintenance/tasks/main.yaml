@@ -1,36 +1,24 @@
 ---
-- name: Cordon nodes
-  ansible.builtin.include_tasks: "cordon.yaml"
-
-- name: Drain nodes
+- name: Drain node
   ansible.builtin.include_tasks: "drain.yaml"
 
-- name: Wait for pods to become ready in each namespace
+- name: Wait for pods to become ready in devops namespace
   kubernetes.core.k8s_info:
     kind: Pod
-    namespace: "{{ item }}"
+    namespace: "devops"
     wait: true
     wait_condition:
       type: Ready
       status: "True"
     wait_sleep: 15
     wait_timeout: 1800
-  loop: "{{ kubernetes_namespaces }}"
-  when: item != "home-automation" # Skip home-automation namespace because some pods are required to run only on a specific node
 
 - name: Update system
   ansible.builtin.import_role:
     name: "common/system_updates"
 
-- name: Check if a reboot is required
-  ansible.builtin.shell: needs-restarting -r
-  changed_when: false
-  register: reboot_required
-  ignore_errors: true
-
-- name: Reboot the system if necessary
+- name: Reboot the system
   ansible.builtin.reboot:
-  when: reboot_required.rc == 1
 
 - name: Wait for the system to come back online
   ansible.builtin.wait_for_connection:
