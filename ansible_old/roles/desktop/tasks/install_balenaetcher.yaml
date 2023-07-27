@@ -1,0 +1,25 @@
+---
+- name: Check if Balena Etcher package is installed
+  shell: dpkg -s balena-etcher-electron
+  register: etcher_status
+  ignore_errors: true
+
+- block:
+    - name: Install Balena Etcher setup script
+      become: true
+      shell: |
+        curl -1sLf 'https://dl.cloudsmith.io/public/balena/etcher/setup.deb.sh' | sudo -E bash
+
+    - name: Install Balena Etcher Electron
+      become: true
+      apt:
+        name: balena-etcher-electron
+        state: present
+      register: apt_result
+
+    - name: Update apt cache
+      become: true
+      apt:
+        update_cache: yes
+      when: apt_result.changed
+  when: etcher_status.rc != 0

@@ -30,8 +30,11 @@
 
 ### Install k3s
 
-1.  Run the Ansible `k3s_install` playbook with `./ansible/run/kubernetes/k3s_install.sh`. This Ansible playbook will install K3s and all primary infrastructure applications like Metallb loadbalancer, NGINX ingress controller, Bitnami Sealed Secrets, Democratic-CSI.
-2.  Run `k3s_apps` playbook with `./ansible/run/kubernetes/k3s_apps.sh` to install secondary applications to the k3s cluster (optional).
+1. Run Ansible playbook `k3s-prerequisites` to initialize the k3s master and optional worker nodes.
+2. 
+
+3.  Run the Ansible `k3s_install` playbook with `./ansible/run/kubernetes/k3s_install.sh`. This Ansible playbook will install K3s and all primary infrastructure applications like Metallb loadbalancer, NGINX ingress controller, Bitnami Sealed Secrets, Democratic-CSI.
+4.  Run `k3s_apps` playbook with `./ansible/run/kubernetes/k3s_apps.sh` to install secondary applications to the k3s cluster (optional).
 
 ### Local initialization and setup
 
