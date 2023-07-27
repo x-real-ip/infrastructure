@@ -1,6 +1,0 @@
----
-- name: Install python packages
-  ansible.builtin.pip:
-    name:
-      - passlib
-      - netaddr

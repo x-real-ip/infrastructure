@@ -1,6 +1,0 @@
----
-- name: Uninstall apt packages
-  ansible.builtin.apt:
-    pkg:
-      - chrome
-    state: absent
