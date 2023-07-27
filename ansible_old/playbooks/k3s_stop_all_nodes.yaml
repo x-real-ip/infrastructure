@@ -16,3 +16,12 @@
       ansible.builtin.import_role:
         name: "kubernetes/maintenance"
         tasks_from: drain
+
+- name: Shutdown K3s Vm's
+  hosts: k3s_cluster
+  become: true
+  tasks:
+    - name: Shutdown
+      ansible.builtin.import_role:
+        name: "common/maintenance"
+        tasks_from: system_shutdown

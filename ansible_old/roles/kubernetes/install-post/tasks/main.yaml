@@ -1,29 +1,4 @@
 ---
-- name: Verify that all nodes actually joined
-  ansible.builtin.command:
-    cmd: kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
-  register: nodes
-  until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s_master'] | length)
-  retries: 20
-  delay: 10
-  changed_when: false
-  failed_when: false
-
-- name: Create directory .kube
-  ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.kube"
-    state: directory
-    owner: "{{ ansible_user_id }}"
-    mode: "u=rwx,g=rx,o="
-
-- name: Copy kube config file to user home directory
-  ansible.builtin.copy:
-    src: /etc/rancher/k3s/k3s.yaml
-    dest: "{{ ansible_user_dir }}/.kube/config"
-    remote_src: true
-    owner: "{{ ansible_user_id }}"
-    mode: "u=rw,g=,o="
-
 - name: Create Kubernetes namespaces
   kubernetes.core.k8s:
     name: "{{ item }}"
@@ -45,7 +20,7 @@
         state: directory
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
 
     - name: Deploy and validate resources to the k3s cluster
       ansible.builtin.include_tasks: "primary-resources/{{ item.name }}.yaml"

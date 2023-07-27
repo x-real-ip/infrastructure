@@ -1,0 +1,53 @@
+---
+- name: Download k3s install script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: "/etc/rancher/k3s/k3s_install.sh"
+    mode: "0775"
+    force: true
+
+- name: Run k3s install script
+  ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh"
+  register: output
+  changed_when: output.rc != 0
+  until: output.rc == 0
+  retries: 3
+  delay: 5
+
+- name: Wait for node to become ready
+  kubernetes.core.k8s_info:
+    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+    kind: node
+    label_selectors:
+      - "kubernetes.io/hostname = {{ ansible_hostname }}"
+    wait: true
+    wait_condition:
+      type: Ready
+      status: "True"
+  retries: 3
+  delay: 5
+
+- name: Verify that all nodes actually joined
+  ansible.builtin.command:
+    cmd: kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
+  register: nodes
+  until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s-master'] | length)
+  retries: 20
+  delay: 10
+  changed_when: false
+  failed_when: false
+
+- name: Create directory .kube
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.kube"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: "u=rwx,g=rx,o="
+
+- name: Copy kube config file to user home directory
+  ansible.builtin.copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "{{ ansible_user_dir }}/.kube/config"
+    remote_src: true
+    owner: "{{ ansible_user_id }}"
+    mode: "u=rw,g=,o="

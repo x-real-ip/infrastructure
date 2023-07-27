@@ -19,7 +19,7 @@
       - pip
       - jq
       - yum-utils
-    state: latest
+    state: present
 
 - name: >-
     Install kubernetes python packages for Ansible kubernetes.core.k8s module
@@ -122,7 +122,6 @@
 
 - name: Creating a multipath.conf file
   ansible.builtin.copy:
-    mode: 0644
     dest: "/etc/multipath.conf"
     content: |
       blacklist {
@@ -132,13 +131,14 @@
           user_friendly_names yes
           find_multipaths yes
       }
+    mode: "0644"
 
 - name: Create directory k3s
   ansible.builtin.file:
     path: "/etc/rancher/k3s/config.yaml.d/"
     state: directory
     owner: "{{ ansible_user_id }}"
-    mode: 0755
+    mode: "0755"
 
 - name: Copy registries.yaml file
   ansible.builtin.template:
@@ -146,7 +146,7 @@
     dest: "/etc/rancher/k3s/registries.yaml"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: Copy main config file to all k3s nodes
   ansible.builtin.template:
@@ -154,7 +154,7 @@
     dest: "/etc/rancher/k3s/config.yaml.d/main-config.yaml"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     force: false
 
 - name: Copy init config file to the first k3s master
@@ -163,8 +163,8 @@
     dest: "/etc/rancher/k3s/config.yaml.d/init-config.yaml"
     owner: root
     group: root
-    mode: 0644
-  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
+    mode: "0644"
+  when: ansible_hostname == hostvars[groups['k3s-master'][0]]['ansible_hostname']
 
 - name: Copy join config file to all k3 nodes except the first
   ansible.builtin.template:
@@ -172,6 +172,6 @@
     dest: "/etc/rancher/k3s/config.yaml.d/join-config.yaml"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     force: false
-  when: ansible_hostname != hostvars[groups['k3s_master'][0]]['ansible_hostname']
+  when: ansible_hostname != hostvars[groups['k3s-master'][0]]['ansible_hostname']

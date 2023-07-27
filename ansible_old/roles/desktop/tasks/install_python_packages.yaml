@@ -4,3 +4,4 @@
     name:
       - passlib
       - netaddr
+      - ansible-lint
