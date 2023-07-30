@@ -377,7 +377,7 @@ metadata:
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/component: controller
   annotations:
-    metallb.universe.tf/address-pool: prd-int-lan-ips
+    metallb.universe.tf/loadBalancerIPs: 10.0.100.240
 spec:
   type: LoadBalancer
   ipFamilyPolicy: SingleStack
