@@ -49,7 +49,7 @@ select action in "${actions[@]}"; do
         tableLine
         for i in $(seq ${ip_start} ${ip_end}); do
             nameFqdn
-            if [ -n "${name}" ]; then tableRow "${name}" "192.168.40.${i}" "http://${fqdn}.${domain}"; fi
+            if [ -n "${name}" ]; then tableRow "${name}" "${ip_subnet}.${i}" "http://${fqdn}.${domain}"; fi
         done
         echo "Done..."
         ;;
