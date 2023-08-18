@@ -471,7 +471,7 @@ spec:
             - name: ORGANIZATION
               value: "theautomation"
             - name: REPOS
-              value: "drone-cli,bitwarden-cli-init,node-red,home-assistant,esphome,protonmail-bridge,ser2net"
+              value: "drone-cli,bitwarden-cli-init,node-red,esphome,protonmail-bridge"
             - name: SCHEDULE
               value: "* 0 1 * * 5"
             - name: DEFAULT_BRANCH
