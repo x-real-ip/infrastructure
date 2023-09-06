@@ -315,7 +315,8 @@ metadata:
   name: tcp-services
   namespace: prd-int
 data:
-  22000: "tools/syncthing:22000"
+  "22000": "tools/syncthing:22000"
+  "8554": "tools/rtsp-proxy-service-tcp:8554"
 
 ---
 apiVersion: v1
@@ -409,6 +410,10 @@ spec:
     - name: syncthing-tcp
       port: 22000
       targetPort: 22000
+      protocol: TCP
+    - name: rtsp-proxy-service-tcp
+      port: 8554
+      targetPort: 8554
       protocol: TCP
   selector:
     app.kubernetes.io/name: ingress-nginx
@@ -521,6 +526,7 @@ spec:
             requests:
               cpu: 100m
               memory: 90Mi
+            limits: {}
       nodeSelector:
         kubernetes.io/os: linux
       serviceAccountName: ingress-nginx-prd-int
@@ -567,6 +573,7 @@ spec:
                   fieldPath: metadata.namespace
           securityContext:
             allowPrivilegeEscalation: false
+          resources: {}
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-prd-int-admission
       nodeSelector:
@@ -615,6 +622,7 @@ spec:
                   fieldPath: metadata.namespace
           securityContext:
             allowPrivilegeEscalation: false
+          resources: {}
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-prd-int-admission
       nodeSelector:
