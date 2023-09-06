@@ -1,0 +1,28 @@
+---
+- name: Create Kubernetes minimal namespaces
+  kubernetes.core.k8s:
+    name: "{{ item }}"
+    api_version: v1
+    kind: Namespace
+    state: present
+  loop: "{{ kubernetes_minimal_namespaces }}"
+  run_once: true
+
+- name: Create directory to download and store temporary files
+  ansible.builtin.file:
+    path: "{{ temp_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Kube-VIP
+  ansible.builtin.include_tasks: "app-kube-vip.yaml"
+  when: kube_vip_apiserver_endpoint and kube_vip_flannel_iface and kube_vip_image_tag is defined
+
+- name: Deploy MetalLB
+  ansible.builtin.include_tasks: "app-metallb.yaml"
+  vars:
+    name: "metallb"
+    source: "github"
+    namespace: "metallb-system"

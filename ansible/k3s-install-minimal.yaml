@@ -1,0 +1,13 @@
+# - name: Include k3s-bare playbook
+#   ansible.builtin.import_playbook: k3s-bare.yaml
+
+- name: Play for installing a clean bare K3s cluster without any deployments
+  hosts: k3s-cluster
+  gather_facts: true
+  become: true
+  tasks:
+
+    - name: Install the minimal primary applications and services onto the k3s-cluster
+      ansible.builtin.include_role:
+        name: k3s-cluster
+        tasks_from: install-minimal
