@@ -6,9 +6,9 @@
     - name: Install prerequisites to the master and optional worker nodes
       ansible.builtin.include_role:
         name: k3s-cluster
-        tasks_from: prerequisites
+        tasks_from: install-prerequisites
 
     - name: Initialize k3s master nodes
       ansible.builtin.include_role:
         name: k3s-cluster
-        tasks_from: bare
+        tasks_from: install-bare
