@@ -1,10 +1,4 @@
 ---
-# Default username that Ansible should use when connecting to remote host
-ansible_user: root
-
-# IP-address of the remote host
-server_ip: "{{ hostvars[groups['k3s-master'][0]]['ansible_default_ipv4']['address'] }}"
-
 # Kubernetes namespaces to apply for minimal installation
 kubernetes_minimal_namespaces:
   - metallb-system
@@ -24,14 +18,10 @@ temp_dir: "~/temp"
 # Github repository url where all the kubernetes infrastruture manifest are
 github_infra_manifests_url: "https://raw.githubusercontent.com/theautomation/infrastructure/main/kubernetes/deploy"
 
-
-# Kube-VIP endpoint, this is the ipadress where you can connect to the the kube-vip used for kuberenetes api
-kube_vip_apiserver_endpoint: "10.0.100.100"
 # Kube-VIP network interface
 kube_vip_flannel_iface: "ens18"
 # Kube-VIP container image tag
 kube_vip_image_tag: "v0.6.1"
-
 
 # MetalLB controller container image tag
 metallb_controller_image_tag: "v0.13.11"

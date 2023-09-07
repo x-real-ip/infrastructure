@@ -1,0 +1,15 @@
+---
+write-kubeconfig-mode: "0644"
+token: "{{ k3s_token }}"
+disable:
+  - "traefik"
+  - "servicelb"
+  - "local-storage"
+disable-cloud-controller: true
+disable-helm-controller: true
+tls-san:
+  - "{{ kube_vip_apiserver_endpoint }}"
+kubelet-arg:
+  - "feature-gates=StatefulSetAutoDeletePVC=true"
+kube-apiserver-arg: 
+  - "feature-gates=StatefulSetAutoDeletePVC=true"

@@ -3,5 +3,5 @@
 ## Run playbook
 
 ```console
-ansible-playbook -kK ./odroid.yaml
+sudo ansible-playbook -kK ./odroid.yaml
 ```
