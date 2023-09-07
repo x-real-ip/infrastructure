@@ -1,4 +1,50 @@
 ---
+- name: Install prerequisites
+  ansible.builtin.include_tasks: "prerequisites.yaml"
+
+- name: Create directory k3s
+  ansible.builtin.file:
+    path: "/etc/rancher/k3s/config.yaml.d/"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: "0755"
+
+- name: Copy registries.yaml file
+  ansible.builtin.template:
+    src: "registries.yaml.j2"
+    dest: "/etc/rancher/k3s/registries.yaml"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy main config file to all k3s nodes
+  ansible.builtin.template:
+    src: "k3s-config-main.yaml.j2"
+    dest: "/etc/rancher/k3s/config.yaml.d/main-config.yaml"
+    owner: root
+    group: root
+    mode: "0644"
+    force: false
+
+- name: Copy init config file to the first k3s master
+  ansible.builtin.copy:
+    src: "k3s-config-init.yaml"
+    dest: "/etc/rancher/k3s/config.yaml.d/init-config.yaml"
+    owner: root
+    group: root
+    mode: "0644"
+  when: ansible_hostname == hostvars[groups['k3s-master'][0]]['ansible_hostname']
+
+- name: Copy join config file to all k3 nodes except the first
+  ansible.builtin.template:
+    src: "k3s-config-join.yaml.j2"
+    dest: "/etc/rancher/k3s/config.yaml.d/join-config.yaml"
+    owner: root
+    group: root
+    mode: "0644"
+    force: false
+  when: ansible_hostname != hostvars[groups['k3s-master'][0]]['ansible_hostname']
+
 - name: Download k3s install script
   ansible.builtin.get_url:
     url: https://get.k3s.io
@@ -44,7 +90,7 @@
     owner: "{{ ansible_user_id }}"
     mode: "u=rwx,g=rx,o="
 
-- name: Copy kube config file to user home directory
+- name: Copy kube config file to remote user home directory on remote host
   ansible.builtin.copy:
     src: /etc/rancher/k3s/k3s.yaml
     dest: "{{ ansible_user_dir }}/.kube/config"

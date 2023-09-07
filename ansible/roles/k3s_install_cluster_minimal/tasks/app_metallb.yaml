@@ -2,7 +2,7 @@
 - name: Read metallb template file and apply to the k3s cluster
   kubernetes.core.k8s:
     state: present
-    template: "app-metallb.yaml.j2"
+    template: "app_metallb.yaml.j2"
   run_once: true
 
 - name: Validate if pod is ready | metallb
@@ -22,5 +22,5 @@
 - name: Read metallb-addresspool template file and apply to the k3s cluster
   kubernetes.core.k8s:
     state: present
-    template: "app-metallb-addresspool.yaml.j2"
+    template: "app_metallb-addresspool.yaml.j2"
   run_once: true

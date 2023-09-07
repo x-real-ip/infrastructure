@@ -2,7 +2,7 @@
 - name: Read kube-vip template file and apply to the k3s cluster
   kubernetes.core.k8s:
     state: present
-    template: "app-kube-vip.yaml.j2"
+    template: "app_kube-vip.yaml.j2"
   run_once: true
 
 - name: Wait until all kube-vip pods are running
