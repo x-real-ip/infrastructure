@@ -1,0 +1,8 @@
+# Kube-VIP name
+kube_vip_name: "kube-vip"
+# Kube-VIP namespace
+kube_vip_namespace: "kube-system"
+# Kube-VIP container image tag
+kube_vip_image_tag: "v0.6.1"
+# Kube-VIP network interface
+kube_vip_flannel_iface: "ens18"

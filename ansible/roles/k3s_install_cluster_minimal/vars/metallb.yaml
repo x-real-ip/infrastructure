@@ -1,0 +1,14 @@
+# Kube-VIP name
+metallb_name: "metallb"
+# Kube-VIP namespace
+metallb_namespace: "metallb-system"
+# MetalLB controller container image tag
+metallb_controller_image_tag: "v0.13.11"
+# MetalLB speaker container image tag
+metallb_speaker_image_tag: "v0.13.11"
+# MetalLB IP-address for internal traffic
+metallb_int_lan_ip: 10.0.100.240/32
+# MetalLB IP-address for external traffic
+metallb_ext_lan_ip: 10.0.100.250/32
+# MetalLB IP-address for plex application traffic, this service needs type LoadBalancer
+metallb_plex_lan_ip: 10.0.100.241/32

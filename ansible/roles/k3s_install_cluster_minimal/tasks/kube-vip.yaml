@@ -1,16 +1,24 @@
 ---
-- name: Read kube-vip template file and apply to the k3s cluster
+- name: Create namespace | {{ kube_vip_name }}
   kubernetes.core.k8s:
+    kind: Namespace
+    api_version: v1
+    name: "{{ kube_vip_namespace }}"
     state: present
-    template: "app_kube-vip.yaml.j2"
   run_once: true
 
-- name: Wait until all kube-vip pods are running
+- name: Read template file and apply to the k3s cluster | {{ kube_vip_name }}
+  kubernetes.core.k8s:
+    state: present
+    template: "{{ kube_vip_name }}.yaml.j2"
+  run_once: true
+
+- name: Wait until all pods are running | {{ kube_vip_name }}
   kubernetes.core.k8s_info:
     kind: Pod
-    namespace: kube-system
+    namespace: "{{ kube_vip_namespace }}"
     label_selectors:
-      - "name = kube-vip-ds"
+      - "name = {{ kube_vip_name }}-ds"
   register: pod_list
   until: pod_list | json_query('resources[*].status.phase') | unique == ["Running"]
   retries: 15
