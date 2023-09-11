@@ -1,0 +1,12 @@
+# Sealed Secrets name
+democratic_csi_manual_name: "democratic-csi"
+# Sealed Secrets namespace
+democratic_csi_manual_namespace: "democratic-csi"
+# Sealed Secrets container image tag
+democratic_csi_manual_image_tag: "latest"
+# Sealed Secrets container image tag for csi proxy
+democratic_csi_manual_csi_proxy_image_tag: "latest"
+# Sealed Secrets container image tag for driver registrar
+democratic_csi_manual_driver_registrar_tag: "v2.5.0"
+# Sealed Secrets container image tag for cleanup
+democratic_csi_manual_cleanup_tag: "1.32.0"

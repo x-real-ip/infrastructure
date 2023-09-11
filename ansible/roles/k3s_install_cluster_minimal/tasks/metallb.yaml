@@ -1,0 +1,34 @@
+---
+- name: Create namespace | {{ metallb_name }}
+  kubernetes.core.k8s:
+    kind: Namespace
+    api_version: v1
+    name: "{{ metallb_namespace }}"
+    state: present
+  run_once: true
+
+- name: Read template file and apply to the k3s cluster | {{ metallb_name }}
+  kubernetes.core.k8s:
+    state: present
+    template: "{{ metallb_name }}.yaml.j2"
+  run_once: true
+
+- name: Validate if pod is ready | {{ metallb_name }}
+  kubernetes.core.k8s_info:
+    kind: Pod
+    name: "{{ metallb_name }}-controller"
+    namespace: "{{ metallb_namespace }}"
+    label_selectors:
+      - "app.kubernetes.io/name={{ metallb_name }}"
+      - "app.kubernetes.io/component=controller"
+    wait: true
+    wait_condition:
+      type: Ready
+      status: "True"
+  run_once: true
+
+- name: "Read {{ metallb_name }}-addresspool template file and apply to the k3s cluster | {{ metallb_name }}"
+  kubernetes.core.k8s:
+    state: present
+    template: "{{ metallb_name }}-addresspool.yaml.j2"
+  run_once: true
