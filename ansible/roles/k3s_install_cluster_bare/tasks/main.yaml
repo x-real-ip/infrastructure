@@ -33,7 +33,7 @@
     owner: root
     group: root
     mode: "0644"
-  when: ansible_hostname == hostvars[groups['k3s-master'][0]]['ansible_hostname']
+  when: ansible_hostname == hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
 - name: Copy join config file to all k3 nodes except the first
   ansible.builtin.template:
@@ -43,7 +43,7 @@
     group: root
     mode: "0644"
     force: false
-  when: ansible_hostname != hostvars[groups['k3s-master'][0]]['ansible_hostname']
+  when: ansible_hostname != hostvars[groups['k3s_master'][0]]['ansible_hostname']
 
 - name: Download k3s install script
   ansible.builtin.get_url:
@@ -77,7 +77,7 @@
   ansible.builtin.command:
     cmd: kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
   register: nodes
-  until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s-master'] | length)
+  until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s_master'] | length)
   retries: 20
   delay: 10
   changed_when: false
