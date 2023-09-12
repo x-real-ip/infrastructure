@@ -6,7 +6,7 @@ ansible_user: root
 # Temp directory to store temporary files in on the remote machine like manifest downloads.
 temp_dir: "~/temp"
 # IP-address of the remote host
-server_ip: "{{ hostvars[groups['k3s-master'][0]]['ansible_default_ipv4']['address'] }}"
+server_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
 
 # K3s
 
