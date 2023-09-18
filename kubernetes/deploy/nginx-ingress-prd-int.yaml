@@ -251,6 +251,7 @@ subjects:
   - kind: ServiceAccount
     name: ingress-nginx-prd-int
     namespace: "prd-int"
+
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
