@@ -1,0 +1,8 @@
+---
+- name: "Play to setup all shelly devices"
+  hosts: localhost
+  connection: local
+  roles:
+    - shelly_desired_state
+
+
