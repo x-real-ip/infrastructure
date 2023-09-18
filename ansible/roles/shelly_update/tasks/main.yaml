@@ -1,0 +1,14 @@
+---
+# - name: Ask to turn on Firewall rule
+#   ansible.builtin.pause:
+#     prompt: 'Make sure to allow internet connectivity to the NOT VLAN by turning on the Firewall rule "Allow Internet"'
+
+- name: Start reboot task
+  include_tasks: reboot.yaml
+  loop: "{{ groups['shelly'] }}"
+  ignore_errors: true
+
+- name: Start update task
+  include_tasks: update.yaml
+  loop: "{{ groups['shelly'] }}"
+  ignore_errors: true

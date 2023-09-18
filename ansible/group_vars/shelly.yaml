@@ -1,0 +1,9 @@
+---
+coiot_enable: true
+
+coiot_peer: "10.0.100.240"
+
+sntp_enable: true
+
+sntp_server: "10.0.40.1"
+

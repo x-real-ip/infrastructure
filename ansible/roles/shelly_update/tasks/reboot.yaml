@@ -1,0 +1,4 @@
+---
+- name: Reboot {{ item }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/reboot
