@@ -26,40 +26,29 @@
   register: ota_content
   until: ota_content.json.status != "unknown"
 
-- name: A firmware is available for device {{ item }}
-  ansible.builtin.debug:
-    msg:
-      - Old firmware version is {{ ota_content.json.old_version }}
-      - New firmware version is {{ ota_content.json.new_version }}
+- name: Update firmware if update is available
+  block:
+    - name: Show firmware versions for device {{ item }}
+      ansible.builtin.debug:
+        msg:
+          - Old firmware version is {{ ota_content.json.old_version }}
+          - New firmware version is {{ ota_content.json.new_version }}
+
+
+    - name: Start updating device {{ item }}
+      ansible.builtin.uri:
+        url: http://{{ item }}/ota?update=true
+        body_format: json
+        method: POST
+
+    - name: Wait for device {{ item }} to become idle after firmware update
+      ansible.builtin.uri:
+        url: http://{{ item }}/ota
+        body_format: json
+        method: POST
+        return_content: true
+      register: ota_content
+      until: ota_content.json.status == "idle"
+      retries: 10
+      delay: 10
   when: ota_content.json.has_update == true
-  changed_when: ota_content.json.has_update == true
-
-- name: Start updating {{ item }} if newer firmware is available
-  ansible.builtin.uri:
-    url: http://{{ item }}/ota?update=true
-    body_format: json
-    method: POST
-    return_content: true
-  register: update_content
-  ignore_errors: true
-  when: ota_content.json.has_update == true
-  changed_when: ota_content.json.has_update == true
-
-- name: Wait for device to become idle and check if firmware update was succesfull {{ item }}
-  ansible.builtin.uri:
-    url: http://{{ item }}/ota
-    body_format: json
-    method: POST
-    return_content: true
-  register: ota_content
-  until: ota_content.json.status == "idle"
-  retries: 10
-  delay: 10
-
-- name: Device {{ item }} is up to date
-  ansible.builtin.debug:
-    msg:
-      - Firmware version is up te date!
-      - Old firmware version is {{ ota_content.json.old_version }}
-      - New firmware version is {{ ota_content.json.new_version }}
-  when: ota_content.json.has_update == false and ota_content.json.status == "idle" and ota_content.json.old_version == ota_content.json.new_version
