@@ -2,5 +2,6 @@
 - name: "Play to check for firmware updates and apply them when available"
   hosts: localhost
   connection: local
+  gather_facts: false
   roles:
     - shelly_update

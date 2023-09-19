@@ -1,54 +1,59 @@
 ---
-- name: Wait for {{ item }} to become up
+- name: Start name task
+  ansible.builtin.include_tasks: name.yaml
+
+- name: Wait for {{ device_name.json.name }} to become up
   ansible.builtin.uri:
     url: http://{{ item }}/status
     body_format: json
-    method: POST
     return_content: true
   register: status_content
   until: status_content.json.uptime | int >= 10
 
-- name: Check for available updates on device {{ item }}
+- name: Check for available updates on device {{ device_name.json.name }}
   ansible.builtin.uri:
     url: http://{{ item }}/ota/check
     body_format: json
-    method: POST
     return_content: true
   register: ota_check_content
   until: ota_check_content.json.status == "ok"
 
-- name: Register OTA content from device {{ item }}
+- name: Register OTA content from device {{ device_name.json.name }}
   ansible.builtin.uri:
     url: http://{{ item }}/ota
     body_format: json
-    method: POST
     return_content: true
   register: ota_content
   until: ota_content.json.status != "unknown"
+  retries: 10
+  delay: 5
 
 - name: Update firmware if update is available
   block:
-    - name: Show firmware versions for device {{ item }}
+    - name: Show firmware versions for {{ device_name.json.name }}
       ansible.builtin.debug:
         msg:
           - Old firmware version is {{ ota_content.json.old_version }}
           - New firmware version is {{ ota_content.json.new_version }}
 
-
-    - name: Start updating device {{ item }}
+    - name: Start updating {{ device_name.json.name }}
       ansible.builtin.uri:
         url: http://{{ item }}/ota?update=true
         body_format: json
-        method: POST
 
-    - name: Wait for device {{ item }} to become idle after firmware update
+    - name: Wait to become idle after firmware update for {{ device_name.json.name }}
       ansible.builtin.uri:
         url: http://{{ item }}/ota
         body_format: json
-        method: POST
         return_content: true
-      register: ota_content
-      until: ota_content.json.status == "idle"
+      register: ota_content_after_upgrade
+      until: ota_content_after_upgrade.json.status == "idle"
       retries: 10
       delay: 10
-  when: ota_content.json.has_update == true
+
+    - name: Verify upgrade for {{ device_name.json.name }}
+      ansible.builtin.debug:
+        msg:
+          - "Update firmware from {{ ota_content.json.old_version }} to {{ ota_content_after_upgrade.json.old_version }} succeed!"
+      changed_when: ota_content.json.old_version != ota_content_after_upgrade.json.old_version
+  when: ota_content.json.has_update

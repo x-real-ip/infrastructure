@@ -1,14 +1,53 @@
 ---
-# - name: Ask to turn on Firewall rule
-#   ansible.builtin.pause:
-#     prompt: 'Make sure to allow internet connectivity to the NOT VLAN by turning on the Firewall rule "Allow Internet"'
+- name: Register firewall rule switch state
+  ansible.builtin.uri:
+    url: http://{{ home_assistant_url }}/api/states/{{ home_assistant_firewall_switch }}
+    body_format: json
+    method: GET
+    return_content: true
+    headers:
+      Authorization: Bearer {{ home_assistant_api_token }}
+  register: switch_state_content
+  when: allow_internet_access
+
+- name: Turn on firewall allow internet rule if it is off
+  ansible.builtin.uri:
+    url: http://{{ home_assistant_url }}/api/services/switch/turn_on
+    method: POST
+    return_content: false
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ home_assistant_api_token }}"
+    body_format: json
+    body:
+      entity_id: "{{ home_assistant_firewall_switch }}"
+  when: allow_internet_access and switch_state_content.json.state == "off"
 
 - name: Start reboot task
-  include_tasks: reboot.yaml
+  ansible.builtin.include_tasks: reboot.yaml
   loop: "{{ groups['shelly'] }}"
   ignore_errors: true
 
 - name: Start update task
-  include_tasks: update.yaml
+  ansible.builtin.include_tasks: update.yaml
+  loop: "{{ groups['shelly'] }}"
+  ignore_errors: true
+
+- name: Change back firewall allow internet rule to it's original state
+  ansible.builtin.uri:
+    url: http://{{ home_assistant_url }}/api/services/switch/turn_{{ switch_state_content.json.state }}
+    method: POST
+    return_content: true
+    headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {{ home_assistant_api_token }}"
+    body_format: json
+    body:
+      entity_id: "{{ home_assistant_firewall_switch }}"
+  register: switch_post_content
+  when: allow_internet_access
+
+- name: Start reboot task
+  ansible.builtin.include_tasks: reboot.yaml
   loop: "{{ groups['shelly'] }}"
   ignore_errors: true
