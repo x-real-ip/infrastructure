@@ -1,4 +1,13 @@
 ---
+- name: Include var files
+  ansible.builtin.include_vars:
+    dir: vars
+
+- name: Start desired state task
+  ansible.builtin.include_tasks: desired_state.yaml
+  loop: "{{ groups['shelly'] }}"
+  ignore_errors: true
+
 - name: Register firewall rule switch state
   ansible.builtin.uri:
     url: http://{{ home_assistant_url }}/api/states/{{ home_assistant_firewall_switch }}
@@ -33,19 +42,18 @@
   loop: "{{ groups['shelly'] }}"
   ignore_errors: true
 
-- name: Change back firewall allow internet rule to it's original state
+- name: Change back firewall allow internet rule to off if that was it's original state
   ansible.builtin.uri:
-    url: http://{{ home_assistant_url }}/api/services/switch/turn_{{ switch_state_content.json.state }}
+    url: http://{{ home_assistant_url }}/api/services/switch/turn_off
     method: POST
-    return_content: true
+    return_content: false
     headers:
       Content-Type: "application/json"
       Authorization: "Bearer {{ home_assistant_api_token }}"
     body_format: json
     body:
       entity_id: "{{ home_assistant_firewall_switch }}"
-  register: switch_post_content
-  when: allow_internet_access
+  when: allow_internet_access and switch_state_content.json.state == "off"
 
 - name: Start reboot task
   ansible.builtin.include_tasks: reboot.yaml

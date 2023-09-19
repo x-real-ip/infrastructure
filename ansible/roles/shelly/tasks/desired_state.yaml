@@ -1,10 +1,11 @@
 ---
-- name: Enable/disable coiot and set peer
+- name: Start name task
+  ansible.builtin.include_tasks: name.yaml
+
+- name: Enable/disable coiot and set peer for {{ device_name.json.name }}
   ansible.builtin.uri:
     url: http://{{ item }}/settings?coiot_enable={{ coiot_enable }}&coiot_peer={{ coiot_peer }}
-  loop: "{{ groups['shelly'] }}"
 
-- name: Enable/disable sntp and set address
+- name: Enable/disable sntp and set address for {{ device_name.json.name }}
   ansible.builtin.uri:
     url: http://{{ item }}/settings?sntp_enable={{ sntp_enable }}&sntp_server={{ sntp_server }}
-  loop: "{{ groups['shelly'] }}"
