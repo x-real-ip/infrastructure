@@ -1,0 +1,8 @@
+---
+- name: Get device name for {{ item }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings
+    body_format: json
+    method: GET
+    return_content: true
+  register: device_name

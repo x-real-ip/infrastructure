@@ -1,6 +1,17 @@
 ---
+# Enable/Disable update firmware task
+update_firmware: true
+# Allow internet by turning on the firewall rule "Pass any (allow internet)" in the NOT (network of things) VLAN, this is needed if "update_firmware" is set to "true"
+allow_internet_access: true
+
+# Home Assistant is setup with the pfSense intergration which has API access to the pfSense instance for turning on/off firewall rules.
+home_assistant_url: "home-assistant.k8s.lan"
+home_assistant_firewall_switch: "switch.pfsense_filter_rule_1672839601_pass_any_allow_internet"
+
+# Enable/Disable Coiot for instant connection with Home Assistant.
 coiot_enable: true
 coiot_peer: "10.0.100.240"
 
+# Enable/Disable SNTP (source is pfSense NTP server)
 sntp_enable: true
 sntp_server: "10.0.40.1"

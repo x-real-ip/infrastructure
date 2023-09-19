@@ -1,7 +1,7 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Set the desired state and upgrade firmware if avaiable to all shelly devices from the inventory.
 
 Requirements
 ------------

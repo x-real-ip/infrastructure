@@ -2,3 +2,6 @@
 - name: Reboot {{ item }}
   ansible.builtin.uri:
     url: http://{{ item }}/reboot
+    body_format: json
+  register: content
+  until: content.json.ok

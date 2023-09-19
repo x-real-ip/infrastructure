@@ -1,0 +1,10 @@
+---
+- name: Enable/disable coiot and set peer
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?coiot_enable={{ coiot_enable }}&coiot_peer={{ coiot_peer }}
+  loop: "{{ groups['shelly'] }}"
+
+- name: Enable/disable sntp and set address
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?sntp_enable={{ sntp_enable }}&sntp_server={{ sntp_server }}
+  loop: "{{ groups['shelly'] }}"
