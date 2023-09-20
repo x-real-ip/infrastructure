@@ -1,7 +1,3 @@
----
-- name: Install prerequisites
-  ansible.builtin.include_tasks: "prerequisites.yaml"
-
 - name: Create directory k3s
   ansible.builtin.file:
     path: "/etc/rancher/k3s/config.yaml.d/"

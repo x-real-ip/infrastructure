@@ -24,4 +24,3 @@
   retries: 15
   delay: 3
   run_once: true
-

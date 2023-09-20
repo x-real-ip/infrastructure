@@ -1,6 +1,0 @@
----
-# Kubernetes namespaces to apply for minimal installation
-kubernetes_minimal_namespaces:
-  - prd-int
-  - prd-ext
-  - devops

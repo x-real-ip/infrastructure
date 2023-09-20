@@ -1,2 +1,3 @@
 ---
+# Default username that Ansible should use when connecting to remote host
 ansible_user: root
