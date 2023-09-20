@@ -1,4 +1,2 @@
 *sealed-secret-customkeys.yaml
-*k3s_cluster.yaml
-*k3s-cluster.yaml
-ansible/group_vars/shelly.yaml
+
