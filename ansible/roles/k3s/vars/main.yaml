@@ -1,0 +1,21 @@
+---
+# Set to false if the playbook should skip the below deployments
+kube_vip_deploy: true
+
+metallb_deploy: true
+
+sealed_secrets_deploy: true
+
+democratic_csi_manual_deploy: true
+
+tls_certs_deploy: true
+
+# Kube-VIP endpoint is the ipadress where you can connect to the the kube-vip used for kubernetes API
+# this variable is required for the kube-config deployment and for kube-vip, for that reason this variable is in this main file
+kube_vip_apiserver_endpoint: "10.0.100.100"
+
+# Hostname of the custom container registry
+registry_host: "harbor.k8s.lan"
+
+# IP-address of first master node
+server_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"

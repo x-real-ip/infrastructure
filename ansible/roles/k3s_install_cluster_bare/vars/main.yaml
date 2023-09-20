@@ -1,6 +1,0 @@
----
-# Hostname of the custom container registry
-registry_host: "harbor.k8s.lan"
-
-# IP-address of first master node
-server_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
