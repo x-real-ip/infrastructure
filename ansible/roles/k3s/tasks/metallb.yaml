@@ -27,7 +27,7 @@
       status: "True"
   run_once: true
 
-- name: "Read {{ metallb_name }}-addresspool template file and apply to the k3s cluster | {{ metallb_name }}"
+- name: "Read metallb-addresspool template file and apply to the k3s cluster | {{ metallb_name }}"
   kubernetes.core.k8s:
     state: present
     template: "{{ metallb_name }}-addresspool.yaml.j2"
