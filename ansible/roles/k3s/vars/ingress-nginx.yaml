@@ -1,0 +1,6 @@
+ingress_nginx_name: "ingress-nginx"
+ingress_nginx_namespaces:
+  - prd-ext
+  - prd-int
+ingress_nginx_controller_image_tag: "v1.3.1"
+ingress_nginx_kube_webhook_certgen_image_tag: "v20220916-gd32f8c343"

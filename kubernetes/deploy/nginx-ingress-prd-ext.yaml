@@ -484,6 +484,7 @@ spec:
             requests:
               cpu: 100m
               memory: 90Mi
+            limits: {}
       nodeSelector:
         kubernetes.io/os: linux
       serviceAccountName: ingress-nginx-prd-ext
@@ -530,6 +531,7 @@ spec:
                   fieldPath: metadata.namespace
           securityContext:
             allowPrivilegeEscalation: false
+          resources: {}
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-prd-ext-admission
       nodeSelector:
@@ -578,6 +580,7 @@ spec:
                   fieldPath: metadata.namespace
           securityContext:
             allowPrivilegeEscalation: false
+          resources: {}
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-prd-ext-admission
       nodeSelector:
