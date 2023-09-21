@@ -13,8 +13,9 @@ metadata:
   namespace: {{ metallb_namespace }}
 spec:
   addresses:
-    - {{ metallb_int_lan_ip }}
-    - {{ metallb_plex_lan_ip }}
+  {% for ip_address in metallb_int_lan_ip_addresses %}
+    - {{ ip_address }}
+  {% endfor %}
 
 ---
 apiVersion: metallb.io/v1beta1

@@ -1,4 +1,8 @@
 ---
+- name: Include var file
+  ansible.builtin.include_vars:
+    file: metallb.yaml
+
 - name: Create namespace | {{ metallb_name }}
   kubernetes.core.k8s:
     kind: Namespace
