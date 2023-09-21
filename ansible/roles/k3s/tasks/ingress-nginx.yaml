@@ -1,0 +1,55 @@
+---
+- name: Include var file
+  ansible.builtin.include_vars:
+    file: ingress-nginx.yaml
+
+- name: Create namespace | {{ ingress_nginx_name }}-{{ ingress_nginx_namespaces }}
+  kubernetes.core.k8s:
+    kind: Namespace
+    api_version: v1
+    name: "{{ ingress_nginx_namespace }}"
+    state: present
+  run_once: true
+  loop: "{{ ingress_nginx_namespaces }}"
+  loop_control:
+    loop_var: ingress_nginx_namespace
+
+- name: Read template file and apply to the k3s cluster | {{ ingress_nginx_name }}-{{ ingress_nginx_namespaces }}
+  kubernetes.core.k8s:
+    state: present
+    template: "{{ ingress_nginx_name }}.yaml.j2"
+  run_once: true
+  loop: "{{ ingress_nginx_namespaces }}"
+  loop_control:
+    loop_var: ingress_nginx_namespace
+
+# - name: Validate deployment | {{ item.name }}
+#   kubernetes.core.k8s_info:
+#     kind: Deployment
+#     name: ingress-nginx-prd-ext-controller
+#     namespace: "prd-ext"
+#     label_selectors:
+#       - "app.kubernetes.io/instance=ingress-nginx-prd-ext"
+#     wait: true
+#     wait_condition:
+#       type: Available
+#       status: "True"
+
+# - name: Validate if pod is ready | {{ item.name }}
+#   kubernetes.core.k8s_info:
+#     kind: Pod
+#     namespace: "prd-ext"
+#     label_selectors:
+#       - "{{ label }}"
+#     wait: true
+#     wait_condition:
+#       type: Ready
+#       status: "True"
+#   loop_control:
+#     loop_var: label
+#   vars:
+#     label:
+#       - "app.kubernetes.io/component=controller"
+
+
+
