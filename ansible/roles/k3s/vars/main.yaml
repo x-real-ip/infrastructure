@@ -1,21 +1,71 @@
 ---
-# Set to false if the playbook should skip the below deployments
-kube_vip_deploy: true
-
-metallb_deploy: true
-
-sealed_secrets_deploy: true
-
-democratic_csi_manual_deploy: true
-
-tls_certs_deploy: true
-
-# Kube-VIP endpoint is the ipadress where you can connect to the the kube-vip used for kubernetes API
-# this variable is required for the kube-config deployment and for kube-vip, for that reason this variable is in this main file
-kube_vip_apiserver_endpoint: "10.0.100.100"
-
 # Hostname of the custom container registry
-registry_host: "harbor.k8s.lan"
+registry_host: harbor.k8s.lan
 
 # IP-address of first master node
 server_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
+
+democratic_csi_manual:
+  deploy: true
+  name: democratic-csi
+  namespace: democratic-csi
+  image_tag:
+    cleanup: "1.32.0"
+    csi_proxy: latest
+    democratic_csi: latest
+    driver_registrar: v2.5.0
+
+kube_vip:
+  deploy: true
+  namespace: "kube-system"
+  name: "kube-vip"
+  image_tag: "v0.6.1"
+  apiserver_endpoint: "10.0.100.100"
+  flannel_iface: "ens18"
+
+metallb:
+  deploy: true
+  name: "metallb"
+  namespace: "metallb-system"
+  image_tag:
+    controller: "v0.13.11"
+    speaker: "v0.13.11"
+  int_lan_ip_addresses:
+    - 10.0.100.240/32
+    - 10.0.100.241/32
+  ext_lan_ip: 10.0.100.250/32
+
+sealed_secrets:
+  deploy: true
+  name: "sealed-secrets"
+  namespace: "kube-system"
+  image_tag: "v0.24.0"
+
+ingress_nginx:
+  deploy: true
+  name: ingress-nginx
+  namespaces:
+    - "prd-ext"
+    - "prd-int"
+  image_tag:
+    controller: "v1.3.1"
+    kube_webhook_certgen: "v20220916-gd32f8c343"
+
+tls_certificates:
+  wildcard_k8s_lan:
+    deploy: true
+    name: "wildcard-k8s-lan"
+    namespaces:
+      - devops
+      - media
+      - home-automation
+      - tools
+  wildcard_theautomation_nl:
+    deploy: true
+    name: "wildcard-theautomation-nl"
+    namespaces:
+      - devops
+      - media
+      - home-automation
+      - tools
+

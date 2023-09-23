@@ -29,6 +29,7 @@
   delay: 5
 
 - name: Update firmware if update is available
+  when: ota_content.json.has_update
   block:
     - name: Show firmware versions for {{ device_name.json.name }}
       ansible.builtin.debug:
@@ -56,4 +57,3 @@
         msg:
           - "Update firmware from {{ ota_content.json.old_version }} to {{ ota_content_after_upgrade.json.old_version }} succeed!"
       changed_when: ota_content.json.old_version != ota_content_after_upgrade.json.old_version
-  when: ota_content.json.has_update

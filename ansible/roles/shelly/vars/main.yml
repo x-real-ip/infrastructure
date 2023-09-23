@@ -8,10 +8,13 @@ allow_internet_access: true
 home_assistant_url: "home-assistant.k8s.lan"
 home_assistant_firewall_switch: "switch.pfsense_filter_rule_1672839601_pass_any_allow_internet"
 
-# Enable/Disable Coiot for instant connection with Home Assistant.
-coiot_enable: true
-coiot_peer: "10.0.100.240"
-
-# Enable/Disable SNTP (source is pfSense NTP server)
-sntp_enable: true
-sntp_server: "10.0.40.1"
+settings:
+  coiot:
+    enable: true
+    peer: "10.0.100.240:5683"
+  sntp:
+    enable: true
+    server: "10.0.40.1"
+  eco_mode_enabled: false
+  relays:
+    default_state: "last"

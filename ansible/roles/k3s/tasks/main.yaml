@@ -2,22 +2,25 @@
 - name: Include bare task
   ansible.builtin.include_tasks: bare.yaml
 
-- name: Deploy | {{ kube_vip_name }}
-  ansible.builtin.include_tasks: "{{ kube_vip_name }}.yaml"
-  when: kube_vip_deploy
+# - name: Deploy | {{ kube_vip.name }}
+#   ansible.builtin.include_tasks: "{{ kube_vip.name }}.yaml"
+#   when: kube_vip.deploy
 
-- name: Deploy | {{ metallb_name }}
-  ansible.builtin.include_tasks: "{{ metallb_name }}.yaml"
-  when: metallb_deploy
+# - name: Deploy | {{ metallb.name }}
+#   ansible.builtin.include_tasks: "{{ metallb.name }}.yaml"
+#   when: metallb.deploy
 
-- name: Deploy | {{ sealed_secrets_name }}
-  ansible.builtin.include_tasks: "{{ sealed_secrets_name }}.yaml"
-  when: sealed_secrets_deploy
+# - name: Deploy | {{ sealed_secrets.name }}
+#   ansible.builtin.include_tasks: "{{ sealed_secrets.name }}.yaml"
+#   when: sealed_secrets.deploy
 
-- name: Deploy | {{ democratic_csi_manual_name }}
-  ansible.builtin.include_tasks: "{{ democratic_csi_manual_name }}-manual.yaml"
-  when: democratic_csi_manual_deploy
+# - name: Deploy | {{ democratic_csi_manual.name }}
+#   ansible.builtin.include_tasks: "{{ democratic_csi_manual.name }}-manual.yaml"
+#   when: democratic_csi_manual.deploy
 
-- name: Deploy | TLS certs
-  ansible.builtin.include_tasks: tls-certificates.yaml
-  when: tls_certs_deploy
+# - name: Deploy | TLS certs
+#   ansible.builtin.include_tasks: tls-certificates.yaml
+
+- name: Deploy | {{ ingress_nginx.name }}
+  ansible.builtin.include_tasks: "{{ ingress_nginx.name }}.yaml"
+  when: ingress_nginx.deploy
