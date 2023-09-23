@@ -309,7 +309,7 @@ subjects:
     name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
     namespace: {{ ingress_nginx_namespace }}
 
-{% if ingress_nginx_namespace == "prd-int" %}
+{% if ingress_nginx_namespace is 'prd-int' %}
 ---
 apiVersion: v1
 kind: ConfigMap

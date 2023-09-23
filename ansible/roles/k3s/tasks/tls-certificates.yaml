@@ -3,16 +3,18 @@
   kubernetes.core.k8s:
     state: present
     template: tls-wildcard-k8s-lan.yaml.j2
-  loop: "{{ tls_wildcard_k8s_lan_namespaces }}"
+  loop: "{{ tls_certificates.wildcard_k8s_lan.namespaces }}"
   loop_control:
     loop_var: tls_wildcard_k8s_lan_namespace
   run_once: true
+  when: tls_certificates.wildcard_k8s_lan.deploy
 
 - name: Apply theautomation.nl wildcard TLS certs in the defined namespace list
   kubernetes.core.k8s:
     state: present
     template: tls-wildcard-theautomation-nl.yaml.j2
-  loop: "{{ tls_wildcard_theautomation_nl_namespaces }}"
+  loop: "{{ tls_certificates.wildcard_theautomation_nl.namespaces }}"
   loop_control:
     loop_var: tls_wildcard_theautomation_nl_namespace
   run_once: true
+  when: tls_certificates.wildcard_theautomation_nl.deploy

@@ -3,8 +3,8 @@
   ansible.builtin.include_vars:
     dir: vars
 
-- name: Include prerequisites task
-  ansible.builtin.include_tasks: "prerequisites.yaml"
+# - name: Include prerequisites task
+#   ansible.builtin.include_tasks: "prerequisites.yaml"
 
-- name: Include k3s task
-  ansible.builtin.include_tasks: "k3s.yaml"
+# - name: Include k3s task
+#   ansible.builtin.include_tasks: "k3s.yaml"

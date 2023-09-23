@@ -1,8 +1,0 @@
-metallb_name: "metallb"
-metallb_namespace: "metallb-system"
-metallb_controller_image_tag: "v0.13.11"
-metallb_speaker_image_tag: "v0.13.11"
-metallb_int_lan_ip_addresses:
-  - 10.0.100.240/32
-  - 10.0.100.241/32
-metallb_ext_lan_ip: 10.0.100.250/32

@@ -2,10 +2,29 @@
 - name: Start name task
   ansible.builtin.include_tasks: name.yaml
 
+- name: Get current settings from device {{ device_name.json.name }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings
+    body_format: json
+    return_content: true
+  register: settings_content
+
 - name: Enable/disable coiot and set peer for {{ device_name.json.name }}
   ansible.builtin.uri:
-    url: http://{{ item }}/settings?coiot_enable={{ coiot_enable }}&coiot_peer={{ coiot_peer }}
+    url: http://{{ item }}/settings?coiot_enable={{ settings.coiot.enable }}&coiot_peer={{ settings.coiot.peer }}
+  changed_when: settings_content.json.coiot.enabled != settings.coiot.enable or settings_content.json.coiot.peer != settings.coiot.peer
 
 - name: Enable/disable sntp and set address for {{ device_name.json.name }}
   ansible.builtin.uri:
-    url: http://{{ item }}/settings?sntp_enable={{ sntp_enable }}&sntp_server={{ sntp_server }}
+    url: http://{{ item }}/settings?sntp_enable={{ settings.sntp.enable }}&sntp_server={{ settings.sntp.server }}
+  changed_when: settings_content.json.sntp.enabled != settings.sntp.enable or settings_content.json.sntp.server != settings.sntp.server
+
+- name: Enable/disable eco mode {{ device_name.json.name }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?eco_mode_enabled={{ settings.eco_mode_enabled }}
+  changed_when: settings_content.json.eco_mode_enabled != settings.eco_mode_enabled
+
+- name: Enable/disable relays default state {{ device_name.json.name }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?relays_default_state={{ settings.relays.default_state }}
+  changed_when: settings_content.json.relays.default_state != settings.relays.default_state
