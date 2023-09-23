@@ -15,11 +15,11 @@ automountServiceAccountToken: true
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: admission-webhook
 
@@ -27,11 +27,11 @@ metadata:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: controller
 rules:
@@ -124,11 +124,11 @@ rules:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: admission-webhook
 rules:
@@ -144,10 +144,10 @@ rules:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
 rules:
   - apiGroups:
@@ -217,10 +217,10 @@ rules:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: admission-webhook
 rules:
@@ -236,77 +236,77 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: controller
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
 subjects:
   - kind: ServiceAccount
-    name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     namespace: {{ ingress_nginx_namespace }}
 
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: admission-webhook
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
 subjects:
   - kind: ServiceAccount
-    name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+    name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
     namespace: {{ ingress_nginx_namespace }}
 
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
 subjects:
   - kind: ServiceAccount
-    name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     namespace: {{ ingress_nginx_namespace }}
 
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: admission-webhook
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
 subjects:
   - kind: ServiceAccount
-    name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+    name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
     namespace: {{ ingress_nginx_namespace }}
 
 {% if ingress_nginx_namespace == "prd-int" %}
@@ -321,7 +321,7 @@ data:
   "8554": "tools/rtsp-proxy-service-tcp:8554"
 {% endif %}
 
-{% if ingress_nginx_namespace is 'prd-int' %}
+{% if ingress_nginx_namespace == "prd-int" %}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -337,11 +337,11 @@ data:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: controller
 data:
@@ -351,11 +351,11 @@ data:
 kind: Service
 apiVersion: v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller-admission"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller-admission
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: controller
 spec:
@@ -367,22 +367,22 @@ spec:
       appProtocol: https
   selector:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/component: controller
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: controller
   annotations:
-    metallb.universe.tf/address-pool: "{{ ingress_nginx_namespace }}-lan-ips"
+    metallb.universe.tf/address-pool: {{ ingress_nginx_namespace }}-lan-ips
 spec:
   type: LoadBalancer
   ipFamilyPolicy: SingleStack
@@ -399,7 +399,7 @@ spec:
       protocol: TCP
       targetPort: https
       appProtocol: https
-    {% if ingress_nginx_namespace is 'prd-int' %}
+{% if ingress_nginx_namespace == "prd-int" %}
     - name: home-assistant-coiot
       port: 5683
       targetPort: 5683
@@ -420,28 +420,28 @@ spec:
       port: 8554
       targetPort: 8554
       protocol: TCP
-    {% endif %}
+{% endif %}
   selector:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/component: controller
 
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: controller
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ ingress_nginx.name }}
-      app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+      app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
       app.kubernetes.io/component: controller
   replicas: 1
   revisionHistoryLimit: 10
@@ -450,7 +450,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: {{ ingress_nginx.name }}
-        app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+        app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
         app.kubernetes.io/component: controller
     spec:
       dnsPolicy: ClusterFirst
@@ -465,18 +465,22 @@ spec:
                   - /wait-shutdown
           args:
             - /nginx-ingress-controller
-            - --publish-service=$(POD_NAMESPACE)/"{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller"
+            - --publish-service=$(POD_NAMESPACE)/{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller
             - --election-id=ingress-controller-leader
-            - --controller-class=k8s.io/"{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
-            - --ingress-class=nginx-{% if ingress_nginx_namespace is 'prd-int' %}private{% elif ingress_nginx_namespace is 'prd-ext' %}public{% endif %}
-            - --configmap=$(POD_NAMESPACE)/"{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller"
+            - --controller-class=k8s.io/{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
+{% if ingress_nginx_namespace == "prd-int" %}
+            - --ingress-class=nginx-private
+{% elif ingress_nginx_namespace == "prd-ext" %}
+            - --ingress-class=nginx-public
+{% endif %}
+            - --configmap=$(POD_NAMESPACE)/{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
-            {% if ingress_nginx_namespace is 'prd-int' %}
+{% if ingress_nginx_namespace == "prd-int" %}
             - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
             - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
-            {% endif %}
+{% endif %}
           securityContext:
             capabilities:
               drop:
@@ -537,31 +541,31 @@ spec:
             limits: {}
       nodeSelector:
         kubernetes.io/os: linux
-      serviceAccountName: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+      serviceAccountName: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
       terminationGracePeriodSeconds: 300
       volumes:
         - name: webhook-cert
           secret:
-            secretName: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+            secretName: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
 
 ---
 kind: Job
 apiVersion: batch/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission-create"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission-create
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: admission-webhook
 spec:
   template:
     metadata:
-      name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission-create"
+      name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission-create
       labels:
         app.kubernetes.io/name: {{ ingress_nginx.name }}
-        app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+        app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
         app.kubernetes.io/part-of: {{ ingress_nginx.name }}
         app.kubernetes.io/component: admission-webhook
     spec:
@@ -573,7 +577,7 @@ spec:
             - create
             - --host={{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller-admission,{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller-admission.$(POD_NAMESPACE).svc
             - --namespace=$(POD_NAMESPACE)
-            - --secret-name="{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"-admission
+            - --secret-name={{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
           env:
             - name: POD_NAMESPACE
               valueFrom:
@@ -583,7 +587,7 @@ spec:
             allowPrivilegeEscalation: false
           resources: {}
       restartPolicy: OnFailure
-      serviceAccountName: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+      serviceAccountName: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
       nodeSelector:
         kubernetes.io/os: linux
       securityContext:
@@ -595,20 +599,20 @@ spec:
 kind: Job
 apiVersion: batch/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission-patch"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission-patch
   namespace: {{ ingress_nginx_namespace }}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: admission-webhook
 spec:
   template:
     metadata:
-      name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission-patch"
+      name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission-patch
       labels:
         app.kubernetes.io/name: {{ ingress_nginx.name }}
-        app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+        app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
         app.kubernetes.io/part-of: {{ ingress_nginx.name }}
         app.kubernetes.io/component: admission-webhook
     spec:
@@ -618,10 +622,10 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - patch
-            - --webhook-name="{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+            - --webhook-name={{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
             - --namespace=$(POD_NAMESPACE)
             - --patch-mutating=false
-            - --secret-name="{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+            - --secret-name={{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
             - --patch-failure-policy=Fail
           env:
             - name: POD_NAMESPACE
@@ -632,7 +636,7 @@ spec:
             allowPrivilegeEscalation: false
           resources: {}
       restartPolicy: OnFailure
-      serviceAccountName: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+      serviceAccountName: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
       nodeSelector:
         kubernetes.io/os: linux
       securityContext:
@@ -644,23 +648,27 @@ spec:
 kind: IngressClass
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: nginx-{% if ingress_nginx_namespace is 'prd-int' %}private{% elif ingress_nginx_namespace is 'prd-ext' %}public{% endif %}
+{% if ingress_nginx_namespace == "prd-int" %}
+  name: nginx-private
+{% elif ingress_nginx_namespace == "prd-ext" %}
+  name: nginx-public
+{% endif %}
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: controller
 spec:
-  controller: k8s.io/"{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+  controller: k8s.io/{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
 
 ---
 kind: ValidatingWebhookConfiguration
 apiVersion: admissionregistration.k8s.io/v1
 metadata:
-  name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission"
+  name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-admission
   labels:
     app.kubernetes.io/name: {{ ingress_nginx.name }}
-    app.kubernetes.io/instance: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}"
+    app.kubernetes.io/instance: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}
     app.kubernetes.io/part-of: {{ ingress_nginx.name }}
     app.kubernetes.io/component: admission-webhook
 webhooks:
@@ -683,5 +691,5 @@ webhooks:
     clientConfig:
       service:
         namespace: {{ ingress_nginx_namespace }}
-        name: "{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller-admission"
+        name: {{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}-controller-admission
         path: /networking/v1/ingresses
