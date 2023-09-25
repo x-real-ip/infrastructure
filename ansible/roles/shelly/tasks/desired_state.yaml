@@ -1,13 +1,31 @@
 ---
-- name: Start name task
-  ansible.builtin.include_tasks: name.yaml
-
-- name: Get current settings from device {{ device_name.json.name }}
+- name: Get current settings from device {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/settings
     body_format: json
     return_content: true
   register: settings_content
+
+- name: Set device name for lights from inventory var {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings/light/0?name={{ hostvars[item]['device_name'] }}
+  changed_when: settings_content.json.lights[0].name != hostvars[item]['device_name']
+  when: "'SHDM' in settings_content.json.device.type"
+
+- name: Set device name for bulps from inventory var {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?name={{ hostvars[item]['device_name'] }}
+  changed_when: settings_content.json.name != hostvars[item]['device_name']
+  when: "'SHCB' in settings_content.json.device.type"
+
+- name: Set device name for relays from inventory var {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?name={{ hostvars[item]['device_name'] }}
+  changed_when: settings_content.json.name != hostvars[item]['device_name']
+  when: "'SHPLG' in settings_content.json.device.type or 'SHSW' in settings_content.json.device.type"
+
+- name: Start name task
+  ansible.builtin.include_tasks: name.yaml
 
 - name: Enable/disable coiot and set peer for {{ device_name.json.name }}
   ansible.builtin.uri:
@@ -26,5 +44,12 @@
 
 - name: Enable/disable relays default state {{ device_name.json.name }}
   ansible.builtin.uri:
-    url: http://{{ item }}/settings?relays_default_state={{ settings.relays.default_state }}
-  changed_when: settings_content.json.relays.default_state != settings.relays.default_state
+    url: http://{{ item }}/settings/relay/0?default_state={{ settings.default_state }}
+  changed_when: settings_content.json.relays[0].default_state != settings.default_state
+  when: "'lights' not in settings_content.json"
+
+- name: Enable/disable lights default state {{ device_name.json.name }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings/light/0?default_state={{ settings.default_state }}
+  changed_when: settings_content.json.lights[0].default_state != settings.default_state
+  when: "'lights' in settings_content.json"
