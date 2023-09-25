@@ -24,3 +24,7 @@
 - name: Deploy | {{ ingress_nginx.name }}
   ansible.builtin.include_tasks: "{{ ingress_nginx.name }}.yaml"
   when: ingress_nginx.deploy
+
+- name: Deploy | {{ node_feature_discovery.name }}
+  ansible.builtin.include_tasks: "{{ node_feature_discovery.name }}.yaml"
+  when: node_feature_discovery.deploy
