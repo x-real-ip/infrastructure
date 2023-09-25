@@ -1,5 +1,5 @@
 ---
-- name: Get device name for {{ item }}
+- name: Get device name for {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/settings
     body_format: json

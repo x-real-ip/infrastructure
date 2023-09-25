@@ -16,5 +16,4 @@ settings:
     enable: true
     server: "10.0.40.1"
   eco_mode_enabled: false
-  relays:
-    default_state: "last"
+  default_state: "last"

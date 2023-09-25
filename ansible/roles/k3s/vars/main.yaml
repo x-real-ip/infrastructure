@@ -17,8 +17,8 @@ democratic_csi_manual:
 
 kube_vip:
   deploy: true
-  namespace: "kube-system"
   name: "kube-vip"
+  namespace: "kube-system"
   image_tag: "v0.6.1"
   apiserver_endpoint: "10.0.100.100"
   flannel_iface: "ens18"
@@ -51,6 +51,13 @@ ingress_nginx:
     controller: "v1.3.1"
     kube_webhook_certgen: "v20220916-gd32f8c343"
 
+node_feature_discovery:
+  deploy: true
+  name: node-feature-discovery
+  namespace: devops
+  image_tag:
+    node_feature_discovery: "v0.12.1"
+
 tls_certificates:
   wildcard_k8s_lan:
     deploy: true
@@ -68,4 +75,3 @@ tls_certificates:
       - media
       - home-automation
       - tools
-
