@@ -46,7 +46,7 @@
   ansible.builtin.uri:
     url: http://{{ item }}/settings/relay/0?default_state={{ settings.default_state }}
   changed_when: settings_content.json.relays[0].default_state != settings.default_state
-  when: "'lights' not in settings_content.json"
+  when: "'SHPLG' in settings_content.json.device.type or 'SHSW' in settings_content.json.device.type"
 
 - name: Enable/disable lights default state {{ device_name.json.name }}
   ansible.builtin.uri:
