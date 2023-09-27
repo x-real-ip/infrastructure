@@ -1,0 +1,3 @@
+---
+directory: "~/certs"
+ca_common_name: "theautomation Root CA"
