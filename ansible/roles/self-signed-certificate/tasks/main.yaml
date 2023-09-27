@@ -1,0 +1,25 @@
+---
+- name: Create directory with parents
+  ansible.builtin.file:
+    path: "{{ directory }}"
+    state: directory
+    mode: '700'
+
+- name: Create CA private key
+  community.crypto.openssl_privatekey:
+    path: "{{ directory }}/ca-private.key"
+    size: 4096
+    type: "RSA"
+
+- name: Create certificate signing request (CSR) for CA certificate
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ directory }}/ca-private.key"
+    common_name: " {{ ca_common_name }} "
+    use_common_name_for_san: false  # since we do not specify SANs, don't use CN as a SAN
+    basic_constraints:
+      - 'CA:FALSE'
+    basic_constraints_critical: true
+    key_usage:
+      - keyCertSign
+    key_usage_critical: true
+  register: ca_csr

@@ -1,0 +1,9 @@
+---
+- name: Play for generating a CA and Self-signed Certificate
+  hosts: localhost
+  gather_facts: true
+  become: true
+  become_user: coen
+  connection: local
+  roles:
+    - self-signed-certificate
