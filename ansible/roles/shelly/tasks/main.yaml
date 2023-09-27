@@ -38,30 +38,32 @@
       entity_id: "{{ home_assistant_firewall_switch }}"
   when: allow_internet_access and switch_state_content.json.state == "off"
 
-- name: Start reboot task
-  ansible.builtin.include_tasks: reboot.yaml
-  loop: "{{ groups['shelly'] }}"
-  ignore_errors: true
+- name: Install, configure, and start Apache
+  block:
+    - name: Start reboot task
+      ansible.builtin.include_tasks: reboot.yaml
+      loop: "{{ groups['shelly'] }}"
+      ignore_errors: true
 
-- name: Start update task
-  ansible.builtin.include_tasks: update.yaml
-  loop: "{{ groups['shelly'] }}"
-  ignore_errors: true
+    - name: Start update task
+      ansible.builtin.include_tasks: update.yaml
+      loop: "{{ groups['shelly'] }}"
+      ignore_errors: true
+  always:
+    - name: Change back firewall allow internet rule to off if that was it's original state
+      ansible.builtin.uri:
+        url: http://{{ home_assistant_url }}/api/services/switch/turn_off
+        method: POST
+        return_content: false
+        headers:
+          Content-Type: "application/json"
+          Authorization: "Bearer {{ home_assistant_api_token }}"
+        body_format: json
+        body:
+          entity_id: "{{ home_assistant_firewall_switch }}"
+      when: allow_internet_access and switch_state_content.json.state == "off"
 
-- name: Change back firewall allow internet rule to off if that was it's original state
-  ansible.builtin.uri:
-    url: http://{{ home_assistant_url }}/api/services/switch/turn_off
-    method: POST
-    return_content: false
-    headers:
-      Content-Type: "application/json"
-      Authorization: "Bearer {{ home_assistant_api_token }}"
-    body_format: json
-    body:
-      entity_id: "{{ home_assistant_firewall_switch }}"
-  when: allow_internet_access and switch_state_content.json.state == "off"
-
-- name: Start reboot task
-  ansible.builtin.include_tasks: reboot.yaml
-  loop: "{{ groups['shelly'] }}"
-  ignore_errors: true
+    - name: Start reboot task
+      ansible.builtin.include_tasks: reboot.yaml
+      loop: "{{ groups['shelly'] }}"
+      ignore_errors: true
