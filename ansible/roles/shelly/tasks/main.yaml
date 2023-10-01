@@ -10,10 +10,6 @@
     fail_msg: "Variable value '{{ hostvars[item]['device_name'] }}' is greater than 29 characters"
   loop: "{{ groups['shelly'] }}"
 
-- name: Start desired state task
-  ansible.builtin.include_tasks: desired_state.yaml
-  loop: "{{ groups['shelly'] }}"
-
 - name: Register firewall rule switch state
   ansible.builtin.uri:
     url: http://{{ home_assistant_url }}/api/states/{{ home_assistant_firewall_switch }}
@@ -38,7 +34,7 @@
       entity_id: "{{ home_assistant_firewall_switch }}"
   when: allow_internet_access and switch_state_content.json.state == "off"
 
-- name: Install, configure, and start Apache
+- name: Start update tasks
   block:
     - name: Start reboot task
       ansible.builtin.include_tasks: reboot.yaml
@@ -67,3 +63,7 @@
       ansible.builtin.include_tasks: reboot.yaml
       loop: "{{ groups['shelly'] }}"
       ignore_errors: true
+
+- name: Start desired state task
+  ansible.builtin.include_tasks: desired_state.yaml
+  loop: "{{ groups['shelly'] }}"
