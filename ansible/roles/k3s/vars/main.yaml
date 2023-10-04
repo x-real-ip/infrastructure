@@ -19,7 +19,7 @@ kube_vip:
   deploy: true
   name: "kube-vip"
   namespace: "kube-system"
-  image_tag: "v0.6.1"
+  image_tag: "v0.6.3"
   apiserver_endpoint: "10.0.100.100"
   flannel_iface: "ens18"
 
@@ -33,6 +33,7 @@ metallb:
   int_lan_ip_addresses:
     - 10.0.100.240/32
     - 10.0.100.241/32
+    - 10.0.100.242/32
   ext_lan_ip: 10.0.100.250/32
 
 sealed_secrets:
