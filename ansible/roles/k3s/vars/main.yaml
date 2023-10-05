@@ -59,6 +59,17 @@ node_feature_discovery:
   image_tag:
     node_feature_discovery: "v0.12.1"
 
+drone:
+  deploy: true
+  name: drone
+  namespace: devops
+  image_tag:
+    server: "2"
+    runner_docker: "1.8.1"
+    dind: "20-dind"
+    gc: "1.0.0"
+    kubernetes_secrets: "latest"
+
 tls_certificates:
   wildcard_k8s_lan:
     deploy: true
