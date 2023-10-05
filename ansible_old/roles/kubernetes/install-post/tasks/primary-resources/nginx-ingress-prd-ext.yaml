@@ -33,4 +33,4 @@
     loop_var: label
   vars:
     label:
-      - "app.kubernetes.io/component=controller"
+      - "{{ item.namespace }}"
