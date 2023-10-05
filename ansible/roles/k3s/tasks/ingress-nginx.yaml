@@ -19,33 +19,17 @@
   loop_control:
     loop_var: ingress_nginx_namespace
 
-# - name: Validate deployment | {{ item.name }}
-#   kubernetes.core.k8s_info:
-#     kind: Deployment
-#     name: ingress-nginx-prd-ext-controller
-#     namespace: "prd-ext"
-#     label_selectors:
-#       - "app.kubernetes.io/instance=ingress-nginx-prd-ext"
-#     wait: true
-#     wait_condition:
-#       type: Available
-#       status: "True"
-
-# - name: Validate if pod is ready | {{ item.name }}
-#   kubernetes.core.k8s_info:
-#     kind: Pod
-#     namespace: "prd-ext"
-#     label_selectors:
-#       - "{{ label }}"
-#     wait: true
-#     wait_condition:
-#       type: Ready
-#       status: "True"
-#   loop_control:
-#     loop_var: label
-#   vars:
-#     label:
-#       - "app.kubernetes.io/component=controller"
-
-
-
+- name: Validate if pod is ready | {{ ingress_nginx.name }}
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ ingress_nginx_namespace }}"
+    label_selectors:
+      - "app.kubernetes.io/component=controller"
+    wait: true
+    wait_condition:
+      type: Ready
+      status: "True"
+  run_once: true
+  loop: "{{ ingress_nginx.namespaces }}"
+  loop_control:
+    loop_var: ingress_nginx_namespace
