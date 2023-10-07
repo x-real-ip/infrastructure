@@ -14,6 +14,20 @@ steps:
     commands:
       - yamllint -c ./cicd/.yamllint.yaml .
 
+  - name: k8s manifest dryrun
+    image: bitnami/kubectl
+    volumes:
+      - name: kubeconfig
+        path: /.kube
+    network_mode: host
+    commands:
+      - kubectl apply -f ./deploy/k8s/manifest.yaml --dry-run=client
+
+volumes:
+  - name: kubeconfig
+    host:
+      path: /var/lib/.kube
+
 ---
 kind: pipeline
 type: docker
