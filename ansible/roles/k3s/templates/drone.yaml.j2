@@ -299,6 +299,12 @@ spec:
                   name: {{ drone.name }}-personal-token
                   key: DRONE_PERSONAL_TOKEN
                   optional: true
+            - name: DRONE_SERVER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: DRONE_PERSONAL_TOKEN
+                  name: drone-personal-token
+                  optional: true
             - name: DRONE_USER_CREATE
               value: "username:theautomation,admin:true,token:$(DRONE_PERSONAL_TOKEN)"
           envFrom:
