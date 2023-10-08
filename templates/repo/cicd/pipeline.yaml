@@ -81,7 +81,7 @@ depends_on:
   - build
 
 steps:
-  - name: upgrade k8s manifest
+  - name: update k8s manifest
     image: alpine:3
     network_mode: host
     environment:
@@ -90,18 +90,6 @@ steps:
       - sed -i -e
         "s%/$${REGISTRY_NAME}/$${DRONE_REPO_NAME}:.*%/$${REGISTRY_NAME}/$${DRONE_REPO_NAME}:$${DRONE_BUILD_NUMBER}\"%1"
         ./deploy/k8s/manifest.yaml
-
-  - name: push k8s manifest
-    image: appleboy/drone-git-push:1-linux-amd64
-    settings:
-      remote_name: "git@github.com:${DRONE_REPO}"
-      branch: ${DRONE_BRANCH}
-      force: false
-      commit: true
-      commit_message: "[bot] [skip ci] bump image tag"
-      author_name: ci-bot
-      ssh_key:
-        from_secret: github_ssh_key
 
   - name: apply k8s manifest
     image: bitnami/kubectl
@@ -112,6 +100,18 @@ steps:
     commands:
       - cat ./deploy/k8s/manifest.yaml
       - kubectl apply -f ./deploy/k8s/manifest.yaml
+
+  - name: push k8s manifest
+    image: appleboy/drone-git-push:1-linux-amd64
+    settings:
+      remote_name: "git@github.com:${DRONE_REPO}"
+      branch: ${DRONE_BRANCH}
+      force: true
+      commit: true
+      commit_message: "[bot] [skip ci] bump image tag"
+      author_name: ci-bot
+      ssh_key:
+        from_secret: github_ssh_key
 
 volumes:
   - name: kubeconfig
