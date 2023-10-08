@@ -1,0 +1,16 @@
+- name: Update package list
+  ansible.builtin.dnf:
+    update_cache: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Upgrade packages
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+  when: ansible_os_family == "RedHat"
+  register: dnf_result
+
+- name: Print updated packages
+  debug:
+    var: dnf_result
+  when: dnf_result.changed

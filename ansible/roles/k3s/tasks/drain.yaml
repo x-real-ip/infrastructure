@@ -1,0 +1,5 @@
+---
+- name: Drain Node
+  ansible.builtin.command: kubectl drain "{{ ansible_hostname }}" --ignore-daemonsets --delete-local-data --force
+  register: drain_output
+  changed_when: "'is already cordoned' not in drain_output.stderr"
