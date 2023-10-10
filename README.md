@@ -14,6 +14,8 @@
   - [Rsync](#rsync)
   - [ISCSI](#iscsi)
     - [Repair iSCSI share](#repair-iscsi-share)
+  - [TrueNAS](#truenas)
+    - [Rename volume](#rename-volume)
 
 ## Kubernetes
 
@@ -284,3 +286,10 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
    sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --logout
    ```
 9. Volumes are now ready to be mounted as PVCs.
+
+## TrueNAS
+
+### Rename volume
+```
+zfs rename r01_1tb/k8s/{zvol name}
+```
