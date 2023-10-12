@@ -32,6 +32,12 @@
   ansible.builtin.include_tasks: name.yaml
   ignore_errors: true
 
+- name: Enable/disable ap roaming for {{ device_name.json.name }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?ap_roaming_enabled={{ settings.ap_roaming }}
+  changed_when: settings_content.json.ap_roaming.enabled != settings.ap_roaming
+  ignore_errors: true
+
 - name: Enable/disable coiot and set peer for {{ device_name.json.name }}
   ansible.builtin.uri:
     url: http://{{ item }}/settings?coiot_enable={{ settings.coiot.enable }}&coiot_peer={{ settings.coiot.peer }}
