@@ -227,7 +227,7 @@ Add A record in pfSense to bind specific domain (`*.k8s.lan`) for redirecting in
 
 ```
 local-zone: "k8s.lan" redirect
-local-data: "k8s.lan 86400 IN A 192.168.1.240"
+local-data: "k8s.lan 86400 IN A 10.0.100.240"
 ```
 
 ### Node Feature Discovery
