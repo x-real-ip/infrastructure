@@ -17,3 +17,4 @@ settings:
     server: "10.0.40.1"
   eco_mode_enabled: false
   default_state: "last"
+  ap_roaming: false

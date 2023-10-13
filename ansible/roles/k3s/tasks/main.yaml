@@ -1,14 +1,14 @@
 ---
-- name: Include bare task
-  ansible.builtin.include_tasks: bare.yaml
+# - name: Include bare task
+#   ansible.builtin.include_tasks: bare.yaml
 
 - name: Deploy | {{ kube_vip.name }}
   ansible.builtin.include_tasks: "{{ kube_vip.name }}.yaml"
   when: kube_vip.deploy
 
-- name: Deploy | {{ metallb.name }}
-  ansible.builtin.include_tasks: "{{ metallb.name }}.yaml"
-  when: metallb.deploy
+# - name: Deploy | {{ metallb.name }}
+#   ansible.builtin.include_tasks: "{{ metallb.name }}.yaml"
+#   when: metallb.deploy
 
 - name: Deploy | {{ sealed_secrets.name }}
   ansible.builtin.include_tasks: "{{ sealed_secrets.name }}.yaml"
@@ -20,6 +20,9 @@
 
 - name: Deploy | TLS certs
   ansible.builtin.include_tasks: tls-certificates.yaml
+
+- name: Deploy | Private registry credentials
+  ansible.builtin.include_tasks: private-registry-credentials.yaml
 
 - name: Deploy | {{ ingress_nginx.name }}
   ansible.builtin.include_tasks: "{{ ingress_nginx.name }}.yaml"

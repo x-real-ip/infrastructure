@@ -32,3 +32,8 @@
     state: present
     template: "{{ metallb.name }}-addresspool.yaml.j2"
   run_once: true
+
+- name: Render template to localhost | {{ metallb.name }}
+  ansible.builtin.include_tasks: render-template.yaml
+  vars:
+    template_file: "{{ metallb.name }}.yaml.j2"

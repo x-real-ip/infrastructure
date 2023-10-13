@@ -31,3 +31,8 @@
       - "{{ drone.name }}-runner-docker"
       - "{{ drone.name }}-secrets"
   run_once: true
+
+- name: Render template to localhost | {{ drone.name }}
+  ansible.builtin.include_tasks: render-template.yaml
+  vars:
+    template_file: "{{ drone.name }}.yaml.j2"

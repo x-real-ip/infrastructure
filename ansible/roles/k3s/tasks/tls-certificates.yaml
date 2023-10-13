@@ -18,3 +18,27 @@
     loop_var: tls_wildcard_theautomation_nl_namespace
   run_once: true
   when: tls_certificates.wildcard_theautomation_nl.deploy
+
+- name: Output template file to localhost
+  ansible.builtin.template:
+    src: tls-wildcard-k8s-lan.yaml.j2
+    dest: "{{ output_file_location }}{{ tls_certificates.wildcard_k8s_lan.name }}-{{ tls_wildcard_k8s_lan_namespace }}.yaml"
+    mode: '0644'
+  loop: "{{ tls_certificates.wildcard_k8s_lan.namespaces }}"
+  loop_control:
+    loop_var: tls_wildcard_k8s_lan_namespace
+  delegate_to: localhost
+  run_once: true
+  when: tls_certificates.wildcard_k8s_lan.deploy
+
+- name: Output template file to localhost
+  ansible.builtin.template:
+    src: tls-wildcard-theautomation-nl.yaml.j2
+    dest: "{{ output_file_location }}{{ tls_certificates.wildcard_theautomation_nl.name }}-{{ tls_wildcard_theautomation_nl_namespace }}.yaml"
+    mode: '0644'
+  loop: "{{ tls_certificates.wildcard_theautomation_nl.namespaces }}"
+  loop_control:
+    loop_var: tls_wildcard_theautomation_nl_namespace
+  delegate_to: localhost
+  run_once: true
+  when: tls_certificates.wildcard_theautomation_nl.deploy

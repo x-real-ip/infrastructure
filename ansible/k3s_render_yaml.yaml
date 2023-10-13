@@ -1,0 +1,17 @@
+---
+- name: Generate and copy Jinja2 files locally
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Generate Jinja2 templates
+      ansible.builtin.find:
+        paths: /path/to/templates_directory
+        recurse: yes
+        patterns: "*.j2" # Pattern to match Jinja2 files
+      register: template_files
+
+    - name: Generate and copy templates
+      ansible.builtin.template:
+        src: "{{ item.path }}"
+        dest: "/home/coen/Downloads/{{ item.path | basename | regex_replace('\\.j2$', '') }}"
+      loop: "{{ template_files.files }}"

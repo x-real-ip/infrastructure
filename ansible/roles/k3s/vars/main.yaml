@@ -5,6 +5,9 @@ registry_host: harbor.k8s.lan
 # IP-address of first master node
 server_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
 
+# The location to store rendered jinja2 templates like deployments .yaml files
+output_file_location: "/home/coen/Downloads/"
+
 democratic_csi_manual:
   deploy: true
   name: democratic-csi
@@ -85,5 +88,14 @@ tls_certificates:
     namespaces:
       - devops
       - media
+      - home-automation
+      - tools
+
+private_registry:
+  credentials:
+    deploy: true
+    name: harbor-registry-creds
+    namespaces:
+      - devops
       - home-automation
       - tools

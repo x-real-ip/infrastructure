@@ -34,3 +34,8 @@
   vars:
     endpoint_url: >-
       https://{{ kube_vip.apiserver_endpoint }}:6443
+
+- name: Render template to localhost | {{ kube_vip.name }}
+  ansible.builtin.include_tasks: render-template.yaml
+  vars:
+    template_file: "{{ kube_vip.name }}.yaml.j2"

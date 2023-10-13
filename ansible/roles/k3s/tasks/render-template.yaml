@@ -1,0 +1,6 @@
+- name: Output template file to localhost
+  ansible.builtin.template:
+    src: "{{ template_file }}"
+    dest: "{{ output_file_location }}{{ template_file | basename | regex_replace('\\.j2$', '') }}"
+    mode: '0644'
+  delegate_to: localhost
