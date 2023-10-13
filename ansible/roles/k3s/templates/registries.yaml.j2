@@ -1,9 +1,5 @@
 ---
-mirrors:
-  {{ registry_host }}:
-    endpoint:
-      - "https://{{ registry_host }}:443"
 configs:
-  "{{ registry_host }}":
+  "harbor.k8s.lan":
     tls:
       insecure_skip_verify: true
