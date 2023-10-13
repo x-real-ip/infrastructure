@@ -33,3 +33,14 @@
   loop: "{{ ingress_nginx.namespaces }}"
   loop_control:
     loop_var: ingress_nginx_namespace
+
+- name: Output template file to localhost
+  ansible.builtin.template:
+    src: "{{ ingress_nginx.name }}.yaml.j2"
+    dest: "{{ output_file_location }}{{ ingress_nginx.name }}-{{ ingress_nginx_namespace }}.yaml"
+    mode: '0644'
+  loop: "{{ ingress_nginx.namespaces }}"
+  loop_control:
+    loop_var: ingress_nginx_namespace
+  delegate_to: localhost
+  run_once: true

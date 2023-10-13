@@ -2,32 +2,6 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: pv-harbor-trivy
-  labels:
-    app: harbor-trivy
-spec:
-  storageClassName: "freenas-iscsi-manual-csi"
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  csi:
-    driver: org.democratic-csi.node-manual
-    readOnly: false
-    fsType: xfs
-    volumeHandle: pv-harbor-trivy
-    volumeAttributes:
-      portal: storage-server-lagg.lan:3260
-      iqn: iqn.2005-10.org.freenas.ctl:harbor-trivy
-      lun: "0"
-      node_attach_driver: iscsi
-      provisioner_driver: node-manual
-
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
   name: pv-harbor-redis
   labels:
     app: harbor-redis
@@ -86,7 +60,7 @@ metadata:
 spec:
   storageClassName: "freenas-nfs-manual-csi"
   capacity:
-    storage: 10Gi
+    storage: 100Gi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
@@ -132,32 +106,6 @@ spec:
       provisioner_driver: node-manual
 
 ---
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: pv-harbor-jobservice-scandata
-  labels:
-    app: harbor-jobservice-scandata
-spec:
-  storageClassName: "freenas-iscsi-manual-csi"
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  csi:
-    driver: org.democratic-csi.node-manual
-    readOnly: false
-    fsType: xfs
-    volumeHandle: pv-harbor-jobservice-scandata
-    volumeAttributes:
-      portal: storage-server-lagg.lan:3260
-      iqn: iqn.2005-10.org.freenas.ctl:harbor-jobservice-scandata
-      lun: "0"
-      node_attach_driver: iscsi
-      provisioner_driver: node-manual
-
----
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -182,27 +130,6 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-harbor-jobservice-scandata
-  namespace: devops
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "freenas-iscsi-manual-csi"
-  labels:
-    release: harbor
-    app: "harbor"
-    component: jobservice
-spec:
-  storageClassName: freenas-iscsi-manual-csi
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  volumeName: pv-harbor-jobservice-scandata
-
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
   name: pvc-harbor-registry
   namespace: devops
   labels:
@@ -217,7 +144,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
+      storage: 100Gi
   volumeName: pv-harbor-registry
 
 ---
@@ -235,25 +162,6 @@ spec:
         app: harbor
         release: harbor
       name: harbor-database
-      namespace: devops
-    type: Opaque
-
----
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
-metadata:
-  name: harbor-trivy
-  namespace: devops
-spec:
-  encryptedData:
-    gitHubToken: AgBO+p4r2BIy9KlrnhDp/Pqug7nVj1ifGPmwwF1NA0e7QetEcCyIg+05OFN600+yYcmWZNT5KMv24wJK4u98CrUC4xheXp9XIyo6I1gS/sMHSXlBAbWXA2UahQ2Q5hVbJT8DvYJs59l3Kh9jkVp4UTQvognr6e0mpRVQS5AouLXKsm8r+NRK5fMgGqMHLRTHoCTLjoB3mtc6j/oYnGiCIeWI5Kqa9vYTuDOX7PpwLJaGFbYBXIubhgbnb339uixuSXEp0MKAwPlOp3mWLQxreVpgmRbvU7m4bWsAKQlv8M/Bl3ZNUjI9dxbSK1MEKOkenTCKnJC2nUSGGW0wuqq32kqd3DTpMcnY4DW+PYCMsAROJfrLXTDj7B/0OOyF7/FMCBOu1Gkq5I81bmLY3Skl4eC6WDw2RM+EY7EWnX0wi26/sgEsoCOpWueOthMH86OUgL8SNlEw2Q0Pt4w1fFneZo7O/Dl7hTv6IkffSv0vk0HM7tC0TAuVDfT0CZ9p+nXrGSok0B+jg6yHXDM2MZD40mbXYQToK8u271OsKh/CbMZpLaUZclaRXVer1LPKhmpQYs6Ve5WMT09WPD3ejkGeWbU4rjswI618NDWENfnZ66Wj1ttwmRiyTdkWtRNSNOVAKjwrmOrnsmtzf8x73Xk4V9R3SnAPX4M8piLSNg4En/uR47Uqp7t11mn/tU5LbbR2kis=
-    redisURL: AgCXal/3ykhcZAIUiKpt9qsnmtyvqoKbLbem0IscrhWrYzAWwSKtPjqKnbf7o4MjRC0QXZWoMckFc7YrXIKEMjDaK1RYYqd5pMc2VPNZ279hx7ybNZEdk/zHegJdRZSwujto5rRC0iC8eTs6homEiVHB6RZ9LHrnxXPNvkty4ZDUqVnMXiI00bDJsqDgHCq5dgnlItES5YedxYu266D8T29b6mKAj/Co+1I7EcM46ZaPt7he6SQyzotfhTtBQsOiqjM/v8OFUBB2rNnCyOjRu8xtAGB2aqnUhWuPqGzTPxfjcn9H0LsjVGZZO/38qI99/MNBslsugbQHVqqdIUC0CBY4ttdVEhJl4l+yTHbeBkoLMbFcMoA07ifGJaculQdzTZDimqTPliga0rCQVuYzN64ZkUAanJj97JTWOe+YhuhBUGM0x/ciUZoEyG1spqbH0Srh27ILdCPkCJzoCV4iLDr/3NHS9x7REeDKWJydDMepVmMjGvAnhKDfI8lldIQsD/bkTRRxByo2YHoT0M9/8WpmtSeCnePeJJG15qRROdl2ggrVauQmYgY6vocXoRrOM56faC9G3hTNS/9E8ORgqlnlidLNssMFz0p02v0VB5xcuIh+M9JW1Ioyb3CtP3csuD8ry+Iki4gKssv752mIgfr8iZ0gDx53H39k/GF+eadUuUIOh1g9kBd3gLC7KHTNOTxVpnYLwLga3kIWfKJhFPjDL1fT2Tbb2sjSa7HZfLEPWLo6P83ZGB8cL2qAa4w36oCWQB4=
-  template:
-    metadata:
-      labels:
-        app: harbor
-        release: harbor
-      name: harbor-trivy
       namespace: devops
     type: Opaque
 
@@ -391,14 +299,10 @@ data:
   JOBSERVICE_URL: "http://harbor-jobservice"
   REGISTRY_URL: "http://harbor-registry:5000"
   TOKEN_SERVICE_URL: "http://harbor-core:80/service/token"
-  WITH_NOTARY: "false"
-  NOTARY_URL: "http://harbor-notary-server:4443"
   CORE_LOCAL_URL: "http://127.0.0.1:8080"
-  WITH_TRIVY: "true"
+  WITH_TRIVY: "false"
   TRIVY_ADAPTER_URL: "http://harbor-trivy:8080"
   REGISTRY_STORAGE_PROVIDER_NAME: "filesystem"
-  WITH_CHARTMUSEUM: "false"
-  CHART_REPOSITORY_URL: "http://harbor-chartmuseum"
   LOG_LEVEL: "info"
   CONFIG_PATH: "/etc/core/app.conf"
   CHART_CACHE_DRIVER: "redis"
@@ -411,8 +315,7 @@ data:
   HTTPS_PROXY: ""
   NO_PROXY: "harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,harbor-exporter,127.0.0.1,localhost,.local,.internal"
   PERMITTED_REGISTRY_TYPES_FOR_PROXY_CACHE: "docker-hub,harbor,azure-acr,aws-ecr,google-gcr,quay,docker-registry"
-  CACHE_ENABLED: "true"
-  CACHE_EXPIRE_HOURS: "24"
+  QUOTA_UPDATE_PROVIDER: "db"
 
 ---
 kind: ConfigMap
@@ -493,12 +396,11 @@ data:
   REGISTRY_URL: "http://harbor-registry:5000"
   REGISTRY_CONTROLLER_URL: "http://harbor-registry:8080"
   REGISTRY_CREDENTIAL_USERNAME: "theautomation"
+  JOBSERVICE_WEBHOOK_JOB_MAX_RETRY: "3"
+  JOBSERVICE_WEBHOOK_JOB_HTTP_CLIENT_TIMEOUT: "3"
   HTTP_PROXY: ""
   HTTPS_PROXY: ""
-  NO_PROXY: "harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,harbor-exporter,127.0.0.1,localhost,.local,.internal"
-  _REDIS_URL_CORE: "redis://harbor-redis:6379/0?idle_timeout_seconds=30"
-  CACHE_ENABLED: "true"
-  CACHE_EXPIRE_HOURS: "24"
+  NO_PROXY: "harbor-core,harbor-jobservice,harbor-database,harbor-registry,harbor-portal,harbor-trivy,harbor-exporter,127.0.0.1,localhost,.local,.internal"
 
 ---
 kind: ConfigMap
@@ -532,6 +434,9 @@ data:
             gzip_min_length 1000;
             gzip_proxied expired no-cache no-store private auth;
             gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+            location /devcenter-api-2.0 {
+                try_files $uri $uri/ /swagger-ui-index.html;
+            }
             location / {
                 try_files $uri $uri/ /index.html;
             }
@@ -540,6 +445,7 @@ data:
             }
         }
     }
+
 
 
 ---
@@ -580,145 +486,11 @@ data:
     loggers:
       - name: "STD_OUTPUT"
         level: INFO
-
----
-kind: StatefulSet
-apiVersion: apps/v1
-metadata:
-  name: harbor-trivy
-  namespace: devops
-  labels:
-    release: harbor
-    app: "harbor"
-    component: trivy
-spec:
-  replicas: 1
-  persistentVolumeClaimRetentionPolicy:
-    whenDeleted: Delete
-  serviceName: harbor-trivy
-  selector:
-    matchLabels:
-      release: harbor
-      app: "harbor"
-      component: trivy
-  template:
-    metadata:
-      labels:
-        release: harbor
-        app: "harbor"
-        component: trivy
-    spec:
-      securityContext:
-        runAsUser: 10000
-        fsGroup: 10000
-      automountServiceAccountToken: false
-      priorityClassName: system-node-critical
-      containers:
-        - name: trivy
-          image: goharbor/trivy-adapter-photon:dev
-          imagePullPolicy: IfNotPresent
-          securityContext:
-            privileged: false
-            allowPrivilegeEscalation: false
-          env:
-            - name: HTTP_PROXY
-              value: ""
-            - name: HTTPS_PROXY
-              value: ""
-            - name: NO_PROXY
-              value: "harbor-core,harbor-jobservice,harbor-database,harbor-chartmuseum,harbor-notary-server,harbor-notary-signer,harbor-registry,harbor-portal,harbor-trivy,harbor-exporter,127.0.0.1,localhost,.local,.internal"
-            - name: "SCANNER_LOG_LEVEL"
-              value: "info"
-            - name: "SCANNER_TRIVY_CACHE_DIR"
-              value: "/home/scanner/.cache/trivy"
-            - name: "SCANNER_TRIVY_REPORTS_DIR"
-              value: "/home/scanner/.cache/reports"
-            - name: "SCANNER_TRIVY_DEBUG_MODE"
-              value: "false"
-            - name: "SCANNER_TRIVY_VULN_TYPE"
-              value: "os,library"
-            - name: "SCANNER_TRIVY_TIMEOUT"
-              value: "5m0s"
-            - name: "SCANNER_TRIVY_GITHUB_TOKEN"
-              valueFrom:
-                secretKeyRef:
-                  name: harbor-trivy
-                  key: gitHubToken
-            - name: "SCANNER_TRIVY_SEVERITY"
-              value: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
-            - name: "SCANNER_TRIVY_IGNORE_UNFIXED"
-              value: "false"
-            - name: "SCANNER_TRIVY_SKIP_UPDATE"
-              value: "false"
-            - name: "SCANNER_TRIVY_OFFLINE_SCAN"
-              value: "false"
-            - name: "SCANNER_TRIVY_INSECURE"
-              value: "false"
-            - name: SCANNER_API_SERVER_ADDR
-              value: ":8080"
-            - name: "SCANNER_REDIS_URL"
-              valueFrom:
-                secretKeyRef:
-                  name: harbor-trivy
-                  key: redisURL
-            - name: "SCANNER_STORE_REDIS_URL"
-              valueFrom:
-                secretKeyRef:
-                  name: harbor-trivy
-                  key: redisURL
-            - name: "SCANNER_JOB_QUEUE_REDIS_URL"
-              valueFrom:
-                secretKeyRef:
-                  name: harbor-trivy
-                  key: redisURL
-          ports:
-            - name: api-server
-              containerPort: 8080
-          volumeMounts:
-            - name: data
-              mountPath: /home/scanner/.cache
-              readOnly: false
-          livenessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /probe/healthy
-              port: api-server
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 10
-          readinessProbe:
-            httpGet:
-              scheme: HTTP
-              path: /probe/ready
-              port: api-server
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 3
-          resources:
-            requests:
-              cpu: 200m
-              memory: 512Mi
-            limits:
-              cpu: 1000m
-              memory: 1Gi
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-        labels:
-          release: harbor
-          app: "harbor"
-      spec:
-        selector:
-          matchLabels:
-            app: harbor-trivy
-        accessModes:
-          - "ReadWriteOnce"
-        storageClassName: freenas-iscsi-manual-csi
-        resources:
-          requests:
-            storage: "5Gi"
+    reaper:
+      # the max time to wait for a task to finish, if unfinished after max_update_hours, the task will be mark as error, but the task will continue to run, default value is 24
+      max_update_hours: 24
+      # the max time for execution in running state without new task created
+      max_dangling_hours: 168
 
 ---
 kind: StatefulSet
@@ -852,12 +624,14 @@ spec:
                 - /docker-healthcheck.sh
             initialDelaySeconds: 300
             periodSeconds: 10
+            timeoutSeconds: 1
           readinessProbe:
             exec:
               command:
                 - /docker-healthcheck.sh
             initialDelaySeconds: 1
             periodSeconds: 10
+            timeoutSeconds: 1
           envFrom:
             - secretRef:
                 name: "harbor-database"
@@ -1156,8 +930,6 @@ spec:
               subPath: config.yml
             - name: job-logs
               mountPath: /var/log/jobs
-            - name: job-scandata-exports
-              mountPath: /var/scandata_exports
           resources: {}
       volumes:
         - name: jobservice-config
@@ -1166,9 +938,6 @@ spec:
         - name: job-logs
           persistentVolumeClaim:
             claimName: pvc-harbor-jobservice
-        - name: job-scandata-exports
-          persistentVolumeClaim:
-            claimName: pvc-harbor-jobservice-scandata
 
 ---
 kind: Deployment
@@ -1255,9 +1024,10 @@ spec:
             - name: token-service-private-key
               mountPath: /etc/core/private_key.pem
               subPath: tls.key
+            - name: ca-download
+              mountPath: /etc/core/ca
             - name: psc
               mountPath: /etc/core/token
-          resources: {}
       volumes:
         - name: config
           configMap:
@@ -1274,6 +1044,8 @@ spec:
         - name: token-service-private-key
           secret:
             secretName: harbor-core
+        - name: ca-download
+          secret:
         - name: psc
           emptyDir: {}
 
@@ -1312,25 +1084,6 @@ spec:
     release: harbor
     app: "harbor"
     component: jobservice
-
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: "harbor-trivy"
-  namespace: devops
-  labels:
-    release: harbor
-    app: "harbor"
-spec:
-  ports:
-    - name: http-trivy
-      protocol: TCP
-      port: 8080
-  selector:
-    release: harbor
-    app: "harbor"
-    component: trivy
 
 ---
 apiVersion: v1
