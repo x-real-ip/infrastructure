@@ -56,7 +56,7 @@ ingress_nginx:
     kube_webhook_certgen: "v20220916-gd32f8c343"
 
 node_feature_discovery:
-  deploy: true
+  deploy: false
   name: node-feature-discovery
   namespace: devops
   image_tag:
