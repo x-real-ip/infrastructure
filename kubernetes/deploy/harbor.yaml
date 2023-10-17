@@ -527,8 +527,8 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: redis
-          image: goharbor/redis-photon:dev
-          imagePullPolicy: IfNotPresent
+          image: goharbor/redis-photon:v2.9.0
+          imagePullPolicy: Always
           livenessProbe:
             tcpSocket:
               port: 6379
@@ -595,8 +595,8 @@ spec:
       priorityClassName: system-node-critical
       initContainers:
         - name: "data-migrator"
-          image: goharbor/harbor-db:dev
-          imagePullPolicy: IfNotPresent
+          image: goharbor/harbor-db:v2.9.0
+          imagePullPolicy: Always
           command: ["/bin/sh"]
           args:
             [
@@ -607,8 +607,8 @@ spec:
             - name: database-data
               mountPath: /var/lib/postgresql/data
         - name: "data-permissions-ensurer"
-          image: goharbor/harbor-db:dev
-          imagePullPolicy: IfNotPresent
+          image: goharbor/harbor-db:v2.9.0
+          imagePullPolicy: Always
           command: ["/bin/sh"]
           args: ["-c", "chmod -R 700 /var/lib/postgresql/data/pgdata || true"]
           volumeMounts:
@@ -616,8 +616,8 @@ spec:
               mountPath: /var/lib/postgresql/data
       containers:
         - name: database
-          image: goharbor/harbor-db:dev
-          imagePullPolicy: IfNotPresent
+          image: goharbor/harbor-db:v2.9.0
+          imagePullPolicy: Always
           livenessProbe:
             exec:
               command:
@@ -704,8 +704,8 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: registry
-          image: goharbor/registry-photon:dev
-          imagePullPolicy: IfNotPresent
+          image: goharbor/registry-photon:v2.9.0
+          imagePullPolicy: Always
           livenessProbe:
             httpGet:
               path: /
@@ -738,8 +738,8 @@ spec:
               subPath: config.yml
           resources: {}
         - name: registryctl
-          image: goharbor/harbor-registryctl:dev
-          imagePullPolicy: IfNotPresent
+          image: goharbor/harbor-registryctl:v2.9.0
+          imagePullPolicy: Always
           livenessProbe:
             httpGet:
               path: /api/health
@@ -830,8 +830,8 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: portal
-          image: goharbor/harbor-portal:dev
-          imagePullPolicy: IfNotPresent
+          image: goharbor/harbor-portal:v2.9.0
+          imagePullPolicy: Always
           livenessProbe:
             httpGet:
               path: /
@@ -895,8 +895,8 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: jobservice
-          image: goharbor/harbor-jobservice:dev
-          imagePullPolicy: IfNotPresent
+          image: goharbor/harbor-jobservice:v2.9.0
+          imagePullPolicy: Always
           livenessProbe:
             httpGet:
               path: /api/v1/stats
@@ -972,8 +972,8 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: core
-          image: goharbor/harbor-core:dev
-          imagePullPolicy: IfNotPresent
+          image: goharbor/harbor-core:v2.9.0
+          imagePullPolicy: Always
           startupProbe:
             httpGet:
               path: /api/v2.0/ping
