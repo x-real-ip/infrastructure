@@ -73,6 +73,12 @@ drone:
     gc: "1.0.0"
     kubernetes_secrets: "latest"
 
+uptime_kuma:
+  deploy: true
+  name: uptime-kuma
+  namespace: devops
+  image_tag: alpine
+
 tls_certificates:
   wildcard_k8s_lan:
     deploy: true

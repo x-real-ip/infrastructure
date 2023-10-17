@@ -35,3 +35,7 @@
 - name: Deploy | {{ drone.name }}
   ansible.builtin.include_tasks: "{{ drone.name }}.yaml"
   when: drone.deploy
+
+- name: Deploy | {{ uptime_kuma.name }}
+  ansible.builtin.include_tasks: "{{ uptime_kuma.name }}.yaml"
+  when: uptime_kuma.deploy
