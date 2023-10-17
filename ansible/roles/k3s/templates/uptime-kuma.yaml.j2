@@ -2,12 +2,12 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: pv-iscsi-uptime-kuma
+  name: pv-iscsi-{{ uptime_kuma.name }}
   labels:
-    app.kubernetes.io/name: uptime-kuma
+    app.kubernetes.io/name: {{ uptime_kuma.name }}
     app.kubernetes.io/component: server
     app.kubernetes.io/instance: production
-    app.kubernetes.io/part-of: uptime-kuma
+    app.kubernetes.io/part-of: {{ uptime_kuma.name }}
 spec:
   storageClassName: "freenas-iscsi-manual-csi"
   capacity:
@@ -19,10 +19,10 @@ spec:
     driver: org.democratic-csi.node-manual
     readOnly: false
     fsType: xfs
-    volumeHandle: pv-iscsi-uptime-kuma
+    volumeHandle: pv-iscsi-{{ uptime_kuma.name }}
     volumeAttributes:
       portal: storage-server-lagg.lan:3260
-      iqn: iqn.2005-10.org.freenas.ctl:uptime-kuma
+      iqn: iqn.2005-10.org.freenas.ctl:{{ uptime_kuma.name }}
       lun: "0"
       node_attach_driver: iscsi
       provisioner_driver: node-manual
@@ -31,42 +31,42 @@ spec:
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: uptime-kuma
-  namespace: devops
+  name: {{ uptime_kuma.name }}
+  namespace: {{ uptime_kuma.namespace }}
   labels:
-    app.kubernetes.io/name: uptime-kuma
+    app.kubernetes.io/name: {{ uptime_kuma.name }}
     app.kubernetes.io/component: server
     app.kubernetes.io/instance: production
-    app.kubernetes.io/part-of: uptime-kuma
+    app.kubernetes.io/part-of: {{ uptime_kuma.name }}
 spec:
   replicas: 1
   persistentVolumeClaimRetentionPolicy:
     whenDeleted: Delete
-  serviceName: uptime-kuma
+  serviceName: {{ uptime_kuma.name }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: uptime-kuma
+      app.kubernetes.io/name: {{ uptime_kuma.name }}
       app.kubernetes.io/component: server
       app.kubernetes.io/instance: production
-      app.kubernetes.io/part-of: uptime-kuma
+      app.kubernetes.io/part-of: {{ uptime_kuma.name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: uptime-kuma
+        app.kubernetes.io/name: {{ uptime_kuma.name }}
         app.kubernetes.io/component: server
         app.kubernetes.io/instance: production
-        app.kubernetes.io/part-of: uptime-kuma
+        app.kubernetes.io/part-of: {{ uptime_kuma.name }}
     spec:
       containers:
-        - name: uptime-kuma
-          image: louislam/uptime-kuma:alpine
+        - name: {{ uptime_kuma.name }}
+          image: louislam/uptime-kuma:{{ uptime_kuma.image_tag }}
           env:
             - name: UPTIME_KUMA_PORT
               value: "3001"
             - name: PORT
               value: "3001"
           ports:
-            - name: uptime-kuma
+            - name: {{ uptime_kuma.name }}
               containerPort: 3001
               protocol: TCP
           volumeMounts:
@@ -76,17 +76,17 @@ spec:
     - metadata:
         name: kuma-data
         labels:
-          app.kubernetes.io/name: uptime-kuma
+          app.kubernetes.io/name: {{ uptime_kuma.name }}
           app.kubernetes.io/component: server
           app.kubernetes.io/instance: production
-          app.kubernetes.io/part-of: uptime-kuma
+          app.kubernetes.io/part-of: {{ uptime_kuma.name }}
       spec:
         selector:
           matchLabels:
-            app.kubernetes.io/name: uptime-kuma
+            app.kubernetes.io/name: {{ uptime_kuma.name }}
             app.kubernetes.io/component: server
             app.kubernetes.io/instance: production
-            app.kubernetes.io/part-of: uptime-kuma
+            app.kubernetes.io/part-of: {{ uptime_kuma.name }}
         accessModes:
           - "ReadWriteOnce"
         storageClassName: freenas-iscsi-manual-csi
@@ -98,21 +98,21 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: uptime-kuma
-  namespace: devops
+  name: {{ uptime_kuma.name }}
+  namespace: {{ uptime_kuma.namespace }}
   labels:
-    app.kubernetes.io/name: uptime-kuma
+    app.kubernetes.io/name: {{ uptime_kuma.name }}
     app.kubernetes.io/component: server
     app.kubernetes.io/instance: production
-    app.kubernetes.io/part-of: uptime-kuma
+    app.kubernetes.io/part-of: {{ uptime_kuma.name }}
 spec:
   selector:
-    app.kubernetes.io/name: uptime-kuma
+    app.kubernetes.io/name: {{ uptime_kuma.name }}
     app.kubernetes.io/component: server
     app.kubernetes.io/instance: production
-    app.kubernetes.io/part-of: uptime-kuma
+    app.kubernetes.io/part-of: {{ uptime_kuma.name }}
   ports:
-    - name: uptime-kuma
+    - name: {{ uptime_kuma.name }}
       protocol: TCP
       port: 3001
       targetPort: 3001
@@ -121,13 +121,13 @@ spec:
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: uptime-kuma
-  namespace: devops
+  name: {{ uptime_kuma.name }}
+  namespace: {{ uptime_kuma.namespace }}
   labels:
-    app.kubernetes.io/name: uptime-kuma
+    app.kubernetes.io/name: {{ uptime_kuma.name }}
     app.kubernetes.io/component: server
     app.kubernetes.io/instance: production
-    app.kubernetes.io/part-of: uptime-kuma
+    app.kubernetes.io/part-of: {{ uptime_kuma.name }}
 spec:
   ingressClassName: nginx-private
   rules:
@@ -138,7 +138,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: uptime-kuma
+                name: {{ uptime_kuma.name }}
                 port:
                   number: 3001
   tls:
