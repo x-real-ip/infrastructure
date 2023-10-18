@@ -1,9 +1,9 @@
-- name: Update package list
+- name: Update dnf package list
   ansible.builtin.dnf:
     update_cache: yes
   when: ansible_os_family == "RedHat"
 
-- name: Upgrade packages
+- name: Upgrade dnf packages
   ansible.builtin.dnf:
     name: "*"
     state: latest
