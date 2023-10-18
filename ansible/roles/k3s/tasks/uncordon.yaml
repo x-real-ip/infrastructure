@@ -1,5 +1,5 @@
 ---
-- name: Mark node as unschedulable.
+- name: Uncordon node
   kubernetes.core.k8s_drain:
     state: uncordon
     name: "{{ ansible_hostname }}"
