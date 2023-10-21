@@ -1,0 +1,100 @@
+---
+- name: Get device info from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Shelly.GetDeviceInfo
+    body_format: json
+    return_content: true
+  register: deviceinfo_content
+  ignore_errors: true
+
+- name: Get config from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Shelly.GetConfig
+    body_format: json
+    return_content: true
+  register: config_content
+  ignore_errors: true
+
+- name: Print return information from the previous task
+  ansible.builtin.debug:
+    var: config_content.json
+
+- name: Set switch config for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    body_format: json
+    method: POST
+    url: http://{{ item }}/rpc
+    body: |
+      {
+        "id": 1,
+        "method": "Sys.SetConfig",
+        "params": {
+          "config": {
+            "device": {
+              "name": "{{ hostvars[item]['device_name'] }}"
+            }
+          }
+        }
+      }
+
+# - name: Set switch config for {{ hostvars[item]['device_name'] }}
+#   ansible.builtin.uri:
+#     body_format: json
+#     method: POST
+#     url: http://{{ item }}/rpc
+#     body: |
+#       {
+#         "id": 1,
+#         "method": "Switch.SetConfig",
+#         "params": {
+#           "id": 0,
+#           "config": {
+#             "name": "{{ hostvars[item]['device_name'] }}",
+#             "initial_state": "on",
+#             "voltage_limit": {{ settings.voltage_limit}}
+#           }
+#         }
+#       }
+
+#   ignore_errors: true
+
+# - name: Start name task
+#   ansible.builtin.include_tasks: name.yaml
+#   ignore_errors: true
+
+# - name: Enable/disable ap roaming for {{ device_name.json.name }}
+#   ansible.builtin.uri:
+#     url: http://{{ item }}/settings?ap_roaming_enabled={{ settings.ap_roaming }}
+#   changed_when: settings_content.json.ap_roaming.enabled != settings.ap_roaming
+#   ignore_errors: true
+
+# - name: Enable/disable coiot and set peer for {{ device_name.json.name }}
+#   ansible.builtin.uri:
+#     url: http://{{ item }}/settings?coiot_enable={{ settings.coiot.enable }}&coiot_peer={{ settings.coiot.peer }}
+#   changed_when: settings_content.json.coiot.enabled != settings.coiot.enable or settings_content.json.coiot.peer != settings.coiot.peer
+#   ignore_errors: true
+
+# - name: Enable/disable sntp and set address for {{ device_name.json.name }}
+#   ansible.builtin.uri:
+#     url: http://{{ item }}/settings?sntp_enable={{ settings.sntp.enable }}&sntp_server={{ settings.sntp.server }}
+#   changed_when: settings_content.json.sntp.enabled != settings.sntp.enable or settings_content.json.sntp.server != settings.sntp.server
+#   ignore_errors: true
+
+# - name: Enable/disable eco mode {{ device_name.json.name }}
+#   ansible.builtin.uri:
+#     url: http://{{ item }}/settings?eco_mode_enabled={{ settings.eco_mode_enabled }}
+#   changed_when: settings_content.json.eco_mode_enabled != settings.eco_mode_enabled
+
+# - name: Enable/disable relays default state {{ device_name.json.name }}
+#   ansible.builtin.uri:
+#     url: http://{{ item }}/settings/relay/0?default_state={{ settings.default_state }}
+#   changed_when: settings_content.json.relays[0].default_state != settings.default_state
+#   when: "'SHPLG' in settings_content.json.device.type or 'SHSW' in settings_content.json.device.type"
+#   ignore_errors: true
+
+# - name: Enable/disable lights default state {{ device_name.json.name }}
+#   ansible.builtin.uri:
+#     url: http://{{ item }}/settings/light/0?default_state={{ settings.default_state }}
+#   changed_when: settings_content.json.lights[0].default_state != settings.default_state
+#   when: "'lights' in settings_content.json"
+#   ignore_errors: true
