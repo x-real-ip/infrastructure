@@ -17,5 +17,9 @@ settings:
     server: "10.0.40.1"
   eco_mode_enabled: false
   default_state: "last"
-  ap_roaming: false
+  ap:
+    enable: false
+  ap_roaming: 
+    enable: false
+    rssi_threshold: "-80"
   voltage_limit: 253
