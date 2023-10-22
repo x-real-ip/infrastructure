@@ -34,8 +34,14 @@
 
 - name: Enable/disable ap roaming for {{ device_name.json.name }}
   ansible.builtin.uri:
-    url: http://{{ item }}/settings?ap_roaming_enabled={{ settings.ap_roaming }}
-  changed_when: settings_content.json.ap_roaming.enabled != settings.ap_roaming
+    url: http://{{ item }}/settings?ap_roaming_enabled={{ settings.ap_roaming.enable }}
+  changed_when: settings_content.json.ap_roaming.enabled != settings.ap_roaming.enable
+  ignore_errors: true
+
+- name: Set ap roaming rssi threshold for {{ device_name.json.name }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?ap_roaming_threshold={{ settings.ap_roaming.rssi_threshold }}
+  changed_when: settings_content.json.ap_roaming.threshold != settings.ap_roaming.rssi_threshold
   ignore_errors: true
 
 - name: Enable/disable coiot and set peer for {{ device_name.json.name }}
