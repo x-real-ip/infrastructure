@@ -1,0 +1,15 @@
+---
+- name: Reboot {{ item }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/reboot
+    body_format: json
+  register: content
+  until: content.json.ok
+
+- name: Wait for {{ device_name.json.name }} to become up
+  ansible.builtin.uri:
+    url: http://{{ item }}/status
+    body_format: json
+    return_content: true
+  register: status_content
+  until: status_content.json.uptime | int >= 10
