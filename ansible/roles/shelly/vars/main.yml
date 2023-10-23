@@ -19,7 +19,7 @@ settings:
   default_state: "last"
   ap:
     enable: false
-  ap_roaming: 
-    enable: false
-    rssi_threshold: "-80"
-  voltage_limit: 253
+  ap_roaming:
+    enable: true
+    rssi_threshold: -82
+  voltage_limit: 250

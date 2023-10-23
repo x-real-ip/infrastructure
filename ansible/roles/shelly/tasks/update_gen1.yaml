@@ -2,14 +2,6 @@
 - name: Start name task
   ansible.builtin.include_tasks: name.yaml
 
-- name: Wait for {{ device_name.json.name }} to become up
-  ansible.builtin.uri:
-    url: http://{{ item }}/status
-    body_format: json
-    return_content: true
-  register: status_content
-  until: status_content.json.uptime | int >= 10
-
 - name: Check for available updates on device {{ device_name.json.name }}
   ansible.builtin.uri:
     url: http://{{ item }}/ota/check
