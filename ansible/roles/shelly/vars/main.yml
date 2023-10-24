@@ -23,3 +23,6 @@ settings:
     enable: true
     rssi_threshold: -82
   voltage_limit: 250
+  websocket:
+    enable: true
+    server: "ws://{{ home_assistant_url }}/api/shelly/ws"
