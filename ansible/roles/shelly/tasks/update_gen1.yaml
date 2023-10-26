@@ -1,16 +1,15 @@
 ---
-- name: Start name task
-  ansible.builtin.include_tasks: name.yaml
-
-- name: Check for available updates on device {{ device_name.json.name }}
+- name: Check for available updates on {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/ota/check
     body_format: json
     return_content: true
   register: ota_check_content
   until: ota_check_content.json.status == "ok"
+  retries: 10
+  delay: 5
 
-- name: Register OTA content from device {{ device_name.json.name }}
+- name: Register OTA content from {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/ota
     body_format: json
@@ -23,18 +22,21 @@
 - name: Update firmware if update is available
   when: ota_content.json.has_update
   block:
-    - name: Show firmware versions for {{ device_name.json.name }}
+    - name: Show firmware versions from {{ hostvars[item]['device_name'] }}
       ansible.builtin.debug:
         msg:
           - Old firmware version is {{ ota_content.json.old_version }}
           - New firmware version is {{ ota_content.json.new_version }}
 
-    - name: Start updating {{ device_name.json.name }}
+    - name: Start updating {{ hostvars[item]['device_name'] }}
       ansible.builtin.uri:
         url: http://{{ item }}/ota?update=true
         body_format: json
+      until: result.status == 200
+      retries: 10
+      delay: 5
 
-    - name: Wait to become idle after firmware update for {{ device_name.json.name }}
+    - name: Wait to become idle after firmware update for {{ hostvars[item]['device_name'] }}
       ansible.builtin.uri:
         url: http://{{ item }}/ota
         body_format: json
@@ -44,8 +46,11 @@
       retries: 10
       delay: 10
 
-    - name: Verify upgrade for {{ device_name.json.name }}
+    - name: Verify upgrade for {{ hostvars[item]['device_name'] }}
       ansible.builtin.debug:
         msg:
           - "Update firmware from {{ ota_content.json.old_version }} to {{ ota_content_after_upgrade.json.old_version }} succeed!"
       changed_when: ota_content.json.old_version != ota_content_after_upgrade.json.old_version
+      until: result.status == 200
+      retries: 10
+      delay: 5

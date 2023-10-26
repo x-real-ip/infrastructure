@@ -1,0 +1,31 @@
+---
+- name: Get sys config from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Shelly.CheckForUpdate
+    body_format: json
+    return_content: true
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
+
+
+- name: Start update {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    body_format: json
+    method: POST
+    url: http://{{ item }}/rpc
+    body: |
+      {
+        "id": 1,
+        "method": "Shelly.Update",
+        "params": {
+          "stage": "stable" {
+          }
+        }
+      }
+  register: result
+  changed_when: 'result.json.error.message != "Resource unavailable: FW stage stable not found!"'
+  until: result.status == 200
+  retries: 10
+  delay: 5
