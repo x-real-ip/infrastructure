@@ -4,8 +4,8 @@
     url: http://{{ item }}/rpc/Sys.GetConfig
     body_format: json
     return_content: true
-  register: result
-  until: result.status == 200
+  register: get_sys_result
+  until: get_sys_result.status == 200
   retries: 10
   delay: 5
 
@@ -31,7 +31,7 @@
         }
       }
   register: result
-  changed_when: result.json.device.name != hostvars[item]['device_name']
+  changed_when: get_sys_result.json.device.name != hostvars[item]['device_name']
   until: result.status == 200
   retries: 10
   delay: 5
@@ -41,8 +41,8 @@
     url: http://{{ item }}/rpc/Wifi.GetConfig
     body_format: json
     return_content: true
-  register: result
-  until: result.status == 200
+  register: get_wifi_config_result
+  until: get_wifi_config_result.status == 200
   retries: 10
   delay: 5
 
@@ -67,8 +67,8 @@
         }
       }
   register: result
-  changed_when: result.json.ap.enable != settings.ap.enable or
-    result.json.roam.rssi_thr != settings.ap_roaming.rssi_threshold
+  changed_when: get_wifi_config_result.json.ap.enable != settings.ap.enable or
+    get_wifi_config_result.json.roam.rssi_thr != settings.ap_roaming.rssi_threshold
   until: result.status == 200
   retries: 10
   delay: 5
@@ -78,8 +78,8 @@
     url: http://{{ item }}/rpc/Switch.GetConfig?id=0
     body_format: json
     return_content: true
-  register: result
-  until: result.status == 200
+  register: get_switch_result
+  until: get_switch_result.status == 200
   retries: 10
   delay: 5
 
@@ -99,7 +99,7 @@
         }
       }
   register: result
-  changed_when: result.json.voltage_limit != settings.voltage_limit
+  changed_when: get_switch_result.json.voltage_limit != settings.voltage_limit
   until: result.status == 200
   retries: 10
   delay: 5
@@ -109,8 +109,8 @@
     url: http://{{ item }}/rpc/WS.GetConfig
     body_format: json
     return_content: true
-  register: result
-  until: result.status == 200
+  register: get_ws_result
+  until: get_ws_result.status == 200
   retries: 10
   delay: 5
 
@@ -131,8 +131,8 @@
         }
       }
   register: result
-  changed_when: result.json.enable != settings.websocket.enable or
-    result.json.server != settings.websocket.server
+  changed_when: get_ws_result.json.enable != settings.websocket.enable or
+    get_ws_result.json.server != settings.websocket.server
   until: result.status == 200
   retries: 10
   delay: 5
@@ -142,8 +142,8 @@
     url: http://{{ item }}/rpc/BLE.GetConfig
     body_format: json
     return_content: true
-  register: result
-  until: result.status == 200
+  register: get_ble_result
+  until: get_ble_result.status == 200
   retries: 10
   delay: 5
 
@@ -169,9 +169,9 @@
         }
       }
   register: result
-  changed_when: result.json.enable != settings.bluetooth.enable or
-    result.json.rpc.enable != settings.bluetooth.enable_rpc or
-    result.json.observer.enable != settings.bluetooth.enable_gateway
+  changed_when: get_ble_result.json.enable != settings.bluetooth.enable or
+    get_ble_result.json.rpc.enable != settings.bluetooth.enable_rpc or
+    get_ble_result.json.observer.enable != settings.bluetooth.enable_gateway
   until: result.status == 200
   retries: 10
   delay: 5
