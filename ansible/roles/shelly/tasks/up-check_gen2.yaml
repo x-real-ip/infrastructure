@@ -1,0 +1,10 @@
+---
+- name: Wait for {{ item }} to become up
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Shelly.GetStatus
+    body_format: json
+    return_content: true
+  register: result
+  until: result.status == 200 and result.json.sys.uptime | int >= 50
+  retries: 20
+  delay: 10

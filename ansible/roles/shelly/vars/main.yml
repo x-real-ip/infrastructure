@@ -21,8 +21,12 @@ settings:
     enable: false
   ap_roaming:
     enable: true
-    rssi_threshold: -82
+    rssi_threshold: -85
   voltage_limit: 250
   websocket:
     enable: true
     server: "ws://{{ home_assistant_url }}/api/shelly/ws"
+  bluetooth:
+    enable: true
+    enable_rpc: true
+    enable_gateway: true

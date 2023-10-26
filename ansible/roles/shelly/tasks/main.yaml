@@ -34,10 +34,15 @@
       entity_id: "{{ home_assistant_firewall_switch }}"
   when: allow_internet_access and switch_state_content.json.state == "off"
 
-- name: Start update tasks
+- name: Update
   block:
     - name: Start reboot task
       ansible.builtin.include_tasks: reboot_gen{{ hostvars[item].gen }}.yaml
+      loop: "{{ groups['shelly'] }}"
+      ignore_errors: true
+
+    - name: Check if device is up
+      ansible.builtin.include_tasks: up-check_gen{{ hostvars[item].gen }}.yaml
       loop: "{{ groups['shelly'] }}"
       ignore_errors: true
 
@@ -65,5 +70,10 @@
 
 - name: Start reboot task
   ansible.builtin.include_tasks: reboot_gen{{ hostvars[item].gen }}.yaml
+  loop: "{{ groups['shelly'] }}"
+  ignore_errors: true
+
+- name: Check if device is up
+  ansible.builtin.include_tasks: up-check_gen{{ hostvars[item].gen }}.yaml
   loop: "{{ groups['shelly'] }}"
   ignore_errors: true

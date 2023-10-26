@@ -1,0 +1,8 @@
+---
+- name: Wait for {{ hostvars[item]['device_name'] }} to become up
+  ansible.builtin.uri:
+    url: http://{{ item }}/status
+    body_format: json
+    return_content: true
+  register: status_content
+  until: status_content.json.uptime | int >= 10

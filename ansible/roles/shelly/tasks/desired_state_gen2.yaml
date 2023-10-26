@@ -4,8 +4,10 @@
     url: http://{{ item }}/rpc/Sys.GetConfig
     body_format: json
     return_content: true
-  register: sysconfig_content
-  ignore_errors: true
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
 
 - name: Set sys config for {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
@@ -28,16 +30,21 @@
           }
         }
       }
-  changed_when: sysconfig_content.json.device.name != hostvars[item]['device_name']
-  ignore_errors: true
+  register: result
+  changed_when: result.json.device.name != hostvars[item]['device_name']
+  until: result.status == 200
+  retries: 10
+  delay: 5
 
 - name: Get wifi config from {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/rpc/Wifi.GetConfig
     body_format: json
     return_content: true
-  register: wificonfig_content
-  ignore_errors: true
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
 
 - name: Set wifi config for {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
@@ -59,17 +66,22 @@
           }
         }
       }
-  changed_when: wificonfig_content.json.ap.enable != settings.ap.enable or
-    wificonfig_content.json.roam.rssi_thr != settings.ap_roaming.rssi_threshold
-  ignore_errors: true
+  register: result
+  changed_when: result.json.ap.enable != settings.ap.enable or
+    result.json.roam.rssi_thr != settings.ap_roaming.rssi_threshold
+  until: result.status == 200
+  retries: 10
+  delay: 5
 
 - name: Get switch config from {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/rpc/Switch.GetConfig?id=0
     body_format: json
     return_content: true
-  register: switchconfig_content
-  ignore_errors: true
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
 
 - name: Set switch config for {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
@@ -86,16 +98,21 @@
           }
         }
       }
-  changed_when: switchconfig_content.json.voltage_limit != settings.voltage_limit
-  ignore_errors: true
+  register: result
+  changed_when: result.json.voltage_limit != settings.voltage_limit
+  until: result.status == 200
+  retries: 10
+  delay: 5
 
 - name: Get outbound websocket config from {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/rpc/WS.GetConfig
     body_format: json
     return_content: true
-  register: wsconfig_content
-  ignore_errors: true
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
 
 - name: Set websocket config for {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
@@ -113,6 +130,48 @@
           }
         }
       }
-  changed_when: wsconfig_content.json.enable != settings.websocket.enable or
-    wsconfig_content.json.server != settings.websocket.server
-  ignore_errors: true
+  register: result
+  changed_when: result.json.enable != settings.websocket.enable or
+    result.json.server != settings.websocket.server
+  until: result.status == 200
+  retries: 10
+  delay: 5
+
+- name: Get BLE config from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/BLE.GetConfig
+    body_format: json
+    return_content: true
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
+
+- name: Set BLE config for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    body_format: json
+    method: POST
+    url: http://{{ item }}/rpc
+    body: |
+      {
+        "id": 1,
+        "method": "BLE.SetConfig",
+        "params": {
+          "config": {
+            "enable": {{ settings.bluetooth.enable }},
+            "rpc": {
+              "enable": {{ settings.bluetooth.enable_rpc }}
+            },
+            "observer": {
+              "enable": {{ settings.bluetooth.enable_gateway }}
+            }
+          }
+        }
+      }
+  register: result
+  changed_when: result.json.enable != settings.bluetooth.enable or
+    result.json.rpc.enable != settings.bluetooth.enable_rpc or
+    result.json.observer.enable != settings.bluetooth.enable_gateway
+  until: result.status == 200
+  retries: 10
+  delay: 5
