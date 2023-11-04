@@ -2,9 +2,9 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: pv-harbor-redis
+  name: pv-{{ harbor.name }}-redis
   labels:
-    app: harbor-redis
+    app: {{ harbor.name }}-redis
 spec:
   storageClassName: "freenas-iscsi-manual-csi"
   capacity:
@@ -16,10 +16,10 @@ spec:
     driver: org.democratic-csi.node-manual
     readOnly: false
     fsType: xfs
-    volumeHandle: pv-harbor-redis
+    volumeHandle: pv-{{ harbor.name }}-redis
     volumeAttributes:
       portal: storage-server-lagg.lan:3260
-      iqn: iqn.2005-10.org.freenas.ctl:harbor-redis
+      iqn: iqn.2005-10.org.freenas.ctl:{{ harbor.name }}-redis
       lun: "0"
       node_attach_driver: iscsi
       provisioner_driver: node-manual
@@ -28,9 +28,9 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: pv-harbor-db
+  name: pv-{{ harbor.name }}-db
   labels:
-    app: harbor-database
+    app: {{ harbor.name }}-database
 spec:
   storageClassName: "freenas-iscsi-manual-csi"
   capacity:
@@ -42,10 +42,10 @@ spec:
     driver: org.democratic-csi.node-manual
     readOnly: false
     fsType: xfs
-    volumeHandle: pv-harbor-db
+    volumeHandle: pv-{{ harbor.name }}-db
     volumeAttributes:
       portal: storage-server-lagg.lan:3260
-      iqn: iqn.2005-10.org.freenas.ctl:harbor-db
+      iqn: iqn.2005-10.org.freenas.ctl:{{ harbor.name }}-db
       lun: "0"
       node_attach_driver: iscsi
       provisioner_driver: node-manual
@@ -54,9 +54,9 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: pv-harbor-registry
+  name: pv-{{ harbor.name }}-registry
   labels:
-    app: harbor-registry
+    app: {{ harbor.name }}-registry
 spec:
   storageClassName: "freenas-nfs-manual-csi"
   capacity:
@@ -72,10 +72,10 @@ spec:
     driver: org.democratic-csi.node-manual
     readOnly: false
     fsType: nfs
-    volumeHandle: pv-harbor-registry
+    volumeHandle: pv-{{ harbor.name }}-registry
     volumeAttributes:
       server: storage-server-lagg.lan
-      share: /mnt/r10_8tb/k8s/harbor-registry
+      share: /mnt/r10_8tb/k8s/{{ harbor.name }}-registry
       node_attach_driver: nfs
       provisioner_driver: node-manual
 
@@ -83,9 +83,9 @@ spec:
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: pv-harbor-jobservice
+  name: pv-{{ harbor.name }}-jobservice
   labels:
-    app: harbor-jobservice
+    app: {{ harbor.name }}-jobservice
 spec:
   storageClassName: "freenas-iscsi-manual-csi"
   capacity:
@@ -97,10 +97,10 @@ spec:
     driver: org.democratic-csi.node-manual
     readOnly: false
     fsType: xfs
-    volumeHandle: pv-harbor-jobservice
+    volumeHandle: pv-{{ harbor.name }}-jobservice
     volumeAttributes:
       portal: storage-server-lagg.lan:3260
-      iqn: iqn.2005-10.org.freenas.ctl:harbor-jobservice
+      iqn: iqn.2005-10.org.freenas.ctl:{{ harbor.name }}-jobservice
       lun: "0"
       node_attach_driver: iscsi
       provisioner_driver: node-manual
@@ -109,13 +109,13 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-harbor-jobservice
-  namespace: devops
+  name: pvc-{{ harbor.name }}-jobservice
+  namespace: {{ harbor.namespace }}
   annotations:
     volume.beta.kubernetes.io/storage-class: "freenas-iscsi-manual-csi"
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: {{ harbor.name }}
     component: jobservice
 spec:
   storageClassName: freenas-iscsi-manual-csi
@@ -124,17 +124,17 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  volumeName: pv-harbor-jobservice
+  volumeName: pv-{{ harbor.name }}-jobservice
 
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-harbor-registry
-  namespace: devops
+  name: pvc-{{ harbor.name }}-registry
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: {{ harbor.name }}
     component: registry
   annotations:
     volume.beta.kubernetes.io/storage-class: "freenas-nfs-manual-csi"
@@ -145,32 +145,32 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  volumeName: pv-harbor-registry
+  volumeName: pv-{{ harbor.name }}-registry
 
 ---
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
-  name: harbor-database
-  namespace: devops
+  name: {{ harbor.name }}-database
+  namespace: {{ harbor.namespace }}
 spec:
   encryptedData:
     POSTGRES_PASSWORD: AgAJ2LX0+EeDX5NNKshpWrIrIHm1C8y5TC0NLPmn4nDCKzdr3inyHQDHXVRi88h1t3+X7aF7AMfMFx4d0enFn1PfN3JVa0ODlk64wxmWgw5abB0QKjgAWb+0fNrQuT7CkYi/aK5WQt4R1iQtxhOkz9bLUeqKrhzZlrEDIN7SDjGnNxi1MN5tkQpf+ahQd+4ZyNrQ9npwhfAfoT3COs8xh+fI91dFB4Emad1roeJBEIZhDOurbIKGjqMgxDyOqkuFOgf/xiEzVeX9shzmQOqIeHDkoTLORH/UNu2E4rIzJSnV/6kS2DDJG1qNV84O0ai63949KocMqC45FyoCqw3HRTBFQFWsaj1mI4RLjySVLsGQRHiYnSq7iKiGZMtxgedg3c+2TDu5CWgGN0/9ldk3UvH1G2z5Zh+M1Puf20JfqXXtTbcdfhQ32tAJZlFj9mKhcbvt1tHeMRYGGCMLoXMsKIrnOcuEAr0d0l3KgNVXk3ffmDr4+JefxDLD4cVQkDG56z/nThfOZk1W3kINnE5DajYhBm/p0ndgfkdOsxguWLGgWm/1wyE12O7JtJhcjHPCSJYcJT6vbp6/PSe1SNI55F9y8KJr6NnZ7wdM59y10WYyAy3p6wxc6d6zp+Nt7y/xI2ekPzoFa4xldAHI9nUATzMqfhjcRwf3MIfHMLgXI0pIhIEnojeBeVdkLWW24c8trjx+fJghofbT6kDL5q/YoUi4mETJA+5ujw==
   template:
     metadata:
       labels:
-        app: harbor
-        release: harbor
-      name: harbor-database
-      namespace: devops
+        app: {{ harbor.name }}
+        release: {{ harbor.name }}
+      name: {{ harbor.name }}-database
+      namespace: {{ harbor.namespace }}
     type: Opaque
 
 ---
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
-  name: harbor-registry
-  namespace: devops
+  name: {{ harbor.name }}-registry
+  namespace: {{ harbor.namespace }}
 spec:
   encryptedData:
     REGISTRY_HTTP_SECRET: AgBnIqcjpG7wkR7yIf/x8Hbw+M24Mpr5t5kX4OSeGQ1l/6tMzHfN/HvB91SxyAf3hT+y6Ww58KWFb+5lsHwnDEwT9D4Vr41Rj7z7U/9FY3XTA+JkiNhcP5u5UJe8Cq0D475ChAnDoAXfYX5PZup3wnkd3atc25h+nbSvE1HboXrfwqDsGiyTIZmLQw11B5kSkKwNxzVtGHn2Z0NSpTE7TOINLR7QRUVmudt9y92EsikypERro+7hUWdtx+hhMrPQwXbwHotLBwE89r0kIqek1jXPPFZ2pwy6RA5uVjhKCbGk3uXbdQqT4ku5mvBpvDiifcnRRjn1un6rJ0jRr4ClGL4JXnziFrBPryi97LkwABm21ayWBK7ITVZ+MM/veTX5X+H0v75/ePbJY4Fme0fouRBNxgcnqmSjmFc6II01+Lrl9LkwkH6LQe+qK0bLxLE36MMrPBK61LshXWd0iX73khO+2BCL9iUBdDVF+7Wonpo73fhISzY8HoCSVoIOo5g7fHlONa6jeqlnng1+xdJlGKO2EH7CeUgXYcc5lzBvwTTykRBM5H0umghp+3pQHojg9aSJr1MA6CMKAs9i/QNjGEf9xMIUz4ileq0ng+U08fV0d1TVXveCZussuru8hngh+fBGkpSkkERVckuq+3bTN1xcsj4g0/OxiXgtq5mf+dlg40oQWiRDDn/bRpOgEacpmriq87Zk/R5/scFf5J1yWhUh
@@ -178,36 +178,36 @@ spec:
   template:
     metadata:
       labels:
-        app: harbor
-        release: harbor
-      name: harbor-registry
-      namespace: devops
+        app: {{ harbor.name }}
+        release: {{ harbor.name }}
+      name: {{ harbor.name }}-registry
+      namespace: {{ harbor.namespace }}
     type: Opaque
 
 ---
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
-  name: harbor-registry-htpasswd
-  namespace: devops
+  name: {{ harbor.name }}-registry-htpasswd
+  namespace: {{ harbor.namespace }}
 spec:
   encryptedData:
     REGISTRY_HTPASSWD: AgCVh/C6nVCeDGnIpUeQ1qQNdZ5esSr5o0/GWf7uOFtb9454zXrePbyLyOVCVJUDNV48ID7sOEVckKpcRHZQPjwvQ+TLicCEFp0YarCZb4qJNp0eV0sZDdPXJjx+7Li54nJgqHt3UIb5roHOJzzasbh2Eq8rqPzq3ow1fPpbyqHcfdrGr9cEv98J3aG5KAgERocFFYwionxwx/DLFp51Pv0iFZVjp80mf7Zhu1i6iLs4KJeXKZEeOLHGM2hPJe24jFpfFnb6NpB5xBJ05JHauMqlpSNGTC5nj6fDSdYRlKc95jQImO0sJ+PZX8HwhsoEd/Rnttm8fbcD4mqP1E35zvMmGwJdqvVlZ+SX5zJOGM7tDS9GmMWfpiDYnyXNFD/1GZyqS3sEX7br73v8mzwzXdRks+UQ2uNXtcEnLeQ3L//NSBpn1Obvq6uClCtfGVkAkAuoXv3Y1eD7OJRG+PyhXizeimTjX9m1vURXh48ZUubCG/0L+QvpPh+5Ns+PsBskt76evN5+xElt8VMFDgzgb6aT5JnEcQpXy9uY50D9f3aj0bQw1GO434N/yIrpUO2N5iigAf6CyX3GIMHtMRRZGoO5IaRGBEqwmotyboOgFbDnLbRYIIKvIGDy47f/3IlbY9NgN9mqnL38etOsX2iS60Ol+Z8uts73X5m87fb3Rq+P70WLOllEXP9QS9vT/PJwlcUx+wrsUCdqPM0ik1Xm7wbVszYrM/2u3qVUUekAYmd7hC0R6jgy7ZnRwnXAnsSy6PL0VNnrUbkn7ZWb575lu1puGmNYhH4zQnQSwA==
   template:
     metadata:
       labels:
-        app: harbor
-        release: harbor
-      name: harbor-registry-htpasswd
-      namespace: devops
+        app: {{ harbor.name }}
+        release: {{ harbor.name }}
+      name: {{ harbor.name }}-registry-htpasswd
+      namespace: {{ harbor.namespace }}
     type: Opaque
 
 ---
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
-  name: harbor-jobservice
-  namespace: devops
+  name: {{ harbor.name }}-jobservice
+  namespace: {{ harbor.namespace }}
 spec:
   encryptedData:
     JOBSERVICE_SECRET: AgDTy8lCCKOHv1BMyGFAM1bVyaFbe+cZCH0pJw/A4DOe4XTAnY1X6GpqkHtBSKEYkg34ReKhofCgKLE426Qns7728KYppo67UysV0UHF6bBwIOp/6w57gF4uoT+AN03tZflGy6gCX0jA/jHDU+CVJRFPYtbLDuqF21f8bKRhFkbd8pSHPAwK4G/C4DZ4SDT/OZaioRKKGl/hGL4xrJN/+5PiGQ2VmPkIqLvo705yKOcwpO2ELKB0slmHiOPG4qc0WfvAEuiFwZ50TlsBhAnGBRC+u9B7XXdfJ1p3GRaL59guEWew7hPK0dZegpk7CPZois3WGasqy1zeJhNlYEXZq62MPbkYFBRZezW8hKr19l/XfrQOZD1hPL6mDjnK1ATPGaBUWrJBCH59/wVc+/Kfz0eKP802Tc8pbRA+RiK8lK9QqFqREYXWXkpzW0xfDmpcpLgi2ktfn4V79zMbqc09d5iKTNJ4W7su1Pb6OnFV8+NcZ6pWHXFo9ebNnm37RdWcYb+azAB/EjUDE5serDf/6TplQsjtk9UT/uLqcVDowu4+wDLteBicVE4Dbs+9YofopJu1NdrvvrqHeDvvegQQgCsr4m4rleTsuneed/yI5e7joAjT4OoWOtnk2sFJS8COEoGJTK7bqDkUNIR2PvzGvnlKbMvRvn3aZXYxMn/ow6r+RfkPL4xzMmtiHs2thoaGMstOHTtMNbVMKanNx+rH252h
@@ -215,18 +215,18 @@ spec:
   template:
     metadata:
       labels:
-        app: harbor
-        release: harbor
-      name: harbor-jobservice
-      namespace: devops
+        app: {{ harbor.name }}
+        release: {{ harbor.name }}
+      name: {{ harbor.name }}-jobservice
+      namespace: {{ harbor.namespace }}
     type: Opaque
 
 ---
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
-  name: harbor-core
-  namespace: devops
+  name: {{ harbor.name }}-core
+  namespace: {{ harbor.namespace }}
 spec:
   encryptedData:
     CSRF_KEY: AgAgyUmaNMtfPzOdCGKQrg/Jb+rA0hpezCwOlL17n+m8VwqHtiwHst/k0i8FmHaoMRV/EwGgPZG0qdXu+Xr3PDsA1cNEUutfkRlS2FYEApnuw6pV5bwpEc7t5bcxOB5sB0eEyGUKPOaJrezX+DB3jrJK5iorxEmi0sVEkVkNkleMZeN3tQ4y2Yq2atCmcRcTc0CtbyXRxtxeNXZXIsnLAHmNTUdiOiLfeewfh2lf8SXDm8OFHUXeh0ApxLf94L0l+gPBLhxh1CPsE54V3gMbW80KEo3NR8dty0KpRJblMj/Np/l+d5+fov+aThEc4kkTZbpGB2ztU6s0NP37SAfHhYbR72UdGZiXgjjVyOn8w/rAaxCv0pWkjRnRK5UgoZhGLlOlo/okSTgJmR4uqQdkQXVpjxbGQ45Pg3IueJ0pBKeESs5zatIbXMKK84wwYuQI4LIjJX1hvND8JHHkJwP8Mswaao9qQ7UU9U4Nbi2gIexBGxSZkokSKkVuVWhRnvS11dXiyDeoDjL+clxTe8Xu2NR+LdKoiDTvZ8vkSH40jphbQrQ0z4x2c+PVCEJXdLFOOpkf8BjsGOS7Xgb0k7rbmSxdf1jq06n7j63QIWiZrhGg6LC9ffdVmbzT12G8Iom0uzWvqZs7sUgmW51sBUu5/Yfset6mXos8k8/ayFKetcIyUDq87ZCSN+d5jpw0PHKqp/eQBmURDdJ6Zvkih22FDbJl1QkHsfdjJW5Z7Cb1yE0l2w==
@@ -240,21 +240,21 @@ spec:
   template:
     metadata:
       labels:
-        app: harbor
-        release: harbor
-      name: harbor-core
-      namespace: devops
+        app: {{ harbor.name }}
+        release: {{ harbor.name }}
+      name: {{ harbor.name }}-core
+      namespace: {{ harbor.namespace }}
     type: Opaque
 
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: "harbor-registryctl"
-  namespace: devops
+  name: "{{ harbor.name }}-registryctl"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 type: Opaque
 data: {}
 
@@ -262,22 +262,22 @@ data: {}
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: "harbor-registryctl"
-  namespace: devops
+  name: "{{ harbor.name }}-registryctl"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 data: {}
 
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: harbor-core
-  namespace: devops
+  name: {{ harbor.name }}-core
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 data:
   app.conf: |+
     appname = Harbor
@@ -287,7 +287,7 @@ data:
     httpport = 8080
   PORT: "8080"
   DATABASE_TYPE: "postgresql"
-  POSTGRESQL_HOST: "harbor-database"
+  POSTGRESQL_HOST: "{{ harbor.name }}-database"
   POSTGRESQL_PORT: "5432"
   POSTGRESQL_USERNAME: "postgres"
   POSTGRESQL_DATABASE: "registry"
@@ -295,21 +295,21 @@ data:
   POSTGRESQL_MAX_IDLE_CONNS: "100"
   POSTGRESQL_MAX_OPEN_CONNS: "900"
   EXT_ENDPOINT: "https://harbor.k8s.lan"
-  CORE_URL: "http://harbor-core:80"
-  JOBSERVICE_URL: "http://harbor-jobservice"
-  REGISTRY_URL: "http://harbor-registry:5000"
-  TOKEN_SERVICE_URL: "http://harbor-core:80/service/token"
+  CORE_URL: "http://{{ harbor.name }}-core:80"
+  JOBSERVICE_URL: "http://{{ harbor.name }}-jobservice"
+  REGISTRY_URL: "http://{{ harbor.name }}-registry:5000"
+  TOKEN_SERVICE_URL: "http://{{ harbor.name }}-core:80/service/token"
   CORE_LOCAL_URL: "http://127.0.0.1:8080"
   WITH_TRIVY: "false"
-  TRIVY_ADAPTER_URL: "http://harbor-trivy:8080"
+  TRIVY_ADAPTER_URL: "http://{{ harbor.name }}-trivy:8080"
   REGISTRY_STORAGE_PROVIDER_NAME: "filesystem"
   LOG_LEVEL: "info"
   CONFIG_PATH: "/etc/core/app.conf"
   CHART_CACHE_DRIVER: "redis"
-  _REDIS_URL_CORE: "redis://harbor-redis:6379/0?idle_timeout_seconds=30"
-  _REDIS_URL_REG: "redis://harbor-redis:6379/2?idle_timeout_seconds=30"
-  PORTAL_URL: "http://harbor-portal"
-  REGISTRY_CONTROLLER_URL: "http://harbor-registry:8080"
+  _REDIS_URL_CORE: "redis://{{ harbor.name }}-redis:6379/0?idle_timeout_seconds=30"
+  _REDIS_URL_REG: "redis://{{ harbor.name }}-redis:6379/2?idle_timeout_seconds=30"
+  PORTAL_URL: "http://{{ harbor.name }}-portal"
+  REGISTRY_CONTROLLER_URL: "http://{{ harbor.name }}-registry:8080"
   REGISTRY_CREDENTIAL_USERNAME: "theautomation"
   HTTP_PROXY: ""
   HTTPS_PROXY: ""
@@ -321,11 +321,11 @@ data:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: "harbor-registry"
-  namespace: devops
+  name: "{{ harbor.name }}-registry"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 data:
   config.yml: |+
     version: 0.1
@@ -349,7 +349,7 @@ data:
       redirect:
         disable: false
     redis:
-      addr: harbor-redis:6379
+      addr: {{ harbor.name }}-redis:6379
       db: 2
       readtimeout: 10s
       writetimeout: 10s
@@ -385,16 +385,16 @@ data:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: "harbor-jobservice-env"
-  namespace: devops
+  name: "{{ harbor.name }}-jobservice-env"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 data:
-  CORE_URL: "http://harbor-core:80"
-  TOKEN_SERVICE_URL: "http://harbor-core:80/service/token"
-  REGISTRY_URL: "http://harbor-registry:5000"
-  REGISTRY_CONTROLLER_URL: "http://harbor-registry:8080"
+  CORE_URL: "http://{{ harbor.name }}-core:80"
+  TOKEN_SERVICE_URL: "http://{{ harbor.name }}-core:80/service/token"
+  REGISTRY_URL: "http://{{ harbor.name }}-registry:5000"
+  REGISTRY_CONTROLLER_URL: "http://{{ harbor.name }}-registry:8080"
   REGISTRY_CREDENTIAL_USERNAME: "theautomation"
   JOBSERVICE_WEBHOOK_JOB_MAX_RETRY: "3"
   JOBSERVICE_WEBHOOK_JOB_HTTP_CLIENT_TIMEOUT: "3"
@@ -406,11 +406,11 @@ data:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: "harbor-portal"
-  namespace: devops
+  name: "{{ harbor.name }}-portal"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 data:
   nginx.conf: |+
     worker_processes auto;
@@ -452,11 +452,11 @@ data:
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: "harbor-jobservice"
-  namespace: devops
+  name: "{{ harbor.name }}-jobservice"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 data:
   config.yml: |+
     #Server listening port
@@ -466,8 +466,8 @@ data:
       workers: 10
       backend: "redis"
       redis_pool:
-        redis_url: "redis://harbor-redis:6379/1"
-        namespace: "harbor_job_service_namespace"
+        redis_url: "redis://{{ harbor.name }}-redis:6379/1"
+        namespace: "{{ harbor.name }}_job_service_namespace"
         idle_timeout_second: 3600
     job_loggers:
       - name: "FILE"
@@ -496,27 +496,27 @@ data:
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: harbor-redis
-  namespace: devops
+  name: {{ harbor.name }}-redis
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: redis
 spec:
   replicas: 1
   persistentVolumeClaimRetentionPolicy:
     whenDeleted: Delete
-  serviceName: harbor-redis
+  serviceName: {{ harbor.name }}-redis
   selector:
     matchLabels:
-      release: harbor
-      app: "harbor"
+      release: {{ harbor.name }}
+      app: "{{ harbor.name }}"
       component: redis
   template:
     metadata:
       labels:
-        release: harbor
-        app: "harbor"
+        release: {{ harbor.name }}
+        app: "{{ harbor.name }}"
         component: redis
     spec:
       securityContext:
@@ -527,7 +527,7 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: redis
-          image: goharbor/redis-photon:v2.9.0
+          image: goharbor/redis-photon:{{ harbor.image_tag }}
           imagePullPolicy: Always
           livenessProbe:
             tcpSocket:
@@ -547,12 +547,12 @@ spec:
     - metadata:
         name: data
         labels:
-          release: harbor
-          app: "harbor"
+          release: {{ harbor.name }}
+          app: "{{ harbor.name }}"
       spec:
         selector:
           matchLabels:
-            app: harbor-redis
+            app: {{ harbor.name }}-redis
         accessModes:
           - "ReadWriteOnce"
         storageClassName: freenas-iscsi-manual-csi
@@ -564,27 +564,27 @@ spec:
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: "harbor-database"
-  namespace: devops
+  name: "{{ harbor.name }}-database"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: database
 spec:
   replicas: 1
   persistentVolumeClaimRetentionPolicy:
     whenDeleted: Delete
-  serviceName: "harbor-database"
+  serviceName: "{{ harbor.name }}-database"
   selector:
     matchLabels:
-      release: harbor
-      app: "harbor"
+      release: {{ harbor.name }}
+      app: "{{ harbor.name }}"
       component: database
   template:
     metadata:
       labels:
-        release: harbor
-        app: "harbor"
+        release: {{ harbor.name }}
+        app: "{{ harbor.name }}"
         component: database
     spec:
       securityContext:
@@ -595,7 +595,7 @@ spec:
       priorityClassName: system-node-critical
       initContainers:
         - name: "data-migrator"
-          image: goharbor/harbor-db:v2.9.0
+          image: goharbor/harbor-db:{{ harbor.image_tag }}
           imagePullPolicy: Always
           command: ["/bin/sh"]
           args:
@@ -607,7 +607,7 @@ spec:
             - name: database-data
               mountPath: /var/lib/postgresql/data
         - name: "data-permissions-ensurer"
-          image: goharbor/harbor-db:v2.9.0
+          image: goharbor/harbor-db:{{ harbor.image_tag }}
           imagePullPolicy: Always
           command: ["/bin/sh"]
           args: ["-c", "chmod -R 700 /var/lib/postgresql/data/pgdata || true"]
@@ -616,7 +616,7 @@ spec:
               mountPath: /var/lib/postgresql/data
       containers:
         - name: database
-          image: goharbor/harbor-db:v2.9.0
+          image: goharbor/harbor-db:{{ harbor.image_tag }}
           imagePullPolicy: Always
           livenessProbe:
             exec:
@@ -634,7 +634,7 @@ spec:
             timeoutSeconds: 1
           envFrom:
             - secretRef:
-                name: "harbor-database"
+                name: "{{ harbor.name }}-database"
           env:
             - name: PGDATA
               value: "/var/lib/postgresql/data/pgdata"
@@ -653,12 +653,12 @@ spec:
     - metadata:
         name: "database-data"
         labels:
-          release: harbor
-          app: "harbor"
+          release: {{ harbor.name }}
+          app: "{{ harbor.name }}"
       spec:
         selector:
           matchLabels:
-            app: harbor-database
+            app: {{ harbor.name }}-database
         accessModes:
           - "ReadWriteOnce"
         storageClassName: freenas-iscsi-manual-csi
@@ -670,11 +670,11 @@ spec:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: "harbor-registry"
-  namespace: devops
+  name: "{{ harbor.name }}-registry"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: registry
 spec:
   replicas: 1
@@ -683,16 +683,16 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      release: harbor
-      app: "harbor"
+      release: {{ harbor.name }}
+      app: "{{ harbor.name }}"
       component: registry
   template:
     metadata:
       labels:
         heritage: Helm
-        release: harbor
-        chart: harbor
-        app: "harbor"
+        release: {{ harbor.name }}
+        chart: {{ harbor.name }}
+        app: "{{ harbor.name }}"
         component: registry
     spec:
       securityContext:
@@ -704,7 +704,7 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: registry
-          image: goharbor/registry-photon:v2.9.0
+          image: goharbor/registry-photon:{{ harbor.image_tag }}
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -723,7 +723,7 @@ spec:
           args: ["serve", "/etc/registry/config.yml"]
           envFrom:
             - secretRef:
-                name: "harbor-registry"
+                name: "{{ harbor.name }}-registry"
           ports:
             - containerPort: 5000
             - containerPort: 5001
@@ -738,7 +738,7 @@ spec:
               subPath: config.yml
           resources: {}
         - name: registryctl
-          image: goharbor/harbor-registryctl:v2.9.0
+          image: goharbor/harbor-registryctl:{{ harbor.image_tag }}
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -756,21 +756,21 @@ spec:
             periodSeconds: 10
           envFrom:
             - configMapRef:
-                name: "harbor-registryctl"
+                name: "{{ harbor.name }}-registryctl"
             - secretRef:
-                name: "harbor-registry"
+                name: "{{ harbor.name }}-registry"
             - secretRef:
-                name: "harbor-registryctl"
+                name: "{{ harbor.name }}-registryctl"
           env:
             - name: CORE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: harbor-core
+                  name: {{ harbor.name }}-core
                   key: secret
             - name: JOBSERVICE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: harbor-jobservice
+                  name: {{ harbor.name }}-jobservice
                   key: JOBSERVICE_SECRET
           ports:
             - containerPort: 8080
@@ -787,40 +787,40 @@ spec:
       volumes:
         - name: registry-htpasswd
           secret:
-            secretName: harbor-registry-htpasswd
+            secretName: {{ harbor.name }}-registry-htpasswd
             items:
               - key: REGISTRY_HTPASSWD
                 path: passwd
         - name: registry-config
           configMap:
-            name: "harbor-registry"
+            name: "{{ harbor.name }}-registry"
         - name: registry-data
           persistentVolumeClaim:
-            claimName: pvc-harbor-registry
+            claimName: pvc-{{ harbor.name }}-registry
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "harbor-portal"
-  namespace: devops
+  name: "{{ harbor.name }}-portal"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: portal
 spec:
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      release: harbor
-      app: "harbor"
+      release: {{ harbor.name }}
+      app: "{{ harbor.name }}"
       component: portal
   template:
     metadata:
       labels:
-        release: harbor
-        app: "harbor"
+        release: {{ harbor.name }}
+        app: "{{ harbor.name }}"
         component: portal
     spec:
       securityContext:
@@ -830,7 +830,7 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: portal
-          image: goharbor/harbor-portal:v2.9.0
+          image: goharbor/harbor-portal:{{ harbor.image_tag }}
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -856,17 +856,17 @@ spec:
       volumes:
         - name: portal-config
           configMap:
-            name: "harbor-portal"
+            name: "{{ harbor.name }}-portal"
 
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: "harbor-jobservice"
-  namespace: devops
+  name: "{{ harbor.name }}-jobservice"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: jobservice
 spec:
   replicas: 1
@@ -875,16 +875,16 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      release: harbor
-      app: "harbor"
+      release: {{ harbor.name }}
+      app: "{{ harbor.name }}"
       component: jobservice
   template:
     metadata:
       labels:
         heritage: Helm
-        release: harbor
-        chart: harbor
-        app: "harbor"
+        release: {{ harbor.name }}
+        chart: {{ harbor.name }}
+        app: "{{ harbor.name }}"
         component: jobservice
     spec:
       securityContext:
@@ -895,7 +895,7 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: jobservice
-          image: goharbor/harbor-jobservice:v2.9.0
+          image: goharbor/harbor-jobservice:{{ harbor.image_tag }}
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -915,13 +915,13 @@ spec:
             - name: CORE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: harbor-core
+                  name: {{ harbor.name }}-core
                   key: secret
           envFrom:
             - configMapRef:
-                name: "harbor-jobservice-env"
+                name: "{{ harbor.name }}-jobservice-env"
             - secretRef:
-                name: "harbor-jobservice"
+                name: "{{ harbor.name }}-jobservice"
           ports:
             - containerPort: 8080
           volumeMounts:
@@ -934,34 +934,34 @@ spec:
       volumes:
         - name: jobservice-config
           configMap:
-            name: "harbor-jobservice"
+            name: "{{ harbor.name }}-jobservice"
         - name: job-logs
           persistentVolumeClaim:
-            claimName: pvc-harbor-jobservice
+            claimName: pvc-{{ harbor.name }}-jobservice
 
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: harbor-core
-  namespace: devops
+  name: {{ harbor.name }}-core
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: core
 spec:
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      release: harbor
-      app: "harbor"
+      release: {{ harbor.name }}
+      app: "{{ harbor.name }}"
       component: core
   template:
     metadata:
       labels:
-        release: harbor
-        app: "harbor"
+        release: {{ harbor.name }}
+        app: "{{ harbor.name }}"
         component: core
     spec:
       securityContext:
@@ -972,7 +972,7 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: core
-          image: goharbor/harbor-core:v2.9.0
+          image: goharbor/harbor-core:{{ harbor.image_tag }}
           imagePullPolicy: Always
           startupProbe:
             httpGet:
@@ -998,19 +998,19 @@ spec:
             periodSeconds: 10
           envFrom:
             - configMapRef:
-                name: "harbor-core"
+                name: "{{ harbor.name }}-core"
             - secretRef:
-                name: "harbor-core"
+                name: "{{ harbor.name }}-core"
           env:
             - name: CORE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: harbor-core
+                  name: {{ harbor.name }}-core
                   key: secret
             - name: JOBSERVICE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: "harbor-jobservice"
+                  name: "{{ harbor.name }}-jobservice"
                   key: JOBSERVICE_SECRET
           ports:
             - containerPort: 8080
@@ -1031,19 +1031,19 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: harbor-core
+            name: {{ harbor.name }}-core
             items:
               - key: app.conf
                 path: app.conf
         - name: secret-key
           secret:
-            secretName: harbor-core
+            secretName: {{ harbor.name }}-core
             items:
               - key: secretKey
                 path: key
         - name: token-service-private-key
           secret:
-            secretName: harbor-core
+            secretName: {{ harbor.name }}-core
         - name: ca-download
           secret:
         - name: psc
@@ -1053,65 +1053,65 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: harbor-redis
-  namespace: devops
+  name: {{ harbor.name }}-redis
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 spec:
   ports:
     - port: 6379
   selector:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: redis
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: "harbor-jobservice"
-  namespace: devops
+  name: "{{ harbor.name }}-jobservice"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 spec:
   ports:
     - name: http-jobservice
       port: 80
       targetPort: 8080
   selector:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: jobservice
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: "harbor-portal"
-  namespace: devops
+  name: "{{ harbor.name }}-portal"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 spec:
   ports:
     - port: 80
       targetPort: 8080
   selector:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: portal
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: "harbor-registry"
-  namespace: devops
+  name: "{{ harbor.name }}-registry"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 spec:
   ports:
     - name: http-registry
@@ -1119,55 +1119,55 @@ spec:
     - name: http-controller
       port: 8080
   selector:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: registry
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: "harbor-database"
-  namespace: devops
+  name: "{{ harbor.name }}-database"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 spec:
   ports:
     - port: 5432
   selector:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: database
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: harbor-core
-  namespace: devops
+  name: {{ harbor.name }}-core
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
 spec:
   ports:
     - name: http-web
       port: 80
       targetPort: 8080
   selector:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
     component: core
 
 ---
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: "harbor-ingress"
-  namespace: devops
+  name: "{{ harbor.name }}-ingress"
+  namespace: {{ harbor.namespace }}
   labels:
-    release: harbor
-    app: "harbor"
+    release: {{ harbor.name }}
+    app: "{{ harbor.name }}"
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
@@ -1181,42 +1181,42 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: harbor-core
+                name: {{ harbor.name }}-core
                 port:
                   number: 80
           - path: /service/
             pathType: Prefix
             backend:
               service:
-                name: harbor-core
+                name: {{ harbor.name }}-core
                 port:
                   number: 80
           - path: /v2/
             pathType: Prefix
             backend:
               service:
-                name: harbor-core
+                name: {{ harbor.name }}-core
                 port:
                   number: 80
           - path: /chartrepo/
             pathType: Prefix
             backend:
               service:
-                name: harbor-core
+                name: {{ harbor.name }}-core
                 port:
                   number: 80
           - path: /c/
             pathType: Prefix
             backend:
               service:
-                name: harbor-core
+                name: {{ harbor.name }}-core
                 port:
                   number: 80
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: harbor-portal
+                name: {{ harbor.name }}-portal
                 port:
                   number: 80
   tls:
