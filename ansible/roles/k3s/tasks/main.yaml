@@ -1,14 +1,14 @@
 ---
-# - name: Include bare task
-#   ansible.builtin.include_tasks: bare.yaml
+- name: Include bare task
+  ansible.builtin.include_tasks: bare.yaml
 
 - name: Deploy | {{ kube_vip.name }}
   ansible.builtin.include_tasks: "{{ kube_vip.name }}.yaml"
   when: kube_vip.deploy
 
-# - name: Deploy | {{ metallb.name }}
-#   ansible.builtin.include_tasks: "{{ metallb.name }}.yaml"
-#   when: metallb.deploy
+- name: Deploy | {{ metallb.name }}
+  ansible.builtin.include_tasks: "{{ metallb.name }}.yaml"
+  when: metallb.deploy
 
 - name: Deploy | {{ sealed_secrets.name }}
   ansible.builtin.include_tasks: "{{ sealed_secrets.name }}.yaml"
@@ -39,3 +39,7 @@
 - name: Deploy | {{ uptime_kuma.name }}
   ansible.builtin.include_tasks: "{{ uptime_kuma.name }}.yaml"
   when: uptime_kuma.deploy
+
+- name: Deploy | {{ harbor.name }}
+  ansible.builtin.include_tasks: "{{ harbor.name }}.yaml"
+  when: harbor.deploy
