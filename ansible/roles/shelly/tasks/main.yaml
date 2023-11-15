@@ -67,6 +67,7 @@
 - name: Start desired state task
   ansible.builtin.include_tasks: desired_state_gen{{ hostvars[item].gen }}.yaml
   loop: "{{ groups['shelly'] }}"
+  ignore_errors: true
 
 - name: Start reboot task
   ansible.builtin.include_tasks: reboot_gen{{ hostvars[item].gen }}.yaml
