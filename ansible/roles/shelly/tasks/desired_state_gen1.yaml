@@ -5,7 +5,7 @@
     body_format: json
     return_content: true
   register: settings_content
-  until: result.status == 200
+  until: settings_content.status == 200
   retries: 10
   delay: 5
 
@@ -14,7 +14,8 @@
     url: http://{{ item }}/settings/light/0?name={{ hostvars[item]['device_name'] }}
   changed_when: settings_content.json.lights[0].name != hostvars[item]['device_name']
   when: "'SHDM' in settings_content.json.device.type"
-  until: result.status == 200
+  register: device_set_name_content
+  until: device_set_name_content.status == 200
   retries: 10
   delay: 5
 
@@ -23,7 +24,8 @@
     url: http://{{ item }}/settings?name={{ hostvars[item]['device_name'] }}
   changed_when: settings_content.json.name != hostvars[item]['device_name']
   when: "'SHCB' in settings_content.json.device.type"
-  until: result.status == 200
+  register: device_set_name_content
+  until: device_set_name_content.status == 200
   retries: 10
   delay: 5
 
@@ -32,7 +34,8 @@
     url: http://{{ item }}/settings?name={{ hostvars[item]['device_name'] }}
   changed_when: settings_content.json.name != hostvars[item]['device_name']
   when: "'SHPLG' in settings_content.json.device.type or 'SHSW' in settings_content.json.device.type"
-  until: result.status == 200
+  register: device_set_name_content
+  until: device_set_name_content.status == 200
   retries: 10
   delay: 5
 
@@ -40,7 +43,8 @@
   ansible.builtin.uri:
     url: http://{{ item }}/settings?ap_roaming_enabled={{ settings.ap_roaming.enable }}
   changed_when: settings_content.json.ap_roaming.enabled != settings.ap_roaming.enable
-  until: result.status == 200
+  register: device_ap_romaing
+  until: device_ap_romaing.status == 200
   retries: 10
   delay: 5
 
@@ -48,7 +52,8 @@
   ansible.builtin.uri:
     url: http://{{ item }}/settings?ap_roaming_threshold={{ settings.ap_roaming.rssi_threshold }}
   changed_when: settings_content.json.ap_roaming.threshold != settings.ap_roaming.rssi_threshold
-  until: result.status == 200
+  register: device_ap_romaing_rssi
+  until: device_ap_romaing_rssi.status == 200
   retries: 10
   delay: 5
 
@@ -56,7 +61,8 @@
   ansible.builtin.uri:
     url: http://{{ item }}/settings?coiot_enable={{ settings.coiot.enable }}&coiot_peer={{ settings.coiot.peer }}
   changed_when: settings_content.json.coiot.enabled != settings.coiot.enable or settings_content.json.coiot.peer != settings.coiot.peer
-  until: result.status == 200
+  register: device_coiot
+  until: device_coiot.status == 200
   retries: 10
   delay: 5
 
@@ -64,7 +70,8 @@
   ansible.builtin.uri:
     url: http://{{ item }}/settings?sntp_enable={{ settings.sntp.enable }}&sntp_server={{ settings.sntp.server }}
   changed_when: settings_content.json.sntp.enabled != settings.sntp.enable or settings_content.json.sntp.server != settings.sntp.server
-  until: result.status == 200
+  register: device_sntp
+  until: device_sntp.status == 200
   retries: 10
   delay: 5
 
@@ -72,7 +79,8 @@
   ansible.builtin.uri:
     url: http://{{ item }}/settings?eco_mode_enabled={{ settings.eco_mode_enabled }}
   changed_when: settings_content.json.eco_mode_enabled != settings.eco_mode_enabled
-  until: result.status == 200
+  register: device_eco_mode
+  until: device_eco_mode.status == 200
   retries: 10
   delay: 5
 
@@ -81,6 +89,7 @@
     url: http://{{ item }}/settings/relay/0?default_state={{ settings.default_state }}
   changed_when: settings_content.json.relays[0].default_state != settings.default_state
   when: "'SHPLG' in settings_content.json.device.type or 'SHSW' in settings_content.json.device.type"
+  register: result
   until: result.status == 200
   retries: 10
   delay: 5
@@ -90,6 +99,7 @@
     url: http://{{ item }}/settings/light/0?default_state={{ settings.default_state }}
   changed_when: settings_content.json.lights[0].default_state != settings.default_state
   when: "'lights' in settings_content.json"
-  until: result.status == 200
+  register: device_default_state
+  until: device_default_state.status == 200
   retries: 10
   delay: 5

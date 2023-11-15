@@ -5,3 +5,5 @@
     body_format: json
   register: content
   until: content.json.ok
+  retries: 10
+  delay: 5
