@@ -479,51 +479,6 @@ spec:
                 name: {{ drone.name }}-secrets-secret
 
 ---
-kind: Job
-apiVersion: batch/v1
-metadata:
-  name: {{ drone.name }}-add-cron
-  namespace: {{ drone.namespace }}
-  labels:
-    app: {{ drone.name }}-add-cron
-spec:
-  ttlSecondsAfterFinished: 100
-  template:
-    spec:
-      restartPolicy: OnFailure
-      containers:
-        - name: {{ drone.name }}-add-cron
-          image: "harbor.k8s.lan/k8s/drone-cli:latest"
-          imagePullPolicy: Always
-          resources: {}
-          command: ["/bin/bash", "-c"]
-          args: [
-              "IFS=','; curl -sf -m 5 ${DRONE_SERVER}/healthz | grep 'OK' && sleep 3 || exit 10; \
-              for r in ${REPOS}; do command=$(drone cron add --branch ${DEFAULT_BRANCH} ${ORGANIZATION}/${r} schedule-from-job ${SCHEDULE} 2>&1); \
-              if grep -q 'UNIQUE' <<<$command; then echo 'Cron for '${r}' has already been set'; elif grep -q 'no such host' <<<$command; \
-              then echo 'No connection to host' && sleep 3 && exit 10; else echo 'Added cron for' ${r}; fi; done",
-            ]
-          env:
-            - name: DRONE_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ drone.name }}-personal-token
-                  key: DRONE_PERSONAL_TOKEN
-                  optional: false
-            - name: DRONE_SERVER
-              value: "http://{{ drone.name }}-server-svc.{{ drone.namespace }}.svc.cluster.local:8080"
-            - name: ORGANIZATION
-              value: "theautomation"
-            - name: REPOS
-              value: "drone-cli,bitwarden-cli-init,node-red,esphome,protonmail-bridge"
-            - name: SCHEDULE
-              value: "* 0 1 * * 5"
-            - name: DEFAULT_BRANCH
-              value: "main"
-      imagePullSecrets:
-        - name: harbor-registry-creds
-
----
 kind: Service
 apiVersion: v1
 metadata:
