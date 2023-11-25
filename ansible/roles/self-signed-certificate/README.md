@@ -21,7 +21,7 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 
-ansible-playbook --ask-vault-pass ./self-signed-certificate.yaml
+ansible-playbook --ask-vault-pass ./self-signed-certificate_generate.yaml
 
 License
 -------
