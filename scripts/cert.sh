@@ -18,7 +18,7 @@ state=""
 locality=""
 organization="theautomation"
 organizational_unit="theautomation"
-common_name="*.k8s.lan"
+common_name="*.lan.theautomation.nl"
 email="ssl@theautomation.nl"
 
 # Output filenames

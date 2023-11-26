@@ -16,7 +16,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-iscsi-{{ drone.name }}-server-data
     volumeAttributes:
-      portal: storage-server-lagg.lan:3260
+      portal: storage-server-lagg.lan.theautomation.nl:3260
       iqn: iqn.2005-10.org.freenas.ctl:{{ drone.name }}-server-data
       lun: "0"
       node_attach_driver: iscsi

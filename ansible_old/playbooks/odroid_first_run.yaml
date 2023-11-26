@@ -1,7 +1,7 @@
 ---
 # For first run, the SSH password en become password is "odroid" this is the default after fresh installation.
 - name: Play to enable root user and set password
-  hosts: odroid-c4.lan
+  hosts: odroid-c4.lan.theautomation.nl
   gather_facts: true
   become: true
   vars:
