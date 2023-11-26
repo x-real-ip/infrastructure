@@ -221,15 +221,6 @@ metadata:
 
 [Blogpost Tutorial](https://itsmetommy.com/2020/06/26/kubernetes-sealed-secrets/)
 
-### Network
-
-Add A record in pfSense to bind specific domain (`*.k8s.lan`) for redirecting internal traffic into k8s private ingress controller.
-
-```
-local-zone: "k8s.lan" redirect
-local-data: "k8s.lan 86400 IN A 10.0.100.240"
-```
-
 ### Node Feature Discovery
 
 Show node lables
@@ -251,30 +242,30 @@ sudo rsync -axHAWXS --numeric-ids --info=progress2 /mnt/sourcePart/ /mnt/destPar
 Discovering targets in iSCSI server
 
 ```console
-sudo iscsiadm --mode discovery -t sendtargets --portal storage-server-lagg.lan
+sudo iscsiadm --mode discovery -t sendtargets --portal storage-server-lagg.lan.theautomation.nl
 ```
 
 Mount disk
 
 ```console
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --login
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.theautomation.nl --login
 ```
 
 Unmount disk
 
 ```console
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan -u
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.theautomation.nl -u
 ```
 
 ### Repair iSCSI share
 
 1. SSH into one of the nodes in the cluster and start discovery
    ```console
-   sudo iscsiadm -m discovery -t st -p storage-server-lagg.lan
+   sudo iscsiadm -m discovery -t st -p storage-server-lagg.lan.theautomation.nl
    ```
 2. Login to target
    ```console
-   sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --login
+   sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.theautomation.nl --login
    ```
 3. See the device using `lsblk`. In the following steps, assume sdd is the device name.
 4. Create a local mount point & mount to replay logfile `sudo mkdir -vp /mnt/data-0 && sudo mount /dev/sdd /mnt/data-0/`
@@ -283,7 +274,7 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 7. If needed run xfs repair `sudo xfs_repair /dev/sdd`
 8. Logout from target
    ```console
-   sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan --logout
+   sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.theautomation.nl --logout
    ```
 9. Volumes are now ready to be mounted as PVCs.
 
