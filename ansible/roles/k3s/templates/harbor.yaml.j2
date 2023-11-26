@@ -18,7 +18,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-{{ harbor.name }}-redis
     volumeAttributes:
-      portal: storage-server-lagg.lan:3260
+      portal: storage-server-lagg.lan.theautomation.nl:3260
       iqn: iqn.2005-10.org.freenas.ctl:{{ harbor.name }}-redis
       lun: "0"
       node_attach_driver: iscsi
@@ -44,7 +44,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-{{ harbor.name }}-db
     volumeAttributes:
-      portal: storage-server-lagg.lan:3260
+      portal: storage-server-lagg.lan.theautomation.nl:3260
       iqn: iqn.2005-10.org.freenas.ctl:{{ harbor.name }}-db
       lun: "0"
       node_attach_driver: iscsi
@@ -74,7 +74,7 @@ spec:
     fsType: nfs
     volumeHandle: pv-{{ harbor.name }}-registry
     volumeAttributes:
-      server: storage-server-lagg.lan
+      server: storage-server-lagg.lan.theautomation.nl
       share: /mnt/r10_8tb/k8s/{{ harbor.name }}-registry
       node_attach_driver: nfs
       provisioner_driver: node-manual
@@ -99,7 +99,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-{{ harbor.name }}-jobservice
     volumeAttributes:
-      portal: storage-server-lagg.lan:3260
+      portal: storage-server-lagg.lan.theautomation.nl:3260
       iqn: iqn.2005-10.org.freenas.ctl:{{ harbor.name }}-jobservice
       lun: "0"
       node_attach_driver: iscsi
@@ -294,7 +294,7 @@ data:
   POSTGRESQL_SSLMODE: "disable"
   POSTGRESQL_MAX_IDLE_CONNS: "100"
   POSTGRESQL_MAX_OPEN_CONNS: "900"
-  EXT_ENDPOINT: "https://harbor.k8s.lan"
+  EXT_ENDPOINT: "https://harbor.lan.theautomation.nl"
   CORE_URL: "http://{{ harbor.name }}-core:80"
   JOBSERVICE_URL: "http://{{ harbor.name }}-jobservice"
   REGISTRY_URL: "http://{{ harbor.name }}-registry:5000"
@@ -1174,7 +1174,7 @@ metadata:
 spec:
   ingressClassName: nginx-private
   rules:
-    - host: "harbor.k8s.lan"
+    - host: "harbor.lan.theautomation.nl"
       http:
         paths:
           - path: /api/
@@ -1221,5 +1221,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - harbor.k8s.lan
+        - harbor.lan.theautomation.nl
       secretName: tls-wildcard-k8s-lan

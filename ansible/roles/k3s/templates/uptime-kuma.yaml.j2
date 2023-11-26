@@ -21,7 +21,7 @@ spec:
     fsType: xfs
     volumeHandle: pv-iscsi-{{ uptime_kuma.name }}
     volumeAttributes:
-      portal: storage-server-lagg.lan:3260
+      portal: storage-server-lagg.lan.theautomation.nl:3260
       iqn: iqn.2005-10.org.freenas.ctl:{{ uptime_kuma.name }}
       lun: "0"
       node_attach_driver: iscsi
@@ -131,7 +131,7 @@ metadata:
 spec:
   ingressClassName: nginx-private
   rules:
-    - host: uptime-kuma.k8s.lan
+    - host: uptime-kuma.lan.theautomation.nl
       http:
         paths:
           - path: /
@@ -143,5 +143,5 @@ spec:
                   number: 3001
   tls:
     - hosts:
-        - uptime-kuma.k8s.lan
+        - uptime-kuma.lan.theautomation.nl
       secretName: tls-wildcard-k8s-lan

@@ -5,7 +5,7 @@ update_firmware: true
 allow_internet_access: true
 
 # Home Assistant is setup with the pfSense intergration which has API access to the pfSense instance for turning on/off firewall rules.
-home_assistant_url: "home-assistant.k8s.lan"
+home_assistant_url: "home-assistant.lan.theautomation.nl"
 home_assistant_firewall_switch: "switch.pfsense_filter_rule_1672839601_pass_any_allow_internet"
 
 settings:
