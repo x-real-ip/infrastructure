@@ -86,14 +86,6 @@ uptime_kuma:
   image_tag: alpine
 
 tls_certificates:
-  wildcard_k8s_lan:
-    deploy: true
-    name: "wildcard-k8s-lan"
-    namespaces:
-      - devops
-      - media
-      - home-automation
-      - tools
   wildcard_theautomation_nl:
     deploy: true
     name: "wildcard-theautomation-nl"
