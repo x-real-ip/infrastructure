@@ -1,14 +1,4 @@
 ---
-- name: Apply k8s.lan wildcard TLS certs in the defined namespace list
-  kubernetes.core.k8s:
-    state: present
-    template: tls-wildcard-k8s-lan.yaml.j2
-  loop: "{{ tls_certificates.wildcard_k8s_lan.namespaces }}"
-  loop_control:
-    loop_var: tls_wildcard_k8s_lan_namespace
-  run_once: true
-  when: tls_certificates.wildcard_k8s_lan.deploy
-
 - name: Apply theautomation.nl wildcard TLS certs in the defined namespace list
   kubernetes.core.k8s:
     state: present
@@ -18,28 +8,6 @@
     loop_var: tls_wildcard_theautomation_nl_namespace
   run_once: true
   when: tls_certificates.wildcard_theautomation_nl.deploy
-
-- name: Apply lan.theautomation.nl wildcard TLS certs in the defined namespace list
-  kubernetes.core.k8s:
-    state: present
-    template: tls-wildcard-lan-theautomation-nl.yaml.j2
-  loop: "{{ tls_certificates.wildcard_lan_theautomation_nl.namespaces }}"
-  loop_control:
-    loop_var: tls_wildcard_lan_theautomation_nl_namespace
-  run_once: true
-  when: tls_certificates.wildcard_lan_theautomation_nl.deploy
-
-- name: Output template file to localhost
-  ansible.builtin.template:
-    src: tls-wildcard-k8s-lan.yaml.j2
-    dest: "{{ output_file_location }}{{ tls_certificates.wildcard_k8s_lan.name }}-{{ tls_wildcard_k8s_lan_namespace }}.yaml"
-    mode: '0644'
-  loop: "{{ tls_certificates.wildcard_k8s_lan.namespaces }}"
-  loop_control:
-    loop_var: tls_wildcard_k8s_lan_namespace
-  delegate_to: localhost
-  run_once: true
-  when: tls_certificates.wildcard_k8s_lan.deploy
 
 - name: Output template file to localhost
   ansible.builtin.template:
@@ -52,6 +20,16 @@
   delegate_to: localhost
   run_once: true
   when: tls_certificates.wildcard_theautomation_nl.deploy
+
+- name: Apply lan.theautomation.nl wildcard TLS certs in the defined namespace list
+  kubernetes.core.k8s:
+    state: present
+    template: tls-wildcard-lan-theautomation-nl.yaml.j2
+  loop: "{{ tls_certificates.wildcard_lan_theautomation_nl.namespaces }}"
+  loop_control:
+    loop_var: tls_wildcard_lan_theautomation_nl_namespace
+  run_once: true
+  when: tls_certificates.wildcard_lan_theautomation_nl.deploy
 
 - name: Output template file to localhost
   ansible.builtin.template:
