@@ -1,0 +1,46 @@
+---
+- name: Play to add odroid as qdevice
+  hosts: proxmox:odroid
+  gather_facts: true
+  become: true
+  become_user: root
+  strategy: linear
+  tasks:
+    - name: Install corosync-qdevice and dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - corosync-qdevice
+          - python3-pip
+        state: present
+      when: ansible_hostname != "odroid-c4"
+
+    - name: Install pexpect
+      ansible.builtin.pip:
+        name: pexpect
+      when: ansible_hostname != "odroid-c4"
+
+    - name: Put SSH public key in variable
+      ansible.builtin.command: cat ~/.ssh/id_rsa.pub
+      register: pve_a_pubkey
+      changed_when: pve_a_pubkey.rc != 0
+      delegate_to: pve-a
+      run_once: true
+
+    - name: Put SSH public key in authorized_keys on odroid-c4
+      ansible.builtin.lineinfile:
+        path: "/root/.ssh/authorized_keys"
+        line: "{{ pve_a_pubkey.stdout }}"
+        create: true
+        mode: 0600
+      when: ansible_hostname == "odroid-c4"
+
+    - name: Add Qdevice and except fingerprint
+      ansible.builtin.expect:
+        command: pvecm qdevice setup {{ hostvars['odroid-c4.lan.theautomation.nl']['ansible_eth0']['ipv4']['address'] }} --force
+        echo: true
+        timeout: 20
+        responses:
+          "Are you sure you want to continue connecting (yes/no/[fingerprint])?": "yes"
+      delegate_to: pve-a
+      run_once: true
