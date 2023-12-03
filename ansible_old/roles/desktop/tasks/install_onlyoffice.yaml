@@ -1,5 +1,0 @@
----
-- name: Install onlyoffice
-  community.general.snap:
-    name:
-      - onlyoffice-desktopeditors
