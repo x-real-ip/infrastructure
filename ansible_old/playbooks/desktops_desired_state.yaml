@@ -1,8 +1,0 @@
----
-- name: "Play for desktops"
-  hosts: localhost
-  connection: local
-  become: true
-  roles:
-    - "../roles/common/basic"
-    - "../roles/desktop"

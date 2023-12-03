@@ -1,7 +1,4 @@
 ---
-- name: Add users for desktop
-  ansible.builtin.import_tasks: add_users.yaml
-
 - name: Install usual apt packages
   ansible.builtin.import_tasks: install_apt_packages.yaml
 
