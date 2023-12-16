@@ -111,3 +111,11 @@ private_registry:
       - devops
       - home-automation
       - tools
+
+github_registry:
+  credentials:
+    deploy: true
+    namespaces:
+      - devops
+      - home-automation
+      - tools
