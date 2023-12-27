@@ -24,6 +24,9 @@
 - name: Deploy | Private registry credentials
   ansible.builtin.include_tasks: private-registry-credentials.yaml
 
+- name: Deploy | GitHub registry credentials
+  ansible.builtin.include_tasks: github-registry-credentials.yaml
+
 - name: Deploy | {{ ingress_nginx.name }}
   ansible.builtin.include_tasks: "{{ ingress_nginx.name }}.yaml"
   when: ingress_nginx.deploy
