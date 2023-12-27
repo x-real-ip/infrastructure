@@ -115,6 +115,7 @@ private_registry:
 github_registry:
   credentials:
     deploy: true
+    name: github-registry-creds
     namespaces:
       - devops
       - home-automation
