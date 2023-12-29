@@ -1,0 +1,25 @@
+---
+- name: Get Latest Argo CD Release Version Meta Data
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/argoproj/argo-cd/releases/latest
+    method: GET
+    return_content: true
+    status_code: 200
+    body_format: json
+  register: version_result
+
+- name: Download / Install Latest Argo CD CLI binary
+  ansible.builtin.get_url:
+    url: https://github.com/argoproj/argo-cd/releases/download/{{ version_result.json.tag_name }}/argocd-linux-amd64
+    dest: /usr/local/bin/argocd
+    mode: "0555"
+
+- name: Setup bash Completion for argocd
+  ansible.builtin.shell: argocd completion bash > /etc/bash_completion.d/argocd_completion
+
+- name: Ensure bash Completion Script Has Proper File Permissions
+  ansible.builtin.file:
+    path: /etc/bash_completion.d/argocd_completion
+    owner: root
+    group: root
+    mode: "0644"

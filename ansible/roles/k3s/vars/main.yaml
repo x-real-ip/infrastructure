@@ -8,6 +8,12 @@ server_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['addres
 # The location to store rendered jinja2 templates like deployments .yaml files
 output_file_location: "/home/coen/Downloads/"
 
+argocd:
+  deploy: true
+  name: argocd-core
+  namespace: argocd
+  version: "stable"
+
 democratic_csi_manual:
   deploy: true
   name: democratic-csi
