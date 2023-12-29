@@ -21,16 +21,16 @@
     src: ~/argocd-core.yaml
   run_once: true
 
-- name: Download parent-app | {{ argocd.name }}
+- name: Download app-of-apps | {{ argocd.name }}
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/theautomation/gitops/main/argocd/parent-app.yaml
-    dest: ~/parent-app.yaml
+    url: https://raw.githubusercontent.com/theautomation/gitops/main/argocd/app-of-apps.yaml
+    dest: ~/app-of-apps.yaml
     mode: "0664"
     force: true
   run_once: true
 
-- name: Apply parent-app to the cluster | {{ argocd.name }}
+- name: Apply app-of-apps to the cluster | {{ argocd.name }}
   kubernetes.core.k8s:
     state: present
-    src: ~/parent-app.yaml
+    src: ~/app-of-apps.yaml
   run_once: true
