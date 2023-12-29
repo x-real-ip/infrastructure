@@ -1,0 +1,9 @@
+---
+- name: Provision Desktop
+  hosts: linux_desktop
+  gather_facts: true
+  become: true
+  become_user: root
+  connection: local
+  roles:
+    - desktop
