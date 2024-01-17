@@ -1,0 +1,15 @@
+---
+- name: Play to install Docker
+  hosts: odroid
+  gather_facts: true
+  become: true
+  tasks:
+    # - name: Install Docker
+    #   ansible.builtin.include_role:
+    #     name: odroid
+    #     tasks_from: install-docker.yaml
+
+    - name: Deploy ser2net Docker container
+      ansible.builtin.include_role:
+        name: odroid
+        tasks_from: deploy-ser2net.yaml
