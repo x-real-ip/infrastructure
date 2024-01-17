@@ -1,0 +1,25 @@
+---
+# - name: Show facts available on the system
+#   ansible.builtin.debug:
+#     var: ansible_facts
+
+# - name: System update
+#   ansible.builtin.include_role:
+#     name: common
+#     tasks_from: system-updates
+
+# - name: Check if reboot required
+#   ansible.builtin.stat:
+#     path: /var/run/reboot-required
+#   register: reboot_required_file
+#   notify: Reboot
+#   changed_when: reboot_required_file.stat.exists
+
+# - name: Install Corosync
+#   ansible.builtin.include_tasks: install-corosync.yaml
+
+# - name: Install Docker
+#   ansible.builtin.include_tasks: install-docker.yaml
+
+- name: Deploy ser2net
+  ansible.builtin.include_tasks: deploy-ser2net.yaml
