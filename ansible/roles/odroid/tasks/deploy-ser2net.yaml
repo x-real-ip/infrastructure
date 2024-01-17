@@ -1,0 +1,14 @@
+---
+- name: Git checkout
+  ansible.builtin.git:
+    repo: "https://github.com/theautomation/ser2net.git"
+    dest: /tmp/ser2net
+
+- name: Docker run ser2net
+  community.docker.docker_container:
+    name: ser2net
+    image: "ghcr.io/theautomation/ser2net:main"
+    state: present
+    recreate: true
+    exposed_ports:
+      - 3001

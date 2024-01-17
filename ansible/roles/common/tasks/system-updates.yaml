@@ -10,7 +10,20 @@
   when: ansible_os_family == "RedHat"
   register: dnf_result
 
-- name: Print updated packages
+- name: Update apt repo and upgrade dist
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: dist
+  when: ansible_os_family == "Debian"
+  register: apt_result
+
+- name: Print updated dnf packages
   debug:
     var: dnf_result
-  when: dnf_result.changed
+  when: dnf_result.changed and ansible_os_family == "RedHat"
+
+- name: Print updated apt packages
+  debug:
+    var: apt_result
+  when: apt_result.changed and ansible_os_family == "Debian"
