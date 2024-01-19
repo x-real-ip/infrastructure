@@ -8,7 +8,12 @@
   community.docker.docker_container:
     name: ser2net
     image: "ghcr.io/theautomation/ser2net:main"
-    state: present
+    pull: true
+    state: started
     recreate: true
-    exposed_ports:
-      - 3001
+    exposed_ports: "3001"
+    published_ports:
+      - "3001:3001"
+    devices:
+      - "/dev/serial/by-id/usb-0658_0200-if00:/dev/ttyACM0:rwm"
+    restart_policy: "always"
