@@ -1,9 +1,9 @@
 ---
-- name: System update
+- name: Common tasks
   ansible.builtin.include_role:
     name: common
 
-- name: Copy public SSH key
+- name: Update system
   ansible.builtin.include_role:
     name: common
     tasks_from: system-updates
