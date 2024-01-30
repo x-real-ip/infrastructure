@@ -1,0 +1,17 @@
+---
+- name: Get other hosts from proxmox inventory group
+  ansible.builtin.set_fact:
+    other_hosts: "{{ groups.proxmox | difference([inventory_hostname]) }}"
+
+- name: Execute qm list command
+  ansible.builtin.command: "qm list"
+  register: qm_list_result
+  changed_when: qm_list_result.rc != 0
+
+- name: Extracted VMID numbers from the running VM's only
+  ansible.builtin.set_fact:
+    vmid_list: "{{ qm_list_result.stdout_lines | json_query('[?contains(@, `running`)]') | map('regex_replace', '^(\\s*)(\\d+)(\\s+).*$', '\\2') | select('match', '[0-9]') | map('int') | list }}"
+
+- name: Migrate running VM's to the other hosts
+  ansible.builtin.command: "qm migrate {{ item }} {{ other_hosts[0] }} --online --with-local-disks"
+  loop: "{{ vmid_list }}"
