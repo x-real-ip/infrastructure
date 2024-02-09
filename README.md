@@ -4,12 +4,13 @@
   - [Kubernetes](#kubernetes)
     - [Setting up VM hosts on Proxmox](#setting-up-vm-hosts-on-proxmox)
     - [Install k3s](#install-k3s)
+      - [Prerequisites](#prerequisites)
+      - [Usage](#usage)
     - [Local initialization and setup](#local-initialization-and-setup)
       - [Kubectl](#kubectl)
       - [Bitnami Kubeseal](#bitnami-kubeseal)
     - [Kubernetes Cheatsheet](#kubernetes-cheatsheet)
     - [Bitnami Sealed Secret](#bitnami-sealed-secret)
-    - [Network](#network)
     - [Node Feature Discovery](#node-feature-discovery)
   - [Rsync](#rsync)
   - [ISCSI](#iscsi)
@@ -32,11 +33,30 @@
 
 ### Install k3s
 
-1. Run Ansible playbook `k3s-prerequisites` to initialize the k3s master and optional worker nodes.
-2. 
+#### Prerequisites
 
-3.  Run the Ansible `k3s_install` playbook with `./ansible/run/kubernetes/k3s_install.sh`. This Ansible playbook will install K3s and all primary infrastructure applications like Metallb loadbalancer, NGINX ingress controller, Bitnami Sealed Secrets, Democratic-CSI.
-4.  Run `k3s_apps` playbook with `./ansible/run/kubernetes/k3s_apps.sh` to install secondary applications to the k3s cluster (optional).
+- Ansible installed on your local machine.
+- SSH access to the target machines where you want to install k3s.
+
+#### Usage
+1. Clone this repository to your local machine:
+
+```
+git clone https://github.com/theautomation/infrastructure.git
+```
+
+2. Modify the inventory file inventory.ini to specify the target machines where you want to install k3s. Ensure you have appropriate SSH access and privileges.
+3. Run one of the following Ansible playbooks to initialize the k3s master and optional worker nodes:
+   1. Bare Installation:
+      Execute the k3s_install_cluster_bare.yaml playbook to install a clean cluster without additional deployments:
+      ```
+      sudo ansible-playbook --ask-vault-pass -kK k3s_install_cluster_bare.yaml
+      ```
+   2. Minimal Installation with Additional Deployments:
+      Execute the k3s_install_cluster_minimal.yaml playbook to install the bare minimum plus additional deployments:
+      ```
+      sudo ansible-playbook --ask-vault-pass -kK k3s_install_cluster_minimal.yaml
+      ```
 
 ### Local initialization and setup
 
@@ -281,6 +301,7 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 ## TrueNAS
 
 ### Rename volume
+
 ```
 zfs rename r01_1tb/k8s/{zvol name}
 ```
