@@ -1,7 +1,4 @@
 ---
-# Hostname of the custom container registry
-registry_host: harbor.lan.theautomation.nl
-
 # IP-address of first master node
 server_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
 
@@ -23,12 +20,6 @@ democratic_csi_manual:
     csi_proxy: latest
     democratic_csi: latest
     driver_registrar: v2.5.0
-
-harbor:
-  deploy: false
-  name: harbor
-  namespace: devops
-  image_tag: "v2.9.1"
 
 kube_vip:
   deploy: true
@@ -74,23 +65,6 @@ node_feature_discovery:
   image_tag:
     node_feature_discovery: "v0.12.1"
 
-drone:
-  deploy: false
-  name: drone
-  namespace: devops
-  image_tag:
-    server: "2"
-    runner_docker: "1.8.1"
-    dind: "20-dind"
-    gc: "1.0.0"
-    kubernetes_secrets: "latest"
-
-uptime_kuma:
-  deploy: true
-  name: uptime-kuma
-  namespace: devops
-  image_tag: alpine
-
 tls_certificates:
   wildcard_theautomation_nl:
     deploy: true
@@ -106,15 +80,6 @@ tls_certificates:
     namespaces:
       - devops
       - media
-      - home-automation
-      - tools
-
-private_registry:
-  credentials:
-    deploy: true
-    name: harbor-registry-creds
-    namespaces:
-      - devops
       - home-automation
       - tools
 
