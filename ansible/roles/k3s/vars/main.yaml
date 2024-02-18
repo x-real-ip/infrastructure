@@ -46,7 +46,7 @@ sealed_secrets:
   deploy: true
   name: "sealed-secrets"
   namespace: "kube-system"
-  image_tag: "v0.25.0"
+  image_tag: "v0.26.0"
 
 ingress_nginx:
   deploy: true
