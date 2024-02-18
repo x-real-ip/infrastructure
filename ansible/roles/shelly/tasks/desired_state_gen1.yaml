@@ -94,12 +94,23 @@
   retries: 10
   delay: 5
 
-- name: Enable/disable lights default state for {{ hostvars[item]['device_name'] }}
+- name: Enable/disable lights default state for {{ hostvars[item].device_name }}
   ansible.builtin.uri:
     url: http://{{ item }}/settings/light/0?default_state={{ settings.default_state }}
   changed_when: settings_content.json.lights[0].default_state != settings.default_state
   when: "'lights' in settings_content.json"
   register: device_default_state
   until: device_default_state.status == 200
+  retries: 10
+  delay: 5
+
+- name: Set transition time for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings/?transition={{ hostvars[item].settings.transition_time | default(settings.transition_time) }}
+    timeout: 30
+  changed_when: settings_content.json.transition != (hostvars[item].settings.transition_time | default(settings.transition_time))
+  when: "'transition' in settings_content.json"
+  register: device_transition_time
+  until: device_transition_time.status == 200
   retries: 10
   delay: 5
