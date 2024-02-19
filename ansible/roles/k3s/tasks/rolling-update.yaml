@@ -2,17 +2,6 @@
 - name: Drain node
   ansible.builtin.include_tasks: "drain.yaml"
 
-- name: Wait for pods to become ready in devops namespace
-  kubernetes.core.k8s_info:
-    kind: Pod
-    namespace: "devops"
-    wait: true
-    wait_condition:
-      type: Ready
-      status: "True"
-    wait_sleep: 15
-    wait_timeout: 1800
-
 - name: Update system
   ansible.builtin.include_role:
     name: common
