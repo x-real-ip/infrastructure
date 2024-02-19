@@ -1,8 +1,7 @@
 name: Montly update and upgrade
 on:
   schedule:
-    # - cron: 0 0 1 * *
-    - cron: "15 * * * *"
+    - cron: 0 0 1 * *
 
 jobs:
   create_issue:
