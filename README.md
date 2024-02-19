@@ -163,8 +163,6 @@ metadata:
   namespace: home-automation
   labels:
     app: home-assistant
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "freenas-iscsi-csi"
 spec:
   storageClassName: freenas-iscsi-csi
   accessModes:
