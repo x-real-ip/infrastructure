@@ -10,8 +10,13 @@
   register: reboot_required_file
   changed_when: reboot_required_file.stat.exists
 
+- name: Run checkrestart command
+  ansible.builtin.command: checkrestart
+  register: needs_restart
+  changed_when: needs_restart.rc != 0
+
 - name: Start migration tasks
-  when: reboot_required_file.stat.exists
+  when: reboot_required_file.stat.exists or 'Found 0 processes using old versions of upgraded files' not in needs_restart.stdout_lines[0]
   block:
     - name: Migrate virtual machines
       ansible.builtin.include_tasks: vm-migration.yaml
