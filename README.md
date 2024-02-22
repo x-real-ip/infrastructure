@@ -301,5 +301,6 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 ### Rename volume
 
 ```
-zfs rename r01_1tb/k8s/{zvol name}
+zfs rename r01_1tb/k8s/{current zvol name} r01_1tb/k8s/{new zvol name} 
+```
 ```
