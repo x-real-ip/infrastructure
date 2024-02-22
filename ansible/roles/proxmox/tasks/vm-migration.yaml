@@ -8,10 +8,23 @@
   register: qm_list_result
   changed_when: qm_list_result.rc != 0
 
-- name: Extracted VMID numbers from the running VM's only
+- name: Extracted VMID numbers from the running VM's
   ansible.builtin.set_fact:
     vmid_list: "{{ qm_list_result.stdout_lines | json_query('[?contains(@, `running`)]') | map('regex_replace', '^(\\s*)(\\d+)(\\s+).*$', '\\2') | select('match', '[0-9]') | map('int') | list }}"
 
 - name: Migrate running VM's to the other hosts
   ansible.builtin.command: "qm migrate {{ item }} {{ other_hosts[0] }} --online --with-local-disks"
   loop: "{{ vmid_list }}"
+
+- name: Check if VM is running on the other host
+  ansible.builtin.command: "qm status {{ item }}"
+  register: qm_status
+  loop: "{{ vmid_list }}"
+  until: "qm_status.stdout == 'status: running'"
+  retries: 20
+  delay: 20
+  delegate_to: "{{ other_hosts | first }}"
+
+- name: Sleep for 30 seconds and continue with play
+  ansible.builtin.wait_for:
+    timeout: 30

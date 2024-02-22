@@ -19,11 +19,11 @@
   register: apt_result
 
 - name: Print updated dnf packages
-  debug:
+  ansible.builtin.debug:
     var: dnf_result
   when: dnf_result.changed and ansible_os_family == "RedHat"
 
 - name: Print updated apt packages
-  debug:
+  ansible.builtin.debug:
     var: apt_result
   when: apt_result.changed and ansible_os_family == "Debian"
