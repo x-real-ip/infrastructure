@@ -35,9 +35,10 @@ shelly:
     shelly_dimmer:
     # shelly_plug:
     # shelly_plug_plus:
-    # shelly_1:
-    # shelly_i3:
-    # shelly_bulp:
+    shelly_1:
+    shelly_i3:
+    shelly_bulp:
+    shelly_1pm:
 
 shelly_dimmer:
   hosts:
@@ -85,3 +86,8 @@ shelly_i3:
 shelly_bulp:
   hosts:
     shellycolorbulb-485519CA30F1:
+
+shelly_1pm:
+  hosts:
+    shelly1pmmini-6055f99c3780:
+    shelly1pmmini-6055f99c2d84:
