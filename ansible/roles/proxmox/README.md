@@ -1,7 +1,7 @@
 Role Name
 =========
 
-Install k3s bare
+Proxmox
 
 Requirements
 ------------
@@ -20,22 +20,10 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 ```
-ansible-playbook k3s_rolling_update_nodes.yaml
+ansible-playbook proxmox_rolling_update_nodes.yaml
 ```
 ```
-sudo ansible-playbook --ask-vault-pass -kK k3s_install_cluster_bare.yaml
-```
-```
-sudo ansible-playbook --ask-vault-pass -kK k3s_install_cluster_minimal.yaml
-```
-Stop nodes
-```
-sudo ansible-playbook -k k3s_stop_all_nodes.yaml
-```
-
-Rolling update nodes
-```
-ansible-playbook k3s_rolling_update_nodes.yaml
+sudo ansible-playbook ansible-playbook odroid_desired_state.yaml
 ```
 
 License
