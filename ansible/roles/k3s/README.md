@@ -33,6 +33,11 @@ Stop nodes
 sudo ansible-playbook -k k3s_stop_all_nodes.yaml
 ```
 
+Rolling update nodes
+```
+ansible-playbook k3s_rolling_update_nodes.yaml
+```
+
 License
 -------
 
