@@ -44,6 +44,7 @@ jobs:
             - [ ] Odroid devices
             - [ ] Shelly devices
             - [ ] Container images version
+            - [ ] Truenas
 
           PINNED: false
           CLOSE_PREVIOUS: true
