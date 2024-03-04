@@ -28,6 +28,11 @@ sudo ansible-playbook --ask-vault-pass -kK k3s_install_cluster_bare.yaml
 ```
 sudo ansible-playbook --ask-vault-pass -kK k3s_install_cluster_minimal.yaml
 ```
+Stop nodes
+```
+sudo ansible-playbook -k k3s_stop_all_nodes.yaml
+```
+
 License
 -------
 
