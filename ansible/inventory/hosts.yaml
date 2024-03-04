@@ -33,8 +33,8 @@ linux_desktop:
 shelly:
   children:
     shelly_dimmer:
-    # shelly_plug:
-    # shelly_plug_plus:
+    shelly_plug:
+    shelly_plug_plus:
     shelly_1:
     shelly_i3:
     shelly_bulp:
@@ -59,7 +59,7 @@ shelly_plug:
     shellyplug-s-083a8dc348f4:
     shellyplug-s-DD4D06:
     shellyplug-s-801BEA:
-    shellyplug-s-DBF101:
+    # shellyplug-s-DBF101:
     shellyplug-s-0212C1:
     shellyplug-s-DE0CDF:
     shellyplug-s-dd9ea4:
