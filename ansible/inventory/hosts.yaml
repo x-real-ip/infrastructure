@@ -34,6 +34,7 @@ shelly:
   children:
     shelly_dimmer:
     shelly_plug:
+    shelly_plug_s:
     shelly_plug_plus:
     shelly_1:
     shelly_i3:
@@ -55,6 +56,10 @@ shelly_dimmer:
     shellydimmer-F3A9E8:
 
 shelly_plug:
+  hosts:
+    shellyplug-4E6202:
+
+shelly_plug_s:
   hosts:
     shellyplug-s-083a8dc348f4:
     shellyplug-s-DD4D06:
