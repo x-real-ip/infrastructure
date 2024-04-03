@@ -15,6 +15,10 @@
   register: needs_restart
   changed_when: needs_restart.rc != 0
 
+- name: Print needs restart result
+  ansible.builtin.debug:
+    var: needs_restart
+
 - name: Start migration tasks
   when: reboot_required_file.stat.exists or 'Found 0 processes using old versions of upgraded files' not in needs_restart.stdout_lines[0]
   block:
