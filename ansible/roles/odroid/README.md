@@ -19,11 +19,9 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 
 Example Playbook
 ----------------
+
 ```
-ansible-playbook k3s_rolling_update_nodes.yaml
-```
-```
-sudo ansible-playbook ansible-playbook odroid_desired_state.yaml
+sudo ansible-playbook -k odroid_desired_state.yaml
 ```
 
 License
