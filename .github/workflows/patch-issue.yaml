@@ -39,10 +39,11 @@ jobs:
           BODY: |
             ### Monthly update and upgrade
 
-            - [ ] Proxmox nodes
-            - [ ] K3s nodes
-            - [ ] Odroid devices
-            - [ ] Shelly devices
+            - [ ] Proxmox nodes (ansible)
+            - [ ] K3s version (ansible)
+            - [ ] K3s nodes (ansible)
+            - [ ] Odroid devices (ansible)
+            - [ ] Shelly devices (ansible)
             - [ ] Container images version
             - [ ] Truenas
 
