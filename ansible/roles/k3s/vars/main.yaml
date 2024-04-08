@@ -33,9 +33,6 @@ metallb:
   deploy: true
   name: "metallb"
   namespace: "metallb-system"
-  image_tag:
-    controller: "v0.13.11"
-    speaker: "v0.13.11"
   int_lan_ip_addresses:
     - 10.0.100.240/32
     - 10.0.100.241/32
