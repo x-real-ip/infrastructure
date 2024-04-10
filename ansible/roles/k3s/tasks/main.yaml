@@ -10,10 +10,6 @@
   ansible.builtin.include_tasks: "{{ kube_vip.name }}.yaml"
   when: kube_vip.deploy
 
-- name: Deploy | {{ metallb.name }}
-  ansible.builtin.include_tasks: "{{ metallb.name }}.yaml"
-  when: metallb.deploy
-
 - name: Deploy | {{ sealed_secrets.name }}
   ansible.builtin.include_tasks: "{{ sealed_secrets.name }}.yaml"
   when: sealed_secrets.deploy

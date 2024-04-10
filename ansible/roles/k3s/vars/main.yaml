@@ -29,15 +29,7 @@ kube_vip:
   apiserver_endpoint: "10.0.100.100"
   flannel_iface: "ens18"
 
-metallb:
-  deploy: true
-  name: "metallb"
-  namespace: "metallb-system"
-  int_lan_ip_addresses:
-    - 10.0.100.240/32
-    - 10.0.100.241/32
-    - 10.0.100.242/32
-  ext_lan_ip: 10.0.100.250/32
+
 
 sealed_secrets:
   deploy: true
