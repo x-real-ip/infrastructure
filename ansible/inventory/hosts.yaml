@@ -50,7 +50,6 @@ shelly_dimmer:
     shellydimmer2-E8DB84D794FD:
     shellydimmer-DB3DDA:
     shellydimmer-DB4094:
-    shellydimmer-F36684:
     shellydimmer-F39FBB:
     shellydimmer-F3A2DA:
     shellydimmer-F3A9E8:
@@ -64,7 +63,7 @@ shelly_plug_s:
     shellyplug-s-083a8dc348f4:
     shellyplug-s-DD4D06:
     shellyplug-s-801BEA:
-    # shellyplug-s-DBF101:
+    shellyplug-s-DBF101:
     shellyplug-s-0212C1:
     shellyplug-s-DE0CDF:
     shellyplug-s-dd9ea4:
