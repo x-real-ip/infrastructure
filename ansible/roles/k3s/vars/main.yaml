@@ -29,13 +29,11 @@ kube_vip:
   apiserver_endpoint: "10.0.100.100"
   flannel_iface: "ens18"
 
-
-
 sealed_secrets:
   deploy: true
   name: "sealed-secrets"
   namespace: "kube-system"
-  image_tag: "v0.26.1"
+  image_tag: "v0.26.2"
 
 ingress_nginx:
   deploy: true
