@@ -53,6 +53,7 @@ shelly_dimmer:
     shellydimmer-F39FBB:
     shellydimmer-F3A2DA:
     shellydimmer-F3A9E8:
+    shellydimmer2-08F9E046DEF4:
 
 shelly_plug:
   hosts:
