@@ -35,16 +35,6 @@ sealed_secrets:
   namespace: "kube-system"
   image_tag: "v0.26.2"
 
-ingress_nginx:
-  deploy: true
-  name: ingress-nginx
-  namespaces:
-    - "prd-ext"
-    - "prd-int"
-  image_tag:
-    controller: "v1.3.1"
-    kube_webhook_certgen: "v20220916-gd32f8c343"
-
 node_feature_discovery:
   deploy: false
   name: node-feature-discovery
