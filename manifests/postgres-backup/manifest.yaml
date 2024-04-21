@@ -1,0 +1,125 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-nfs-backups
+spec:
+  storageClassName: "freenas-nfs-manual-csi"
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=4
+    - nolock
+    - noatime
+  csi:
+    driver: org.democratic-csi.node-manual
+    readOnly: false
+    fsType: nfs
+    volumeHandle: pv-nfs-backups
+    volumeAttributes:
+      server: storage-server-lagg.lan.theautomation.nl
+      share: /mnt/r10_8tb/backups
+      node_attach_driver: nfs
+      provisioner_driver: node-manual
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-nfs-backups
+  namespace: default
+  storageClassName: freenas-nfs-manual-csi
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  volumeName: pv-nfs-backups
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: backup-script-postgresql
+  namespace: default
+data:
+  pg_backup.sh: |-
+    #!/bin/bash
+
+    DATE=$(date +%Y%m%d-%H%M)
+    DEST="/mnt/backups/${APP_NAME}/database"
+    FILENAME="${DATE}_${PG_DATABASE}.sql"
+    ERROR_LOG="${DEST}/${FILENAME}.error.log"
+
+    mkdir -p ${DEST}
+    if PGPASSWORD="${PG_PASSWORD}" pg_dumpall --verbose --clean --if-exists --username="${PG_USERNAME}" --host="${PG_HOST}" --port="${PG_PORT}" "${PG_DATABASE}" > "${DEST}/${FILENAME}"; then
+      echo "Database backup successful: ${DEST}/${FILENAME}"
+    else
+      echo "Error: Database backup failed" > "${ERROR_LOG}"
+      exit 1
+    fi
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: db-backup
+  namespace: default
+spec:
+  schedule: "0 12 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          securityContext:
+            fsGroup: 1000
+          containers:
+            - name: postgres-backup
+              image: postgres:14
+              securityContext:
+                runAsUser: 1000
+              command:
+                - "/tmp/pg_backup.sh"
+              env:
+                - name: APP_NAME
+                  valueFrom:
+                    configMapKeyRef:
+                      name: env
+                      key: DB_USERNAME
+                - name: PG_DATABASE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: env
+                      key: DB_DATABASE_NAME
+                - name: PG_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: secret-env
+                      key: DB_PASSWORD
+                - name: PG_USERNAME
+                  valueFrom:
+                    configMapKeyRef:
+                      name: env
+                      key: DB_USERNAME
+                - name: PG_HOST
+                  value: "database"
+                - name: PG_PORT
+                  value: "5432"
+              volumeMounts:
+                - name: backups
+                  mountPath: /mnt/backups
+                - name: backup-script
+                  mountPath: /tmp
+              resources: {}
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: pvc-nfs-backups
+            - name: backup-script
+              configMap:
+                name: backup-script-postgresql
+                defaultMode: 0755
+          restartPolicy: Never
