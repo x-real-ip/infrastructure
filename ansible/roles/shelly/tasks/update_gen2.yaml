@@ -9,7 +9,6 @@
   retries: 10
   delay: 5
 
-
 - name: Start update {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     body_format: json
@@ -29,3 +28,4 @@
   until: result.status == 200
   retries: 10
   delay: 5
+  when: result.json != {}
