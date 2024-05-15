@@ -8,3 +8,4 @@
   until: result.status == 200 and result.json.sys.uptime | int >= 50
   retries: 20
   delay: 10
+  ignore_errors: true
