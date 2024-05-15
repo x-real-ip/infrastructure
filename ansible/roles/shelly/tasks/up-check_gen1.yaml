@@ -6,3 +6,4 @@
     return_content: true
   register: status_content
   until: status_content.json.uptime | int >= 10
+  ignore_errors: true
