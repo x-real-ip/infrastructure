@@ -78,7 +78,7 @@
     owner: "{{ ansible_user_id }}"
     mode: "u=rwx,g=rx,o="
 
-- name: Copy kube config file to remote user home directory on remote host
+- name: Copy kube config file to user home directory
   ansible.builtin.copy:
     src: /etc/rancher/k3s/k3s.yaml
     dest: "{{ ansible_user_dir }}/.kube/config"
