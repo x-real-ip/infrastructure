@@ -2,9 +2,10 @@
 
 - [infrastructure](#infrastructure)
   - [Kubernetes](#kubernetes)
+    - [Prerequisites](#prerequisites)
+    - [Add SSH keys on local device](#add-ssh-keys-on-local-device)
     - [Setting up VM hosts on Proxmox](#setting-up-vm-hosts-on-proxmox)
     - [Install k3s](#install-k3s)
-      - [Prerequisites](#prerequisites)
       - [Usage](#usage)
     - [Local initialization and setup](#local-initialization-and-setup)
       - [Kubectl](#kubectl)
@@ -20,6 +21,27 @@
 
 ## Kubernetes
 
+### Prerequisites
+
+- Ansible installed on your local machine.
+- SSH access to the target machines where you want to install k3s.
+
+### Add SSH keys on local device
+1. Copy private and public key
+```bash
+cp /path/to/my/key/ansible ~/.ssh/ansible
+cp /path/to/my/key/ansible.pub ~/.ssh/ansible.pub
+```
+2. Change permissions on the files
+```bash
+sudo chmod 600 ~/.ssh/ansible
+sudo chmod 600 ~/.ssh/ansible.pub
+```
+3. Make ssh agent to actually use copied key
+```bash
+ssh-add ~/.ssh/ansible
+```
+
 ### Setting up VM hosts on Proxmox
 
 1. Create VM from template and bootup.
@@ -32,11 +54,6 @@
 5. Set this hostname in the ansible inventory hosts.ini file.
 
 ### Install k3s
-
-#### Prerequisites
-
-- Ansible installed on your local machine.
-- SSH access to the target machines where you want to install k3s.
 
 #### Usage
 1. Clone this repository to your local machine:
