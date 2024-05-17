@@ -1,5 +1,6 @@
 ---
-- name: Install onlyoffice
+- name: Install packages from snap store
   community.general.snap:
     name:
       - onlyoffice-desktopeditors
+      - brave
