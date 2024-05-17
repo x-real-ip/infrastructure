@@ -4,4 +4,8 @@
     name:
       - passlib
       - netaddr
+
+- name: Install python packages with pipx
+  community.general.pipx:
+    name:
       - ansible-lint

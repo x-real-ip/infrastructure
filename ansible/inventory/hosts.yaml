@@ -27,8 +27,8 @@ odroid:
 
 linux_desktop:
   hosts:
-    # lin-pc-01: null
-    lin-pc-02: null
+    lin-pc-01: null
+    # lin-pc-02: null
 
 shelly:
   children:

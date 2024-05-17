@@ -8,13 +8,9 @@
 - name: Install apt packages
   ansible.builtin.apt:
     pkg:
-      - curl
-      - code
+      - python3-pip
       - git
-      - brave-browser
-      - python3
-      - python3-virtualenv
       - adb
-      - exiftool
+      - curl
     autoclean: true
     autoremove: true
