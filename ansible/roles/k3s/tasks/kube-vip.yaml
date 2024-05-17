@@ -30,10 +30,17 @@
     k3s kubectl config set-cluster default
       --server={{ endpoint_url }}
       --kubeconfig {{ ansible_user_dir }}/.kube/config
-  changed_when: true
   vars:
     endpoint_url: >-
       https://{{ kube_vip.apiserver_endpoint }}:6443
+
+- name: Copy kube config file to the home directory of this local device
+  ansible.builtin.fetch:
+    src: "{{ ansible_user_dir }}/.kube/config"
+    dest: "/home/coen/.kube/"
+    flat: true
+    fail_on_missing: true
+  run_once: true
 
 - name: Render template to localhost | {{ kube_vip.name }}
   ansible.builtin.include_tasks: render-template.yaml
