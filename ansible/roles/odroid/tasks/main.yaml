@@ -1,4 +1,25 @@
 ---
+- name: Include var files
+  ansible.builtin.include_vars:
+    dir: vars
+
+- name: Install avahi-daemon
+  apt:
+    pkg:
+    - avahi-daemon
+
+- name: Enable and start service avahi-daemon, if not started
+  service:
+    name: avahi-daemon
+    state: started
+    enabled: yes
+
+- name: Enable avahi reflector
+  ansible.builtin.lineinfile:
+    path: /etc/avahi/avahi-daemon.conf
+    regexp: "^#enable-reflector=no"
+    line: "enable-reflector=yes"
+
 - name: Common tasks
   ansible.builtin.include_role:
     name: common
@@ -23,3 +44,6 @@
 
 - name: Deploy ser2net
   ansible.builtin.include_tasks: deploy-ser2net.yaml
+
+- name: Deploy cups
+  ansible.builtin.include_tasks: deploy-cups.yaml

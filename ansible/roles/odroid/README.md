@@ -21,7 +21,7 @@ Example Playbook
 ----------------
 
 ```
-sudo ansible-playbook -k odroid_desired_state.yaml
+sudo ansible-playbook -k --ask-vault-pass odroid_desired_state.yaml
 ```
 
 License
