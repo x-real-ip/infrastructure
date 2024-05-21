@@ -8,6 +8,7 @@
     var: usb_device_output.stdout_lines
 
 - name: Check if USB device is attached
+  when: "'/dev/serial/by-id/usb-0658_0200-if00' in usb_device_output.stdout_lines"
   block:
     - name: Docker run ser2net
       community.docker.docker_container:
@@ -22,7 +23,6 @@
         devices:
           - "/dev/serial/by-id/usb-0658_0200-if00"
         restart_policy: "always"
-  when: "'/dev/serial/by-id/usb-0658_0200-if00' in usb_device_output.stdout_lines"
 
   rescue:
     - name: Skip task if USB is not attached
