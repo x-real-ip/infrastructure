@@ -45,13 +45,15 @@ ssh-add ~/.ssh/ansible
 ### Setting up VM hosts on Proxmox
 
 1. Create VM from template and bootup.
-2. Set static ip for the VM in the DHCP server.
-3. Login to the VM and set hostname.
+2. Login to the VM and set hostname.
    ```console
    hostnamectl set-hostname <hostname>
    ```
-4. Reboot.
-5. Set this hostname in the ansible inventory hosts.ini file.
+3. Reboot.
+4. Set static ip for the VM in the DHCP server.
+
+5. Reboot.
+6. Set this hostname in the ansible inventory hosts.ini file.
 
 ### Install k3s
 
