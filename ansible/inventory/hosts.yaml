@@ -5,13 +5,14 @@ k3s_cluster:
 
 k3s_master:
   hosts:
-    k3s-mas-01: null
-    k3s-mas-02: null
-    k3s-mas-03: null
+    k3s-mas-01:
+    k3s-mas-02:
+    k3s-mas-03:
 
-k3s_worker:
+k3s_storage:
   hosts:
-    # k3s-wrk-01: null
+    k3s-mas-01:
+    k3s-mas-02:
 
 proxmox:
   hosts:
