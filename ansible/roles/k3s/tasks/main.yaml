@@ -27,3 +27,4 @@
 - name: Deploy | {{ node_feature_discovery.name }}
   ansible.builtin.include_tasks: "{{ node_feature_discovery.name }}.yaml"
   when: node_feature_discovery.deploy
+

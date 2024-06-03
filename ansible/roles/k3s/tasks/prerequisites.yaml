@@ -19,6 +19,7 @@
       - pip
       - jq
       - yum-utils
+      - cryptsetup
     state: present
 
 - name: >-
