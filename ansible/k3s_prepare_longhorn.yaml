@@ -54,17 +54,15 @@
         fstype: ext4
         state: mounted
 
-    # - name: Run the preconfig script
-    #   become: yes
-    #   shell: curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/master/scripts/environment_check.sh | bash
-    #   register: check
-
-    # - name: Print output from check
-    #   debug: msg="{{ check.stdout }}"
-
-    # Label the nodes to ensure Longhorn volumes are only placed on disks of the storage nodes:
-    # https://longhorn.io/kb/tip-only-use-storage-on-a-set-of-nodes/#tell-longhorn-to-create-a-default-disk-on-a-specific-set-of-nodes
-    - name: Apply label "node.longhorn.io/create-default-disk=true" on storage nodes in Kubernetes
+    - name: Run the preconfig script
       become: yes
-      command: kubectl label nodes --overwrite {{ item.hostname }} node.longhorn.io/create-default-disk=true
+      shell: curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/master/scripts/environment_check.sh | bash
+      register: check
+
+    - name: Print output from check
+      debug: msg="{{ check.stdout }}"
+
+    - name: Apply label "storage=longhorn" on storage nodes in Kubernetes
+      become: yes
+      command: kubectl label nodes --overwrite {{ item.hostname }} storage=longhorn
       loop: "{{ disks }}"
