@@ -62,7 +62,14 @@
     - name: Print output from check
       debug: msg="{{ check.stdout }}"
 
-    - name: Apply label "storage=longhorn" on storage nodes in Kubernetes
+    # Label the nodes to ensure Longhorn volumes are only placed on disks of the storage nodes:
+    # https://longhorn.io/kb/tip-only-use-storage-on-a-set-of-nodes/#tell-longhorn-to-create-a-default-disk-on-a-specific-set-of-nodes
+    - name: Apply label "node.longhorn.io/create-default-disk=true" on storage nodes in Kubernetes
+      become: yes
+      command: kubectl label nodes --overwrite {{ item.hostname }} node.longhorn.io/create-default-disk=true
+      loop: "{{ disks }}"
+
+    - name: Apply label "storage=longhorn" on storage nodes in Kubernetes for node selector
       become: yes
       command: kubectl label nodes --overwrite {{ item.hostname }} storage=longhorn
       loop: "{{ disks }}"
