@@ -3,73 +3,8 @@
   hosts: k3s_storage
   gather_facts: true
   become: true
-  vars:
-    disks:
-      - name: /dev/sdc
-        hostname: k3s-mas-01
-      - name: /dev/sdf
-        hostname: k3s-mas-02
-    disk_label: longhorn_storage
-    mountpoint: /mnt/data
   tasks:
-    - name: Partition the disks and create filesystems
-      parted:
-        device: "{{ item.name }}"
-        number: 1
-        state: present
-        part_start: "0%"
-        part_end: "100%"
-        unit: GB
-      loop: "{{ disks }}"
-      when: inventory_hostname == item.hostname
-
-    - name: Create filesystem on new partition
-      filesystem:
-        fstype: ext4
-        dev: "{{ item.name }}1"
-      loop: "{{ disks }}"
-      when: inventory_hostname == item.hostname
-
-    - name: Label the disks
-      command: e2label {{ item.name }}1 {{ disk_label }}
-      loop: "{{ disks }}"
-      when: inventory_hostname == item.hostname
-
-    - name: Create mount point directory
-      file:
-        path: "{{ mountpoint }}"
-        state: directory
-
-    - name: Add entry to /etc/fstab
-      lineinfile:
-        path: /etc/fstab
-        line: "LABEL={{ disk_label }} {{ mountpoint }} ext4  defaults  0  2"
-      loop: "{{ disks }}"
-      when: inventory_hostname == item.hostname
-
-    - name: Mount disk
-      mount:
-        path: "{{ mountpoint }}"
-        src: "LABEL={{ disk_label }}"
-        fstype: ext4
-        state: mounted
-
-    - name: Run the preconfig script
-      become: yes
-      shell: curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/master/scripts/environment_check.sh | bash
-      register: check
-
-    - name: Print output from check
-      debug: msg="{{ check.stdout }}"
-
-    # Label the nodes to ensure Longhorn volumes are only placed on disks of the storage nodes:
-    # https://longhorn.io/kb/tip-only-use-storage-on-a-set-of-nodes/#tell-longhorn-to-create-a-default-disk-on-a-specific-set-of-nodes
-    - name: Apply label "node.longhorn.io/create-default-disk=true" on storage nodes in Kubernetes
-      become: yes
-      command: kubectl label nodes --overwrite {{ item.hostname }} node.longhorn.io/create-default-disk=true
-      loop: "{{ disks }}"
-
-    - name: Apply label "storage=longhorn" on storage nodes in Kubernetes for node selector
-      become: yes
-      command: kubectl label nodes --overwrite {{ item.hostname }} storage=longhorn
-      loop: "{{ disks }}"
+    - name: Start prepare longhorn
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: prepare-longhorn

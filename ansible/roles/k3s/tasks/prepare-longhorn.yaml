@@ -1,0 +1,63 @@
+---
+- name: Partition the disks and create filesystems
+  parted:
+    device: "{{ item.name }}"
+    number: 1
+    state: present
+    part_start: "0%"
+    part_end: "100%"
+    unit: GB
+  loop: "{{ longhorn.disks }}"
+  when: inventory_hostname == item.hostname
+
+- name: Create filesystem on new partition
+  filesystem:
+    fstype: ext4
+    dev: "{{ item.name }}1"
+  loop: "{{ longhorn.disks }}"
+  when: inventory_hostname == item.hostname
+
+- name: Label the disks
+  command: e2label {{ item.name }}1 {{ item.disk_label }}
+  loop: "{{ longhorn.disks }}"
+  when: inventory_hostname == item.hostname
+
+- name: Create mount point directory
+  file:
+    path: "{{ item.mountpoint }}"
+    state: directory
+  loop: "{{ longhorn.disks }}"
+  when: inventory_hostname == item.hostname
+
+- name: Add entry to /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    regexp: "^LABEL={{ item.disk_label }}\\s"
+    line: "LABEL={{ item.disk_label }} {{ item.mountpoint }} ext4  defaults  0  2"
+  loop: "{{ longhorn.disks }}"
+  when: inventory_hostname == item.hostname
+
+- name: Mount disk
+  mount:
+    path: "{{ item.mountpoint }}"
+    src: "LABEL={{ item.disk_label }}"
+    fstype: ext4
+    state: mounted
+  loop: "{{ longhorn.disks }}"
+  when: inventory_hostname == item.hostname
+
+- name: Run the preconfig script
+  become: true
+  shell: curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/master/scripts/environment_check.sh | bash
+  register: check
+
+- name: Print output from check
+  debug: msg="{{ check.stdout }}"
+
+- name: Apply label "node.longhorn.io/create-default-disk=config" on storage nodes in Kubernetes
+  become: true
+  command: kubectl label nodes --overwrite {{ inventory_hostname }} node.longhorn.io/create-default-disk=config
+
+- name: Apply longhorn config annotation
+  become: true
+  command: kubectl annotate node --overwrite {{ inventory_hostname }} node.longhorn.io/default-disks-config='[{"name":"fast-ssd-disk","path":"/mnt/ssd/data","allowScheduling":true,"storageReserved":0,"tags":["ssd"]},{"name":"slow-hdd-disk","path":"/mnt/hdd/data","allowScheduling":true,"storageReserved":0,"tags":["hdd"]}]'
