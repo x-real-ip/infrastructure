@@ -7,3 +7,4 @@
   until: content.json.ok
   retries: 10
   delay: 5
+  ignore_errors: true

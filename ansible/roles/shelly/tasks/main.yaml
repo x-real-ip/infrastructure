@@ -39,17 +39,14 @@
     - name: Start reboot task
       ansible.builtin.include_tasks: reboot_gen{{ hostvars[item].gen }}.yaml
       loop: "{{ groups['shelly'] }}"
-      ignore_errors: true
 
     - name: Check if device is up
       ansible.builtin.include_tasks: up-check_gen{{ hostvars[item].gen }}.yaml
       loop: "{{ groups['shelly'] }}"
-      ignore_errors: true
 
     - name: Start update task
       ansible.builtin.include_tasks: update_gen{{ hostvars[item].gen }}.yaml
       loop: "{{ groups['shelly'] }}"
-      ignore_errors: true
   always:
     - name: Change back firewall allow internet rule to off if that was it's original state
       ansible.builtin.uri:
@@ -67,14 +64,11 @@
 - name: Start desired state task
   ansible.builtin.include_tasks: desired_state_gen{{ hostvars[item].gen }}.yaml
   loop: "{{ groups['shelly'] }}"
-  ignore_errors: true
 
 - name: Start reboot task
   ansible.builtin.include_tasks: reboot_gen{{ hostvars[item].gen }}.yaml
   loop: "{{ groups['shelly'] }}"
-  ignore_errors: true
 
 - name: Check if device is up
   ansible.builtin.include_tasks: up-check_gen{{ hostvars[item].gen }}.yaml
   loop: "{{ groups['shelly'] }}"
-  ignore_errors: true
