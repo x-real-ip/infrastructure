@@ -8,6 +8,7 @@
   until: ota_check_content.json.status == "ok"
   retries: 10
   delay: 5
+  ignore_errors: true
 
 - name: Register OTA content from {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
@@ -18,6 +19,7 @@
   until: ota_content.json.status != "unknown"
   retries: 10
   delay: 5
+  ignore_errors: true
 
 - name: Update firmware if update is available
   when: ota_content.json.has_update
@@ -27,6 +29,7 @@
         msg:
           - Old firmware version is {{ ota_content.json.old_version }}
           - New firmware version is {{ ota_content.json.new_version }}
+      ignore_errors: true
 
     - name: Start updating {{ hostvars[item]['device_name'] }}
       ansible.builtin.uri:
@@ -35,6 +38,7 @@
       until: result.status == 200
       retries: 10
       delay: 5
+      ignore_errors: true
 
     - name: Wait to become idle after firmware update for {{ hostvars[item]['device_name'] }}
       ansible.builtin.uri:
@@ -45,6 +49,7 @@
       until: ota_content_after_upgrade.json.status == "idle"
       retries: 10
       delay: 10
+      ignore_errors: true
 
     - name: Verify upgrade for {{ hostvars[item]['device_name'] }}
       ansible.builtin.debug:
@@ -54,3 +59,4 @@
       until: result.status == 200
       retries: 10
       delay: 5
+      ignore_errors: true

@@ -8,6 +8,7 @@
   until: result.status == 200
   retries: 10
   delay: 5
+  ignore_errors: true
 
 - name: Start update {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
@@ -29,3 +30,4 @@
   retries: 10
   delay: 5
   when: result.json != {}
+  ignore_errors: true
