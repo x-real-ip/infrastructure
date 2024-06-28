@@ -33,7 +33,7 @@ sealed_secrets:
   deploy: true
   name: "sealed-secrets"
   namespace: "kube-system"
-  image_tag: "v0.26.2"
+  image_tag: "v0.27.0"
 
 node_feature_discovery:
   deploy: false
