@@ -88,21 +88,11 @@
   delay: 5
   ignore_errors: true
 
-- name: Set switch config for {{ hostvars[item]['device_name'] }}
+- name: Set voltage limit for {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     body_format: json
-    method: POST
-    url: http://{{ item }}/rpc
-    body: |
-      {
-        "id": 0,
-        "method": "Switch.SetConfig",
-        "params": {
-          "config": {
-            "voltage_limit": {{ settings.voltage_limit }}
-          }
-        }
-      }
+    method: GET
+    url: 'http://{{ item }}/rpc/Switch.SetConfig?id=0&config={"voltage_limit":{{ settings.voltage_limit }}}'
   register: result
   changed_when: get_switch_result.json.voltage_limit != settings.voltage_limit
   until: result.status == 200
