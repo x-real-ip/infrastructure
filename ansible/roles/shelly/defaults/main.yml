@@ -26,7 +26,7 @@ settings:
   ap_roaming:
     enable: true
     rssi_threshold: -85
-  voltage_limit: 253
+  voltage_limit: 260
   websocket:
     enable: true
     server: "ws://{{ home_assistant_url }}/api/shelly/ws"
