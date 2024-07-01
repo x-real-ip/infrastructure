@@ -6,7 +6,7 @@
 - name: Install avahi-daemon
   apt:
     pkg:
-    - avahi-daemon
+      - avahi-daemon
 
 - name: Enable and start service avahi-daemon, if not started
   service:
@@ -19,10 +19,6 @@
     path: /etc/avahi/avahi-daemon.conf
     regexp: "^#enable-reflector=no"
     line: "enable-reflector=yes"
-
-- name: Common tasks
-  ansible.builtin.include_role:
-    name: common
 
 - name: Update system
   ansible.builtin.include_role:
@@ -47,3 +43,8 @@
 
 - name: Deploy cups
   ansible.builtin.include_tasks: deploy-cups.yaml
+
+- name: Cleanup packages
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: system-cleanup
