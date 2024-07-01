@@ -1,0 +1,6 @@
+---
+- name: Remove dependencies that are no longer required and purge their configuration files
+  ansible.builtin.apt:
+    autoremove: true
+    purge: true
+  when: ansible_os_family == "Debian"
