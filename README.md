@@ -18,6 +18,7 @@
     - [Repair iSCSI share](#repair-iscsi-share)
   - [TrueNAS](#truenas)
     - [Rename volume](#rename-volume)
+  - [Resize VM disk](#resize-vm-disk)
 
 ## Kubernetes
 
@@ -27,17 +28,23 @@
 - SSH access to the target machines where you want to install k3s.
 
 ### Add SSH keys on local device
+
 1. Copy private and public key
+
 ```bash
 cp /path/to/my/key/ansible ~/.ssh/ansible
 cp /path/to/my/key/ansible.pub ~/.ssh/ansible.pub
 ```
+
 2. Change permissions on the files
+
 ```bash
 sudo chmod 600 ~/.ssh/ansible
 sudo chmod 600 ~/.ssh/ansible.pub
 ```
+
 3. Make ssh agent to actually use copied key
+
 ```bash
 ssh-add ~/.ssh/ansible
 ```
@@ -58,6 +65,7 @@ ssh-add ~/.ssh/ansible
 ### Install k3s
 
 #### Usage
+
 1. Clone this repository to your local machine:
 
 ```
@@ -320,6 +328,20 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 ### Rename volume
 
 ```
-zfs rename r01_1tb/k8s/{current zvol name} r01_1tb/k8s/{new zvol name} 
+zfs rename r01_1tb/k8s/{current zvol name} r01_1tb/k8s/{new zvol name}
 ```
+
+## Resize VM disk
+
+```
+sudo dnf install cloud-utils-growpart
+
+sudo growpart /dev/sda 2
+
+sudo pvresize /dev/sda2
+
+sudo lvextend -l +100%FREE /dev/mapper/rl-root
+
+sudo xfs_growfs /
+
 ```
