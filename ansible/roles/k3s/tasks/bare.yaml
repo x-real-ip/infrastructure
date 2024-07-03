@@ -1,8 +1,4 @@
 ---
-- name: Include var files
-  ansible.builtin.include_vars:
-    dir: vars
-
 - name: Include prerequisites task
   ansible.builtin.include_tasks: "prerequisites.yaml"
 
