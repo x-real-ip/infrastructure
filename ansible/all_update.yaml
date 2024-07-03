@@ -1,6 +1,0 @@
----
-# sudo ansible-playbook -kK --ask-vault-pass all_update.yaml
-
-# - import_playbook: shelly_update.yaml
-# - import_playbook: k3s_install_cluster_minimal.yaml
-- import_playbook: k3s_rolling_update_nodes.yaml

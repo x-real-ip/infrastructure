@@ -3,5 +3,14 @@
   hosts: localhost
   connection: local
   gather_facts: false
+
+  pre_tasks:
+    - name: Include shelly group vars
+      include_vars: "{{ playbook_dir }}/group_vars/shelly/vars.yaml"
+
+    - name: Include shelly vault vars
+      include_vars: "{{ playbook_dir }}/group_vars/shelly/vault.yaml"
+      no_log: true
+
   roles:
     - shelly

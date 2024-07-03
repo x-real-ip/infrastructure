@@ -6,10 +6,11 @@ update_firmware: true
 allow_internet_access: true
 
 # Home Assistant url. Home Assistant is setup with the pfSense intergration which has API access to the pfSense instance for turning on/off firewall rules.
-home_assistant_url: "home-assistant.lan.theautomation.nl"
-
-# pfSense firewall rule entity in Home Assistant
-home_assistant_firewall_switch: "switch.pfsense_filter_rule_1672839601_pass_any_allow_internet"
+home_assistant:
+  url: "home-assistant.lan.theautomation.nl"
+  api_token: "{{ vault_home_assistant_api_token }}"
+  # pfSense firewall rule entity in Home Assistant
+  firewall_switch: "switch.pfsense_filter_rule_1672839601_pass_any_allow_internet"
 
 # Shelly device settings
 settings:
@@ -29,7 +30,7 @@ settings:
   voltage_limit: 260
   websocket:
     enable: true
-    server: "ws://{{ home_assistant_url }}/api/shelly/ws"
+    server: "ws://{{ home_assistant.url }}/api/shelly/ws"
   bluetooth:
     enable: true
     enable_rpc: true

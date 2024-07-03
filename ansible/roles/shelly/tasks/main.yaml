@@ -1,8 +1,4 @@
 ---
-- name: Include var files
-  ansible.builtin.include_vars:
-    dir: vars
-
 - name: Check device_name variable length
   ansible.builtin.assert:
     that:
@@ -12,26 +8,26 @@
 
 - name: Register firewall rule switch state
   ansible.builtin.uri:
-    url: http://{{ home_assistant_url }}/api/states/{{ home_assistant_firewall_switch }}
+    url: http://{{ home_assistant.url }}/api/states/{{ home_assistant.firewall_switch }}
     body_format: json
     method: GET
     return_content: true
     headers:
-      Authorization: Bearer {{ home_assistant_api_token }}
+      Authorization: Bearer {{ home_assistant.api_token }}
   register: switch_state_content
   when: allow_internet_access
 
 - name: Turn on firewall allow internet rule if it is off
   ansible.builtin.uri:
-    url: http://{{ home_assistant_url }}/api/services/switch/turn_on
+    url: http://{{ home_assistant.url }}/api/services/switch/turn_on
     method: POST
     return_content: false
     headers:
       Content-Type: "application/json"
-      Authorization: "Bearer {{ home_assistant_api_token }}"
+      Authorization: "Bearer {{ home_assistant.api_token }}"
     body_format: json
     body:
-      entity_id: "{{ home_assistant_firewall_switch }}"
+      entity_id: "{{ home_assistant.firewall_switch }}"
   when: allow_internet_access and switch_state_content.json.state == "off"
 
 - name: Update
@@ -50,15 +46,15 @@
   always:
     - name: Change back firewall allow internet rule to off if that was it's original state
       ansible.builtin.uri:
-        url: http://{{ home_assistant_url }}/api/services/switch/turn_off
+        url: http://{{ home_assistant.url }}/api/services/switch/turn_off
         method: POST
         return_content: false
         headers:
           Content-Type: "application/json"
-          Authorization: "Bearer {{ home_assistant_api_token }}"
+          Authorization: "Bearer {{ home_assistant.api_token }}"
         body_format: json
         body:
-          entity_id: "{{ home_assistant_firewall_switch }}"
+          entity_id: "{{ home_assistant.firewall_switch }}"
       when: allow_internet_access and switch_state_content.json.state == "off"
 
 - name: Start desired state task

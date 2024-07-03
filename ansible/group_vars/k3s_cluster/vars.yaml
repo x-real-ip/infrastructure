@@ -1,9 +1,14 @@
 ---
+# Default username that Ansible should use when connecting to remote host
+ansible_user: root
+
 # IP-address of first master node
 server_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
 
 # The location to store rendered jinja2 templates like deployments .yaml files
 output_file_location: "/home/coen/Downloads/"
+
+k3s_token: "{{ vault_k3s_token }}"
 
 argocd:
   deploy: true
@@ -34,6 +39,7 @@ sealed_secrets:
   name: "sealed-secrets"
   namespace: "kube-system"
   image_tag: "v0.27.0"
+  sealed_secret_customkeys_2_tls_key: "{{ vault_sealed_secret_customkeys_2_tls_key }}"
 
 node_feature_discovery:
   deploy: false
