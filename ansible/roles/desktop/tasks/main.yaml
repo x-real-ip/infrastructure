@@ -2,9 +2,6 @@
 - name: Install usual apt packages
   ansible.builtin.import_tasks: install_apt_packages.yaml
 
-# - name: Intall Python packages
-#   ansible.builtin.import_tasks: install_python_packages.yaml
-
 - name: Intall snap store packages
   ansible.builtin.import_tasks: install_snap_packages.yaml
 
