@@ -12,5 +12,6 @@
       - git
       - adb
       - curl
+      - open-iscsi
     autoclean: true
     autoremove: true
