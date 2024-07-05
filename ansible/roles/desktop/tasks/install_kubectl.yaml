@@ -3,40 +3,52 @@
   ansible.builtin.uri:
     url: https://dl.k8s.io/release/stable.txt
     return_content: yes
-  register: version
+  register: kubectl_version
 
-- name: Download the latest kubectl release
-  ansible.builtin.uri:
-    url: https://dl.k8s.io/release/{{ version.content }}/bin/linux/arm/kubectl
-    dest: /home/coen
-  register: kubectl
+- name: Debug
+  debug:
+    msg: "{{ kubectl_version.content }}"
+
+- name: Set kubectl URL based on architecture
+  set_fact:
+    kubectl_url: >-
+      https://dl.k8s.io/release/{{ kubectl_version.content }}/bin/linux/{{
+      'amd64' if ansible_architecture == 'x86_64'
+      else 'arm64' if ansible_architecture == 'aarch64'
+      else 'arm' if ansible_architecture == 'armv7l'
+      else 'unknown' }}/kubectl
+
+- name: Fail if architecture is unknown
+  fail:
+    msg: "Unsupported architecture: {{ ansible_architecture }}"
+  when: kubectl_url.endswith('unknown/kubectl')
+
+- name: Download kubectl
+  ansible.builtin.get_url:
+    url: "https://cdn.dl.k8s.io/release/{{ kubectl_version.content }}/bin/linux/amd64/kubectl"
+    dest: /usr/local/bin/kubectl
+    mode: '0755'
+    owner: root
+    group: root
+    force: yes
 
 - name: Download the kubectl checksum file
   ansible.builtin.uri:
-    url: https://dl.k8s.io/{{ version.content }}/bin/linux/arm/kubectl.sha256
-    dest: /home/coen
+    url: https://dl.k8s.io/{{ kubectl_version.content }}/bin/linux/amd64/kubectl.sha256
+    dest: "{{ ansible_user_dir }}"
 
 - name: Validate the kubectl binary against the checksum file
-  ansible.builtin.shell: echo "$(cat /home/coen/kubectl.sha256)  kubectl" | sha256sum --check
+  ansible.builtin.shell: echo "$(cat {{ ansible_user_dir }}/kubectl.sha256) /usr/local/bin/kubectl" | sha256sum --check
   register: result
 
 - name: Assert that the kubectl binary is OK
   vars:
-    expected: "kubectl: OK"
+    expected: "/usr/local/bin/kubectl: OK"
   assert:
     that:
       - result.stdout == expected
     fail_msg: "{{ result.stdout }}"
     success_msg: "{{ result.stdout }}"
-
-- name: Move kubectl and change permissions
-  ansible.builtin.file:
-    src: "{{ kubectl.path }}"
-    dest: /usr/local/bin/kubectl
-    state: hard
-    owner: root
-    group: root
-    mode: "+x"
 
 - name: Check if kubectl is installed
   ansible.builtin.shell: kubectl version --client
