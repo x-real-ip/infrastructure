@@ -13,5 +13,6 @@
       - adb
       - curl
       - open-iscsi
+      - xfsprogs
     autoclean: true
     autoremove: true
