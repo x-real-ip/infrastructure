@@ -1,0 +1,26 @@
+---
+
+- name: Ensure NFS client is installed
+  apt:
+    name: nfs-common
+    state: present
+    update_cache: true
+
+- name: Create mount point directory
+  file:
+    path: "/home/coen/truenas/{{ item }}"
+    state: directory
+  loop:
+    - shared
+    - backups
+
+- name: Mount NFS share
+  mount:
+    src: "{{ nfs_server }}:{{ nfs_path }}"
+    path: "/home/coen/truenas/{{ item }}"
+    fstype: nfs
+    opts: defaults
+    state: mounted
+  loop:
+    - shared
+    - backups

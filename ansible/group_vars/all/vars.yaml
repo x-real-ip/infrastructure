@@ -1,2 +1,3 @@
 ---
 system_timezone: "Europe/Amsterdam"
+localdomain: "lan.theautomation.nl"
