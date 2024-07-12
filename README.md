@@ -304,24 +304,56 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 
 ### Repair iSCSI share
 
-1. SSH into one of the nodes in the cluster and start discovery
-   ```console
-   sudo iscsiadm -m discovery -t st -p storage-server-lagg.lan.theautomation.nl
-   ```
-2. Login to target
-   ```console
-   sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.theautomation.nl --login
-   ```
-3. See the device using `lsblk`. In the following steps, assume sdd is the device name.
-4. Create a local mount point & mount to replay logfile `sudo mkdir -vp /mnt/data-0 && sudo mount /dev/sdd /mnt/data-0/`
-5. Unmount the device `sudo umount /mnt/data-0/`
-6. Run check / ncheck `sudo xfs_repair -n /dev/sdd; sudo xfs_ncheck /dev/sdd` If filesystem corruption was corrected due to replay of the logfile, the xfs_ncheck should produce a list of nodes and pathnames, instead of the errorlog.
-7. If needed run xfs repair `sudo xfs_repair /dev/sdd`
-8. Logout from target
-   ```console
-   sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.theautomation.nl --logout
-   ```
-9. Volumes are now ready to be mounted as PVCs.
+1. Make sure that the container that uses the volume has stopped.
+2. SSH into one of the nodes in the cluster and start discovery
+
+```bash
+sudo iscsiadm -m discovery -t st -p truenas-alias.lan.theautomation.nl && \
+read -p "Enter the disk name: " DISKNAME && \
+export DISKNAME
+```
+
+3. Login to target
+
+```bash
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-alias.lan.theautomation.nl --login && \
+sleep 5 && \
+lsblk && \
+read -p "Enter the device ('sda' for example): " DEVICENAME && \
+export DEVICENAME
+```
+
+4. Create a local mount point & mount to replay logfile
+
+```bash
+sudo mkdir -vp /mnt/data-0 && sudo mount /dev/${DEVICENAME} /mnt/data-0/
+```
+
+5. Unmount the device
+
+```bash
+sudo umount /mnt/data-0/
+```
+
+6. Run check / ncheck
+
+```bash
+sudo xfs_repair -n /dev/${DEVICENAME}; sudo xfs_ncheck /dev/${DEVICENAME}
+echo "If filesystem corruption was corrected due to replay of the logfile, the xfs_ncheck should produce a list of nodes and pathnames, instead of the errorlog."
+```
+
+8. If needed run xfs repair
+
+```bash
+sudo xfs_repair /dev/${DEVICENAME}
+```
+
+9.  Logout from target
+
+```bash
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal storage-server-lagg.lan.theautomation.nl --logout
+echo "Volumes are now ready to be mounted as PVCs."
+```
 
 ## TrueNAS
 
