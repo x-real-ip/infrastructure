@@ -308,7 +308,7 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 2. SSH into one of the nodes in the cluster and start discovery
 
 ```bash
-sudo iscsiadm -m discovery -t st -p truenas-alias.lan.theautomation.nl && \
+sudo iscsiadm -m discovery -t st -p truenas-master.lan.theautomation.nl && \
 read -p "Enter the disk name: " DISKNAME && \
 export DISKNAME
 ```
@@ -316,7 +316,7 @@ export DISKNAME
 3. Login to target
 
 ```bash
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-alias.lan.theautomation.nl --login && \
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-master.lan.theautomation.nl --login && \
 sleep 5 && \
 lsblk && \
 read -p "Enter the device ('sda' for example): " DEVICENAME && \

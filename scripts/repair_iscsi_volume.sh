@@ -12,7 +12,7 @@ read -p "Press Enter to proceed"
 
 # SSH into one of the nodes in the cluster and start discovery
 echo -e "${GREEN}Starting iSCSI discovery...${NC}"
-sudo iscsiadm -m discovery -t st -p truenas-alias.lan.theautomation.nl
+sudo iscsiadm -m discovery -t st -p truenas-master.lan.theautomation.nl
 
 # Prompt for disk name and set as environment variable
 echo -e "${YELLOW}Enter the disk name (for example: dsmr-reader-db) ${NC}"
@@ -21,7 +21,7 @@ export DISKNAME
 
 # Login to target
 echo -e "${GREEN}Logging in to iSCSI target...${NC}"
-if sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-alias.lan.theautomation.nl --login; then
+if sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-master.lan.theautomation.nl --login; then
     echo -e "${GREEN}Logged in to ${DISKNAME} successfully.${NC}"
 else
     echo -e "${RED}Failed logging in to iSCSI target '${DISKNAME}'.${NC}"
@@ -83,6 +83,6 @@ echo -e " ${GREEN}Done.${NC}"
 
 # Step 8: Logout from target
 echo -e "${GREEN}Logging out from iSCSI target...${NC}"
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-alias.lan.theautomation.nl --logout
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-master.lan.theautomation.nl --logout
 
 echo -e "${GREEN}Volume '${DISKNAME} is now ready to be mounted as PVC.${NC}"
