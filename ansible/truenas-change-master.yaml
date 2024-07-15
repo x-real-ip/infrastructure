@@ -1,0 +1,90 @@
+---
+- name: "Play to change the truenas Master"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    domain: "lan.theautomation.nl"
+    truenas_hosts:
+      - name: "master"
+      - name: "a"
+      - name: "b"
+
+  tasks:
+    - name: Set TrueNAS API variables
+      include_vars: "group_vars/truenas/{{ item }}.yaml"
+      loop:
+        - vars
+        - vault
+
+    - name: Query DNS for the IP addresses
+      command: "dig +short truenas-{{ item.name }}.{{ domain }}"
+      loop: "{{ truenas_hosts }}"
+      register: dig_results
+
+    - name: Set IP address variables
+      set_fact:
+        "truenas_{{ item.item.name }}_ip": "{{ item.stdout_lines[0] }}"
+      loop: "{{ dig_results.results }}"
+
+    - name: Display the IP address variables
+      debug:
+        msg:
+          - "truenas_master_ip: {{ truenas_master_ip }}"
+          - "truenas_a_ip: {{ truenas_a_ip }}"
+          - "truenas_b_ip: {{ truenas_b_ip }}"
+
+    - name: Set target_truenas_ip based on IP comparison
+      set_fact:
+        target_truenas_ip: "{{ item.stdout }}"
+      loop: "{{ dig_results.results }}"
+      when: >
+        truenas_master_ip != item.stdout
+
+    - name: Set master_truenas_api_key based on IP comparison
+      set_fact:
+        master_truenas_api_key: "{{ truenas.a.api_key }}"
+      when: >
+        truenas_master_ip == truenas_a_ip
+
+    - name: Set master_truenas_api_key based on IP comparison
+      set_fact:
+        master_truenas_api_key: "{{ truenas.b.api_key }}"
+      when: >
+        truenas_master_ip == truenas_b_ip
+
+    - name: Display the target_truenas variable
+      debug:
+        msg: "The target truenas IP is {{ target_truenas_ip | trim }}"
+
+    - name: Display the master_truenas_api_key variable
+      debug:
+        msg: "{{ master_truenas_api_key }}"
+
+    - name: Create a snapshot on truenas-master
+      uri:
+        url: "https://{{ truenas_master_ip }}/api/v2.0/pool/snapshottask"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ master_truenas_api_key }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          dataset: "ssd/containers"
+          recursive: true
+          lifetime_value: 2
+          lifetime_unit: "WEEK"
+          naming_schema: "test_%Y-%m-%d_%H-%M"
+        validate_certs: no
+      register: snapshot_result
+
+    - name: snapshot_result
+      debug:
+        msg: "{{ snapshot_result }}"
+
+# Create snapshot task on current master
+# Run replication from master to target based on taken snapshot
+# Remove replication task from current Master
+# Create replication task on target
+# Set target as the new master
+
