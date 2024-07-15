@@ -61,27 +61,87 @@
       debug:
         msg: "{{ master_truenas_api_key }}"
 
-    - name: Create a snapshot on truenas-master
+    - name: Get all existing snapshot tasks on truenas-master
       uri:
         url: "https://{{ truenas_master_ip }}/api/v2.0/pool/snapshottask"
-        method: POST
+        method: GET
         headers:
           Authorization: "Bearer {{ master_truenas_api_key }}"
           Content-Type: "application/json"
-        body_format: json
-        body:
-          dataset: "ssd/containers"
-          recursive: true
-          lifetime_value: 2
-          lifetime_unit: "WEEK"
-          naming_schema: "test_%Y-%m-%d_%H-%M"
         validate_certs: no
-      register: snapshot_result
+      register: existing_snapshot_result
 
     - name: snapshot_result
       debug:
-        msg: "{{ snapshot_result }}"
+        msg: "{{ existing_snapshot_result.json | map(attribute='id') | list }}"
 
+    - name: Delete existing snapshot tasks on truenas-master
+      uri:
+        url: "https://{{ truenas_master_ip }}/api/v2.0/pool/snapshottask/id/{{ item }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ master_truenas_api_key }}"
+          Content-Type: "application/json"
+        validate_certs: no
+      register: deleted_snapshot_result
+      loop: "{{ existing_snapshot_result.json | map(attribute='id') | list }}"
+      # until: deleted_snapshot_result.json == "true"
+
+    # - name: Create a snapshot task on truenas-master for the SSD pool
+    #   uri:
+    #     url: "https://{{ truenas_master_ip }}/api/v2.0/pool/snapshottask"
+    #     method: POST
+    #     headers:
+    #       Authorization: "Bearer {{ master_truenas_api_key }}"
+    #       Content-Type: "application/json"
+    #     body_format: json
+    #     body:
+    #       dataset: "ssd"
+    #       recursive: true
+    #       exclude:
+    #         - "ssd/homedirs"
+    #       lifetime_value: 1
+    #       lifetime_unit: "MONTH"
+    #       naming_schema: "auto_%Y-%m-%d_%H-%M"
+    #       schedule:
+    #         minute: "0"
+    #         hour: "0"
+    #         dom: "*"
+    #         month: "*"
+    #         dow: "*"
+    #         begin: "00:00"
+    #         end: "23:59"
+    #     validate_certs: no
+    #   register: snapshot_result
+
+    # - name: Create a snapshot task on truenas-master for the HDD pool
+    #   uri:
+    #     url: "https://{{ truenas_master_ip }}/api/v2.0/pool/snapshottask"
+    #     method: POST
+    #     headers:
+    #       Authorization: "Bearer {{ master_truenas_api_key }}"
+    #       Content-Type: "application/json"
+    #     body_format: json
+    #     body:
+    #       dataset: "hdd"
+    #       recursive: true
+    #       lifetime_value: 1
+    #       lifetime_unit: "MONTH"
+    #       naming_schema: "auto_%Y-%m-%d_%H-%M"
+    #       schedule:
+    #         minute: "0"
+    #         hour: "0"
+    #         dom: "*"
+    #         month: "*"
+    #         dow: "*"
+    #         begin: "00:00"
+    #         end: "23:59"
+    #     validate_certs: no
+    #   register: snapshot_result
+
+    # - name: snapshot_result
+    #   debug:
+    #     msg: "{{ snapshot_result }}"
 # Create snapshot task on current master
 # Run replication from master to target based on taken snapshot
 # Remove replication task from current Master
