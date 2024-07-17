@@ -10,11 +10,11 @@
       - name: "a"
       - name: "b"
     truenas_ssh_credentials_id:
-      - a: 4
-      - b: 4
+      a: 4
+      b: 4
     truenas_ssh_private_key_id:
-      - a: 
-      - b: 3
+      a:
+      b: 3
 
   tasks:
     - name: Flush DNS cache
@@ -67,187 +67,136 @@
       set_fact:
         source_truenas_api_key: "{{ truenas[source_truenas_instance | trim].api_key | default('None') }}"
 
-    - name: Set truenas ssh credentials id based on source target instances
+    - name: Set truenas ssh credentials id and private key id based on source target instances
       set_fact:
-        source_truenas_ssh_credentials_id: >-
-          {% for item in truenas_ssh_credentials_id %}
-          {% if item[source_truenas_instance | trim] is defined %}
-          {{ item[source_truenas_instance | trim] }}
-          {% endif %}
-          {% endfor %}
+        source_truenas_ssh_credentials_id: "{{ truenas_ssh_credentials_id[source_truenas_instance | trim] | int }}"
+        source_truenas_ssh_private_key_id: "{{ truenas_ssh_private_key_id[source_truenas_instance | trim] | int }}"
 
-    - name: Debug
-      debug:
-        msg: "{{ source_truenas_ssh_credentials_id | trim }}"
+    # - name: Get all existing snapshot tasks on truenas-master
+    #   uri:
+    #     url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/pool/snapshottask"
+    #     method: GET
+    #     headers:
+    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
+    #       Content-Type: "application/json"
+    #     validate_certs: no
+    #   register: existing_snapshot_result
 
-    - name: Get all existing snapshot tasks on truenas-master
+    # - name: Start snapshot tasks on truenas-master
+    #   uri:
+    #     url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/pool/snapshottask/id/{{ item }}/run"
+    #     method: POST
+    #     headers:
+    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
+    #       Content-Type: "application/json"
+    #     validate_certs: no
+    #   register: snapshot_start_result
+    #   loop: "{{ existing_snapshot_result.json | map(attribute='id') | list }}"
+
+    # - name: Get all existing replication tasks on truenas-master
+    #   uri:
+    #     url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/replication"
+    #     method: GET
+    #     headers:
+    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
+    #       Content-Type: "application/json"
+    #     validate_certs: no
+    #   register: existing_replication_result
+
+    # - name: Check all replication taks on truenas-master and wait for a running state
+    #   uri:
+    #     url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/replication/id/{{ item }}"
+    #     method: GET
+    #     headers:
+    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
+    #       Content-Type: "application/json"
+    #     validate_certs: no
+    #   register: running_replication_result
+    #   until: running_replication_result.json.job.state == "RUNNING"
+    #   retries: 30
+    #   delay: 10
+    #   loop: "{{ existing_replication_result.json | map(attribute='id') | list }}"
+
+    # - name: Check all replication taks on truenas-master and wait for a success state
+    #   uri:
+    #     url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/replication/id/{{ item }}"
+    #     method: GET
+    #     headers:
+    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
+    #       Content-Type: "application/json"
+    #     validate_certs: no
+    #   register: success_replication_result
+    #   until: success_replication_result.json.job.state == "SUCCESS"
+    #   retries: 30
+    #   delay: 10
+    #   loop: "{{ existing_replication_result.json | map(attribute='id') | list }}"
+
+    # - name: Disable existing replication tasks on truenas-master
+    #   uri:
+    #     url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/replication/id/{{ item }}"
+    #     method: PUT
+    #     headers:
+    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
+    #       Content-Type: "application/json"
+    #     validate_certs: no
+    #     body_format: json
+    #     body:
+    #       enabled: false
+    #   register: disable_existing_replication_result
+    #   loop: "{{ existing_replication_result.json | map(attribute='id') | list }}"
+
+    # - name: Disable existing snapshot tasks on truenas-master
+    #   uri:
+    #     url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/pool/snapshottask/id/{{ item }}"
+    #     method: PUT
+    #     headers:
+    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
+    #       Content-Type: "application/json"
+    #     validate_certs: no
+    #     body_format: json
+    #     body:
+    #       enabled: false
+    #   register: disable_existing_snapshot_result
+    #   loop: "{{ existing_snapshot_result.json | map(attribute='id') | list }}"
+
+    - name: Get all existing cloud sync tasks on truenas-master
       uri:
-        url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/pool/snapshottask"
+        url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/cloudsync"
         method: GET
         headers:
           Authorization: "Bearer {{ source_truenas_api_key | trim }}"
           Content-Type: "application/json"
         validate_certs: no
-      register: existing_snapshot_result
+      register: existing_cloudsync_result
 
-    - name: Delete existing snapshot tasks on truenas-master
+    - name: Disable existing cloud sync tasks on truenas-master
       uri:
-        url: "https://{{ truenas_master_ip }}/api/v2.0/pool/snapshottask/id/{{ item }}"
-        method: DELETE
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        validate_certs: no
-      register: deleted_existing_snapshot_result
-      loop: "{{ existing_snapshot_result.json | map(attribute='id') | list }}"
-      until: deleted_existing_snapshot_result.json == true
-
-    - name: Create a snapshot task on truenas-master for the SSD pool
-      uri:
-        url: "https://{{ truenas_master_ip }}/api/v2.0/pool/snapshottask"
-        method: POST
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        body_format: json
-        body:
-          dataset: "ssd"
-          recursive: true
-          exclude:
-            - "ssd/homedirs"
-          lifetime_value: 1
-          lifetime_unit: "MONTH"
-          naming_schema: "auto_%Y-%m-%d_%H-%M"
-          schedule:
-            minute: "0"
-            hour: "0"
-            dom: "*"
-            month: "*"
-            dow: "*"
-            begin: "00:00"
-            end: "23:59"
-        validate_certs: no
-      register: create_snapshot_ssd_result
-
-    - name: Create a snapshot task on truenas-master for the HDD pool
-      uri:
-        url: "https://{{ truenas_master_ip }}/api/v2.0/pool/snapshottask"
-        method: POST
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        body_format: json
-        body:
-          dataset: "hdd"
-          recursive: true
-          lifetime_value: 1
-          lifetime_unit: "MONTH"
-          naming_schema: "auto_%Y-%m-%d_%H-%M"
-          schedule:
-            minute: "0"
-            hour: "0"
-            dom: "*"
-            month: "*"
-            dow: "*"
-            begin: "00:00"
-            end: "23:59"
-        validate_certs: no
-      register: create_snapshot_hdd_result
-
-    - name: snapshot_result
-      debug:
-        msg: "{{ create_snapshot_hdd_result.json.id }}"
-
-    - name: Start snapshot tasks on truenas-master
-      uri:
-        url: "https://{{ truenas_master_ip }}/api/v2.0/pool/snapshottask/id/{{ item }}/run"
-        method: POST
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        validate_certs: no
-      register: snapshot_start_result
-      loop:
-        - "{{ create_snapshot_ssd_result.json.id }}"
-        - "{{ create_snapshot_hdd_result.json.id }}"
-
-    - name: Get all existing replication tasks on truenas-master
-      uri:
-        url: "https://{{ truenas_master_ip }}/api/v2.0/replication"
-        method: GET
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        validate_certs: no
-      register: existing_replication_result
-
-    - name: Delete existing replication tasks on truenas-master
-      uri:
-        url: "https://{{ truenas_master_ip }}/api/v2.0/replication/id/{{ item }}"
-        method: DELETE
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        validate_certs: no
-      register: deleted_existing_replication_result
-      loop: "{{ existing_replication_result.json | map(attribute='id') | list }}"
-      until: deleted_existing_replication_result.json == true
-
-    - name: Create replication task on truenas-master
-      uri:
-        url: "https://{{ truenas_master_ip }}/api/v2.0/replication"
-        method: POST
+        url: "https://truenas-{{ source_truenas_instance | trim }}.{{ domain }}/api/v2.0/cloudsync/id/{{ item }}"
+        method: PUT
         headers:
           Authorization: "Bearer {{ source_truenas_api_key | trim }}"
           Content-Type: "application/json"
         validate_certs: no
         body_format: json
         body:
-          name: "replication from master to target - ssd/containers"
-          direction: PUSH
-          transport: SSH+NETCAT
-          source_datasets:
-            - ssd/containers
-          target_dataset: ssd/containers
-          recursive: true
-          properties: true
-          also_include_naming_schema:
-            - "auto-%Y-%m-%d_%H-%M"
-          auto: true
-          schedule:
-            minute: "0"
-            hour: "*"
-            dom: "*"
-            month: "*"
-            dow: "*"
-            begin: "00:00"
-            end: "23:59"
-          only_matching_schedule: false
-          allow_from_scratch: false
-          readonly: "IGNORE"
-          hold_pending_snapshots: false
-          retention_policy: "SOURCE"
-          ssh_credentials:
-            attributes:
-              connect_timeout: 10
-              host: "truenas-a.lan.theautomation.nl"
-              port: 22
-              private_key: 3
-              remote_host_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCN3HfrKz3TiZVRwJDdY3EUof5FpIwLmSv0+TITxRrv8DLC0KguYS6+9nK4gl1ufCduscA/mYZ5jF3VC0PZ1yg2hMXUc/DmmrYP23DRVyxpTjgexMbasgbq7NB7/gIMJkVXsNNu6Nfdo1aEx/nwa1NCfHhdzTKONtG+m+5uw/4x3CSqDdpB1bcr24adg6RU65SjnGyy9usDPY9inueps/G0Xf2HTwYwMpA3ezXdE1RLUF1HE66bqrapeDCZ8QfHyaFu2ASXB9ej9glL2DkmCcHLQjqOeJLzoNQs1GmKkBqHHub9cnDDDxz2fYw1h83QVTbaPLwWMS9yQPtxhdEH/BzaS/mNVrACThR/Z06bcGCnJHuJ7E83joiOrYuI5rpdu442EGsg29VPZN6HGRaOepXvYRCRRe0HkPMj9mMcMB7UjnNhffI6y1kqMB+KsyCoBR6EPDNI773HIzlv8k8jokN3p46b+VmH6IqpNUIC5zjjSVR13/gr6k1ZdqKAqdPej6U= root@tnsbuilds01.tn.ixsystems.net\necdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHP3aERjo6zQUvFzWqfQdLZLyBHJr1CT05MrcjY3EQqLvpyaxOJYwWskDSrzasg6S9iO3h8WOJz+TBl/14wXRlE= root@tnsbuilds01.tn.ixsystems.net\nssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIu3qGWTYJ6xweno/EZDySzDhobgK7U7JQF8Rhjc6CC9 root@tnsbuilds01.tn.ixsystems.net"
-              username: admin
-            id:
-      register: replication_start_result
+          enabled: false
+      register: disable_existing_cloudsync_result
+      loop: "{{ existing_cloudsync_result.json | map(attribute='id') | list }}"
 
     - name: Debug
       debug:
-        msg: "{{ existing_replication_result }}"
+        msg: "{{ existing_cloudsync_result }}"
 
-    - name: snapshot_result
-      debug:
-        msg: "{{ snapshot_start_result}}"
-# Create snapshot task on current master
-# Run replication from master to target based on taken snapshot
-# Remove replication task from current Master
-# Create replication task on target
-# Set target as the new master
 
+# () Flush local DNS
+# () Move VM's to the target Proxmox node
+# () Delete containers that uses truenas storage
+# (done) Create snapshot task on current master
+# (done) Run replication from master to target 
+# (done) Disable replication task on current master
+# () Disable Cloud Sync on current master
+# () Set target as the new master via pfSense API
+# ()
+# () Flush local DNS on k3s nodes
+# () Apply manifests that uses truenas storage
+# () Enable replication task on target
