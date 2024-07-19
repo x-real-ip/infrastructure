@@ -1,0 +1,33 @@
+---
+- name: Ensure NFS client is installed
+  apt:
+    name: nfs-common
+    state: present
+    update_cache: true
+
+- name: Create mount point directory
+  file:
+    path: "/home/coen/truenas/{{ item }}"
+    state: directory
+    owner: "1000"
+    group: "2000"
+  loop:
+    - shared
+    - backups
+    - coen
+    - anne
+    - plex-media
+
+- name: Mount NFS share
+  mount:
+    src: "{{ nfs.server }}:{{ item.nfs_path }}"
+    path: "/home/coen/truenas/{{ item.folder }}"
+    fstype: nfs
+    opts: defaults
+    state: mounted
+  loop:
+    - { nfs_path: "/mnt/ssd/webdav", folder: "shared" }
+    - { nfs_path: "/mnt/ssd/backups", folder: "backups" }
+    - { nfs_path: "/mnt/hdd/coen", folder: "coen" }
+    - { nfs_path: "/mnt/hdd/anne", folder: "anne" }
+    - { nfs_path: "/mnt/hdd/containers/k8s/plex-media", folder: "plex-media" }

@@ -26,7 +26,7 @@ odroid:
     # odroid-01: null
     odroid-02: null
 
-linux_desktop:
+desktop_linux:
   hosts:
     lin-pc-01: null
     # lin-pc-02: null
