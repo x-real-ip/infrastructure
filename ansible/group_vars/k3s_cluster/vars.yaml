@@ -21,10 +21,10 @@ democratic_csi_manual:
   name: democratic-csi
   namespace: democratic-csi
   image_tag:
-    cleanup: "1.32.0"
+    cleanup: "stable"
     csi_proxy: latest
     democratic_csi: latest
-    driver_registrar: v2.5.0
+    driver_registrar: v2.11.1
 
 kube_vip:
   deploy: true
@@ -38,7 +38,7 @@ sealed_secrets:
   deploy: true
   name: "sealed-secrets"
   namespace: "kube-system"
-  image_tag: "v0.27.0"
+  image_tag: "v0.27.1"
   sealed_secret_customkeys_2_tls_key: "{{ vault_sealed_secret_customkeys_2_tls_key }}"
 
 node_feature_discovery:
@@ -46,7 +46,7 @@ node_feature_discovery:
   name: node-feature-discovery
   namespace: devops
   image_tag:
-    node_feature_discovery: "v0.12.1"
+    node_feature_discovery: "v0.16.3"
 
 tls_certificates:
   wildcard_theautomation_nl:
