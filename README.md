@@ -19,6 +19,7 @@
   - [TrueNAS](#truenas)
     - [Rename volume](#rename-volume)
   - [Resize VM disk](#resize-vm-disk)
+  - [Odroid](#odroid)
 
 ## Kubernetes
 
@@ -377,3 +378,11 @@ sudo lvextend -l +100%FREE /dev/mapper/rl-root
 sudo xfs_growfs /
 
 ```
+
+## Odroid
+
+1. Download the minimal .xz-compressed image file from https://fi.mirror.armbian.de/archive/odroidc4/archive/
+2. Write the .xz compressed image with a tool USBImager or balenaEtcher
+3. Insert the card and boot
+4. Login via SSH user `root` default password `1234`
+5. Run Ansible playbook for Odroid
