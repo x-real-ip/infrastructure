@@ -23,7 +23,7 @@ proxmox:
 
 odroid:
   hosts:
-    # odroid-01: null
+    odroid-01: null
     odroid-02: null
 
 desktop_linux:
