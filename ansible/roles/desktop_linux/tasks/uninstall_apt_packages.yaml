@@ -3,4 +3,5 @@
   ansible.builtin.apt:
     pkg:
       - chrome
+      - firefox
     state: absent
