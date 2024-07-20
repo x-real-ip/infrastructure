@@ -9,11 +9,6 @@ k3s_master:
     k3s-mas-02:
     k3s-mas-03:
 
-k3s_storage:
-  hosts:
-    k3s-mas-01:
-    k3s-mas-02:
-
 proxmox:
   hosts:
     pve-a:
