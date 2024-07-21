@@ -17,6 +17,7 @@
     - coen
     - anne
     - plex-media
+    - proxmmox-backups
 
 - name: Mount NFS share
   mount:
@@ -31,3 +32,4 @@
     - { nfs_path: "/mnt/hdd/coen", folder: "coen" }
     - { nfs_path: "/mnt/hdd/anne", folder: "anne" }
     - { nfs_path: "/mnt/hdd/containers/k8s/plex-media", folder: "plex-media" }
+    - { nfs_path: "/mnt/hdd/backups/proxmox", folder: "proxmmox-backups" }
