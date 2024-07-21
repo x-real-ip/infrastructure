@@ -17,15 +17,15 @@
       b: 3
 
   tasks:
-    - name: Flush DNS cache
-      ansible.builtin.command: resolvectl flush-caches
-      when: ansible_distribution in ['Ubuntu', 'Debian', 'Fedora']
-
     - name: Set TrueNAS API variables
       include_vars: "group_vars/truenas/{{ item }}.yaml"
       loop:
         - vars
         - vault
+
+    - name: Flush DNS cache
+      ansible.builtin.command: resolvectl flush-caches
+      when: ansible_distribution in ['Ubuntu', 'Debian', 'Fedora']
 
     - name: Query DNS for the IP addresses
       command: "dig +short truenas-{{ item.name }}.{{ domain }}"
@@ -186,13 +186,11 @@
     - name: Debug
       debug:
         msg: "{{ existing_cloudsync_result }}"
-
-
 # () Flush local DNS
 # () Move VM's to the target Proxmox node
 # () Delete containers that uses truenas storage
 # (done) Create snapshot task on current master
-# (done) Run replication from master to target 
+# (done) Run replication from master to target
 # (done) Disable replication task on current master
 # () Disable Cloud Sync on current master
 # () Set target as the new master via pfSense API
