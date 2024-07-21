@@ -1,30 +1,14 @@
 ---
-- name: Find USB devices in /dev/serial/by-id/
-  command: find /dev/serial/by-id/ -type l
-  register: usb_device_output
-
-- name: Print USB devices
-  debug:
-    var: usb_device_output.stdout_lines
-
-- name: Check if USB device is attached
-  when: "'/dev/serial/by-id/usb-0658_0200-if00' in usb_device_output.stdout_lines"
-  block:
-    - name: Docker run ser2net
-      community.docker.docker_container:
-        name: ser2net
-        image: "ghcr.io/theautomation/ser2net:main"
-        pull: true
-        state: started
-        recreate: true
-        exposed_ports: "3001"
-        published_ports:
-          - "3001:3001"
-        devices:
-          - "/dev/serial/by-id/usb-0658_0200-if00"
-        restart_policy: "always"
-
-  rescue:
-    - name: Skip task if USB is not attached
-      ansible.builtin.debug:
-        msg: "USB device not attached, skipping task"
+- name: Docker run ser2net
+  community.docker.docker_container:
+    name: ser2net
+    image: "ghcr.io/theautomation/ser2net:main"
+    pull: true
+    state: started
+    recreate: true
+    exposed_ports: "3001"
+    published_ports:
+      - "3001:3001"
+    devices:
+      - "/dev/serial/by-id/usb-0658_0200-if00"
+    restart_policy: "always"

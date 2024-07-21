@@ -51,6 +51,12 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     state: present
+  register: docker_result
+
+- name: Reboot if Install Docker packages resulted in changes
+  reboot:
+    msg: "Rebooting due to changes in Docker setup"
+  when: docker_result is changed
 
 - name:  Install python Ansible dependencies
   ansible.builtin.apt:

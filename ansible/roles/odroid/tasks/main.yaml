@@ -1,7 +1,6 @@
 ---
-- name: Include var files
-  ansible.builtin.include_vars:
-    dir: vars
+- name: Set the hostname using hostnamectl
+  command: hostnamectl set-hostname "{{ inventory_hostname }}"
 
 - name: Install avahi-daemon
   apt:
@@ -38,8 +37,19 @@
 - name: Install Docker
   ansible.builtin.include_tasks: install-docker.yaml
 
+- name: Find USB devices in /dev/serial/by-id/
+  command: find /dev/serial/by-id/ -type l
+  register: usb_device_output
+  ignore_errors: true
+
+- name: Print USB devices
+  debug:
+    var: usb_device_output.stdout_lines
+  ignore_errors: true
+
 - name: Deploy ser2net
   ansible.builtin.include_tasks: deploy-ser2net.yaml
+  when: "'/dev/serial/by-id/usb-0658_0200-if00' in usb_device_output.stdout_lines"
 
 - name: Deploy cups
   ansible.builtin.include_tasks: deploy-cups.yaml

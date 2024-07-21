@@ -18,8 +18,8 @@
     restart_policy: "always"
     env:
       CUPSADMIN: admin
-      CUPSPASSWORD: "{{ cups_password }}"
-      TZ: "Europe/Amsterdam"
+      CUPSPASSWORD: "{{ cups.password }}"
+      TZ: "{{ system_timezone }}"
     volumes:
       - /root/docker_volumes/cups:/etc/cups
       - /var/run/dbus:/var/run/dbus
