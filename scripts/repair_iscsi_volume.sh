@@ -65,6 +65,7 @@ else
             echo -e "${GREEN}Device mounted successfully after repair.${NC}"
         else
             echo -e "${RED}Failed to mount even after repair. Check the device and filesystem.${NC}"
+            sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-master.lan.theautomation.nl --logout
             exit 1
         fi
     else
