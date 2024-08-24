@@ -31,12 +31,12 @@ sudo ansible-playbook --ask-vault-pass -kK k3s_install_cluster_minimal.yaml
 
 Stop nodes
 ```
-sudo ansible-playbook -k k3s_stop_all_nodes.yaml
+sudo ansible-playbook --ask-vault-pass -k k3s_stop_all_pods.yaml
 ```
 
 Start nodes
 ```
-sudo ansible-playbook -k k3s_start_all_nodes.yaml
+sudo ansible-playbook --ask-vault-pass -k k3s_start_all_pods.yaml
 ```
 
 Rolling update nodes
