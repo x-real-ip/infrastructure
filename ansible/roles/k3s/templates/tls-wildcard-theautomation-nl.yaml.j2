@@ -3,7 +3,7 @@
 kind: SealedSecret
 apiVersion: bitnami.com/v1alpha1
 metadata:
-  name: tls-{{ tls_certificates.wildcard_theautomation_nl.name }}
+  name: {{ tls_certificates.wildcard_theautomation_nl.name }}
   namespace: {{ tls_wildcard_theautomation_nl_namespace }}
   annotations:
     sealedsecrets.bitnami.com/cluster-wide: "true"
@@ -14,7 +14,7 @@ spec:
   template:
     type: kubernetes.io/tls
     metadata:
-      name: tls-{{ tls_certificates.wildcard_theautomation_nl.name }}
+      name: {{ tls_certificates.wildcard_theautomation_nl.name }}
       namespace: {{ tls_wildcard_theautomation_nl_namespace }}
       annotations:
         sealedsecrets.bitnami.com/cluster-wide: "true"
