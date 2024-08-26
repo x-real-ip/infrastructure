@@ -51,7 +51,15 @@ node_feature_discovery:
 tls_certificates:
   wildcard_theautomation_nl:
     deploy: true
-    name: "wildcard-theautomation-nl"
+    name: "tls-wildcard-theautomation-nl"
+    namespaces:
+      - devops
+      - media
+      - home-automation
+      - tools
+  wildcard_stamx_nl:
+    deploy: true
+    name: "tls-wildcard-stamx-nl"
     namespaces:
       - devops
       - media
@@ -59,7 +67,7 @@ tls_certificates:
       - tools
   wildcard_lan_theautomation_nl:
     deploy: true
-    name: "wildcard-lan-theautomation-nl"
+    name: "tls-wildcard-lan-theautomation-nl"
     namespaces:
       - devops
       - media
