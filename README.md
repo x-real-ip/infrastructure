@@ -70,7 +70,7 @@ ssh-add ~/.ssh/ansible
 1. Clone this repository to your local machine:
 
 ```
-git clone https://github.com/theautomation/infrastructure.git
+git clone https://github.com/x-real-ip/infrastructure.git
 ```
 
 2. Modify the inventory file inventory.ini to specify the target machines where you want to install k3s. Ensure you have appropriate SSH access and privileges.

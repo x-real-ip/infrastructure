@@ -9,7 +9,7 @@ set -e
 
 # -----------------------------------------------------------------------------------
 # Select if ssh configuation from /.ssh/config must be used or not.
-# See also https://github.com/theautomation/hosts-config/tree/main/backup-host#setup-ssh
+# See also https://github.com/x-real-ip/hosts-config/tree/main/backup-host#setup-ssh
 # 1 = use the user, host and port from a ssh config file stored in /.ssh/config.
 # 0 = use ssh variables user, host and port from the variables below.
 ssh_config="0"
