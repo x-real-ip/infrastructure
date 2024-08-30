@@ -9,7 +9,7 @@
 
 - name: Download public manifest | {{ argocd.name }}
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd.version }}/manifests/core-install.yaml
+    url: https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd.version }}/manifests/install.yaml
     dest: ~/argocd-core.yaml
     mode: "0664"
   run_once: true
@@ -23,7 +23,7 @@
 
 - name: Download app-of-core-apps | {{ argocd.name }}
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/theautomation/gitops/main/argocd/app-of-core-apps.yaml
+    url: https://raw.githubusercontent.com/x-real-ip/gitops/main/argocd/app-of-core-apps.yaml
     dest: ~/app-of-core-apps.yaml
     mode: "0664"
     force: true
@@ -37,7 +37,7 @@
 
 - name: Download app-of-apps | {{ argocd.name }}
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/theautomation/gitops/main/argocd/app-of-apps.yaml
+    url: https://raw.githubusercontent.com/x-real-ip/gitops/main/argocd/app-of-apps.yaml
     dest: ~/app-of-apps.yaml
     mode: "0664"
     force: true

@@ -2,7 +2,7 @@
 - name: Docker run ser2net
   community.docker.docker_container:
     name: ser2net
-    image: "ghcr.io/theautomation/ser2net:main"
+    image: "ghcr.io/x-real-ip/ser2net:main"
     pull: true
     state: started
     recreate: true
