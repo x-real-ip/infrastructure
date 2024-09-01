@@ -34,7 +34,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           TITLE: Monthly update and upgrade
-          ASSIGNEES: theautomation
+          ASSIGNEES: x-real-ip
           LABELS: update
           BODY: |
             ### Monthly update and upgrade
