@@ -1,30 +1,35 @@
 ---
-- name: Get other hosts from proxmox inventory group
-  ansible.builtin.set_fact:
-    other_hosts: "{{ groups.proxmox | difference([inventory_hostname]) }}"
+- ansible.builtin.debug:
+    msg: "Start migrating VM's"
 
-- name: Execute qm list command
-  ansible.builtin.command: "qm list"
-  register: qm_list_result
-  changed_when: qm_list_result.rc != 0
+- block:
+    - name: Execute qm list command and extract VM IDs
+      ansible.builtin.shell: "qm list | awk 'NR>1 {print $1}'"
+      register: qm_list_result
+      changed_when: false
 
-- name: Extracted VMID numbers from the running VM's
-  ansible.builtin.set_fact:
-    vmid_list: "{{ qm_list_result.stdout_lines | json_query('[?contains(@, `running`)]') | map('regex_replace', '^(\\s*)(\\d+)(\\s+).*$', '\\2') | select('match', '[0-9]') | map('int') | list }}"
+    - name: Convert all VM id's to JSON list
+      set_fact:
+        vm_ids: "{{ qm_list_result.stdout_lines | map('int') | list }}"
 
-- name: Migrate running VM's to the other hosts
-  ansible.builtin.command: "qm migrate {{ item }} {{ other_hosts[0] }} --online --with-local-disks"
-  loop: "{{ vmid_list }}"
+    - name: Remove excluded VM id's from the list
+      set_fact:
+        filtered_vm_ids: "{{ vm_ids | difference(exclude_vm_id_list) }}"
 
-- name: Check if VM is running on the other host
+    - name: Migrating these VM's
+      debug:
+        msg: "{{ filtered_vm_ids }}"
+
+    - name: Migrate running VM's to the target hosts
+      ansible.builtin.command: "qm migrate {{ item }} {{ target_host }} --online --with-local-disks"
+      loop: "{{ filtered_vm_ids }}"
+  delegate_to: "{{ source_host }}"
+
+- name: Check if VM is running on the target host
   ansible.builtin.command: "qm status {{ item }}"
   register: qm_status
-  loop: "{{ vmid_list }}"
+  loop: "{{ filtered_vm_ids }}"
   until: "qm_status.stdout == 'status: running'"
   retries: 20
   delay: 20
-  delegate_to: "{{ other_hosts | first }}"
-
-- name: Sleep for 30 seconds and continue with play
-  ansible.builtin.wait_for:
-    timeout: 30
+  delegate_to: "{{ target_host }}"

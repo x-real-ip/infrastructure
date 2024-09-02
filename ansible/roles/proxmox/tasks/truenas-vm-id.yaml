@@ -1,0 +1,9 @@
+---
+- name: Get TrueNAS VM id
+  shell: |
+    VM_NAME="truenas-*"
+    VM_ID=$(qm list | grep "${VM_NAME}" | awk '{print $1}')
+    echo "${VM_ID}"
+  register: truenas_vm_id_output
+  delegate_to: "{{ ansible_hostname }}"
+  changed_when: False

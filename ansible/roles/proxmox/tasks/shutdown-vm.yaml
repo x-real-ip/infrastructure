@@ -1,0 +1,15 @@
+---
+- name: Check VM status
+  ansible.builtin.command: "qm status {{ vm_id }}"
+  register: vm_status
+  changed_when: False
+
+- name: Shutdown VM {{ vm_id }} if it's not stopped
+  ansible.builtin.command: "qm shutdown {{ vm_id }}"
+  register: vm_shutdown
+  when: "'stopped' not in vm_status.stdout"
+
+- name: Print shutdown status
+  debug:
+    msg: "shutdown status: {{ vm_shutdown }}"
+  when: "'stopped' not in vm_status.stdout"
