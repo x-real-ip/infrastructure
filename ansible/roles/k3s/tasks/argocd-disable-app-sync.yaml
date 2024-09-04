@@ -1,0 +1,13 @@
+---
+- name: Patch the ArgoCD application to remove syncPolicy
+  command: >
+    kubectl patch application {{ application_name }} -n argocd --type=merge
+    -p '{"spec": {"syncPolicy": null}}'
+  register: patch_result
+  run_once: true
+  changed_when: "'no change' not in patch_result.stdout"
+
+- name: Display the patch result
+  debug:
+    var: patch_result.stdout
+  run_once: true
