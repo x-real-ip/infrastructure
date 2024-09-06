@@ -1,0 +1,5 @@
+---
+- name: Set TrueNAS API facts
+  set_fact:
+    truenas_api_baseurl: "https://truenas-{{ instance }}.{{ localdomain }}/api/v2.0"
+    truenas_api_key: "{{ truenas[instance].api_key }}"

@@ -74,45 +74,6 @@
         source_truenas_ssh_credentials_id: "{{ truenas_ssh_credentials_id[source_instance | trim] | int }}"
         source_truenas_ssh_private_key_id: "{{ truenas_ssh_private_key_id[source_instance | trim] | int }}"
 
-    - name: Get all existing snapshot tasks on truenas-master
-      uri:
-        url: "https://truenas-{{ source_instance | trim }}.{{ domain }}/api/v2.0/pool/snapshottask"
-        method: GET
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        validate_certs: no
-      register: existing_snapshot_result
-
-    # - name: Debug
-    #   debug:
-    #     msg: "{{ existing_snapshot_result }}"
-
-    - name: Start snapshot tasks on truenas-master
-      uri:
-        url: "https://truenas-{{ source_instance | trim }}.{{ domain }}/api/v2.0/pool/snapshottask/id/{{ item }}/run"
-        method: POST
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        validate_certs: no
-      register: snapshot_start_result
-      loop: "{{ existing_snapshot_result.json | map(attribute='id') | list }}"
-
-    # - name: Debug
-    #   debug:
-    #     msg: "{{ snapshot_start_result }}"
-
-    - name: Get all existing replication tasks on truenas-master
-      uri:
-        url: "https://truenas-{{ source_instance | trim }}.{{ domain }}/api/v2.0/replication"
-        method: GET
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        validate_certs: no
-      register: existing_replication_result
-
     # - name: Check all replication taks on truenas-master and wait for a running state
     #   uri:
     #     url: "https://truenas-{{ source_instance | trim }}.{{ domain }}/api/v2.0/replication/id/{{ item }}"
@@ -127,71 +88,9 @@
     #   delay: 10
     #   loop: "{{ existing_replication_result.json | map(attribute='id') | list }}"
 
-    - name: Check all replication taks on truenas-master and wait for a success state
-      uri:
-        url: "https://truenas-{{ source_instance | trim }}.{{ domain }}/api/v2.0/replication/id/{{ item }}"
-        method: GET
-        headers:
-          Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-          Content-Type: "application/json"
-        validate_certs: no
-      register: success_replication_result
-      until: success_replication_result.json.job.state == "SUCCESS"
-      retries: 100
-      delay: 10
-      loop: "{{ existing_replication_result.json | map(attribute='id') | list }}"
 
-    # - name: Disable existing replication tasks on truenas-master
-    #   uri:
-    #     url: "https://truenas-{{ source_instance | trim }}.{{ domain }}/api/v2.0/replication/id/{{ item }}"
-    #     method: PUT
-    #     headers:
-    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-    #       Content-Type: "application/json"
-    #     validate_certs: no
-    #     body_format: json
-    #     body:
-    #       enabled: false
-    #   register: disable_existing_replication_result
-    #   loop: "{{ existing_replication_result.json | map(attribute='id') | list }}"
 
-    # - name: Disable existing snapshot tasks on truenas-master
-    #   uri:
-    #     url: "https://truenas-{{ source_instance | trim }}.{{ domain }}/api/v2.0/pool/snapshottask/id/{{ item }}"
-    #     method: PUT
-    #     headers:
-    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-    #       Content-Type: "application/json"
-    #     validate_certs: no
-    #     body_format: json
-    #     body:
-    #       enabled: false
-    #   register: disable_existing_snapshot_result
-    #   loop: "{{ existing_snapshot_result.json | map(attribute='id') | list }}"
 
-    # - name: Get all existing cloud sync tasks on truenas-master
-    #   uri:
-    #     url: "https://truenas-{{ source_instance | trim }}.{{ domain }}/api/v2.0/cloudsync"
-    #     method: GET
-    #     headers:
-    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-    #       Content-Type: "application/json"
-    #     validate_certs: no
-    #   register: existing_cloudsync_result
-
-    # - name: Disable existing cloud sync tasks on truenas-master
-    #   uri:
-    #     url: "https://truenas-{{ source_instance | trim }}.{{ domain }}/api/v2.0/cloudsync/id/{{ item }}"
-    #     method: PUT
-    #     headers:
-    #       Authorization: "Bearer {{ source_truenas_api_key | trim }}"
-    #       Content-Type: "application/json"
-    #     validate_certs: no
-    #     body_format: json
-    #     body:
-    #       enabled: false
-    #   register: disable_existing_cloudsync_result
-    #   loop: "{{ existing_cloudsync_result.json | map(attribute='id') | list }}"
 
     # - name: Debug
     #   debug:

@@ -1,0 +1,18 @@
+---
+- ansible.builtin.include_tasks: "api-facts.yaml"
+
+- ansible.builtin.include_tasks: "get-all-replication-tasks.yaml"
+
+- name: Disable existing replication tasks on truenas-master
+  uri:
+    url: "{{ truenas_api_baseurl }}/replication/id/{{ item }}"
+    method: PUT
+    headers:
+      Authorization: "Bearer {{ truenas_api_key }}"
+      Content-Type: "application/json"
+    validate_certs: no
+    body_format: json
+    body:
+      enabled: "{{ enabled }}"
+  register: disable_existing_replication_result
+  loop: "{{ existing_replication_result.json | map(attribute='id') | list }}"

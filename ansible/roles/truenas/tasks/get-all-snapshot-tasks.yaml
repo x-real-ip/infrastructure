@@ -1,0 +1,12 @@
+---
+- ansible.builtin.include_tasks: "api-facts.yaml"
+
+- name: Get all existing snapshots tasks on TrueNAS
+  uri:
+    url: "{{ truenas_api_baseurl }}/pool/snapshottask"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ truenas_api_key }}"
+      Content-Type: "applica  ion/json"
+    validate_certs: no
+  register: existing_snapshot_result

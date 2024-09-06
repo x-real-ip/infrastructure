@@ -1,56 +1,55 @@
 ---
-# - name: "Play to check which TrueNAS is master"
-#   hosts: localhost
-#   connection: local
-#   gather_facts: true
-#   vars:
-#     domain: "lan.theautomation.nl"
-#     truenas_hosts:
-#       - name: "master"
-#       - name: "a"
-#       - name: "b"
-#     truenas_ssh_credentials_id:
-#       a: 4
-#       b: 4
-#     truenas_ssh_private_key_id:
-#       a:
-#       b: 3
+- name: "Play to check which TrueNAS is master"
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    truenas_hosts:
+      - name: "master"
+      - name: "a"
+      - name: "b"
+    truenas_ssh_credentials_id:
+      a: 4
+      b: 4
+    truenas_ssh_private_key_id:
+      a:
+      b: 3
 
-#   tasks:
-#     - name: Set TrueNAS API variables
-#       ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
-#       loop:
-#         - vars
-#         - vault
+  tasks:
+    - name: Set TrueNAS API variables
+      ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
+      loop:
+        - vars
+        - vault
 
-#     - name: Flush DNS cache
-#       ansible.builtin.command: resolvectl flush-caches
-#       when: ansible_distribution in ['Ubuntu', 'Debian', 'Fedora']
+    - name: Flush DNS cache
+      ansible.builtin.command: resolvectl flush-caches
+      when: ansible_distribution in ['Ubuntu', 'Debian', 'Fedora']
 
-#     - name: Query DNS for the IP addresses
-#       ansible.builtin.command: "dig +short truenas-{{ item.name }}.{{ domain }}"
-#       loop: "{{ truenas_hosts }}"
-#       register: dig_results
-#       changed_when: False
+    - name: Query DNS for the IP addresses
+      ansible.builtin.command: "dig +short truenas-{{ item.name }}.{{ localdomain }}"
+      loop: "{{ truenas_hosts }}"
+      register: dig_results
+      changed_when: False
 
-#     - name: Set IP address variables
-#       ansible.builtin.set_fact:
-#         "truenas_{{ item.item.name }}_ip": "{{ item.stdout_lines[0] }}"
-#       loop: "{{ dig_results.results }}"
+    - name: Set IP address variables
+      ansible.builtin.set_fact:
+        "truenas_{{ item.item.name }}_ip": "{{ item.stdout_lines[0] }}"
+      loop: "{{ dig_results.results }}"
 
-#     - name: Display the IP address variables
-#       ansible.builtin.debug:
-#         msg:
-#           - "truenas_master_ip: {{ truenas_master_ip }}"
-#           - "truenas_a_ip: {{ truenas_a_ip }}"
-#           - "truenas_b_ip: {{ truenas_b_ip }}"
+    - name: Display the IP address variables
+      ansible.builtin.debug:
+        msg:
+          - "truenas_master_ip: {{ truenas_master_ip }}"
+          - "truenas_a_ip: {{ truenas_a_ip }}"
+          - "truenas_b_ip: {{ truenas_b_ip }}"
 
-#     - name: Set source and target instance (a or b)
-#       ansible.builtin.set_fact:
-#         active_instance: >-
-#           {% if truenas_master_ip == truenas_a_ip %}a{% elif truenas_master_ip == truenas_b_ip %}b{% else %}None{% endif %}
-#         non_active_instance: >-
-#           {% if truenas_master_ip == truenas_a_ip %}b{% elif truenas_master_ip == truenas_b_ip %}a{% else %}None{% endif %}
+    - name: Set source and target instance (a or b)
+      ansible.builtin.set_fact:
+        active_instance: >-
+          {% if truenas_master_ip == truenas_a_ip %}a{% elif truenas_master_ip == truenas_b_ip %}b{% else %}None{% endif %}
+        non_active_instance: >-
+          {% if truenas_master_ip == truenas_a_ip %}b{% elif truenas_master_ip == truenas_b_ip %}a{% else %}None{% endif %}
 
 # - name: "Play to migrate VM's on the non-active Proxmox node"
 #   hosts: "pve-{{ hostvars['localhost']['non_active_instance'] }}"
@@ -120,23 +119,79 @@
 #         target_host: "{{ 'pve-' + non_active_instance }}"
 #         exclude_vm_id_list: "{{ truenas_vm_id_list }}"
 
-- name: Play to remove Kubernetes resources that use TrueNAS storage
-  hosts: k3s_cluster
-  become: false
+# - name: Play to remove Kubernetes resources that use TrueNAS storage
+#   hosts: k3s_cluster
+#   become: false
+#   tasks:
+#     - name: Disable autosync for app-of-apps
+#       ansible.builtin.include_role:
+#         name: k3s
+#         tasks_from: argocd-disable-app-sync
+#       vars:
+#         application_name: "app-of-apps"
+
+#     - name: Delete argocd application with label storage=truenas
+#       ansible.builtin.include_role:
+#         name: k3s
+#         tasks_from: argocd-delete-app
+
+- name: "Play to start TrueNAS replication"
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+
   tasks:
-    - name: Disable autosync for app-of-apps
+    - name: Set TrueNAS API variables
+      include_vars: "group_vars/truenas/{{ item }}.yaml"
+      loop:
+        - vars
+        - vault
+
+    - name: Include task start TrueNAS snapshot tasks
       ansible.builtin.include_role:
-        name: k3s
-        tasks_from: argocd-disable-app-sync
+        name: truenas
+        tasks_from: start-snapshot-tasks.yaml
       vars:
-        application_name: "app-of-apps"
+        instance: "{{ active_instance }}"
 
-    - name: Delete argocd application with label storage=truenas
+    - name: Include task TrueNAS check replication tasks
       ansible.builtin.include_role:
-        name: k3s
-        tasks_from: argocd-delete-app
+        name: truenas
+        tasks_from: check-replication-task-success.yaml
+      vars:
+        instance: "{{ active_instance }}"
 
-    - name: Apply ArgoCD and app-of-apps
+    - name: Include task TrueNAS disable replication tasks
       ansible.builtin.include_role:
-        name: k3s
-        tasks_from: argocd-core
+        name: truenas
+        tasks_from: enable-disable-replication-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: false
+
+    - name: Include task TrueNAS disable snapshot tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-snapshot-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: false
+
+    - name: Include task TrueNAS disable cloudsync tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-cloudsync-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: false
+# ### Last step
+# - name: Play to start apply all ArgoCD applications
+#   hosts: k3s_cluster
+#   become: false
+#   tasks:
+#     - name: Apply ArgoCD and app-of-apps
+#       ansible.builtin.include_role:
+#         name: k3s
+#         tasks_from: argocd-app-of-apps
