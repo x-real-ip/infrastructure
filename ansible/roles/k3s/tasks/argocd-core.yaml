@@ -21,30 +21,10 @@
     src: ~/argocd-core.yaml
   run_once: true
 
-- name: Download app-of-core-apps | {{ argocd.name }}
-  ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/x-real-ip/gitops/main/argocd/app-of-core-apps.yaml
-    dest: ~/app-of-core-apps.yaml
-    mode: "0664"
-    force: true
-  run_once: true
+- name: Deploy app-of-core-apps
+  ansible.builtin.include_tasks: "argocd-app-of-core-apps.yaml"
+  when: argocd.deploy
 
-- name: Apply app-of-core-apps to the cluster | {{ argocd.name }}
-  kubernetes.core.k8s:
-    state: present
-    src: ~/app-of-core-apps.yaml
-  run_once: true
-
-- name: Download app-of-apps | {{ argocd.name }}
-  ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/x-real-ip/gitops/main/argocd/app-of-apps.yaml
-    dest: ~/app-of-apps.yaml
-    mode: "0664"
-    force: true
-  run_once: true
-
-- name: Apply app-of-apps to the cluster | {{ argocd.name }}
-  kubernetes.core.k8s:
-    state: present
-    src: ~/app-of-apps.yaml
-  run_once: true
+- name: Deploy app-of-apps
+  ansible.builtin.include_tasks: "argocd-app-of-apps.yaml"
+  when: argocd.deploy

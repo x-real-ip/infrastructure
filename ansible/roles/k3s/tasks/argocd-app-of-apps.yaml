@@ -1,0 +1,14 @@
+---
+- name: Download app-of-apps | {{ argocd.name }}
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/x-real-ip/gitops/main/argocd/app-of-apps.yaml
+    dest: ~/app-of-apps.yaml
+    mode: "0664"
+    force: true
+  run_once: true
+
+- name: Apply app-of-apps to the cluster | {{ argocd.name }}
+  kubernetes.core.k8s:
+    state: present
+    src: ~/app-of-apps.yaml
+  run_once: true
