@@ -1,8 +1,8 @@
 ---
-- name: Migrate running VM's to the target hosts
+- name: Migrate VM {{ item }} to the target host
   ansible.builtin.command: "qm migrate {{ item }} {{ target_host }} --online --with-local-disks"
 
-- name: Check if VM has status running or stopped on the target host
+- name: Check if VM {{ item }} has status running or stopped on the target host
   ansible.builtin.command: "qm status {{ item }}"
   register: qm_status
   until: "qm_status.stdout == 'status: running' or qm_status.stdout == 'status: stopped'"

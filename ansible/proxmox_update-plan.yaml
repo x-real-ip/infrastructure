@@ -125,6 +125,14 @@
       vars:
         instance: "{{ active_instance }}"
 
+    - name: Include task TrueNAS disable cloudsync tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-cloudsync-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: false
+
     - name: Include task TrueNAS disable replication tasks
       ansible.builtin.include_role:
         name: truenas
@@ -137,14 +145,6 @@
       ansible.builtin.include_role:
         name: truenas
         tasks_from: enable-disable-snapshot-tasks.yaml
-      vars:
-        instance: "{{ active_instance }}"
-        enabled: false
-
-    - name: Include task TrueNAS disable cloudsync tasks
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: enable-disable-cloudsync-tasks.yaml
       vars:
         instance: "{{ active_instance }}"
         enabled: false
@@ -272,14 +272,6 @@
         - vars
         - vault
 
-    - name: Include task TrueNAS enable replication tasks
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: enable-disable-replication-tasks.yaml
-      vars:
-        instance: "{{ active_instance }}"
-        enabled: true
-
     - name: Include task TrueNAS enable snapshot tasks
       ansible.builtin.include_role:
         name: truenas
@@ -292,6 +284,14 @@
       ansible.builtin.include_role:
         name: truenas
         tasks_from: enable-disable-cloudsync-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: true
+
+    - name: Include task TrueNAS enable replication tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-replication-tasks.yaml
       vars:
         instance: "{{ active_instance }}"
         enabled: true
