@@ -1,3 +1,4 @@
+---
 - name: Update dnf package list
   ansible.builtin.dnf:
     update_cache: yes
@@ -15,6 +16,7 @@
     update_cache: true
     cache_valid_time: 3600
     upgrade: dist
+    autoremove: true
   when: ansible_os_family == "Debian"
   register: apt_result
 
