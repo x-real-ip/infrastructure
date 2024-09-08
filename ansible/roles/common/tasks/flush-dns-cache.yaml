@@ -1,0 +1,4 @@
+---
+- name: Flush DNS cache
+  ansible.builtin.command: resolvectl flush-caches
+  when: ansible_distribution in ['Ubuntu', 'Debian', 'Fedora']
