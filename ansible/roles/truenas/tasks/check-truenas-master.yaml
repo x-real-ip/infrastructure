@@ -1,0 +1,30 @@
+---
+- name: Flush dns cache
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: flush-dns-cache
+
+- name: Query DNS for the IP addresses
+  ansible.builtin.command: "dig +short truenas-{{ item.name }}.{{ localdomain }}"
+  loop: "{{ truenas_hosts }}"
+  register: dig_results
+  changed_when: False
+
+- name: Set IP address variables
+  ansible.builtin.set_fact:
+    "truenas_{{ item.item.name }}_ip": "{{ item.stdout_lines[0] }}"
+  loop: "{{ dig_results.results }}"
+
+- name: Display the IP address variables
+  ansible.builtin.debug:
+    msg:
+      - "truenas_master_ip: {{ truenas_master_ip }}"
+      - "truenas_a_ip: {{ truenas_a_ip }}"
+      - "truenas_b_ip: {{ truenas_b_ip }}"
+
+- name: Set source and target instance (a or b)
+  ansible.builtin.set_fact:
+    active_instance: >-
+      {% if truenas_master_ip == truenas_a_ip %}a{% elif truenas_master_ip == truenas_b_ip %}b{% else %}None{% endif %}
+    non_active_instance: >-
+      {% if truenas_master_ip == truenas_a_ip %}b{% elif truenas_master_ip == truenas_b_ip %}a{% else %}None{% endif %}

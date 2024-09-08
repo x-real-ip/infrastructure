@@ -3,145 +3,107 @@
   hosts: localhost
   connection: local
   gather_facts: true
-  vars:
-    truenas_hosts:
-      - name: "master"
-      - name: "a"
-      - name: "b"
-    truenas_ssh_credentials_id:
-      a: 4
-      b: 4
-    truenas_ssh_private_key_id:
-      a:
-      b: 3
-
   tasks:
-    - name: Set TrueNAS API variables
-      ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
-      loop:
-        - vars
-        - vault
+    - name: Include task start TrueNAS snapshot tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: check-truenas-master.yaml
+      vars:
+        truenas_hosts:
+          - name: "master"
+          - name: "a"
+          - name: "b"
 
-    - name: Flush DNS cache
-      ansible.builtin.command: resolvectl flush-caches
-      when: ansible_distribution in ['Ubuntu', 'Debian', 'Fedora']
+- name: "Play to migrate VM's on the non-active Proxmox node"
+  hosts: "pve-{{ hostvars['localhost']['non_active_instance'] }}"
+  vars:
+    non_active_instance: "{{ hostvars['localhost']['non_active_instance'] }}"
+    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+  tasks:
+    - name: Include task get TrueNAS VM id
+      ansible.builtin.include_role:
+        name: proxmox
+        tasks_from: truenas-vm-id.yaml
+      vars:
+        ansible_hostname: "{{ 'pve-' + non_active_instance }}"
 
-    - name: Query DNS for the IP addresses
-      ansible.builtin.command: "dig +short truenas-{{ item.name }}.{{ localdomain }}"
-      loop: "{{ truenas_hosts }}"
-      register: dig_results
-      changed_when: False
+    - name: Convert TrueNAS VM id to a list of integers
+      set_fact:
+        truenas_vm_id_list: "{{ truenas_vm_id_output.stdout_lines | map('int') | list }}"
 
-    - name: Set IP address variables
-      ansible.builtin.set_fact:
-        "truenas_{{ item.item.name }}_ip": "{{ item.stdout_lines[0] }}"
-      loop: "{{ dig_results.results }}"
+    - name: Shutdown TrueNAS VM
+      ansible.builtin.include_role:
+        name: proxmox
+        tasks_from: shutdown-vm.yaml
+      vars:
+        vm_id: "{{ item }}"
+      loop: "{{ truenas_vm_id_list }}"
 
-    - name: Display the IP address variables
-      ansible.builtin.debug:
-        msg:
-          - "truenas_master_ip: {{ truenas_master_ip }}"
-          - "truenas_a_ip: {{ truenas_a_ip }}"
-          - "truenas_b_ip: {{ truenas_b_ip }}"
+    - name: Include task vm migration
+      ansible.builtin.include_role:
+        name: proxmox
+        tasks_from: vm-migration.yaml
+      vars:
+        source_host: "{{ 'pve-' + non_active_instance }}"
+        target_host: "{{ 'pve-' + active_instance }}"
+        exclude_vm_id_list: "{{ truenas_vm_id_list }}"
 
-    - name: Set source and target instance (a or b)
-      ansible.builtin.set_fact:
-        active_instance: >-
-          {% if truenas_master_ip == truenas_a_ip %}a{% elif truenas_master_ip == truenas_b_ip %}b{% else %}None{% endif %}
-        non_active_instance: >-
-          {% if truenas_master_ip == truenas_a_ip %}b{% elif truenas_master_ip == truenas_b_ip %}a{% else %}None{% endif %}
+    - name: Update system
+      ansible.builtin.include_role:
+        name: common
+        tasks_from: system-updates
 
-# - name: "Play to migrate VM's on the non-active Proxmox node"
-#   hosts: "pve-{{ hostvars['localhost']['non_active_instance'] }}"
-#   vars:
-#     non_active_instance: "{{ hostvars['localhost']['non_active_instance'] }}"
-#     active_instance: "{{ hostvars['localhost']['active_instance'] }}"
-#   tasks:
-#     - name: Include task get TrueNAS VM id
-#       ansible.builtin.include_role:
-#         name: proxmox
-#         tasks_from: truenas-vm-id.yaml
-#       vars:
-#         ansible_hostname: "{{ 'pve-' + non_active_instance }}"
+    - name: Reboot
+      ansible.builtin.reboot:
 
-#     - name: Convert TrueNAS VM id to a list of integers
-#       set_fact:
-#         truenas_vm_id_list: "{{ truenas_vm_id_output.stdout_lines | map('int') | list }}"
+- name: "Play to migrate VM's on the active Proxmox node"
+  hosts: "pve-{{ hostvars['localhost']['active_instance'] }}"
+  vars:
+    non_active_instance: "{{ hostvars['localhost']['non_active_instance'] }}"
+    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+  tasks:
+    - name: Include task get TrueNAS VM id
+      ansible.builtin.include_role:
+        name: proxmox
+        tasks_from: truenas-vm-id.yaml
+      vars:
+        ansible_hostname: "{{ 'pve-' + active_instance }}"
 
-#     - name: Include task vm migration
-#       ansible.builtin.include_role:
-#         name: proxmox
-#         tasks_from: vm-migration.yaml
-#       vars:
-#         source_host: "{{ 'pve-' + non_active_instance }}"
-#         target_host: "{{ 'pve-' + active_instance }}"
-#         exclude_vm_id_list: "{{ truenas_vm_id_list }}"
+    - name: Convert TrueNAS VM id to a list of integers
+      set_fact:
+        truenas_vm_id_list: "{{ truenas_vm_id_output.stdout_lines | map('int') | list }}"
 
-#     - name: Include task shutdown VM
-#       ansible.builtin.include_role:
-#         name: proxmox
-#         tasks_from: shutdown-vm.yaml
-#       vars:
-#         vm_id: "{{ item }}"
-#       loop: "{{ truenas_vm_id_list }}"
+    - name: Include task vm migration
+      ansible.builtin.include_role:
+        name: proxmox
+        tasks_from: vm-migration.yaml
+      vars:
+        source_host: "{{ 'pve-' + active_instance }}"
+        target_host: "{{ 'pve-' + non_active_instance }}"
+        exclude_vm_id_list: "{{ truenas_vm_id_list }}"
 
-#     - name: Update system
-#       ansible.builtin.include_role:
-#         name: common
-#         tasks_from: system-updates
+- name: Play to remove Kubernetes resources that use TrueNAS storage
+  hosts: k3s_cluster
+  become: false
+  tasks:
+    - name: Disable autosync for app-of-apps
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: argocd-disable-app-sync
+      vars:
+        application_name: "app-of-apps"
 
-#     - name: Reboot
-#       ansible.builtin.reboot:
+    - name: Delete argocd application with label storage=truenas
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: argocd-delete-app
 
-# - name: "Play to migrate VM's on the active Proxmox node"
-#   hosts: "pve-{{ hostvars['localhost']['active_instance'] }}"
-#   vars:
-#     non_active_instance: "{{ hostvars['localhost']['non_active_instance'] }}"
-#     active_instance: "{{ hostvars['localhost']['active_instance'] }}"
-#   tasks:
-#     - name: Include task get TrueNAS VM id
-#       ansible.builtin.include_role:
-#         name: proxmox
-#         tasks_from: truenas-vm-id.yaml
-#       vars:
-#         ansible_hostname: "{{ 'pve-' + active_instance }}"
-
-#     - name: Convert TrueNAS VM id to a list of integers
-#       set_fact:
-#         truenas_vm_id_list: "{{ truenas_vm_id_output.stdout_lines | map('int') | list }}"
-
-#     - name: Include task vm migration
-#       ansible.builtin.include_role:
-#         name: proxmox
-#         tasks_from: vm-migration.yaml
-#       vars:
-#         source_host: "{{ 'pve-' + active_instance }}"
-#         target_host: "{{ 'pve-' + non_active_instance }}"
-#         exclude_vm_id_list: "{{ truenas_vm_id_list }}"
-
-# - name: Play to remove Kubernetes resources that use TrueNAS storage
-#   hosts: k3s_cluster
-#   become: false
-#   tasks:
-#     - name: Disable autosync for app-of-apps
-#       ansible.builtin.include_role:
-#         name: k3s
-#         tasks_from: argocd-disable-app-sync
-#       vars:
-#         application_name: "app-of-apps"
-
-#     - name: Delete argocd application with label storage=truenas
-#       ansible.builtin.include_role:
-#         name: k3s
-#         tasks_from: argocd-delete-app
-
-- name: "Play to start TrueNAS replication"
+- name: "Play to start TrueNAS replication without running pods"
   hosts: localhost
   connection: local
   gather_facts: true
   vars:
     active_instance: "{{ hostvars['localhost']['active_instance'] }}"
-
   tasks:
     - name: Set TrueNAS API variables
       include_vars: "group_vars/truenas/{{ item }}.yaml"
@@ -186,12 +148,150 @@
       vars:
         instance: "{{ active_instance }}"
         enabled: false
-# ### Last step
-# - name: Play to start apply all ArgoCD applications
-#   hosts: k3s_cluster
-#   become: false
-#   tasks:
-#     - name: Apply ArgoCD and app-of-apps
-#       ansible.builtin.include_role:
-#         name: k3s
-#         tasks_from: argocd-app-of-apps
+
+- name: Modify pfSense DNS
+  hosts: pfsense
+  become: false
+  vars:
+    non_active_instance: "{{ hostvars['localhost']['non_active_instance'] }}"
+    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+    truenas_master_ip: "{{ hostvars['localhost']['truenas_master_ip'] }}"
+    truenas_a_ip: "{{ hostvars['localhost']['truenas_a_ip'] }}"
+    truenas_b_ip: "{{ hostvars['localhost']['truenas_b_ip'] }}"
+  tasks:
+    - name: Set new ip as fact
+      set_fact:
+        new_ip: "{{ truenas_b_ip if truenas_master_ip == truenas_a_ip else truenas_a_ip }}"
+
+    - name: Patch TrueNAS master host override using pfSense API
+      delegate_to: localhost
+      uri:
+        url: "http://pfsense.{{ localdomain }}:1080/api/v2/services/dns_resolver/host_override"
+        headers:
+          X-API-Key: "{{ pfsense_api_key }}"
+        method: PATCH
+        body_format: json
+        body:
+          id: "3"
+          host: "truenas-{{ non_active_instance }}"
+          ip: ["{{ new_ip }}"]
+          description: "Updated Host Override by Ansible"
+        validate_certs: no
+
+    - name: Apply changes
+      delegate_to: localhost
+      uri:
+        url: "http://pfsense.{{ localdomain }}:1080/api/v2/services/dns_resolver/apply"
+        headers:
+          X-API-Key: "{{ pfsense_api_key }}"
+        method: POST
+        validate_certs: no
+      register: result
+      until: result.json.status == 'ok'
+
+- name: "Play to check which TrueNAS is active and master"
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  tasks:
+    - name: Pause
+      ansible.builtin.pause:
+        seconds: 20
+
+    - name: Include task start TrueNAS snapshot tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: check-truenas-master.yaml
+      vars:
+        truenas_hosts:
+          - name: "master"
+          - name: "a"
+          - name: "b"
+
+    - name: Check if DNS resolves to the expected IP address
+      ansible.builtin.assert:
+        that:
+          - truenas_master_ip == expected_ip
+        fail_msg: "DNS resolution for truenas-master.{{ localdomain }} does not match the expected IP {{ expected_ip }}."
+      loop: "{{ dig_results.results }}"
+      vars:
+        expected_ip: "{{ hostvars['pfsense']['new_ip'] }}"
+
+- name: Play to start apply all ArgoCD applications
+  hosts: k3s_cluster
+  become: false
+  tasks:
+    - name: Apply ArgoCD and app-of-apps
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: argocd-app-of-apps
+
+- name: "Play to update non-active Proxmox node"
+  hosts: "pve-{{ hostvars['localhost']['non_active_instance'] }}"
+  vars:
+    non_active_instance: "{{ hostvars['localhost']['non_active_instance'] }}"
+    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+  tasks:
+    - name: Include task get TrueNAS VM id
+      ansible.builtin.include_role:
+        name: proxmox
+        tasks_from: truenas-vm-id.yaml
+      vars:
+        ansible_hostname: "{{ 'pve-' + non_active_instance }}"
+
+    - name: Convert TrueNAS VM id to a list of integers
+      set_fact:
+        truenas_vm_id_list: "{{ truenas_vm_id_output.stdout_lines | map('int') | list }}"
+
+    - name: Shutdown TrueNAS VM
+      ansible.builtin.include_role:
+        name: proxmox
+        tasks_from: shutdown-vm.yaml
+      vars:
+        vm_id: "{{ item }}"
+      loop: "{{ truenas_vm_id_list }}"
+
+    - name: Update system
+      ansible.builtin.include_role:
+        name: common
+        tasks_from: system-updates
+
+    - name: Reboot
+      ansible.builtin.reboot:
+
+- name: "Play to enable TrueNAS tasks"
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+  tasks:
+    - name: Set TrueNAS API variables
+      include_vars: "group_vars/truenas/{{ item }}.yaml"
+      loop:
+        - vars
+        - vault
+
+    - name: Include task TrueNAS enable replication tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-replication-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: true
+
+    - name: Include task TrueNAS enable snapshot tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-snapshot-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: true
+
+    - name: Include task TrueNAS enable cloudsync tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-cloudsync-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: true
