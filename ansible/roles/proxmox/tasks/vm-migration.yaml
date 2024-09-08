@@ -2,34 +2,21 @@
 - ansible.builtin.debug:
     msg: "Start migrating VM's"
 
-- block:
-    - name: Execute qm list command and extract VM IDs
-      ansible.builtin.shell: "qm list | awk 'NR>1 {print $1}'"
-      register: qm_list_result
-      changed_when: false
+- name: Execute qm list command and extract VM IDs
+  ansible.builtin.shell: "qm list | awk 'NR>1 {print $1}'"
+  register: qm_list_result
+  changed_when: false
 
-    - name: Convert all VM id's to JSON list
-      set_fact:
-        vm_ids: "{{ qm_list_result.stdout_lines | map('int') | list }}"
+- name: Convert all VM id's to JSON list
+  set_fact:
+    vm_ids: "{{ qm_list_result.stdout_lines | map('int') | list }}"
 
-    - name: Remove excluded VM id's from the list
-      set_fact:
-        filtered_vm_ids: "{{ vm_ids | difference(exclude_vm_id_list) }}"
+- name: Remove excluded VM id's from the list
+  set_fact:
+    filtered_vm_ids: "{{ vm_ids | difference(exclude_vm_id_list) }}"
 
-    - name: Migrating these VM's
-      debug:
-        msg: "{{ filtered_vm_ids }}"
-
-    - name: Migrate running VM's to the target hosts
-      ansible.builtin.command: "qm migrate {{ item }} {{ target_host }} --online --with-local-disks"
-      loop: "{{ filtered_vm_ids }}"
-  delegate_to: "{{ source_host }}"
-
-- name: Check if VM is running on the target host
-  ansible.builtin.command: "qm status {{ item }}"
-  register: qm_status
+- name: Migrate each VM
+  ansible.builtin.include_tasks: "migrate-vm.yaml"
   loop: "{{ filtered_vm_ids }}"
-  until: "qm_status.stdout == 'status: running'"
-  retries: 20
-  delay: 20
-  delegate_to: "{{ target_host }}"
+  loop_control:
+    label: "{{ item }}"
