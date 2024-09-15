@@ -1,6 +1,8 @@
-# NFS
-storage-server-lagg.lan.theautomation.nl:/mnt/r10_8tb/media /home/coen/storage-server/media nfs rsize=32768,wsize=32768
-storage-server-lagg.lan.theautomation.nl:/mnt/r10_8tb/shared /home/coen/storage-server/shared nfs rsize=32768,wsize=32768
-
-# SMB
-//storage-server-lagg.lan.theautomation.nl/coen /home/coen/storage-server/coen cifs rw,uid=coen,gid=2000,file_mode=0770,dir_mode=0777,credentials=/home/coen/.smbcredentials,iocharset=utf8, 0 0
+truenas-master.lan.theautomation.nl:/mnt/ssd/webdav /home/coen/truenas/shared nfs defaults 0 0
+truenas-master.lan.theautomation.nl:/mnt/ssd/backups /home/coen/truenas/backups nfs defaults 0 0
+truenas-master.lan.theautomation.nl:/mnt/hdd/coen /home/coen/truenas/coen nfs defaults 0 0
+truenas-master.lan.theautomation.nl:/mnt/hdd/anne /home/coen/truenas/anne nfs defaults 0 0
+truenas-master.lan.theautomation.nl:/mnt/hdd/containers/k8s/plex-media /home/coen/truenas/plex-media nfs defaults 0 0
+truenas-master.lan.theautomation.nl:/mnt/hdd/backups/proxmox /home/coen/truenas/proxmmox-backups nfs defaults 0 0
+truenas-master.lan.theautomation.nl:/mnt/hdd/music /home/coen/truenas/music nfs defaults 0 0
+truenas-master.lan.theautomation.nl:/mnt/hdd/music_old /home/coen/truenas/music_old nfs defaults 0 0
