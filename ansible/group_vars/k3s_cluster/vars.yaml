@@ -30,7 +30,7 @@ kube_vip:
   deploy: true
   name: "kube-vip"
   namespace: "kube-system"
-  image_tag: "v0.8.2"
+  image_tag: "v0.8.3"
   apiserver_endpoint: "10.0.100.100"
   flannel_iface: "ens18"
 
