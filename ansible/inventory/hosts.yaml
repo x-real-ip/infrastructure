@@ -16,6 +16,10 @@ k3s_master:
     k3s-mas-02:
     k3s-mas-03:
 
+k3s_worker:
+  hosts:
+    k3s-wkr-01:
+
 proxmox:
   hosts:
     pve-a:
@@ -25,8 +29,7 @@ proxmox:
 
 odroid:
   hosts:
-    odroid-01:
-    odroid-02:
+    # odroid-02:
 
 desktop_linux:
   hosts:

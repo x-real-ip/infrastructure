@@ -1,19 +1,14 @@
 ---
-- name: Create a directory for docker volumes if it does not exist
-  ansible.builtin.file:
-    path: /root/docker_volumes/cups
-    state: directory
-    mode: "0755"
+- ansible.builtin.include_tasks: "create-podman-mountpoint.yaml"
 
-- name: Docker run cups
-  community.docker.docker_container:
+- name: Podman run cups
+  containers.podman.podman_container:
     name: cups
-    image: "anujdatar/cups:latest"
-    pull: true
+    image: ghcr.io/anujdatar/cups:latest
     state: started
     recreate: true
     network_mode: host
-    devices:
+    device:
       - "/dev/bus/usb"
     restart_policy: "always"
     env:
@@ -21,6 +16,6 @@
       CUPSPASSWORD: "{{ cups.password }}"
       TZ: "{{ system_timezone }}"
     volumes:
-      - /root/docker_volumes/cups:/etc/cups
+      - /mnt/podman/{{ nfs_share_name }}:/etc/cups
       - /var/run/dbus:/var/run/dbus
       - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket

@@ -4,8 +4,9 @@
     name: firewalld
     state: stopped
     enabled: false
+  when: ansible_os_family == "RedHat"
 
-- name: Install the latest version of packages
+- name: Install the latest version of dnf packages
   ansible.builtin.dnf:
     name:
       - nano
@@ -16,12 +17,55 @@
       - nfs-utils
       - iscsi-initiator-utils
       - device-mapper-multipath
+      - python3
       - pip
       - jq
       - yum-utils
       - cryptsetup
       - cloud-utils-growpart
     state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Install the latest version of apt packages
+  ansible.builtin.apt:
+    name:
+      - nano
+      - curl
+      - wget
+      - unzip
+      - nfs-common
+      - open-iscsi
+      - multipath-tools
+      - python3-pip
+      - jq
+      - lvm2
+      - cryptsetup
+      - avahi-daemon
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Install the latest version of avahi-daemon on the worker nodes
+  ansible.builtin.apt:
+    name:
+      - avahi-daemon
+    state: present
+    update_cache: true
+  when: ansible_os_family == 'Debian' and 'k3s_worker' in group_names
+
+- name: Enable avahi reflector
+  ansible.builtin.lineinfile:
+    path: /etc/avahi/avahi-daemon.conf
+    regexp: "^#enable-reflector=no"
+    line: "enable-reflector=yes"
+  when: "'k3s_worker' in group_names"
+
+- name: Enable and start service avahi-daemon, if not started
+  service:
+    name: avahi-daemon
+    state: started
+    enabled: yes
+  when: "'k3s_worker' in group_names"
 
 - name: >-
     Install kubernetes python packages for Ansible kubernetes.core.k8s module
@@ -29,6 +73,8 @@
     name:
       - kubernetes
       - kubernetes-validate
+    virtualenv: "{{ venv_dir }}"
+  when: "'k3s_master' in group_names"
 
 - name: Set SELinux to disabled state
   ansible.posix.selinux:
@@ -109,6 +155,7 @@
     name: qemu-guest-agent.service
     state: started
     enabled: true
+  when: "'k3s_master' in group_names"
 
 - name: Enable iscsid
   ansible.builtin.systemd:

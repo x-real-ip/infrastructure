@@ -1,41 +1,6 @@
 ---
-- name: Set the hostname using hostnamectl
-  command: hostnamectl set-hostname "{{ inventory_hostname }}"
-
-- name: Install avahi-daemon
-  apt:
-    pkg:
-      - avahi-daemon
-
-- name: Enable and start service avahi-daemon, if not started
-  service:
-    name: avahi-daemon
-    state: started
-    enabled: yes
-
-- name: Enable avahi reflector
-  ansible.builtin.lineinfile:
-    path: /etc/avahi/avahi-daemon.conf
-    regexp: "^#enable-reflector=no"
-    line: "enable-reflector=yes"
-
-- name: Update system
-  ansible.builtin.include_role:
-    name: common
-    tasks_from: system-updates
-
-- name: Check if reboot required
-  ansible.builtin.stat:
-    path: /var/run/reboot-required
-  register: reboot_required_file
-  notify: Reboot
-  changed_when: reboot_required_file.stat.exists
-
 - name: Install corosync
   ansible.builtin.include_tasks: install-corosync.yaml
-
-- name: Install Docker
-  ansible.builtin.include_tasks: install-docker.yaml
 
 - name: Find USB devices in /dev/serial/by-id/
   command: find /dev/serial/by-id/ -type l
@@ -53,6 +18,8 @@
 
 - name: Deploy cups
   ansible.builtin.include_tasks: deploy-cups.yaml
+  vars:
+    nfs_share_name: cups-config
 
 - name: Cleanup packages
   ansible.builtin.include_role:

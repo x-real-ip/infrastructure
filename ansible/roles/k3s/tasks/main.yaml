@@ -1,7 +1,4 @@
 ---
-- name: Include bare task
-  ansible.builtin.include_tasks: bare.yaml
-
 - name: Deploy | {{ argocd.name }}
   ansible.builtin.include_tasks: "argocd-core.yaml"
   when: argocd.deploy
