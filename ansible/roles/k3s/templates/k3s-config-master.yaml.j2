@@ -1,6 +1,7 @@
 ---
 write-kubeconfig-mode: "0644"
 token: "{{ k3s_token }}"
+node-name: {{ ansible_hostname }}
 disable:
   - "traefik"
   - "servicelb"
