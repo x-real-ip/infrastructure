@@ -2,8 +2,12 @@
 # Default username that Ansible should use when connecting to remote host
 ansible_user: root
 
+# Python virtual environment for k3s pip packages
+venv_dir: /opt/k3s
+venv_python: "{{ venv_dir }}/bin/python"
+
 # IP-address of first master node
-server_ip: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
+first_master_ip_address: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
 
 # The location to store rendered jinja2 templates like deployments .yaml files
 output_file_location: "/home/coen/Downloads/"
