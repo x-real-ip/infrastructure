@@ -11,10 +11,6 @@
   ansible.builtin.include_tasks: "{{ sealed_secrets.name }}.yaml"
   when: sealed_secrets.deploy
 
-- name: Deploy | {{ democratic_csi_manual.name }}
-  ansible.builtin.include_tasks: "{{ democratic_csi_manual.name }}-manual.yaml"
-  when: democratic_csi_manual.deploy
-
 - name: Deploy | TLS certs
   ansible.builtin.include_tasks: tls-certificates.yaml
 
@@ -24,4 +20,3 @@
 - name: Deploy | {{ node_feature_discovery.name }}
   ansible.builtin.include_tasks: "{{ node_feature_discovery.name }}.yaml"
   when: node_feature_discovery.deploy
-

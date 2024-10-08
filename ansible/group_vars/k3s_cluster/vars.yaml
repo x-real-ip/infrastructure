@@ -20,16 +20,6 @@ argocd:
   namespace: argocd
   version: "stable"
 
-democratic_csi_manual:
-  deploy: true
-  name: democratic-csi
-  namespace: democratic-csi
-  image_tag:
-    cleanup: "stable"
-    csi_proxy: latest
-    democratic_csi: latest
-    driver_registrar: v2.11.1
-
 kube_vip:
   deploy: true
   name: "kube-vip"
@@ -44,13 +34,6 @@ sealed_secrets:
   namespace: "kube-system"
   image_tag: "v0.27.1"
   sealed_secret_customkeys_2_tls_key: "{{ vault_sealed_secret_customkeys_2_tls_key }}"
-
-node_feature_discovery:
-  deploy: false
-  name: node-feature-discovery
-  namespace: devops
-  image_tag:
-    node_feature_discovery: "v0.16.3"
 
 tls_certificates:
   wildcard_theautomation_nl:
