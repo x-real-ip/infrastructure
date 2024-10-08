@@ -1,3 +1,5 @@
 ---
 system_timezone: "Europe/Amsterdam"
 localdomain: "lan.theautomation.nl"
+nfs:
+  server: "truenas-master.{{ localdomain }}"
