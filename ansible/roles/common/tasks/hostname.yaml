@@ -1,0 +1,15 @@
+---
+- name: Get current hostname
+  command: hostname
+  register: current_hostname
+  changed_when: false
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+  register: hostname_change
+  when: current_hostname.stdout != 'new_hostname'
+
+- name: Reboot the machine if hostname changed
+  reboot:
+  when: hostname_change.changed

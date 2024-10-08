@@ -10,5 +10,5 @@
     state: present
     key: "{{ lookup('file', '/home/coen/.ssh/ansible.pub') }}"
 
-- name: Set the hostname using hostnamectl
-  command: hostnamectl set-hostname "{{ inventory_hostname }}"
+- name: Include hostname task
+  ansible.builtin.include_tasks: hostname.yaml
