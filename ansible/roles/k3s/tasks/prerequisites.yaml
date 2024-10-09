@@ -1,4 +1,27 @@
 ---
+- name: Get the primary DNS IP from the system's resolv.conf
+  set_fact:
+    primary_dns_ip: "{{ ansible_dns.nameservers[0] | default('8.8.8.8') }}"
+  when: ansible_os_family == "Debian"
+
+- name: Ensure dynamically discovered DNS is set in /etc/systemd/resolved.conf
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: "^#?DNS="
+    line: "DNS={{ primary_dns_ip }}"
+    state: present
+  notify: Restart systemd-resolved
+  when: ansible_os_family == "Debian"
+
+- name: Ensure FallbackDNS is set in /etc/systemd/resolved.conf
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: "^#?FallbackDNS="
+    line: "FallbackDNS=1.1.1.1 8.8.8.8"
+    state: present
+  notify: Restart systemd-resolved
+  when: ansible_os_family == "Debian"
+
 - name: Stop and disable service firewalld
   ansible.builtin.service:
     name: firewalld
