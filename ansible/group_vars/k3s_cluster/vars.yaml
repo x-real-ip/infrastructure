@@ -6,6 +6,9 @@ ansible_user: root
 venv_dir: /opt/k3s
 venv_python: "{{ venv_dir }}/bin/python"
 
+# Primary DNS IP for debian hosts /etc/systemd/resolved.conf
+primary_dns_ip: "10.0.100.1"
+
 # IP-address of first master node
 first_master_ip_address: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
 
