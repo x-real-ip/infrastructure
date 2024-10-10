@@ -19,6 +19,7 @@ k3s_master:
 k3s_worker:
   hosts:
     k3s-wkr-01:
+    k3s-wkr-02:
 
 proxmox:
   hosts:
