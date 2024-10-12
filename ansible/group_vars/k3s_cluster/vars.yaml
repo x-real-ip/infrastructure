@@ -39,14 +39,6 @@ sealed_secrets:
   sealed_secret_customkeys_2_tls_key: "{{ vault_sealed_secret_customkeys_2_tls_key }}"
 
 tls_certificates:
-  wildcard_theautomation_nl:
-    deploy: true
-    name: "tls-wildcard-theautomation-nl"
-    namespaces:
-      - devops
-      - media
-      - home-automation
-      - tools
   wildcard_stamx_nl:
     deploy: true
     name: "tls-wildcard-stamx-nl"
