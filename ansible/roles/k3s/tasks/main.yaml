@@ -11,9 +11,6 @@
   ansible.builtin.include_tasks: "{{ sealed_secrets.name }}.yaml"
   when: sealed_secrets.deploy
 
-- name: Deploy | TLS certs
-  ansible.builtin.include_tasks: tls-certificates.yaml
-
 - name: Deploy | GitHub registry credentials
   ansible.builtin.include_tasks: github-registry-credentials.yaml
 
