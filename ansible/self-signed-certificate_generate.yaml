@@ -7,17 +7,17 @@
   connection: local
   vars:
     directory: "/home/coen/certs"
-    organization: "theautomation"
+    organization: "stamx"
     ca:
-      certificate: "ca-certificate.pem"
-      common_name: "The Automation CA"
-      private_key: "ca-private.key"
+      certificate: "{{ organization }}-ca-certificate.pem"
+      common_name: "Stamx CA"
+      private_key: "{{ organization }}-ca-private.key"
     server:
-      certificate: "server-certificate.crt"
-      common_name: "*.lan.theautomation.nl"
-      private_key: "server-private.key"
+      certificate: "{{ organization }}-server-certificate.crt"
+      common_name: "*.lan.stamx.nl"
+      private_key: "{{ organization }}-server-private.key"
     kubernetes:
-      secret_name: "tls-wildcard-lan-theautomation-nl"
+      secret_name: "tls-wildcard-lan-stamx-nl"
   tasks:
     - name: Create directory with parents
       ansible.builtin.file:
