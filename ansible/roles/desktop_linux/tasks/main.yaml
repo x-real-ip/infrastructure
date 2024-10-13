@@ -2,16 +2,19 @@
 - name: Install usual apt packages
   ansible.builtin.import_tasks: install_apt_packages.yaml
 
-- name: Intall snap store packages
+- name: Install snap store packages
   ansible.builtin.import_tasks: install_snap_packages.yaml
 
-- name: Unintall usual apt packages
+- name: Uninstall usual apt packages
   ansible.builtin.import_tasks: uninstall_apt_packages.yaml
 
-- name: Intall ArgoCD CLI
+- name: Install selfsigned CA certificate
+  ansible.builtin.import_tasks: install_tls_ca_certificate.yaml
+
+- name: Install ArgoCD CLI
   ansible.builtin.import_tasks: install_argocd-cli.yaml
 
-- name: Intall kubectl
+- name: Install kubectl
   ansible.builtin.import_tasks: install_kubectl.yaml
 
 - name: Mount NFS shares

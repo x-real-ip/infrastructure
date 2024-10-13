@@ -1,0 +1,17 @@
+---
+- name: Install ca-certificates package
+  apt:
+    name: ca-certificates
+    state: present
+    update_cache: yes
+
+- name: Copy local CA certificate and rename it to .crt extension
+  copy:
+    src: stamx-ca-certificate.pem
+    dest: /usr/local/share/ca-certificates/stamx-ca-certificate.crt
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Update CA certificates
+  command: update-ca-certificates
