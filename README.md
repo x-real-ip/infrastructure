@@ -288,19 +288,19 @@ sudo rsync -axHAWXS --numeric-ids --info=progress2 /mnt/sourcePart/ /mnt/destPar
 Discovering targets in iSCSI server
 
 ```console
-sudo iscsiadm --mode discovery -t sendtargets --portal storage-server-lagg.lan.theautomation.nl
+sudo iscsiadm --mode discovery -t sendtargets --portal storage-server-lagg.lan.stamx.nl
 ```
 
 Mount disk
 
 ```console
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.theautomation.nl --login
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.stamx.nl --login
 ```
 
 Unmount disk
 
 ```console
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.theautomation.nl -u
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> --portal storage-server-lagg.lan.stamx.nl -u
 ```
 
 ### Repair iSCSI share
@@ -309,7 +309,7 @@ sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:<disk-name> -
 2. SSH into one of the nodes in the cluster and start discovery
 
 ```bash
-sudo iscsiadm -m discovery -t st -p truenas-master.lan.theautomation.nl && \
+sudo iscsiadm -m discovery -t st -p truenas-master.lan.stamx.nl && \
 read -p "Enter the disk name: " DISKNAME && \
 export DISKNAME
 ```
@@ -317,7 +317,7 @@ export DISKNAME
 3. Login to target
 
 ```bash
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-master.lan.theautomation.nl --login && \
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal truenas-master.lan.stamx.nl --login && \
 sleep 5 && \
 lsblk && \
 read -p "Enter the device ('sda' for example): " DEVICENAME && \
@@ -352,7 +352,7 @@ sudo xfs_repair /dev/${DEVICENAME}
 9.  Logout from target
 
 ```bash
-sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal storage-server-lagg.lan.theautomation.nl --logout
+sudo iscsiadm --mode node --targetname iqn.2005-10.org.freenas.ctl:${DISKNAME} --portal storage-server-lagg.lan.stamx.nl --logout
 echo "Volumes are now ready to be mounted as PVCs."
 ```
 

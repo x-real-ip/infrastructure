@@ -1,8 +1,8 @@
-truenas-master.lan.theautomation.nl:/mnt/ssd/webdav /home/coen/truenas/shared nfs defaults 0 0
-truenas-master.lan.theautomation.nl:/mnt/ssd/backups /home/coen/truenas/backups nfs defaults 0 0
-truenas-master.lan.theautomation.nl:/mnt/hdd/coen /home/coen/truenas/coen nfs defaults 0 0
-truenas-master.lan.theautomation.nl:/mnt/hdd/anne /home/coen/truenas/anne nfs defaults 0 0
-truenas-master.lan.theautomation.nl:/mnt/hdd/containers/k8s/plex-media /home/coen/truenas/plex-media nfs defaults 0 0
-truenas-master.lan.theautomation.nl:/mnt/hdd/backups/proxmox /home/coen/truenas/proxmmox-backups nfs defaults 0 0
-truenas-master.lan.theautomation.nl:/mnt/hdd/music /home/coen/truenas/music nfs defaults 0 0
-truenas-master.lan.theautomation.nl:/mnt/hdd/music_old /home/coen/truenas/music_old nfs defaults 0 0
+truenas-master.lan.stamx.nl:/mnt/ssd/webdav /home/coen/truenas/shared nfs defaults 0 0
+truenas-master.lan.stamx.nl:/mnt/ssd/backups /home/coen/truenas/backups nfs defaults 0 0
+truenas-master.lan.stamx.nl:/mnt/hdd/coen /home/coen/truenas/coen nfs defaults 0 0
+truenas-master.lan.stamx.nl:/mnt/hdd/anne /home/coen/truenas/anne nfs defaults 0 0
+truenas-master.lan.stamx.nl:/mnt/hdd/containers/k8s/plex-media /home/coen/truenas/plex-media nfs defaults 0 0
+truenas-master.lan.stamx.nl:/mnt/hdd/backups/proxmox /home/coen/truenas/proxmmox-backups nfs defaults 0 0
+truenas-master.lan.stamx.nl:/mnt/hdd/music /home/coen/truenas/music nfs defaults 0 0
+truenas-master.lan.stamx.nl:/mnt/hdd/music_old /home/coen/truenas/music_old nfs defaults 0 0
