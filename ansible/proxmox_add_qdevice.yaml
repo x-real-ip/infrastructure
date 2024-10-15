@@ -37,7 +37,7 @@
 
     - name: Add Qdevice and except fingerprint
       ansible.builtin.expect:
-        command: pvecm qdevice setup {{ hostvars['odroid-c4.lan.theautomation.nl']['ansible_eth0']['ipv4']['address'] }} --force
+        command: pvecm qdevice setup {{ hostvars['odroid-c4.lan.stamx.nl']['ansible_eth0']['ipv4']['address'] }} --force
         echo: true
         timeout: 20
         responses:
