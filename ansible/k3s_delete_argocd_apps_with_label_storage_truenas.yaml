@@ -1,0 +1,16 @@
+---
+- name: Play to remove Kubernetes resources that use TrueNAS storage
+  hosts: k3s_master
+  become: false
+  tasks:
+    - name: Disable autosync for app-of-apps
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: argocd-disable-app-sync
+      vars:
+        application_name: "app-of-apps"
+
+    - name: Delete argocd application with label storage=truenas
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: argocd-delete-app
