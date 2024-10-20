@@ -203,6 +203,12 @@ spec:
 
 ### Bitnami Sealed Secret
 
+Raw mode
+
+```
+echo -n foo | kubeseal --cert "./sealed-secret-tls-2.crt" --raw --scope cluster-wide
+```
+
 Create TLS (unencrypted) secret
 
 ```
