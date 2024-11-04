@@ -20,8 +20,9 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 ```
-ansible-playbook proxmox_rolling_update_nodes.yaml
+ansible-playbook --ask-vault-pass ./proxmox_rolling_update_nodes
 ```
+
 ```
 sudo ansible-playbook ansible-playbook odroid_desired_state.yaml
 ```
