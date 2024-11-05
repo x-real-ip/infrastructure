@@ -101,7 +101,7 @@
 
 - name: Verify that all worker nodes actually joined
   ansible.builtin.command: >
-    kubectl get nodes -l "kubernetes.io/hostname={{ item }}" -o=jsonpath="{.items[*].metadata.name}"
+    kubectl get nodes -l "kubernetes.io/hostname={{ item }}" -o jsonpath="{.items[*].metadata.name}"
   register: nodes
   until: nodes.rc == 0 and (nodes.stdout_lines | length) == (groups['k3s_worker'] | length)
   retries: 20
