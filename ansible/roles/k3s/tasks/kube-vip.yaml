@@ -1,5 +1,5 @@
 ---
-- name: Create namespace | {{ kube_vip.name }}
+- name: Create namespace | kube-vip
   kubernetes.core.k8s:
     kind: Namespace
     api_version: v1
@@ -7,18 +7,18 @@
     state: present
   run_once: true
 
-- name: Read template file and apply to the k3s cluster | {{ kube_vip.name }}
+- name: Read template file and apply to the k3s cluster | kube-vip
   kubernetes.core.k8s:
     state: present
-    template: "{{ kube_vip.name }}.yaml.j2"
+    template: "kube-vip.yaml.j2"
   run_once: true
 
-- name: Wait until all pods are running | {{ kube_vip.name }}
+- name: Wait until all pods are running | kube-vip
   kubernetes.core.k8s_info:
     kind: Pod
     namespace: "{{ kube_vip.namespace }}"
     label_selectors:
-      - "name = {{ kube_vip.name }}-ds"
+      - "app.kubernetes.io/name = kube-vip-ds"
   register: pod_list
   until: pod_list | json_query('resources[*].status.phase') | unique == ["Running"]
   retries: 15
@@ -42,7 +42,7 @@
     fail_on_missing: true
   run_once: true
 
-- name: Render template to localhost | {{ kube_vip.name }}
+- name: Render template to localhost | kube-vip
   ansible.builtin.include_tasks: render-template.yaml
   vars:
-    template_file: "{{ kube_vip.name }}.yaml.j2"
+    template_file: "kube-vip.yaml.j2"

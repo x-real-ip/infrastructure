@@ -27,7 +27,7 @@ kube_vip:
   deploy: true
   name: "kube-vip"
   namespace: "kube-system"
-  image_tag: "v0.8.5"
+  image_tag: "v0.8.6"
   apiserver_endpoint: "10.0.100.100"
   flannel_iface: "ens18"
 
@@ -35,7 +35,7 @@ sealed_secrets:
   deploy: true
   name: "sealed-secrets"
   namespace: "kube-system"
-  image_tag: "v0.27.1"
+  image_tag: "v0.27.2"
   sealed_secret_customkeys_2_tls_key: "{{ vault_sealed_secret_customkeys_2_tls_key }}"
 
 github_registry:
