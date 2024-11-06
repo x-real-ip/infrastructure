@@ -19,8 +19,9 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 
 Example Playbook
 ----------------
+Update nodes
 ```
-ansible-playbook --ask-vault-pass k3s_rolling_update_nodes.yaml
+ansible-playbook --ask-vault-pass update_k3s_rolling-update-nodes.yaml
 ```
 ```
 sudo ansible-playbook --ask-vault-pass -kK k3s_install_cluster_bare.yaml
