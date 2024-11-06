@@ -39,13 +39,16 @@ jobs:
           BODY: |
             ### Monthly update and upgrade
 
-            - [ ] Proxmox nodes (ansible)
-            - [ ] K3s version (ansible)
-            - [ ] K3s nodes (ansible)
-            - [ ] Odroid devices (ansible)
-            - [ ] Shelly devices (ansible)
-            - [ ] Container images version
-            - [ ] Truenas
+            - [ ] Proxmox nodes OS (ansible playbook)
+            - [ ] K3s version (ansible playbook)
+            - [ ] K3s nodes OS (ansible playbook)
+            - [ ] Odroid devices (ansible playbook)
+            - [ ] Shelly devices firmware (ansible playbook)
+            - [ ] Truenas version
+            - [ ] [ArgoCD](https://github.com/argoproj/argo-cd/releases) (ansible var)
+            - [ ] [Kube-VIP](https://github.com/kube-vip/kube-vip/releases) (ansible var)
+            - [ ] [Sealed-secrets](https://github.com/bitnami-labs/sealed-secrets/releases) (ansible var)
+            - [ ] [Vaultwarden](https://github.com/dani-garcia/vaultwarden/releases)
 
           PINNED: false
           CLOSE_PREVIOUS: true
