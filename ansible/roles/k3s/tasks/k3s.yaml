@@ -88,7 +88,7 @@
     ansible_python_interpreter: "{{ venv_python }}"
   when: "'k3s_master' in group_names"
 
-- name: Verify that all master nodes actually joined
+- name: Check if all Kubernetes master nodes have joined the cluster
   ansible.builtin.command:
     cmd: kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
   register: nodes
@@ -99,16 +99,15 @@
   failed_when: false
   when: "'k3s_master' in group_names"
 
-- name: Verify that all worker nodes actually joined
-  ansible.builtin.command: >
-    kubectl get nodes -l "kubernetes.io/hostname={{ item }}" -o jsonpath="{.items[*].metadata.name}"
-  register: nodes
-  until: nodes.rc == 0 and (nodes.stdout_lines | length) == (groups['k3s_worker'] | length)
+- name: Wait until each worker node is part of the Kubernetes cluster
+  ansible.builtin.command: "kubectl get nodes --no-headers -o custom-columns=:.metadata.name"
+  register: kubernetes_nodes
+  changed_when: false
   retries: 20
   delay: 10
-  changed_when: false
-  failed_when: false
+  until: item in kubernetes_nodes.stdout_lines
   loop: "{{ groups['k3s_worker'] }}"
+  become: true
   run_once: true
   when: "'k3s_master' in group_names"
 
