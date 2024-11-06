@@ -13,7 +13,3 @@
 
 - name: Deploy | GitHub registry credentials
   ansible.builtin.include_tasks: github-registry-credentials.yaml
-
-- name: Deploy | {{ node_feature_discovery.name }}
-  ansible.builtin.include_tasks: "{{ node_feature_discovery.name }}.yaml"
-  when: node_feature_discovery.deploy
