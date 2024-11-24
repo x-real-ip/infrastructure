@@ -19,7 +19,7 @@ Dependencies
 Example Playbook
 ----------------
 
-ansible-playbook --ask-vault-pass ./shelly_update.yaml
+ansible-playbook --ask-vault-pass ./update_shelly_update-firmware.yaml
 
 License
 -------
