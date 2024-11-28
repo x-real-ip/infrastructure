@@ -1,5 +1,5 @@
 ---
-# - import_playbook: k3s_install_cluster_bare.yaml
+- import_playbook: k3s_install_cluster_bare.yaml
 
 - name: Play for installing a K3s cluster with minimal applications and components
   hosts: k3s_master
