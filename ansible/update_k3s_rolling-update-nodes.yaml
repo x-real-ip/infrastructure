@@ -1,5 +1,5 @@
 ---
-- name: K3s system maintenance
+- name: K3s master system maintenance
   hosts: k3s_master
   become: true
   serial: 1
@@ -9,3 +9,14 @@
       ansible.builtin.include_role:
         name: k3s
         tasks_from: rolling-update
+
+- name: K3s worker system maintenance
+  hosts: k3s_worker
+  gather_facts: true
+  become: true
+  become_user: root
+  tasks:
+    - name: Start system-updates
+      ansible.builtin.include_role:
+        name: common
+        tasks_from: system-updates
