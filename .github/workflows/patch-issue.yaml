@@ -44,7 +44,7 @@ jobs:
             - [ ] K3s nodes OS (ansible playbook)
             - [ ] Odroid devices (ansible playbook)
             - [ ] Shelly devices firmware (ansible playbook)
-            - [ ] Truenas version
+            - [ ] TrueNAS
             - [ ] [ArgoCD](https://github.com/argoproj/argo-cd/releases) (ansible var)
             - [ ] [Kube-VIP](https://github.com/kube-vip/kube-vip/releases) (ansible var)
             - [ ] [Sealed-secrets](https://github.com/bitnami-labs/sealed-secrets/releases) (ansible var)
