@@ -4,7 +4,7 @@
   connection: local
   gather_facts: true
   tasks:
-    - name: Include task start TrueNAS snapshot tasks
+    - name: Check which TrueNAS instance is master
       ansible.builtin.include_role:
         name: truenas
         tasks_from: check-truenas-master.yaml

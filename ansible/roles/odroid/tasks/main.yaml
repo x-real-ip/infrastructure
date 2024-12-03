@@ -1,8 +1,0 @@
----
-- name: Install corosync
-  ansible.builtin.include_tasks: install-corosync.yaml
-
-- name: Cleanup packages
-  ansible.builtin.include_role:
-    name: common
-    tasks_from: system-cleanup

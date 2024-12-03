@@ -1,5 +1,0 @@
----
-- name: Reboot
-  ansible.builtin.reboot:
-    msg: "Reboot initiated by Ansible"
-  listen: "Reboot"

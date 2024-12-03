@@ -1,4 +1,3 @@
----
 - name: Play to remove Kubernetes resources that use TrueNAS storage
   hosts: k3s_master
   become: false

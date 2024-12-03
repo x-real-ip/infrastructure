@@ -1,9 +1,0 @@
----
-- name: Set the desired state for all Odroid devices
-  hosts: k3s_worker
-  gather_facts: true
-  become: true
-  become_user: root
-  roles:
-    - common
-    - odroid

@@ -1,0 +1,8 @@
+- name: Play to start apply all ArgoCD applications
+  hosts: k3s_master
+  become: false
+  tasks:
+    - name: Apply ArgoCD and app-of-apps
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: argocd-app-of-apps
