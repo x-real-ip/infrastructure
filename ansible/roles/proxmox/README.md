@@ -20,7 +20,7 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 ```
-ansible-playbook --ask-vault-pass ./proxmox_rolling_update_nodes
+ansible-playbook --ask-vault-pass ./update_proxmox_rolling-update-nodes.yaml
 ```
 
 ```
