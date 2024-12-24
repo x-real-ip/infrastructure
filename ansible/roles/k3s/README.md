@@ -23,6 +23,7 @@ Update nodes
 ```
 ansible-playbook --ask-vault-pass update_k3s_rolling-update-nodes.yaml
 ```
+Install k3s
 ```
 sudo ansible-playbook --ask-vault-pass -kK k3s_install_cluster_bare.yaml
 ```
@@ -43,6 +44,11 @@ sudo ansible-playbook --ask-vault-pass -k k3s_start_all_pods.yaml
 Rolling update nodes
 ```
 ansible-playbook --ask-vault-pass k3s_rolling_update_nodes.yaml
+```
+
+Delete pods with truenas storage label
+```
+ansible-playbook --ask-vault-pass k3s_remove-apps-with-truenas-storage.yaml
 ```
 
 License
