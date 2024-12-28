@@ -1,4 +1,9 @@
 ---
+- name: Flush local DNS cache
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: flush-dns-cache
+
 - name: Check device_name variable length
   ansible.builtin.assert:
     that:
