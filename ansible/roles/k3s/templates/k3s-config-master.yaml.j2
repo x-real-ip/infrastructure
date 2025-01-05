@@ -10,7 +10,4 @@ disable-cloud-controller: true
 disable-helm-controller: true
 tls-san:
   - "{{ kube_vip.apiserver_endpoint }}"
-kubelet-arg:
-  - "feature-gates=StatefulSetAutoDeletePVC=true"
-kube-apiserver-arg: 
-  - "feature-gates=StatefulSetAutoDeletePVC=true"
+
