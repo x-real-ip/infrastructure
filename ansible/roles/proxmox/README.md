@@ -23,10 +23,6 @@ Example Playbook
 ansible-playbook --ask-vault-pass ./update_proxmox_rolling-update-nodes.yaml
 ```
 
-```
-sudo ansible-playbook ansible-playbook odroid_desired_state.yaml
-```
-
 License
 -------
 
