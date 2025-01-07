@@ -72,7 +72,7 @@ shelly_plug_s:
     shellyplug-s-DD4D06:
     shellyplug-s-DE0CDF:
     shellyplug-s-dd9ea4:
-    shellyplug-s-0212C1:
+    shellyplug-s-0212C1: # General-01
 
 shelly_plug_plus:
   hosts:
