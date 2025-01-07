@@ -42,7 +42,6 @@ jobs:
             - [ ] Proxmox nodes OS (ansible playbook)
             - [ ] K3s version (ansible playbook)
             - [ ] K3s nodes OS (ansible playbook)
-            - [ ] Odroid devices (ansible playbook)
             - [ ] Shelly devices firmware (ansible playbook)
             - [ ] TrueNAS
             - [ ] [ArgoCD](https://github.com/argoproj/argo-cd/releases) (ansible var)
