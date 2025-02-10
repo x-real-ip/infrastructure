@@ -40,7 +40,6 @@
       - jq
       - yum-utils
       - cryptsetup
-      - cloud-utils-growpart
     state: present
   when: ansible_os_family == "RedHat"
 
