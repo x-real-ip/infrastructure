@@ -84,8 +84,6 @@
       status: "True"
   retries: 3
   delay: 5
-  vars:
-    ansible_python_interpreter: "{{ venv_python }}"
   when: "'k3s_master' in group_names"
 
 - name: Check if all Kubernetes master nodes have joined the cluster

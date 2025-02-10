@@ -91,7 +91,6 @@
     name:
       - kubernetes
       - kubernetes-validate
-    virtualenv: "{{ venv_dir }}"
   when: "'k3s_master' in group_names"
 
 - name: Set SELinux to disabled state
