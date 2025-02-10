@@ -12,14 +12,14 @@ k3s_cluster:
 
 k3s_master:
   hosts:
-    k3s-mas-01:
-    k3s-mas-02:
-    k3s-mas-03:
+    k3s-mst-01:
+    k3s-mst-02:
+    k3s-mst-03:
 
 k3s_worker:
   hosts:
-    k3s-wkr-01:
-    k3s-wkr-02:
+    # k3s-wkr-01:
+    # k3s-wkr-02:
 
 proxmox:
   hosts:
@@ -27,10 +27,6 @@ proxmox:
       ansible_host: 10.0.99.2
     pve-b:
       ansible_host: 10.0.99.3
-
-odroid:
-  hosts:
-    # odroid-02:
 
 desktop_linux:
   hosts:
