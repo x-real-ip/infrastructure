@@ -52,7 +52,13 @@ ssh-add ~/.ssh/ansible
 
 ### Setting up VM hosts on Proxmox
 
-1. Create VM from template and bootup.
+1. Create a VM with the following partitions
+   - / (10 GB) xfs
+   - /var (50GB) xfs
+   - /boot (1GB)
+  
+    No swap partition is needed for kubernetes
+
 2. Login to the VM and set hostname.
    ```console
    hostnamectl set-hostname <hostname>
