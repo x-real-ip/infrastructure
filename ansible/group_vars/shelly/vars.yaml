@@ -16,7 +16,7 @@ home_assistant:
 settings:
   coiot:
     enable: true
-    peer: "10.0.100.240:5683"
+    peer: "10.0.100.243:5683"
   sntp:
     enable: true
     server: "10.0.40.1"
