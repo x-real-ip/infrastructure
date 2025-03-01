@@ -48,7 +48,6 @@ shelly_dimmer:
   hosts:
     shellydimmer2-e8db84d4411c:
     shellydimmer-F36674:
-    shellydimmer-DB3BAF:
     shellydimmer-D4826F:
     shellydimmer2-E8DB84D794FD:
     shellydimmer-DB3DDA:
