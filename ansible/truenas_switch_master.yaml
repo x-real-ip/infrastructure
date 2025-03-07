@@ -1,0 +1,212 @@
+---
+- name: "Confirmation Step"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Confirmation Step
+      ansible.builtin.pause:
+        prompt: |
+          *********************************************************
+          You are about to perform a critical operation.
+
+          During the execution of this playbook, Kubernetes containers with the label storage=truenas will be deleted and reapplied. 
+
+          Press Enter to proceed, or Ctrl+C and then 'A' to abort.
+          *********************************************************
+
+- name: "Play to check which TrueNAS is master"
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  tasks:
+    - name: Check which TrueNAS instance is master
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: check-truenas-master.yaml
+      vars:
+        truenas_hosts:
+          - name: "master"
+          - name: "a"
+          - name: "b"
+
+- name: Play to remove Kubernetes resources that use TrueNAS storage
+  hosts: k3s_master
+  become: false
+  tasks:
+    - name: Disable autosync for app-of-apps
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: argocd-disable-app-sync
+      vars:
+        application_name: "app-of-apps"
+
+    - name: Delete argocd application with label storage=truenas
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: argocd-delete-app
+
+- name: "Play to start TrueNAS replication without running pods"
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+  tasks:
+    - name: Set TrueNAS API variables
+      include_vars: "group_vars/truenas/{{ item }}.yaml"
+      loop:
+        - vars
+        - vault
+
+    - name: Include task start TrueNAS snapshot tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: start-snapshot-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+
+    - name: Include task TrueNAS check replication tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: check-replication-task-success.yaml
+      vars:
+        instance: "{{ active_instance }}"
+
+    - name: Include task TrueNAS disable cloudsync tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-cloudsync-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: false
+
+    - name: Include task TrueNAS disable replication tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-replication-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: false
+
+    - name: Include task TrueNAS disable snapshot tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-snapshot-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: false
+
+- name: Modify pfSense DNS
+  hosts: pfsense
+  become: false
+  vars:
+    non_active_instance: "{{ hostvars['localhost']['non_active_instance'] }}"
+    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+    truenas_master_ip: "{{ hostvars['localhost']['truenas_master_ip'] }}"
+    truenas_a_ip: "{{ hostvars['localhost']['truenas_a_ip'] }}"
+    truenas_b_ip: "{{ hostvars['localhost']['truenas_b_ip'] }}"
+  tasks:
+    - name: Set new ip as fact
+      set_fact:
+        new_ip: "{{ truenas_b_ip if truenas_master_ip == truenas_a_ip else truenas_a_ip }}"
+
+    - name: Patch TrueNAS master host override using pfSense API
+      delegate_to: localhost
+      uri:
+        url: "http://pfsense.{{ localdomain }}:1080/api/v2/services/dns_resolver/host_override"
+        headers:
+          X-API-Key: "{{ pfsense_api_key }}"
+        method: PATCH
+        body_format: json
+        body:
+          id: "3"
+          host: "truenas-{{ non_active_instance }}"
+          ip: ["{{ new_ip }}"]
+          description: "Updated Host Override by Ansible"
+        validate_certs: no
+
+    - name: Apply changes
+      delegate_to: localhost
+      uri:
+        url: "http://pfsense.{{ localdomain }}:1080/api/v2/services/dns_resolver/apply"
+        headers:
+          X-API-Key: "{{ pfsense_api_key }}"
+        method: POST
+        validate_certs: no
+      register: result
+      until: result.json.status == 'ok'
+
+- name: "Play to check which TrueNAS is active and master"
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  tasks:
+    - name: Pause
+      ansible.builtin.pause:
+        seconds: 20
+
+    - name: Include task start TrueNAS snapshot tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: check-truenas-master.yaml
+      vars:
+        truenas_hosts:
+          - name: "master"
+          - name: "a"
+          - name: "b"
+
+    - name: Check if DNS resolves to the expected IP address
+      ansible.builtin.assert:
+        that:
+          - truenas_master_ip == expected_ip
+        fail_msg: "DNS resolution for truenas-master.{{ localdomain }} does not match the expected IP {{ expected_ip }}."
+      loop: "{{ dig_results.results }}"
+      vars:
+        expected_ip: "{{ hostvars['pfsense']['new_ip'] }}"
+
+- name: Play to start apply all ArgoCD applications
+  hosts: k3s_master
+  become: false
+  tasks:
+    - name: Apply ArgoCD and app-of-apps
+      ansible.builtin.include_role:
+        name: k3s
+        tasks_from: argocd-app-of-apps
+
+- name: "Play to enable TrueNAS tasks"
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+  tasks:
+    - name: Set TrueNAS API variables
+      include_vars: "group_vars/truenas/{{ item }}.yaml"
+      loop:
+        - vars
+        - vault
+
+    - name: Include task TrueNAS enable snapshot tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-snapshot-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: true
+
+    - name: Include task TrueNAS enable cloudsync tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-cloudsync-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: true
+
+    - name: Include task TrueNAS enable replication tasks
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: enable-disable-replication-tasks.yaml
+      vars:
+        instance: "{{ active_instance }}"
+        enabled: true
