@@ -1,4 +1,33 @@
 ---
+- name: "Confirmation Step"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Confirmation Step
+      ansible.builtin.pause:
+        prompt: |
+          *********************************************************
+          You are about to perform a critical operation.
+
+          During the execution of this playbook, the following tasks will be executed:
+            - Shutdown the non-active TrueNAS VM because the PVE will be rebooted.
+            - Migrate VMs from the non-active PVE to the active PVE.
+            - Update and reboot the non-active PVE.
+            - Migrate VMs from the active PVE back to the non-active PVE.
+            - Remove Kubernetes resources with the label storage=truenas.
+            - Run TrueNAS replication from the active node to the non-active node (with no running pods) and disable the replication tasks afterwards.
+            - Swap the DNS record truenas-master.lan.stamx.nl so the non-active node becomes the master (the active node).
+            - Start all Kubernetes containers with the label storage=truenas.
+            - Shutdown the non-active TrueNAS VM because the PVE will be rebooted.
+            - Migrate VMs from the non-active PVE to the active PVE.
+            - Update and reboot the non-active PVE.
+            - Re-enable replication tasks on the newly active TrueNAS node.
+
+          Press Enter to proceed, or Ctrl+C and then 'A' to abort.
+          *********************************************************
+
+
 - name: "Play to check which TrueNAS is master"
   hosts: localhost
   connection: local
@@ -14,7 +43,7 @@
           - name: "a"
           - name: "b"
 
-- name: "Play to migrate VM's on the non-active Proxmox node"
+- name: "Play to migrate VM's from the non-active Proxmox node"
   hosts: "pve-{{ hostvars['localhost']['non_active_instance'] }}"
   vars:
     non_active_instance: "{{ hostvars['localhost']['non_active_instance'] }}"
@@ -56,7 +85,7 @@
     - name: Reboot
       ansible.builtin.reboot:
 
-- name: "Play to migrate VM's on the active Proxmox node"
+- name: "Play to migrate VM's to the non-active Proxmox node"
   hosts: "pve-{{ hostvars['localhost']['active_instance'] }}"
   vars:
     non_active_instance: "{{ hostvars['localhost']['non_active_instance'] }}"
