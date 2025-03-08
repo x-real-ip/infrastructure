@@ -20,6 +20,8 @@
     - [Rename volume](#rename-volume)
   - [Resize VM disk](#resize-vm-disk)
   - [Odroid](#odroid)
+- [Desktop](#desktop)
+  - [Ubuntu](#ubuntu)
 
 ## Kubernetes
 
@@ -398,3 +400,13 @@ sudo xfs_growfs /
 3. Insert the SD/MMC and boot
 4. Login via SSH user `root` default password `1234`
 5. Run Ansible playbook for Odroid
+
+# Desktop
+
+## Ubuntu
+
+Change wifi powersave setting from 3 to 2 in `etc/NetworkManager/conf.d/default-wifi-powersave-on.conf` to fix wifi issue
+```
+[connection]
+wifi.powersave = 2
+``` 
