@@ -4,8 +4,7 @@
   connection: local
   gather_facts: false
   tasks:
-    - name: Confirmation Step
-      ansible.builtin.pause:
+    - ansible.builtin.pause:
         prompt: |
           *********************************************************
           You are about to perform a critical operation.
@@ -66,12 +65,12 @@
       vars:
         instance: "{{ active_instance }}"
 
-    - name: Include task TrueNAS check replication tasks
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: check-replication-task-success.yaml
-      vars:
-        instance: "{{ active_instance }}"
+    # - name: Include task TrueNAS check replication tasks
+    #   ansible.builtin.include_role:
+    #     name: truenas
+    #     tasks_from: check-replication-task-success.yaml
+    #   vars:
+    #     instance: "{{ active_instance }}"
 
     - name: Include task TrueNAS disable cloudsync tasks
       ansible.builtin.include_role:
