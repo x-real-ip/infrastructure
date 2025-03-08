@@ -21,6 +21,8 @@ Example Playbook
 
 ansible-playbook --ask-vault-pass ./proxmox_update-plan.yaml
 
+ansible-playbook --ask-vault-pass ./truenas_switch_master.yaml
+
 License
 -------
 
