@@ -10,7 +10,29 @@
   delay: 5
   ignore_errors: true
 
-- name: Set device name for lights from inventory var for {{ hostvars[item]['device_name'] }}
+- name: Disable wifi status LED light for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?led_status_disable={{ settings.led_status_disable }}
+  changed_when: settings_content.json.led_status_disable != settings.led_status_disable
+  when: "'SHDM' in settings_content.json.device.type"
+  register: device_set_led_status_disable_content
+  until: device_set_led_status_disable_content.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set device name for dimmers from inventory var for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?name={{ hostvars[item]['device_name'] }}
+  changed_when: settings_content.json.name != hostvars[item]['device_name']
+  when: "'SHDM' in settings_content.json.device.type"
+  register: device_set_name_content
+  until: device_set_name_content.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set channel name for dimmers from inventory var for {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/settings/light/0?name={{ hostvars[item]['device_name'] }}
   changed_when: settings_content.json.lights[0].name != hostvars[item]['device_name']
