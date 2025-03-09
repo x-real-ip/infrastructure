@@ -36,3 +36,4 @@ settings:
     enable_rpc: true
     enable_gateway: true
   transition_time: 0 # Miliseconds (max 5000)
+  led_status_disable: true
