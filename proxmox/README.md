@@ -1,15 +1,16 @@
-- [1. Installer](#1-installer)
-- [2. Disks and partitioning](#2-disks-and-partitioning)
-- [3. Network](#3-network)
+- [Installer](#installer)
+- [Disks and partitioning](#disks-and-partitioning)
+- [Network](#network)
 - [Import ZFS pool](#import-zfs-pool)
+- [Post install scripts](#post-install-scripts)
 
 
-# 1. Installer
+# Installer
 1. Install Proxmox with default Partitioning.
 2. Hostname pve-b or pve-a
 3. Domain lan.stamx.nl
 
-# 2. Disks and partitioning
+# Disks and partitioning
 1. Remove lve-local via the proxmox UI.
 2. Remove the data partition.
    ```
@@ -27,7 +28,7 @@
    update-initramfs -u
    ```
 
-# 3. Network
+# Network
 1. Backup default network interfaces file
    ```
    cp /etc/network/interfaces /etc/network/interfaces.bak
@@ -76,6 +77,9 @@
             bridge-vlan-aware yes
             bridge-vids 2-4094
     #lan
+    
+    source /etc/network/interfaces.d/*
+ 
    ```
 
    Paste the following content for pve-b
@@ -143,3 +147,10 @@
    ```
 4. Add pool to the UI
    1. Go to `Datacenter` -> `Storage` -> `Add` -> `ZFS` -> Select `vm-storage` and enter id `vm-storage`
+
+# Post install scripts
+   The scripts can be found at https://community-scripts.github.io/ProxmoxVE/
+
+1. Run the 'Proxmox VE CPU Scaling Governor' script and set it to `powersaving` https://community-scripts.github.io/ProxmoxVE/scripts?id=scaling-governor
+2. Run the 'Proxmox VE Post Install' script https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
+3. Run the 'Proxmox VE Kernel Clean' script to clean up old kernels https://community-scripts.github.io/ProxmoxVE/scripts?id=kernel-clean
