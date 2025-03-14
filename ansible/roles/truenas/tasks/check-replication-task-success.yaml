@@ -3,7 +3,7 @@
 
 - ansible.builtin.include_tasks: "get-all-replication-tasks.yaml"
 
-- name: Check all replication taks on truenas-master and wait for a success state
+- name: Check all replication tasks on truenas-master and wait for a success state
   uri:
     url: "{{ truenas_api_baseurl }}/replication/id/{{ item }}"
     method: GET
