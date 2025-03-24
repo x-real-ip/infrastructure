@@ -3,6 +3,7 @@
 - [Network](#network)
 - [Import ZFS pool](#import-zfs-pool)
 - [Post install scripts](#post-install-scripts)
+- [High Availability](#high-availability)
 
 
 # Installer
@@ -154,3 +155,7 @@
 1. Run the 'Proxmox VE CPU Scaling Governor' script and set it to `powersaving` https://community-scripts.github.io/ProxmoxVE/scripts?id=scaling-governor
 2. Run the 'Proxmox VE Post Install' script https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
 3. Run the 'Proxmox VE Kernel Clean' script to clean up old kernels https://community-scripts.github.io/ProxmoxVE/scripts?id=kernel-clean
+
+# High Availability
+
+1. 
