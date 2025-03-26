@@ -1,3 +1,8 @@
 ---
 nfs:
   server: "truenas-master.{{ localdomain }}"
+
+git:
+  user:
+    name: "x-real-ip"
+    email: "c.github@stamx.nl"

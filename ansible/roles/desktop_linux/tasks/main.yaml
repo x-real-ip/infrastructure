@@ -5,9 +5,6 @@
 - name: Install snap store packages
   ansible.builtin.import_tasks: install_snap_packages.yaml
 
-- name: Uninstall usual apt packages
-  ansible.builtin.import_tasks: uninstall_apt_packages.yaml
-
 - name: Install selfsigned CA certificate
   ansible.builtin.import_tasks: install_tls_ca_certificate.yaml
 
@@ -18,4 +15,10 @@
   ansible.builtin.import_tasks: install_kubectl.yaml
 
 - name: Mount NFS shares
-  ansible.builtin.import_tasks: nfs-mounts.yaml
+  ansible.builtin.import_tasks: configure_nfs-mounts.yaml
+
+- name: Git login
+  ansible.builtin.import_tasks: configure_git-login.yaml
+
+- name: Uninstall usual apt packages
+  ansible.builtin.import_tasks: uninstall_apt_packages.yaml
