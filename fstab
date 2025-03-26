@@ -1,6 +1,0 @@
-truenas-master.lan.stamx.nl:/mnt/ssd/webdav /home/coen/truenas/shared nfs defaults,x-systemd.automount 0 0
-truenas-master.lan.stamx.nl:/mnt/ssd/backups /home/coen/truenas/backups nfs defaults,x-systemd.automount 0 0
-truenas-master.lan.stamx.nl:/mnt/hdd/coen /home/coen/truenas/coen nfs defaults,x-systemd.automount 0 0
-#truenas-master.lan.stamx.nl:/mnt/hdd/anne /home/coen/truenas/anne nfs defaults,x-systemd.automount 0 0
-#truenas-master.lan.stamx.nl:/mnt/hdd/containers/k8s/plex-media /home/coen/truenas/plex-media nfs defaults,x-systemd.automount 0 0
-truenas-master.lan.stamx.nl:/mnt/hdd/backups/proxmox /home/coen/truenas/proxmmox-backups nfs defaults,x-systemd.automount 0 0
