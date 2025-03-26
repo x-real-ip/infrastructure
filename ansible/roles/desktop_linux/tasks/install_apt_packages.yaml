@@ -9,10 +9,10 @@
   ansible.builtin.apt:
     pkg:
       - python3-pip
-      - git
       - adb
       - curl
       - open-iscsi
       - xfsprogs
+      - sshpass
     autoclean: true
     autoremove: true
