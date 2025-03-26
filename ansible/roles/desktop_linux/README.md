@@ -1,4 +1,4 @@
 Example Playbook
 ----------------
 
-ansible-playbook ./desktop_desired_state.yaml
+sudo ansible-playbook ./desktop_desired_state.yaml
