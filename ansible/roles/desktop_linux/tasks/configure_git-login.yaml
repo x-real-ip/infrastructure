@@ -6,8 +6,8 @@
 
 - name: Set Git user name
   ansible.builtin.command:
-    cmd: git config --global user.name {{ git.user.name }}"
+    cmd: git config --global user.name "{{ git.user.name }}"
 
 - name: Set Git user email
   ansible.builtin.command:
-    cmd: git config --global user.email {{ git.user.email }}"
+    cmd: git config --global user.email "{{ git.user.email }}"
