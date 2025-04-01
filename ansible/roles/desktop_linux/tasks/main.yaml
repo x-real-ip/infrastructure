@@ -14,6 +14,9 @@
 - name: Install kubectl
   ansible.builtin.import_tasks: install_kubectl.yaml
 
+- name: Install Slack
+  ansible.builtin.import_tasks: install_slack.yaml
+
 - name: Mount NFS shares
   ansible.builtin.import_tasks: configure_nfs-mounts.yaml
 
