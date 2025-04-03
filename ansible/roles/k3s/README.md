@@ -43,7 +43,7 @@ sudo ansible-playbook --ask-vault-pass -k k3s_start_all_pods.yaml
 
 Rolling update nodes
 ```
-ansible-playbook --ask-vault-pass k3s_rolling_update_nodes.yaml
+ansible-playbook --ask-vault-pass update_k3s_rolling-update-nodes.yaml
 ```
 
 Delete pods with truenas storage label
