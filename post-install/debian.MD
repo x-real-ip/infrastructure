@@ -17,7 +17,8 @@ apt update
 apt install \
   gnome-session \
   gnome-core \
-  git
+  git \
+  ssh
 ```
 
 4. Reboot
