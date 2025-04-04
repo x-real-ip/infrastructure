@@ -16,7 +16,25 @@ apt update
 ```bash
 apt install \
   gnome-session \
-  gnome-core
+  gnome-core \
+  git
 ```
 
-4 MV /etc/network/interfaces.bak
+4. Reboot
+```bash
+shutdown -r now
+```
+
+5. Fix network
+After the restart, login, open the terminal.
+```bash
+su
+```
+
+```bash
+mv /etc/network/interfaces /etc/network/interfaces.bak
+```
+
+After the restart, the wired or wireless network should work.
+
+# Post install (ansible)
