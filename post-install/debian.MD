@@ -15,10 +15,7 @@ apt update
 3. Install desktop and packages
 ```bash
 apt install \
-  gnome-core \
-  network-manager-gnome \
-  gdm3 \
-  gnome-shell \
-  gnome-terminal \
+  gnome-session \
+  gnome-core
 ```
 
