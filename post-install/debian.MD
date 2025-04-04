@@ -15,7 +15,6 @@ apt update
 3. Install desktop and packages
 ```bash
 apt install \
-  gnome-session \
   gnome-core \
   git \
   ssh
