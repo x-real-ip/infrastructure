@@ -19,3 +19,4 @@ apt install \
   gnome-core
 ```
 
+4 MV /etc/network/interfaces.bak
