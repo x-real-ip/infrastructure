@@ -1,0 +1,4 @@
+---
+- name: Update package cache
+  ansible.builtin.dnf:
+    update_cache: true
