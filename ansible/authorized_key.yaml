@@ -1,9 +1,0 @@
----
-- name: Play to copy public ssh key
-  hosts: odroid, k3s_cluster, proxmox
-  become: true
-  tasks:
-    - name: Copy public SSH key
-      ansible.builtin.include_role:
-        name: common
-        tasks_from: main
