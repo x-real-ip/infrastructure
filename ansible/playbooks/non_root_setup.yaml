@@ -1,0 +1,16 @@
+- name: Create non-root user for ansible
+  hosts: odroid, k3s_cluster, proxmox
+  gather_facts: false
+
+  tasks:
+    - name: Install sudo
+      ansible.builtin.import_role:
+        name: sudo
+
+    - name: Create ansible user
+      ansible.builtin.import_role:
+        name: user
+      vars:
+        user_name: "ansible"
+        user_sudo: true
+

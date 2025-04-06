@@ -4,11 +4,5 @@
     name: "{{ system_timezone }}"
   when: system_timezone is defined
 
-- name: Set authorized key taken from file
-  authorized_key:
-    user: root
-    state: present
-    key: "{{ lookup('file', '/home/coen/.ssh/ansible.pub') }}"
-
 - name: Include hostname task
   ansible.builtin.include_tasks: hostname.yaml
