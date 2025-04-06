@@ -1,0 +1,9 @@
+---
+- name: Update packaged cache
+  ansible.builtin.import_role:
+    name: package_cache
+
+- name: Install sudo
+  ansible.builtin.package:
+    name: sudo
+    state: present
