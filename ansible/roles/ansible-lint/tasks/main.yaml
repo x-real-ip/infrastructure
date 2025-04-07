@@ -7,3 +7,4 @@
   ansible.builtin.package:
     name: ansible-lint
     state: present
+

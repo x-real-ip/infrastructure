@@ -1,20 +1,20 @@
 ---
+- name: Ensure group exists
+  ansible.builtin.group:
+    name: "{{ user_name }}"
+    state: present
+
 - name: Create user
   ansible.builtin.user:
     name: "{{ user_name }}"
-    groups: "{{ user_name }}"
+    group: "{{ user_name }}"
     state: present
 
-- name: Add sudo privileges
-  ansible.builtin.copy:
-    dest: "/etc/sudoers.d/{{ user_name }}"
-    content: |
-      {{ user_name }} ALL=(ALL) NOPASSWD: ALL
+- name: Allow sudo access for user
+  ansible.builtin.lineinfile:
+    path: "/etc/sudoers.d/{{ user_name }}"
+    create: true
     mode: "0440"
-  when: ansible_os_family != "Windows"
-
-- name: Set authorized key taken from file
-  ansible.posix.authorized_key:
-    user: "{{ user_name }}"
-    key: "{{ lookup('file', '/home/coen/.ssh/ansible.pub') }}"
-    state: present
+    line: "{{ user_name }} ALL=(ALL) NOPASSWD: ALL"
+    validate: "visudo -cf %s"
+  when: user_sudo | default(false)
