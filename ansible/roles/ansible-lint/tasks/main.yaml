@@ -1,0 +1,9 @@
+---
+- name: Update packaged cache
+  ansible.builtin.import_role:
+    name: package-cache
+
+- name: Install ansible-lint
+  ansible.builtin.package:
+    name: ansible-lint
+    state: present

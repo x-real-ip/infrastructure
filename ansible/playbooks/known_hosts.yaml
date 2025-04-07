@@ -9,7 +9,7 @@
 
   tasks:
     - name: Collect all hosts from selected groups
-      set_fact:
+      ansible.builtin.set_fact:
         host_groups: "{{ host_groups | map('extract', groups) | list | flatten | unique }}"
 
     - name: Add hosts to known_hosts
