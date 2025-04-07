@@ -3,7 +3,7 @@
   ansible.builtin.import_role:
     name: package-cache
 
-- name: Install sudo
+- name: Install ansible-lint
   ansible.builtin.package:
-    name: sudo
+    name: ansible-lint
     state: present
