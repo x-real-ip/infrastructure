@@ -1,8 +1,4 @@
 ---
-- name: Show resolved SSH key path
-  ansible.builtin.debug:
-    msg: "{{ test }}"
-
 - name: Set authorized key
   ansible.posix.authorized_key:
     user: "{{ user_name }}"
