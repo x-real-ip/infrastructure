@@ -1,7 +1,6 @@
 - name: Create non-root user for ansible
-  hosts: k3s_cluster
-  become: true
-  become_user: root
+  hosts: localhost
+  become_user: coen
   gather_facts: false
   vars:
     user_name: "ansible"
@@ -11,11 +10,14 @@
     - name: Install sudo
       ansible.builtin.import_role:
         name: sudo
+      become: true
 
     - name: Create ansible user
       ansible.builtin.import_role:
         name: user
+      become: true
 
     - name: Add ansible public authorized ssh key
       ansible.builtin.import_role:
         name: ansible-ssh-authorized-key
+      become: true

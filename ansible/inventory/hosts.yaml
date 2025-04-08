@@ -28,7 +28,7 @@ proxmox:
     pve-b:
       ansible_host: 10.0.99.3
 
-desktop_linux:
+desktop:
   hosts:
     lin-pc-01:
     # lin-pc-02:

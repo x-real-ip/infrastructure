@@ -1,0 +1,98 @@
+---
+- name: Get latest stable kubectl version if 'stable' is specified
+  ansible.builtin.uri:
+    url: https://dl.k8s.io/release/stable.txt
+    return_content: true
+  register: stable_version
+  when: kubectl.version == 'stable'
+
+- name: Set resolved kubectl version
+  ansible.builtin.set_fact:
+    resolved_kubectl_version: "{{ stable_version.content | trim }}"
+  when: kubectl.version == 'stable'
+
+- name: Use provided kubectl version if not 'stable'
+  ansible.builtin.set_fact:
+    resolved_kubectl_version: "{{ kubectl.version }}"
+  when: kubectl.version != 'stable'
+
+- name: Check if kubectl is installed
+  ansible.builtin.command:
+    cmd: which kubectl
+  register: kubectl_installed
+  ignore_errors: true
+  changed_when: false
+
+- name: Get the current kubectl version
+  ansible.builtin.command:
+    cmd: kubectl version --client=true --output="json"
+  register: current_kubectl_version
+  ignore_errors: true
+  changed_when: false
+  when: kubectl_installed.rc == 0
+
+- name: Remove existing kubectl version directory if it differs
+  ansible.builtin.file:
+    path: "/opt/kubectl-{{ current_kubectl_version.stdout | from_json | json_query('clientVersion.gitVersion') }}"
+    state: absent
+  when: kubectl_installed.rc == 0 and current_kubectl_version != resolved_kubectl_version
+  become: true
+
+- name: Create kubectl versioned directory
+  ansible.builtin.file:
+    path: "/opt/kubectl-{{ resolved_kubectl_version }}"
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Download the kubectl binary
+  ansible.builtin.uri:
+    url: https://dl.k8s.io/release/{{ resolved_kubectl_version }}/bin/linux/amd64/kubectl
+    dest: /opt/kubectl-{{ resolved_kubectl_version }}
+  register: kubectl
+  become: true
+
+- name: Get kubectl binary sha256sum
+  ansible.builtin.stat:
+    path: "/opt/kubectl-{{ resolved_kubectl_version }}/kubectl"
+    checksum_algorithm: sha256
+  register: kubectl_stat
+
+- name: Set sha256sum of kubectl binary
+  ansible.builtin.set_fact:
+    kubectl_binary_sha256: "{{ kubectl_stat.stat.checksum | default('') }}"
+  when: kubectl_stat.stat.exists
+
+- name: Remove existing kubectl.sha256 file if any
+  ansible.builtin.file:
+    path: "/opt/kubectl-{{ resolved_kubectl_version }}/kubectl.sha256"
+    state: absent
+  become: true
+
+- name: Download the kubectl binary checksum
+  ansible.builtin.uri:
+    url: "https://dl.k8s.io/release/{{ resolved_kubectl_version }}/bin/linux/amd64/kubectl.sha256"
+    dest: "/opt/kubectl-{{ resolved_kubectl_version }}/kubectl.sha256"
+    return_content: true
+  register: kubectl_checksum_sha256
+  become: true
+
+- name: Assert that the kubectl binary is OK
+  ansible.builtin.assert:
+    that:
+      - kubectl_binary_sha256 | trim == kubectl_checksum_sha256.content | trim
+    fail_msg: "The sha256sum of the kubectl binary does not match the expected checksum."
+    success_msg: "kubectl sha256 checksum verified successfully."
+
+- name: Change kubectl file permission
+  ansible.builtin.file:
+    path: "/opt/kubectl-{{ resolved_kubectl_version }}/kubectl"
+    mode: "0755"
+  become: true
+
+- name: Create a symlink to kubectl
+  ansible.builtin.file:
+    src: "/opt/kubectl-{{ resolved_kubectl_version }}/kubectl"
+    dest: "/usr/bin/kubectl"
+    state: link
+  become: true

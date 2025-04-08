@@ -1,6 +1,7 @@
 ---
 system_timezone: "Europe/Amsterdam"
 localdomain: "lan.stamx.nl"
+ansible_user: "ansible"
 
 nfs:
   server: "truenas-master.{{ localdomain }}"
