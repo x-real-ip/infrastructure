@@ -1,3 +1,4 @@
 ---
-# Default username that Ansible should use when connecting to remote host
-ansible_user: root
+# User for privilege escalation
+become_user: ansible
+become_method: sudo

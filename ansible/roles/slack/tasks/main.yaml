@@ -1,19 +1,27 @@
 ---
 - name: Fetch the HTML content of the page
-  uri:
+  ansible.builtin.uri:
     url: "https://slack.com/downloads/instructions/linux?ddl=1&build=deb"
     method: GET
-    return_content: yes
+    return_content: true
   register: slack_html_response
+  when: ansible_os_family == "Debian"
 
 - name: Extract the URL from the iframe src attribute
-  set_fact:
+  ansible.builtin.set_fact:
     slack_download_url: "{{ slack_html_response.content | regex_search('(https?:\/\/downloads\\.slack-edge\\.com[^\"]+)') }}"
 
 - name: Show the extracted download URL
-  debug:
+  ansible.builtin.debug:
     msg: "The extracted Slack download URL is {{ slack_download_url }}"
 
 - name: Install Slack
   ansible.builtin.apt:
     deb: "{{ slack_download_url }}"
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Slack autostart
+  ansible.builtin.import_tasks:
+    file: autostart.yaml
+  when: slack.enable_autostart | default(true)

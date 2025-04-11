@@ -6,3 +6,6 @@ git:
   user:
     name: "x-real-ip"
     email: "c.github@stamx.nl"
+
+kubectl:
+  version: "stable"

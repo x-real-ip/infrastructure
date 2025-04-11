@@ -21,7 +21,8 @@
   - [Resize VM disk](#resize-vm-disk)
   - [Odroid](#odroid)
 - [Desktop](#desktop)
-  - [Ubuntu](#ubuntu)
+  - [Debian](#debian)
+    - [Installation](#installation)
 
 ## Kubernetes
 
@@ -55,11 +56,12 @@ ssh-add ~/.ssh/ansible
 ### Setting up VM hosts on Proxmox
 
 1. Create a VM with the following partitions
+
    - / (10 GB) xfs
    - /var (50GB) xfs
    - /boot (1GB)
-  
-    No swap partition is needed for kubernetes
+
+   No swap partition is needed for kubernetes
 
 2. Login to the VM and set hostname.
    ```console
@@ -403,10 +405,17 @@ sudo xfs_growfs /
 
 # Desktop
 
-## Ubuntu
+## Debian
+
+### Installation
+
+1. Install debian with the netinstall iso image.
+   1. Install Debian without any desktop environment.
+   2. Via the commandline
 
 Change wifi powersave setting from 3 to 2 in `etc/NetworkManager/conf.d/default-wifi-powersave-on.conf` to fix wifi issue
+
 ```
 [connection]
 wifi.powersave = 2
-``` 
+```
