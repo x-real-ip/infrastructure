@@ -1,6 +1,6 @@
 ---
-# # Default username that Ansible should use when connecting to remote host
-# ansible_user: root
+# User for privilege escalation
+remote_user: ansible
 
 # Python virtual environment for k3s pip packages
 venv_dir: /opt/k3s
@@ -46,5 +46,3 @@ github_registry:
       - devops
       - home-automation
       - tools
-
-test: "/home/coen/.ssh/ansible.pub"

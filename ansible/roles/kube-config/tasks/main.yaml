@@ -1,0 +1,15 @@
+---
+# - name: Copy kube config file to the home directory of this local device
+#   ansible.builtin.fetch:
+#     src: "{{ ansible_user_dir }}/.kube/config"
+#     dest: "/home/coen/.kube/"
+#     flat: true
+#     fail_on_missing: true
+#   run_once: true
+
+- name: Fetch a file from a remote host
+  ansible.builtin.fetch:
+    src: /root/.kube/config
+    dest: "/home/coen/.kube/"
+    flat: true
+  run_once: true

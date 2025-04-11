@@ -1,0 +1,18 @@
+---
+- name: Install apt packages
+  ansible.builtin.apt:
+    name: git
+
+- name: Set Git user name
+  community.general.git_config:
+    name: user.name
+    value: "{{ git.user.name }}"
+    scope: global
+  when: git.user.name is defined
+
+- name: Set Git user email
+  community.general.git_config:
+    name: user.email
+    value: "{{ git.user.email }}"
+    scope: global
+  when: git.user.email is defined

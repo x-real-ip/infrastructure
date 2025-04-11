@@ -1,0 +1,12 @@
+---
+- name: Ensure autostart directory exists
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/.config/autostart"
+    state: directory
+    mode: '0755'
+
+- name: Deploy slack.desktop to autostart
+  ansible.builtin.copy:
+    src: slack.desktop
+    dest: "/home/{{ ansible_user }}/.config/autostart/slack.desktop"
+    mode: '0644'

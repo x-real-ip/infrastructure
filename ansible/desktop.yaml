@@ -1,0 +1,56 @@
+---
+- name: Play to install application(s) on desktop
+  hosts: desktop
+  gather_facts: true
+  become: true
+  connection: local
+  remote_user: coen
+
+  tasks:
+    - name: Install common packages
+      ansible.builtin.package:
+        name:
+          - curl
+          - jq
+          - nano
+        state: present
+
+    - name: Uninstall apt packages
+      ansible.builtin.package:
+        name:
+          - chrome
+          - firefox-esr
+          - gnome-contacts
+          - gnome-characters
+        state: absent
+
+    - name: Install git
+      ansible.builtin.import_role:
+        name: git
+      become: true
+
+    - name: Install Ansible lint
+      ansible.builtin.import_role:
+        name: ansible-lint
+      become: true
+
+    - name: Install kubectl
+      ansible.builtin.import_role:
+        name: kubectl
+      become: true
+
+    - name: Install Slack
+      ansible.builtin.import_role:
+        name: slack
+      become: true
+
+- name: Play to get kube config from kubernetes cluster to desktop
+  hosts: k3s_master
+  gather_facts: false
+  become: true
+  remote_user: root
+
+  tasks:
+    - name: Pull kube config file
+      ansible.builtin.import_role:
+        name: kube-config
