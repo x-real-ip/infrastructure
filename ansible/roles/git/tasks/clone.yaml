@@ -1,0 +1,29 @@
+---
+- name: Get repositories JSON
+  ansible.builtin.uri:
+    url: "https://api.github.com/users/{{ git.user.name }}/repos"
+    method: GET
+    headers:
+      Authorization: "token {{ git.token }}"
+    return_content: true
+  register: github_response
+
+- name: Initialize git_repos array
+  ansible.builtin.set_fact:
+    git_repos: []
+
+- name: Build list of git repositories excluding specific repos
+  ansible.builtin.set_fact:
+    git_repos: "{{ git_repos + [{'repo': item.clone_url, 'name': item.name}] }}"
+  loop: "{{ github_response.json }}"
+  when: >
+    item.clone_url is defined and item.name is defined and (item.name not in git.excluded_repos)
+
+- name: Clone repositories
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "/home/{{ ansible_user }}/git-repositories/{{ item.name }}"
+    version: main
+    update: true
+  loop: "{{ git_repos }}"
+  become: false
