@@ -16,3 +16,7 @@
     value: "{{ git.user.email }}"
     scope: global
   when: git.user.email is defined
+
+- name: Import clone task
+  ansible.builtin.include_tasks: clone.yaml
+  when: git.clone_user_repos
