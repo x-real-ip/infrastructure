@@ -1,0 +1,8 @@
+---
+- name: Upgrade dnf packages
+  ansible.builtin.dnf:
+    name: "*"
+    update_cache: true
+  register: update_result
+  notify:
+    - Print updated packages

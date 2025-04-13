@@ -1,7 +1,4 @@
 ---
-nfs:
-  server: "truenas-master.{{ localdomain }}"
-
 git:
   user:
     name: "x-real-ip"
@@ -15,5 +12,20 @@ git:
     - "grafana"
     - "reverse-proxy"
 
-kubectl:
-  version: "stable"
+# List of mountpoints to create
+# The mountpoints will be created in /mnt
+mount:
+  directory: "/mnt"
+  points:
+    - folder: "shared"
+      nfs_path: "/mnt/ssd/webdav"
+    - folder: "backups"
+      nfs_path: "/mnt/ssd/backups"
+    - folder: "coen"
+      nfs_path: "/mnt/hdd/coen"
+    - folder: "anne"
+      nfs_path: "/mnt/hdd/anne"
+    - folder: "plex-media"
+      nfs_path: "/mnt/hdd/containers/k8s/plex-media"
+    - folder: "proxmmox-backups"
+      nfs_path: "/mnt/hdd/backups/proxmox"

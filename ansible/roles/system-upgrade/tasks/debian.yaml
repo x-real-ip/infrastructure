@@ -1,0 +1,10 @@
+---
+- name: Update apt repo and upgrade dist
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: dist
+    autoremove: true
+  register: update_result
+  notify:
+    - Print updated packages

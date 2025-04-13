@@ -18,11 +18,11 @@
     line: "{{ user_name }} ALL=(ALL) NOPASSWD: ALL"
     validate: "visudo -cf %s"
     state: present
-  when: user_sudo | default(false)
+  when: user_sudo
 
 - name: Add public ssh key to authorized_keys file
   ansible.posix.authorized_key:
     user: "{{ user_name }}"
-    key: "{{ lookup('file', ssh.authorized_keys.public_key.control_node_location) }}"
+    key: "{{ lookup('file', 'ansible.pub') }}"
     state: present
-  when: user_name == "ansible"
+  when: add_ansible_ssh_public_key

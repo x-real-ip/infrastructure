@@ -1,5 +1,5 @@
 ---
-- name: Play to install application(s) on desktop
+- name: Play to set the desired state on desktops
   hosts: desktop
   gather_facts: true
   become: true
@@ -7,27 +7,39 @@
   remote_user: coen
 
   tasks:
-    # - name: Install common packages
-    #   ansible.builtin.package:
-    #     name:
-    #       - curl
-    #       - jq
-    #       - nano
-    #     state: present
-
-    # - name: Uninstall apt packages
-    #   ansible.builtin.package:
-    #     name:
-    #       - chrome
-    #       - firefox-esr
-    #       - gnome-contacts
-    #       - gnome-characters
-    #     state: absent
-
-    - name: Configure git
+    - name: Apply common role
       ansible.builtin.import_role:
-        name: git
+        name: common
       become: true
+
+    - name: Install common packages
+      ansible.builtin.package:
+        name:
+          - curl
+          - jq
+          - nano
+          - adb
+          - open-iscsi
+        state: present
+
+    - name: Uninstall apt packages
+      ansible.builtin.package:
+        name:
+          - chrome
+          - firefox-esr
+          - gnome-contacts
+          - gnome-characters
+        state: absent
+
+    - name: Configure mountpoints
+      ansible.builtin.import_role:
+        name: mountpoints
+      become: true
+
+#     - name: Configure git
+#       ansible.builtin.import_role:
+#         name: git
+#       become: true
 
 #     - name: Install Ansible lint
 #       ansible.builtin.import_role:
@@ -38,6 +50,11 @@
 #       ansible.builtin.import_role:
 #         name: kubectl
 #       become: true
+
+    # - name: Configure argocd-cli
+    #   ansible.builtin.import_role:
+    #     name: argocd-cli
+    #   become: true
 
 #     - name: Install Slack
 #       ansible.builtin.import_role:

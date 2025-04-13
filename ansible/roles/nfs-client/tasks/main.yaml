@@ -3,7 +3,7 @@
   ansible.builtin.import_role:
     name: system-update-package-cache
 
-- name: Install ansible-lint
+- name: Ensure nfs-common is installed
   ansible.builtin.package:
-    name: ansible-lint
+    name: nfs-common
     state: present

@@ -1,6 +1,10 @@
 ---
+- name: Update packaged cache
+  ansible.builtin.import_role:
+    name: system-update-package-cache
+
 - name: Install apt packages
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name: git
 
 - name: Set Git user name

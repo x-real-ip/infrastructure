@@ -1,0 +1,4 @@
+---
+- name: Print updated packages
+  ansible.builtin.debug:
+    var: update_result
