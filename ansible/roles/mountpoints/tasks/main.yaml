@@ -1,4 +1,4 @@
 ---
 - name: Configure nfs mountpoints
-  ansible.builtin.import_tasks:
+  ansible.builtin.include_tasks:
     file: nfs.yaml

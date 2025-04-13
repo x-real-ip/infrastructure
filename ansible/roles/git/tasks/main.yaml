@@ -3,9 +3,10 @@
   ansible.builtin.import_role:
     name: system-update-package-cache
 
-- name: Install apt packages
+- name: Install git
   ansible.builtin.package:
     name: git
+    state: present
 
 - name: Set Git user name
   community.general.git_config:
