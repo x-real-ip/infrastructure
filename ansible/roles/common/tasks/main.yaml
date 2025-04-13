@@ -1,8 +1,3 @@
 ---
-- name: Set timezone
-  community.general.timezone:
-    name: "{{ system_timezone }}"
-  when: system_timezone is defined
-
 - name: Include hostname task
-  ansible.builtin.include_tasks: hostname.yaml
+  ansible.builtin.import_tasks: timezone.yaml

@@ -1,9 +1,13 @@
 - name: Create non-root ansible user for ansible
   hosts: k3s_cluster, proxmox
-  become_user: root
   become: true
+  become_user: root
   remote_user: root
-  gather_facts: false
+  gather_facts: true
+  vars:
+    user_name: "coen"
+    user_sudo: true
+    add_ansible_ssh_public_key: true
 
   tasks:
     - name: Install sudo
@@ -15,6 +19,3 @@
       ansible.builtin.import_role:
         name: user
       become: true
-      vars:
-        user_name: "coen"
-        user_sudo: true

@@ -1,12 +1,19 @@
 ---
 system_timezone: "Europe/Amsterdam"
+
 localdomain: "lan.stamx.nl"
 
 nfs:
   server: "truenas-master.{{ localdomain }}"
 
-ssh:
-  authorized_keys:
-    public_key:
-      control_node_location: "/home/coen/.ssh/ansible.pub"
+# Kubectl version can be "stable" or a specific version like "v1.24.0"
+# The "stable" version will always be the latest stable version
+# The specific version will be installed if available
+kubectl:
+  version: "stable"
 
+# Argo CD CLI version can be "stable" or a specific version like "v2.4.0"
+# The "stable" version will always be the latest stable version
+# The specific version will be installed if available
+argocd_cli:
+  version: "stable"

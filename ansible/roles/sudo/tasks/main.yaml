@@ -1,7 +1,7 @@
 ---
 - name: Update packaged cache
   ansible.builtin.import_role:
-    name: package-cache
+    name: system-update-package-cache
 
 - name: Install sudo
   ansible.builtin.package:

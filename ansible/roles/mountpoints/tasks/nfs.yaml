@@ -1,0 +1,22 @@
+---
+- name: Ensure NFS client is installed
+  ansible.builtin.import_role:
+    name: nfs-client
+
+- name: Create mountpoint directory
+  ansible.builtin.file:
+    path: "{{ mount.directory }}/{{ item.folder }}"
+    state: directory
+    owner: "1000"
+    group: "2000"
+    mode: "0770"
+  loop: "{{ mount.points }}"
+
+- name: Mount NFS share
+  ansible.posix.mount:
+    src: "{{ nfs.server }}:{{ item.nfs_path }}"
+    path: "{{ mount.directory }}/{{ item.folder }}"
+    fstype: nfs
+    opts: defaults
+    state: mounted
+  loop: "{{ mount.points }}"
