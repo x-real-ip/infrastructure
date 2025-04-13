@@ -32,42 +32,45 @@
         state: absent
 
     - name: Configure mountpoints
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
         name: mountpoints
+
+    - name: Install libreoffice
+      ansible.builtin.include_role:
+        name: libreoffice
+
+    - name: Configure git
+      ansible.builtin.import_role:
+        name: git
       become: true
 
-#     - name: Configure git
-#       ansible.builtin.import_role:
-#         name: git
-#       become: true
+    - name: Install Ansible lint
+      ansible.builtin.import_role:
+        name: ansible-lint
+      become: true
 
-#     - name: Install Ansible lint
-#       ansible.builtin.import_role:
-#         name: ansible-lint
-#       become: true
+    - name: Install kubectl
+      ansible.builtin.import_role:
+        name: kubectl
+      become: true
 
-#     - name: Install kubectl
-#       ansible.builtin.import_role:
-#         name: kubectl
-#       become: true
+    - name: Configure argocd-cli
+      ansible.builtin.import_role:
+        name: argocd-cli
+      become: true
 
-    # - name: Configure argocd-cli
-    #   ansible.builtin.import_role:
-    #     name: argocd-cli
-    #   become: true
+    - name: Install Slack
+      ansible.builtin.import_role:
+        name: slack
+      become: true
 
-#     - name: Install Slack
-#       ansible.builtin.import_role:
-#         name: slack
-#       become: true
+- name: Play to get kube config from kubernetes cluster to desktop
+  hosts: k3s_master
+  gather_facts: false
+  become: true
+  remote_user: root
 
-# - name: Play to get kube config from kubernetes cluster to desktop
-#   hosts: k3s_master
-#   gather_facts: false
-#   become: true
-#   remote_user: root
-
-#   tasks:
-#     - name: Pull kube config file
-#       ansible.builtin.import_role:
-#         name: kube-config
+  tasks:
+    - name: Pull kube config file
+      ansible.builtin.import_role:
+        name: kube-config

@@ -15,7 +15,7 @@ git:
 # List of mountpoints to create
 # The mountpoints will be created in /mnt
 mount:
-  directory: "/mnt"
+  directory: "{{ lookup('env', 'HOME') }}/mnt"
   points:
     - folder: "shared"
       nfs_path: "/mnt/ssd/webdav"
