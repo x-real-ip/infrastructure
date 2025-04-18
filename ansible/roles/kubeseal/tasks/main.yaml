@@ -1,0 +1,30 @@
+---
+- name: Create temporary download directory
+  ansible.builtin.file:
+    path: "{{ download_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Download kubeseal binary
+  ansible.builtin.get_url:
+    url: "{{ download_url }}"
+    dest: "{{ download_dir }}/kubeseal.tar.gz"
+    mode: "0644"
+
+- name: Extract kubeseal binary
+  ansible.builtin.unarchive:
+    src: "{{ download_dir }}/kubeseal.tar.gz"
+    dest: "{{ download_dir }}"
+    remote_src: true
+
+- name: Move kubeseal binary to /usr/local/bin
+  ansible.builtin.copy:
+    src: "{{ download_dir }}/kubeseal"
+    dest: "/usr/local/bin/kubeseal"
+    mode: "0755"
+    remote_src: true
+
+- name: Verify kubeseal installation
+  ansible.builtin.command: kubeseal --version
+  register: kubeseal_version
+  changed_when: false

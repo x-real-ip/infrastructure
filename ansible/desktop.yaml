@@ -7,51 +7,56 @@
   remote_user: coen
 
   tasks:
-    - name: Apply common role
+    # - name: Apply common role
+    #   ansible.builtin.import_role:
+    #     name: common
+    #   become: true
+
+    # - name: Install common packages
+    #   ansible.builtin.package:
+    #     name:
+    #       - curl
+    #       - jq
+    #       - nano
+    #       - adb
+    #       - open-iscsi
+    #     state: present
+
+    # - name: Uninstall apt packages
+    #   ansible.builtin.package:
+    #     name:
+    #       - chrome
+    #       - firefox-esr
+    #       - gnome-contacts
+    #       - gnome-characters
+    #     state: absent
+
+    # - name: Configure mountpoints
+    #   ansible.builtin.include_role:
+    #     name: mountpoints
+
+    # - name: Install libreoffice
+    #   ansible.builtin.include_role:
+    #     name: libreoffice
+
+    # - name: Configure git
+    #   ansible.builtin.import_role:
+    #     name: git
+    #   become: true
+
+    # - name: Install Ansible lint
+    #   ansible.builtin.import_role:
+    #     name: ansible-lint
+    #   become: true
+
+    # - name: Install kubectl
+    #   ansible.builtin.import_role:
+    #     name: kubectl
+    #   become: true
+
+    - name: Install kubeseal
       ansible.builtin.import_role:
-        name: common
-      become: true
-
-    - name: Install common packages
-      ansible.builtin.package:
-        name:
-          - curl
-          - jq
-          - nano
-          - adb
-          - open-iscsi
-        state: present
-
-    - name: Uninstall apt packages
-      ansible.builtin.package:
-        name:
-          - chrome
-          - firefox-esr
-          - gnome-contacts
-          - gnome-characters
-        state: absent
-
-    - name: Configure mountpoints
-      ansible.builtin.include_role:
-        name: mountpoints
-
-    - name: Install libreoffice
-      ansible.builtin.include_role:
-        name: libreoffice
-
-    - name: Configure git
-      ansible.builtin.import_role:
-        name: git
-      become: true
-
-    - name: Install Ansible lint
-      ansible.builtin.import_role:
-        name: ansible-lint
-      become: true
-
-    - name: Install kubectl
-      ansible.builtin.import_role:
-        name: kubectl
+        name: kubeseal
       become: true
 
     - name: Configure argocd-cli

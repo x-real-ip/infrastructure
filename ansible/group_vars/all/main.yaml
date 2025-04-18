@@ -17,3 +17,8 @@ kubectl:
 # The specific version will be installed if available
 argocd_cli:
   version: "stable"
+
+
+# kubeseal version must be a specific version like "v0.29.0"
+kubeseal:
+  version: "0.29.0"
