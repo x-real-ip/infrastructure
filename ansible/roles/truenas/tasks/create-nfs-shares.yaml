@@ -1,4 +1,6 @@
 ---
+# To do: Check if nfs share exist, if so, skip creation
+
 - name: Create NFS Shares
   ansible.builtin.uri:
     url: "{{ item_truenas_host }}/api/v2.0/sharing/nfs/"
