@@ -4,3 +4,8 @@ truenas:
     api_key: "{{ vault_truenas_a_api_key }}"
   b:
     api_key: "{{ vault_truenas_b_api_key }}"
+
+shares:
+  nfs:
+    - path: "/mnt/ssd/webdav"
+      comment: ""
