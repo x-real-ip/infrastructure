@@ -1,0 +1,24 @@
+---
+- name: Create NFS Shares
+  ansible.builtin.uri:
+    url: "{{ item_truenas_host }}/api/v2.0/sharing/nfs/"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ item_truenas_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      path: "{{ item_share.path }}"
+      comment: "{{ item_share.comment }}"
+      enabled: true
+    validate_certs: false
+  loop: "{{ truenas_instances | product(shares.nfs) | list }}"
+  loop_control:
+    loop_var: combined_item
+  vars:
+    truenas_instances:
+      - { host: "https://truenas-a.{{ localdomain }}", api_key: "{{ truenas.a.api_key }}" }
+      - { host: "https://truenas-b.{{ localdomain }}", api_key: "{{ truenas.b.api_key }}" }
+    item_truenas_host: "{{ combined_item.0.host }}"
+    item_truenas_api_key: "{{ combined_item.0.api_key }}"
+    item_share: "{{ combined_item.1 }}"

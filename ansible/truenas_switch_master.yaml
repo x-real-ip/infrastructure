@@ -4,12 +4,13 @@
   connection: local
   gather_facts: false
   tasks:
-    - ansible.builtin.pause:
+    - name: Prompt
+      ansible.builtin.pause:
         prompt: |
           *********************************************************
           You are about to perform a critical operation.
 
-          During the execution of this playbook, Kubernetes containers with the label storage=truenas will be deleted and reapplied. 
+          During the execution of this playbook, Kubernetes containers with the label storage=truenas will be deleted and reapplied.
 
           Press Enter to proceed, or Ctrl+C and then 'A' to abort.
           *********************************************************
