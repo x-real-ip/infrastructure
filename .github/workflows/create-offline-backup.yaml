@@ -42,5 +42,6 @@ jobs:
             - [ ] Photos
             - [ ] Opnsense config
             - [ ] Vaultwarden
+            - [ ] Paperless documents
           PINNED: false
           CLOSE_PREVIOUS: true
