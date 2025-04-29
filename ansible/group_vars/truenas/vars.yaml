@@ -2,8 +2,10 @@
 truenas:
   a:
     api_key: "{{ vault_truenas_a_api_key }}"
+    host: "https://truenas-a.{{ localdomain }}"
   b:
     api_key: "{{ vault_truenas_b_api_key }}"
+    host: "https://truenas-b.{{ localdomain }}"
 
 shares:
   nfs:

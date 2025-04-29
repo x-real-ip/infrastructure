@@ -11,7 +11,7 @@
         - vars
         - vault
 
-    - name: Check which TrueNAS instance is master
+    - name: Create desired shares on TrueNAS
       ansible.builtin.include_role:
         name: truenas
-        tasks_from: create-nfs-shares.yaml
+        tasks_from: create-shares.yaml
