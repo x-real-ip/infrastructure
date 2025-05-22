@@ -5,13 +5,6 @@ update_firmware: true
 # Allow internet by turning on the firewall rule "Pass any (allow internet)" in the NOT (network of things) VLAN, this is needed if "update_firmware" is set to "true"
 allow_internet_access: true
 
-# Home Assistant url. Home Assistant is setup with the pfSense intergration which has API access to the pfSense instance for turning on/off firewall rules.
-home_assistant:
-  url: "home-assistant.{{ localdomain }}"
-  api_token: "{{ vault_home_assistant_api_token }}"
-  # pfSense firewall rule entity in Home Assistant
-  firewall_switch: "switch.pfsense_filter_rule_1672839601_pass_any_allow_internet"
-
 # Shelly device settings
 settings:
   coiot:
@@ -27,10 +20,10 @@ settings:
   ap_roaming:
     enable: true
     rssi_threshold: -85
-  voltage_limit: 260
+  voltage_limit: 254
   websocket:
     enable: true
-    server: "ws://{{ home_assistant.url }}/api/shelly/ws"
+    server: "ws://home-assistant.{{ localdomain }}/api/shelly/ws"
   bluetooth:
     enable: true
     enable_rpc: true
