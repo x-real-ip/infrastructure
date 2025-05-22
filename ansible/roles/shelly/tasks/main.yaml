@@ -1,39 +1,10 @@
 ---
-- name: Flush local DNS cache
-  ansible.builtin.include_role:
-    name: common
-    tasks_from: flush-dns-cache
-
 - name: Check device_name variable length
   ansible.builtin.assert:
     that:
       - hostvars[item].device_name | length <= 29
     fail_msg: "Variable value '{{ hostvars[item].device_name }}' is greater than 29 characters"
   loop: "{{ groups['shelly'] }}"
-
-- name: Register firewall rule switch state
-  ansible.builtin.uri:
-    url: http://{{ home_assistant.url }}/api/states/{{ home_assistant.firewall_switch }}
-    body_format: json
-    method: GET
-    return_content: true
-    headers:
-      Authorization: Bearer {{ home_assistant.api_token }}
-  register: switch_state_content
-  when: allow_internet_access
-
-- name: Turn on firewall allow internet rule if it is off
-  ansible.builtin.uri:
-    url: http://{{ home_assistant.url }}/api/services/switch/turn_on
-    method: POST
-    return_content: false
-    headers:
-      Content-Type: "application/json"
-      Authorization: "Bearer {{ home_assistant.api_token }}"
-    body_format: json
-    body:
-      entity_id: "{{ home_assistant.firewall_switch }}"
-  when: allow_internet_access and switch_state_content.json.state == "off"
 
 - name: Update
   block:
@@ -48,19 +19,6 @@
     - name: Start update task
       ansible.builtin.include_tasks: update_gen{{ hostvars[item].gen }}.yaml
       loop: "{{ groups['shelly'] }}"
-  always:
-    - name: Change back firewall allow internet rule to off if that was it's original state
-      ansible.builtin.uri:
-        url: http://{{ home_assistant.url }}/api/services/switch/turn_off
-        method: POST
-        return_content: false
-        headers:
-          Content-Type: "application/json"
-          Authorization: "Bearer {{ home_assistant.api_token }}"
-        body_format: json
-        body:
-          entity_id: "{{ home_assistant.firewall_switch }}"
-      when: allow_internet_access and switch_state_content.json.state == "off"
 
 - name: Start desired state task
   ansible.builtin.include_tasks: desired_state_gen{{ hostvars[item].gen }}.yaml

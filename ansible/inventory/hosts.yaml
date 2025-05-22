@@ -74,7 +74,7 @@ shelly_plug_plus:
   hosts:
     shellyplusplugs-d4d4da3495cc:
     shellyplusplugs-d4d4da3626b4:
-    shellyplusplugs-d4d4daf43764:
+    # shellyplusplugs-d4d4daf43764: # Heather
     shellyplusplugs-e465b8b48aa4:
     shellyplusplugs-64b7080cd27c:
 
