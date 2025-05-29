@@ -11,3 +11,6 @@ shares:
   nfs:
     - path: "/mnt/ssd/webdav"
       comment: ""
+
+vip_address: "10.0.100.10"
+vip_interface: "ens18"

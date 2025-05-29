@@ -54,7 +54,7 @@
     active_instance: "{{ hostvars['localhost']['active_instance'] }}"
   tasks:
     - name: Set TrueNAS API variables
-      include_vars: "group_vars/truenas/{{ item }}.yaml"
+      ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
       loop:
         - vars
         - vault

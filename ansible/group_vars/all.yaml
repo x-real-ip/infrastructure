@@ -2,6 +2,8 @@
 system_timezone: "Europe/Amsterdam"
 localdomain: "lan.stamx.nl"
 
+vip_address: "10.0.100.10"
+
 nfs:
   server: "truenas-master.{{ localdomain }}"
 

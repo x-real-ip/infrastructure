@@ -1,9 +1,9 @@
-firewall:
+truenas:
   hosts:
-    pfsense:
-      ansible_host: 10.0.99.1
-      ansible_port: 1022
-      ansible_user: admin
+    truenas-a:
+      ansible_host: 10.0.100.11
+    truenas-b:
+      ansible_host: 10.0.100.12
 
 k3s_cluster:
   children:
