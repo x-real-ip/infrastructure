@@ -1,0 +1,13 @@
+[Unit]
+Description=Add VIP to {{ vip_interface }}
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/ip addr add {{ vip_address }}/32 dev {{ vip_interface }}
+ExecStop=/sbin/ip addr del {{ vip_address }}/32 dev {{ vip_interface }}
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
