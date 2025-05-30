@@ -1,5 +1,5 @@
 ---
-- name: Get existing NFS shares from {{ truenas_instance.host }}
+- name: Get current NFS shares from {{ truenas_instance.host }}
   ansible.builtin.uri:
     url: "{{ truenas_instance.host }}/api/v2.0/sharing/nfs/"
     method: GET
@@ -8,30 +8,19 @@
       Content-Type: "application/json"
     return_content: true
     validate_certs: false
-  register: existing_shares
+  register: current_nfs
 
-- name: Debug existing shares
-  ansible.builtin.debug:
-    msg: "{{ existing_shares.json }}"
-
-- name: Create missing NFS shares on {{ truenas_server.name }}
+- name: Create NFS shares that are missing
   ansible.builtin.uri:
-    url: "{{ truenas_server.host }}/api/v2.0/sharing/nfs/"
+    url: "{{ truenas_instance.host }}/api/v2.0/sharing/nfs/"
     method: POST
     headers:
-      Authorization: "Bearer {{ truenas_server.api_key }}"
+      Authorization: "Bearer {{ truenas_instance.api_key }}"
       Content-Type: "application/json"
     body_format: json
-    body:
-      paths:
-        - "{{ item.path }}"
-      comment: "{{ item.comment }}"
-      networks: "{{ item.networks }}"
-      alldirs: true
-      maproot_user: "root"
-      maproot_group: "wheel"
-      enabled: true
+    body: "{{ item }}"
+    status_code: [200, 201]
     validate_certs: false
   loop: "{{ nfs_shares }}"
   when: >
-    item.path not in (existing_shares.json | map(attribute='path') | sum(start=[]))
+    not current_nfs.json | selectattr('path', '==', item.path) | list

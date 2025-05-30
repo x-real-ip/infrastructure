@@ -7,10 +7,814 @@ truenas:
     api_key: "{{ vault_truenas_b_api_key }}"
     host: "https://truenas-b.{{ localdomain }}"
 
-shares:
-  nfs:
-    - path: "/mnt/ssd/webdav"
-      comment: ""
-
 vip_address: "10.0.100.10"
 vip_interface: "ens18"
+
+shares:
+  nfs:
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/backups
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/webdav
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/containers/k8s/plex-media
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/backups/proxmox
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/anne
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/coen
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/music
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/music_old
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/music/organized
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/containers/k8s/frigate-media
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/frigate-media
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/home-assistant-config-2
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/immich-media
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/node-red-data
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/paperless-data
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/paperless-export
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/paperless-media
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/protonmail-bridge-data
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/radicale-data
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/transmission-downloads
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/vaultwarden-data
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/ssd/containers/k8s/zwavejs2mqtt-data
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/backups/proxmox/pve-a
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
+      maproot_group: ""
+      maproot_user: ""
+      networks: []
+      path: /mnt/hdd/backups/proxmox/pve-b
+      ro: false
+      security: []
+
+  iscsi:
+    extends:
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/bazarr-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: bazarr-config
+        path: zvol/ssd/containers/k8s/bazarr-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: eeca5136c2ab13a
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/dsmr-reader-db
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: dsmr-reader-db
+        path: zvol/ssd/containers/k8s/dsmr-reader-db
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: f3a6107dbca84bf
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/frigate-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: frigate-config
+        path: zvol/ssd/containers/k8s/frigate-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 07938a7410ff37e
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/home-assistant-db
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: home-assistant-db
+        path: zvol/ssd/containers/k8s/home-assistant-db
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 758488585c11fd4
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/immich-database
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: immich-database
+        path: zvol/ssd/containers/k8s/immich-database
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: aa6a7e0df371dcb
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/jellyfin-cache
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: jellyfin-cache
+        path: zvol/ssd/containers/k8s/jellyfin-cache
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 65bc8ee6d84f2f8
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/jellyfin-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: jellyfin-config
+        path: zvol/ssd/containers/k8s/jellyfin-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 1cecc77e0072a3e
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/jellyseerr-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: jellyseerr-config
+        path: zvol/ssd/containers/k8s/jellyseerr-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 7291ea6b71e8235
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/lidarr-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: lidarr-config
+        path: zvol/ssd/containers/k8s/lidarr-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: db0843377971b4d
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/mosquitto-data
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: mosquitto-data
+        path: zvol/ssd/containers/k8s/mosquitto-data
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 2029757b1891470
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/music-assistant-server-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: music-assistant-server-config
+        path: zvol/ssd/containers/k8s/music-assistant-server-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 6fba984dcdae4a3
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/omada-controller-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: omada-controller-config
+        path: zvol/ssd/containers/k8s/omada-controller-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: f1de2c1905657be
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/paperless-db
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: paperless-db
+        path: zvol/ssd/containers/k8s/paperless-db
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 08952d27e0ff6bf
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/prowlarr-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: prowlarr-config
+        path: zvol/ssd/containers/k8s/prowlarr-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 964216bd7083e7f
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/radarr-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: radarr-config
+        path: zvol/ssd/containers/k8s/radarr-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 8c4c5e936a17426
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/redis
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: redis
+        path: zvol/ssd/containers/k8s/redis
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 08ec45e1e63a9ef
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/transmission-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: transmission-config
+        path: zvol/ssd/containers/k8s/transmission-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: fbfe27b4ea04462
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/uptime-kuma
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: uptime-kuma
+        path: zvol/ssd/containers/k8s/uptime-kuma
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: a2a4b6963b52495
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/vaultwarden-db
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: vaultwarden-db
+        path: zvol/ssd/containers/k8s/vaultwarden-db
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: dc17fff58e03af3
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/sonarr-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: sonarr-config
+        path: zvol/ssd/containers/k8s/sonarr-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 00e9648c31c349c
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/syncthing-config
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: syncthing-config
+        path: zvol/ssd/containers/k8s/syncthing-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        serial: 255966fbd099c1a
+        type: DISK
+        xen: false
+    targets:
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 26
+            portal: 1
+        mode: ISCSI
+        name: bazarr-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 27
+            portal: 1
+        mode: ISCSI
+        name: dsmr-reader-db
+        rel_tgt_id: 2
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 28
+            portal: 1
+        mode: ISCSI
+        name: frigate-config
+        rel_tgt_id: 3
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 29
+            portal: 1
+        mode: ISCSI
+        name: home-assistant-db
+        rel_tgt_id: 4
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 30
+            portal: 1
+        mode: ISCSI
+        name: immich-database
+        rel_tgt_id: 5
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 31
+            portal: 1
+        mode: ISCSI
+        name: jellyfin-cache
+        rel_tgt_id: 6
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 32
+            portal: 1
+        mode: ISCSI
+        name: jellyfin-config
+        rel_tgt_id: 7
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 33
+            portal: 1
+        mode: ISCSI
+        name: jellyseerr-config
+        rel_tgt_id: 8
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 34
+            portal: 1
+        mode: ISCSI
+        name: lidarr-config
+        rel_tgt_id: 9
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 35
+            portal: 1
+        mode: ISCSI
+        name: mosquitto-data
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 36
+            portal: 1
+        mode: ISCSI
+        name: music-assistant-server-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 37
+            portal: 1
+        mode: ISCSI
+        name: omada-controller-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 38
+            portal: 1
+        mode: ISCSI
+        name: paperless-db
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 39
+            portal: 1
+        mode: ISCSI
+        name: prowlarr-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 40
+            portal: 1
+        mode: ISCSI
+        name: radarr-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 41
+            portal: 1
+        mode: ISCSI
+        name: redis
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 43
+            portal: 1
+        mode: ISCSI
+        name: transmission-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 44
+            portal: 1
+        mode: ISCSI
+        name: uptime-kuma
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 45
+            portal: 1
+        mode: ISCSI
+        name: vaultwarden-db
+        rel_tgt_id: 20
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 46
+            portal: 1
+        mode: ISCSI
+        name: sonarr-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            initiator: 47
+            portal: 1
+        mode: ISCSI
+        name: syncthing-config
+        rel_tgt_id: 21
