@@ -1,0 +1,76 @@
+---
+- name: "Play to setup shares in TrueNAS"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Set TrueNAS API variables
+      ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
+      loop:
+        - vars
+        - vault
+
+    - name: Get existing NFS shares from TrueNAS
+      ansible.builtin.uri:
+        url: "https://truenas-a.{{ localdomain }}/api/v2.0/sharing/nfs/"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ truenas.a.api_key }}"
+          Content-Type: "application/json"
+        return_content: true
+        validate_certs: false
+      register: nfs_response
+
+    - name: Save NFS config to file
+      ansible.builtin.copy:
+        content: "{{ nfs_response }}"
+        dest: "./nfs_shares.yaml"
+        mode: "0644"
+
+    - name: Get iSCSI extents from TrueNAS
+      ansible.builtin.uri:
+        url: "https://truenas-a.{{ localdomain }}/api/v2.0/iscsi/extent/"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ truenas.a.api_key }}"
+        return_content: true
+        validate_certs: false
+      register: iscsi_extents
+
+    - name: Save NFS config to file
+      ansible.builtin.copy:
+        content: "{{ iscsi_extents | to_nice_yaml }}"
+        dest: "./iscsi_extents.yaml"
+        mode: "0644"
+
+    - name: Get iSCSI targets from TrueNAS
+      ansible.builtin.uri:
+        url: "https://truenas-a.{{ localdomain }}/api/v2.0/iscsi/target/"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ truenas.a.api_key }}"
+        return_content: true
+        validate_certs: false
+      register: iscsi_targets
+
+    - name: Save NFS config to file
+      ansible.builtin.copy:
+        content: "{{ iscsi_targets | to_nice_yaml }}"
+        dest: "./iscsi_targets.yaml"
+        mode: "0644"
+
+    - name: Get iSCSI target-extent mappings from TrueNAS
+      ansible.builtin.uri:
+        url: "https://truenas-a.{{ localdomain }}/api/v2.0/iscsi/targetextent/"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ truenas.a.api_key }}"
+        return_content: true
+        validate_certs: false
+      register: iscsi_targetextents
+
+    - name: Save NFS config to file
+      ansible.builtin.copy:
+        content: "{{ iscsi_targetextents | to_nice_yaml }}"
+        dest: "./iscsi_targetextents.yaml"
+        mode: "0644"

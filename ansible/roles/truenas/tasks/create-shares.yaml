@@ -3,10 +3,19 @@
   ansible.builtin.set_fact:
     truenas_instances: "{{ truenas | dict2items | map(attribute='value') | list }}"
 
-- name: Include NFS share creation for each server
-  ansible.builtin.include_tasks: create-nfs-shares.yaml
+# - name: Include NFS share creation for each server
+#   ansible.builtin.include_tasks: create-nfs-shares.yaml
+#   loop: "{{ truenas_instances }}"
+#   loop_control:
+#     loop_var: truenas_instance
+#   vars:
+#     nfs_shares: "{{ shares.nfs }}"
+#     iscsi_extends: "{{ shares.iscsi.extends }}"
+
+- name: Include iSCSI extend creation for each server
+  ansible.builtin.include_tasks: create-iscsi-extends.yaml
   loop: "{{ truenas_instances }}"
   loop_control:
     loop_var: truenas_instance
   vars:
-    nfs_shares: "{{ shares.nfs }}"
+    iscsi_extends: "{{ shares.iscsi.extends }}"

@@ -3,8 +3,8 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  tasks:
 
+  tasks:
     - name: Include TrueNAS variables
       ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
       loop:
