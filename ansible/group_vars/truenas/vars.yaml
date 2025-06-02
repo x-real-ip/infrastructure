@@ -1,12 +1,4 @@
 ---
-truenas:
-  a:
-    api_key: "{{ vault_truenas_a_api_key }}"
-    host: "https://truenas-a.{{ localdomain }}"
-  b:
-    api_key: "{{ vault_truenas_b_api_key }}"
-    host: "https://truenas-b.{{ localdomain }}"
-
 vip_address: "10.0.100.10"
 vip_interface: "ens18"
 
@@ -302,7 +294,206 @@ shares:
       security: []
 
   iscsi:
-    extends:
+    portals:
+      - comment: ''
+        listen:
+        - ip: 0.0.0.0
+          port: 3260
+
+    targets:
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: immich-database
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: mosquitto-data
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: omada-controller-config
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: paperless-db
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: radarr-config
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: redis
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: uptime-kuma
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: vaultwarden-db
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: frigate-config
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: jellyfin-cache
+      - alias:
+        auth_networks: []
+        groups:
+        - auth:
+          authmethod: NONE
+          portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: jellyseerr-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            portal: 1
+        mode: ISCSI
+        name: bazarr-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            portal: 1
+        mode: ISCSI
+        name: dsmr-reader-db
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            portal: 1
+        mode: ISCSI
+        name: jellyfin-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            portal: 1
+        mode: ISCSI
+        name: lidarr-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            portal: 1
+        mode: ISCSI
+        name: music-assistant-server-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            portal: 1
+        mode: ISCSI
+        name: prowlarr-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            portal: 1
+        mode: ISCSI
+        name: transmission-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            portal: 1
+        mode: ISCSI
+        name: sonarr-config
+      - alias: null
+        auth_networks: []
+        groups:
+          - auth: null
+            authmethod: NONE
+            portal: 1
+        mode: ISCSI
+        name: syncthing-config
+
+
+    extents:
       - avail_threshold: null
         blocksize: 4096
         comment: ""
@@ -618,203 +809,3 @@ shares:
         serial: 255966fbd099c1a
         type: DISK
         xen: false
-    targets:
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 26
-            portal: 1
-        mode: ISCSI
-        name: bazarr-config
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 27
-            portal: 1
-        mode: ISCSI
-        name: dsmr-reader-db
-        rel_tgt_id: 2
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 28
-            portal: 1
-        mode: ISCSI
-        name: frigate-config
-        rel_tgt_id: 3
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 29
-            portal: 1
-        mode: ISCSI
-        name: home-assistant-db
-        rel_tgt_id: 4
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 30
-            portal: 1
-        mode: ISCSI
-        name: immich-database
-        rel_tgt_id: 5
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 31
-            portal: 1
-        mode: ISCSI
-        name: jellyfin-cache
-        rel_tgt_id: 6
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 32
-            portal: 1
-        mode: ISCSI
-        name: jellyfin-config
-        rel_tgt_id: 7
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 33
-            portal: 1
-        mode: ISCSI
-        name: jellyseerr-config
-        rel_tgt_id: 8
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 34
-            portal: 1
-        mode: ISCSI
-        name: lidarr-config
-        rel_tgt_id: 9
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 35
-            portal: 1
-        mode: ISCSI
-        name: mosquitto-data
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 36
-            portal: 1
-        mode: ISCSI
-        name: music-assistant-server-config
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 37
-            portal: 1
-        mode: ISCSI
-        name: omada-controller-config
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 38
-            portal: 1
-        mode: ISCSI
-        name: paperless-db
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 39
-            portal: 1
-        mode: ISCSI
-        name: prowlarr-config
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 40
-            portal: 1
-        mode: ISCSI
-        name: radarr-config
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 41
-            portal: 1
-        mode: ISCSI
-        name: redis
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 43
-            portal: 1
-        mode: ISCSI
-        name: transmission-config
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 44
-            portal: 1
-        mode: ISCSI
-        name: uptime-kuma
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 45
-            portal: 1
-        mode: ISCSI
-        name: vaultwarden-db
-        rel_tgt_id: 20
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 46
-            portal: 1
-        mode: ISCSI
-        name: sonarr-config
-      - alias: null
-        auth_networks: []
-        groups:
-          - auth: null
-            authmethod: NONE
-            initiator: 47
-            portal: 1
-        mode: ISCSI
-        name: syncthing-config
-        rel_tgt_id: 21

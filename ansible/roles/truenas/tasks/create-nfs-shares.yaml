@@ -1,26 +1,14 @@
 ---
-- name: Get current NFS shares from {{ truenas_instance.host }}
-  ansible.builtin.uri:
-    url: "{{ truenas_instance.host }}/api/v2.0/sharing/nfs/"
-    method: GET
-    headers:
-      Authorization: "Bearer {{ truenas_instance.api_key }}"
-      Content-Type: "application/json"
-    return_content: true
-    validate_certs: false
-  register: current_nfs
+- name: Get current NFS shares
+  ansible.builtin.command: midclt call sharing.nfs.query
+  register: sharing_nfs_query
+  changed_when: false
 
-- name: Create NFS shares that are missing
-  ansible.builtin.uri:
-    url: "{{ truenas_instance.host }}/api/v2.0/sharing/nfs/"
-    method: POST
-    headers:
-      Authorization: "Bearer {{ truenas_instance.api_key }}"
-      Content-Type: "application/json"
-    body_format: json
-    body: "{{ item }}"
-    status_code: [200, 201]
-    validate_certs: false
-  loop: "{{ nfs_shares }}"
+- name: Ensure NFS shares exist
+  ansible.builtin.command: >
+    midclt call sharing.nfs.create '{{ item | to_json }}'
+  loop: "{{ shares.nfs }}"
+  changed_when: false
   when: >
-    not current_nfs.json | selectattr('path', '==', item.path) | list
+    (sharing_nfs_query.stdout | from_json | selectattr('path', 'equalto', item.path) | list | length) == 0
+  register: sharing_nfs_create

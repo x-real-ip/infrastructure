@@ -1,0 +1,5 @@
+---
+- name: Get current iSCSI targets
+  ansible.builtin.command: midclt call iscsi.target.query
+  register: iscsi_target_query
+  changed_when: false
