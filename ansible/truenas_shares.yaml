@@ -1,15 +1,15 @@
 ---
 - name: "Play to setup shares in TrueNAS"
-  hosts: localhost
-  connection: local
+  hosts: truenas-b
+  become: false
+  remote_user: admin
   gather_facts: false
-
   tasks:
-    - name: Include TrueNAS variables
-      ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
-      loop:
-        - vars
-        - vault
+    # - name: Include TrueNAS variables
+    #   ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
+    #   loop:
+    #     - vars
+    #     - vault
 
     - name: Create desired shares on TrueNAS
       ansible.builtin.include_role:

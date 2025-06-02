@@ -1,0 +1,63 @@
+---
+- name: Get current iSCSI portal
+  ansible.builtin.command: midclt call iscsi.portal.query
+  register: iscsi_portal_query
+  changed_when: false
+
+- name: Ensure iSCSI portal exist
+  ansible.builtin.command: >
+    midclt call iscsi.portal.create '{{ item | to_json }}'
+  loop: "{{ shares.iscsi.portals }}"
+  changed_when: false
+  when: >
+    (iscsi_portal_query.stdout | from_json | selectattr('listen', 'equalto', item.listen) | list | length) == 0
+
+- name: Get current iSCSI targets
+  ansible.builtin.include_tasks: get-current-iscsi-targets.yaml
+
+- name: Ensure iSCSI targets exist
+  ansible.builtin.command: >
+    midclt call iscsi.target.create '{{ item | to_json }}'
+  loop: "{{ shares.iscsi.targets }}"
+  changed_when: false
+  when: >
+    (iscsi_target_query.stdout | from_json | selectattr('name', 'equalto', item.name) | list | length) == 0
+
+- name: Get current iSCSI extents
+  ansible.builtin.include_tasks: get-current-iscsi-extents.yaml
+
+- name: Ensure iSCSI extents exist
+  ansible.builtin.command: >
+    midclt call iscsi.extent.create '{{ item | to_json }}'
+  loop: "{{ shares.iscsi.extents }}"
+  changed_when: false
+  when: >
+    (iscsi_extent_query.stdout | from_json | selectattr('name', 'equalto', item.name) | list | length) == 0
+
+- name: Get current iSCSI targets
+  ansible.builtin.include_tasks: get-current-iscsi-targets.yaml
+
+- name: Get current iSCSI extents
+  ansible.builtin.include_tasks: get-current-iscsi-extents.yaml
+
+- name: Get existing targetextent links
+  command: midclt call iscsi.targetextent.query
+  register: iscsi_targetextent_query
+  changed_when: false
+
+- name: Link iSCSI targets and extents by matching names
+  vars:
+    targets: "{{ iscsi_target_query.stdout | from_json }}"
+    extents: "{{ iscsi_extent_query.stdout | from_json }}"
+    links: "{{ iscsi_targetextent_query.stdout | from_json }}"
+    matching_names: "{{ targets | map(attribute='name') | list | intersect(extents | map(attribute='name') | list) }}"
+  loop: "{{ matching_names }}"
+  loop_control:
+    label: "{{ item }}"
+  command: >
+    midclt call iscsi.targetextent.create
+    '{"target": {{ (targets | selectattr("name", "equalto", item) | list).0.id }},
+      "extent": {{ (extents | selectattr("name", "equalto", item) | list).0.id }}}'
+  when: >
+    (links | selectattr('extent', 'equalto', (extents | selectattr("name", "equalto", item) | list).0.id) | list | length) == 0
+  changed_when: true

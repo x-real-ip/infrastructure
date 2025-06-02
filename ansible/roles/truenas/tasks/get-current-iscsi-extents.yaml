@@ -1,0 +1,5 @@
+---
+- name: Get current iSCSI extents from {{ truenas_instance.host }}
+  ansible.builtin.command: midclt call iscsi.extent.query
+  register: iscsi_extent_query
+  changed_when: false
