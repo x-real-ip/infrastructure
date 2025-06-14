@@ -15,48 +15,6 @@
           Press Enter to proceed, or Ctrl+C and then 'A' to abort.
           *********************************************************
 
-- name: Check which TrueNAS host is master
-  hosts: truenas
-  gather_facts: false
-  become: true
-  remote_user: admin
-  tasks:
-    - name: Create systemd service file to add VIP from template
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: add-vip
-
-    - name: Check if VIP is present on this host
-      ansible.builtin.command: ip addr show
-      register: vip_check
-      changed_when: false
-
-    - name: Set fact if VIP is present
-      ansible.builtin.set_fact:
-        is_master: true
-      when: vip_address in vip_check.stdout
-
-- name: Identify VIP owner and assign labels
-  hosts: localhost
-  gather_facts: false
-  tasks:
-    - name: Determine active host
-      ansible.builtin.set_fact:
-        active_host: "{{ item }}"
-      loop: "{{ groups['truenas'] }}"
-      when: hostvars[item].is_master | default(false)
-
-    - name: Determine inactive host
-      ansible.builtin.set_fact:
-        inactive_host: "{{ item }}"
-      loop: "{{ groups['truenas'] }}"
-      when: not hostvars[item].is_master | default(false)
-
-    - name: Set active/inactive instance labels (a or b)
-      ansible.builtin.set_fact:
-        active_instance: "{{ 'a' if active_host == 'truenas-a' else 'b' if active_host == 'truenas-b' else 'unknown' }}"
-        inactive_instance: "{{ 'a' if inactive_host == 'truenas-a' else 'b' if inactive_host == 'truenas-b' else 'unknown' }}"
-
 # - name: Play to remove Kubernetes resources that use TrueNAS storage
 #   hosts: k3s_master
 #   become: false
@@ -73,57 +31,76 @@
 #         name: kubernetes
 #         tasks_from: argocd-delete-app
 
-- name: "Play to start TrueNAS replication without running pods"
-  hosts: localhost
-  connection: local
+- name: Start tasks on TrueNAS before switching master
+  hosts: truenas
   gather_facts: true
-  vars:
-    active_instance: "{{ hostvars['localhost']['active_instance'] }}"
+  become: true
+  remote_user: admin
   tasks:
-    - name: Set TrueNAS API variables
-      ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
-      loop:
-        - vars
-        - vault
+    - name: Set default is_master to false
+      ansible.builtin.set_fact:
+        is_master: false
 
-    - name: Include task start TrueNAS snapshot tasks
+    - name: Create systemd service file to add VIP from template
       ansible.builtin.include_role:
         name: truenas
-        tasks_from: start-snapshot-tasks.yaml
-      vars:
-        instance: "{{ active_instance }}"
+        tasks_from: add-vip
 
-    - name: Include task TrueNAS check replication tasks
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: check-replication-task-success.yaml
-      vars:
-        instance: "{{ active_instance }}"
+    - name: Check if VIP is present on this host
+      ansible.builtin.command: ip addr show
+      register: vip_check
+      changed_when: false
 
-    - name: Include task TrueNAS disable cloudsync tasks
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: enable-disable-cloudsync-tasks.yaml
-      vars:
-        instance: "{{ active_instance }}"
-        enabled: false
+    - name: Set fact if VIP is present
+      ansible.builtin.set_fact:
+        is_master: true
+      when: vip_address in vip_check.stdout
 
-    - name: Include task TrueNAS disable replication tasks
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: enable-disable-replication-tasks.yaml
-      vars:
-        instance: "{{ active_instance }}"
-        enabled: false
+    - name: Start snapshot and replication tasks
+      when: is_master | bool
+      block:
+        - name: Include task TrueNAS get pool snapshot tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: get-pool-snapshot-tasks.yaml
 
-    - name: Include task TrueNAS disable snapshot tasks
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: enable-disable-snapshot-tasks.yaml
-      vars:
-        instance: "{{ active_instance }}"
-        enabled: false
+        - name: Include task TrueNAS run pool snapshot tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: run-pool-snapshot-tasks.yaml
+          vars:
+            id: "{{ pool_snapshottask_query.stdout | from_json | map(attribute='id') | list }}"
 
+    # - name: Include task TrueNAS check replication tasks
+    #   ansible.builtin.include_role:
+    #     name: truenas
+    #     tasks_from: check-replication-task-success.yaml
+    #   vars:
+    #     instance: "{{ active_instance }}"
+
+    # - name: Include task TrueNAS disable cloudsync tasks
+    #   ansible.builtin.include_role:
+    #     name: truenas
+    #     tasks_from: enable-disable-cloudsync-tasks.yaml
+    #   vars:
+    #     instance: "{{ active_instance }}"
+    #     enabled: false
+
+    # - name: Include task TrueNAS disable replication tasks
+    #   ansible.builtin.include_role:
+    #     name: truenas
+    #     tasks_from: enable-disable-replication-tasks.yaml
+    #   vars:
+    #     instance: "{{ active_instance }}"
+    #     enabled: false
+
+    # - name: Include task TrueNAS disable snapshot tasks
+    #   ansible.builtin.include_role:
+    #     name: truenas
+    #     tasks_from: enable-disable-snapshot-tasks.yaml
+    #   vars:
+    #     instance: "{{ active_instance }}"
+    #     enabled: false
 # - name: Install VIP systemd service
 #   hosts: truenas_hosts
 #   become: yes

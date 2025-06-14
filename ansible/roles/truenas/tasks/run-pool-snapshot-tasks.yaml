@@ -1,0 +1,5 @@
+---
+- name: Run snapshot tasks
+  ansible.builtin.command: midclt call pool.snapshottask.run '{{ item }}'
+  changed_when: false
+  loop: "{{ id }}"
