@@ -41,7 +41,7 @@
   ansible.builtin.include_tasks: get-current-iscsi-extents.yaml
 
 - name: Get existing targetextent links
-  command: midclt call iscsi.targetextent.query
+  ansible.builtin.command: midclt call iscsi.targetextent.query
   register: iscsi_targetextent_query
   changed_when: false
 
@@ -54,7 +54,7 @@
   loop: "{{ matching_names }}"
   loop_control:
     label: "{{ item }}"
-  command: >
+  ansible.builtin.command: >
     midclt call iscsi.targetextent.create
     '{"target": {{ (targets | selectattr("name", "equalto", item) | list).0.id }},
       "extent": {{ (extents | selectattr("name", "equalto", item) | list).0.id }}}'

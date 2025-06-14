@@ -5,12 +5,6 @@
   remote_user: admin
   gather_facts: false
   tasks:
-    # - name: Include TrueNAS variables
-    #   ansible.builtin.include_vars: "group_vars/truenas/{{ item }}.yaml"
-    #   loop:
-    #     - vars
-    #     - vault
-
     - name: Create desired shares on TrueNAS
       ansible.builtin.include_role:
         name: truenas

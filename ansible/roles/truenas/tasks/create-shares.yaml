@@ -1,7 +1,9 @@
 ---
+- name: Include NFS share vars
+  ansible.builtin.include_vars: shares.yaml
+
 - name: Include NFS share creation for each server
   ansible.builtin.include_tasks: create-nfs-shares.yaml
 
 - name: Include iSCSI extents creation for each server
   ansible.builtin.include_tasks: create-iscsi-shares.yaml
-

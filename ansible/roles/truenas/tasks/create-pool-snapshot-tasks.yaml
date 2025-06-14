@@ -1,0 +1,9 @@
+---
+- name: Include NFS share vars
+  ansible.builtin.include_vars: snapshots.yaml
+
+- name: Ensure snapshot tasks exist
+  ansible.builtin.command: >
+    midclt call pool.snapshottask.create '{{ item | to_json }}'
+  loop: "{{ snapshot_tasks }}"
+  changed_when: false

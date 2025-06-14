@@ -1,0 +1,11 @@
+---
+- name: "Play to setup snapshots tasks in TrueNAS"
+  hosts: truenas-b
+  become: false
+  remote_user: admin
+  gather_facts: false
+  tasks:
+    - name: Create desired snapshots on TrueNAS
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: create-pool-snapshot-tasks.yaml

@@ -1,0 +1,115 @@
+---
+snapshot_tasks:
+  - allow_empty: true
+    dataset: ssd
+    enabled: true
+    exclude:
+      - ssd/homedirs
+    lifetime_unit: WEEK
+    lifetime_value: 1
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    recursive: true
+    schedule:
+      begin: "00:00"
+      dom: "*"
+      dow: "*"
+      end: "23:59"
+      hour: "0"
+      minute: "0"
+      month: "*"
+  - allow_empty: true
+    dataset: hdd
+    enabled: true
+    exclude: []
+    lifetime_unit: WEEK
+    lifetime_value: 1
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    recursive: true
+    schedule:
+      begin: "00:00"
+      dom: "*"
+      dow: "*"
+      end: "23:59"
+      hour: "0"
+      minute: "0"
+      month: "*"
+  - allow_empty: false
+    dataset: ssd/webdav
+    enabled: true
+    exclude: []
+    lifetime_unit: DAY
+    lifetime_value: 3
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    recursive: true
+    schedule:
+      begin: "07:00"
+      dom: "*"
+      dow: "*"
+      end: "23:59"
+      hour: "*"
+      minute: "0"
+      month: "*"
+  - allow_empty: true
+    dataset: hdd
+    enabled: true
+    exclude: []
+    lifetime_unit: YEAR
+    lifetime_value: 1
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    recursive: true
+    schedule:
+      begin: "00:00"
+      dom: "1"
+      dow: "*"
+      end: "23:59"
+      hour: "12"
+      minute: "0"
+      month: "*"
+  - allow_empty: true
+    dataset: ssd
+    enabled: true
+    exclude: []
+    lifetime_unit: YEAR
+    lifetime_value: 1
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    recursive: true
+    schedule:
+      begin: "00:00"
+      dom: "1"
+      dow: "*"
+      end: "23:59"
+      hour: "12"
+      minute: "30"
+      month: "*"
+  - allow_empty: true
+    dataset: hdd
+    enabled: true
+    exclude: []
+    lifetime_unit: WEEK
+    lifetime_value: 2
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    recursive: true
+    schedule:
+      begin: "00:00"
+      dom: "*"
+      dow: sun
+      end: "23:59"
+      hour: "0"
+      minute: "0"
+      month: "*"
+  - allow_empty: true
+    dataset: ssd
+    enabled: true
+    exclude: []
+    lifetime_unit: WEEK
+    lifetime_value: 2
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    recursive: true
+    schedule:
+      begin: "00:00"
+      dom: "*"
+      dow: sun
+      end: "23:59"
+      hour: "0"
+      minute: "0"
+      month: "*"
