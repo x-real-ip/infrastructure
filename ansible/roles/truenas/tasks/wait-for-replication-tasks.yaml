@@ -1,0 +1,16 @@
+---
+- name: Wait for replication tasks to complete
+  ansible.builtin.command: midclt call replication.query
+  register: replication_query
+  changed_when: false
+  until: >
+    replication_query.stdout
+    | from_json
+    | selectattr('enabled', 'equalto', true)
+    | map(attribute='job')
+    | selectattr('state', 'defined')
+    | map(attribute='state')
+    | list
+    | unique == ['SUCCESS']
+  retries: 30
+  delay: 15

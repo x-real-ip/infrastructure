@@ -1,0 +1,9 @@
+---
+- name: Query replication tasks
+  ansible.builtin.include_tasks: get-pool-snapshot-tasks.yaml
+
+- name: Enable or disable replication tasks
+  ansible.builtin.command: >
+    midclt call pool.snapshottask.update {{ item }} '{"enabled": {{ enabled | lower }}}'
+  changed_when: false
+  loop: "{{ pool_snapshottask_query.stdout | from_json | map(attribute='id') | list }}"

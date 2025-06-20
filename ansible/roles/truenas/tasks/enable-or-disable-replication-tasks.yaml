@@ -1,0 +1,9 @@
+---
+- name: Query replication tasks
+  ansible.builtin.include_tasks: get-replication-tasks.yaml
+
+- name: Enable or disable replication tasks
+  ansible.builtin.command: >
+    midclt call replication.update {{ item }} '{"enabled": {{ enabled | lower }}}'
+  changed_when: false
+  loop: "{{ replication_query.stdout | from_json | map(attribute='id') | list }}"

@@ -3,7 +3,3 @@
   ansible.builtin.command: midclt call pool.snapshottask.query
   register: pool_snapshottask_query
   changed_when: false
-
-- name: Debug
-  ansible.builtin.debug:
-    msg: "{{ pool_snapshottask_query.stdout | from_json }}"
