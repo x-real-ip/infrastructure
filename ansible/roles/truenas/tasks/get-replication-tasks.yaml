@@ -3,7 +3,3 @@
   ansible.builtin.command: midclt call replication.query
   register: replication_query
   changed_when: false
-
-- name: Debug
-  ansible.builtin.debug:
-    msg: "{{ replication_query.stdout | from_json }}"
