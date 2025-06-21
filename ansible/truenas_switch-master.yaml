@@ -15,7 +15,7 @@
           Press Enter to proceed, or Ctrl+C and then 'A' to abort.
           *********************************************************
 
-- name: Start first run of data replication tasks on TrueNAS master
+- name: Start first run of data replication
   hosts: truenas
   gather_facts: false
   become: true
@@ -25,17 +25,17 @@
       ansible.builtin.set_fact:
         is_master: false
 
-    - name: Create systemd service file to add VIP from template
+    - name: Ensure systemd service file is present on TrueNAS hosts
       ansible.builtin.include_role:
         name: truenas
         tasks_from: add-vip
 
-    - name: Check if VIP is present on this host
+    - name: Check which ip addresses are active on the TrueNAS host
       ansible.builtin.command: ip addr show
       register: vip_check
       changed_when: false
 
-    - name: Set fact if VIP is present
+    - name: Set is_master fact to the host where VIP address is present
       ansible.builtin.set_fact:
         is_master: true
       when: vip_address in vip_check.stdout
@@ -46,54 +46,86 @@
         tasks_from: start-snapshots-and-replication-tasks.yaml
       when: is_master | bool
 
-# - name: Play to remove Kubernetes applications from kubernetes cluster that use TrueNAS storage
-#   hosts: k3s_master
-#   become: false
-#   tasks:
-#     - name: Disable autosync for app-of-apps
-#       ansible.builtin.include_role:
-#         name: kubernetes
-#         tasks_from: argocd-disable-app-sync
-#       vars:
-#         application_name: "app-of-apps"
+- name: Play to remove Kubernetes applications from kubernetes cluster that use TrueNAS storage
+  hosts: k3s_master
+  become: false
+  tasks:
+    - name: Disable autosync for app-of-apps
+      ansible.builtin.include_role:
+        name: kubernetes
+        tasks_from: argocd-disable-app-sync
+      vars:
+        application_name: "app-of-apps"
 
-#     - name: Delete argocd application with label storage=truenas
-#       ansible.builtin.include_role:
-#         name: kubernetes
-#         tasks_from: argocd-delete-app
+    - name: Delete argocd application with label storage=truenas
+      ansible.builtin.include_role:
+        name: kubernetes
+        tasks_from: argocd-delete-app
 
-- name: Start second run of data replication tasks on TrueNAS master
+- name: Start second run of data replication
   hosts: truenas
-  gather_facts: false
+  gather_facts: true
   become: true
   remote_user: admin
   tasks:
-    - name: Start snapshots and replication tasks from TrueNAS master
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: start-snapshots-and-replication-tasks.yaml
+    - name: Run snapshot and replication logic only on TrueNAS master
       when: is_master | bool
+      block:
+        - name: Start snapshots and replication tasks from TrueNAS master
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: start-snapshots-and-replication-tasks.yaml
 
-    - name: Include task TrueNAS disable replication tasks
+        - name: Include task TrueNAS disable replication tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: enable-or-disable-replication-tasks.yaml
+          vars:
+            enabled: false
+
+        - name: Include task TrueNAS disable snapshot tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: enable-or-disable-snapshot-tasks.yaml
+          vars:
+            enabled: false
+
+        - name: Disable and stop the VIP service
+          ansible.builtin.systemd:
+            name: add-vip.service
+            daemon_reload: false
+            enabled: false
+            state: stopped
+
+    - name: Enable snapshots and replication tasks on TrueNAS that is not master
+      when: not is_master | bool
+      block:
+        - name: Include task TrueNAS disable replication tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: enable-or-disable-replication-tasks.yaml
+          vars:
+            enabled: true
+
+        - name: Include task TrueNAS disable snapshot tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: enable-or-disable-snapshot-tasks.yaml
+          vars:
+            enabled: true
+
+        - name: Enable and start the VIP service so it become the master
+          ansible.builtin.systemd:
+            name: add-vip.service
+            daemon_reload: true
+            enabled: true
+            state: started
+
+- name: Play to start apply all ArgoCD applications
+  hosts: k3s_master
+  become: false
+  tasks:
+    - name: Apply ArgoCD and app-of-apps
       ansible.builtin.include_role:
-        name: truenas
-        tasks_from: enable-or-disable-replication-tasks.yaml
-      vars:
-        enabled: false
-      when: is_master | bool
-
-    - name: Include task TrueNAS disable snapshot tasks
-      ansible.builtin.include_role:
-        name: truenas
-        tasks_from: enable-or-disable-snapshot-tasks.yaml
-      vars:
-        enabled: false
-      when: is_master | bool
-
-# - name: Install VIP systemd service
-#   hosts: truenas_hosts
-#   become: yes
-#   gather_facts: nod
-#   roles:
-#     - role: vip
-#       tasks_from: service
+        name: k3s
+        tasks_from: argocd-app-of-apps
