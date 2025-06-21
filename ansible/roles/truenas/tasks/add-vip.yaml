@@ -1,7 +1,6 @@
 ---
-- name: Create systemd service file to add VIP from template
+- name: Create systemd add-vip service file
   ansible.builtin.template:
     src: add-vip.service.j2
     dest: /etc/systemd/system/add-vip.service
     mode: "0600"
-  notify: Reload systemd
