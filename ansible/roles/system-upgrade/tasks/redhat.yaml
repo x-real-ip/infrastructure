@@ -2,6 +2,7 @@
 - name: Upgrade dnf packages
   ansible.builtin.dnf:
     name: "*"
+    state: latest
     update_cache: true
   register: update_result
   notify:
