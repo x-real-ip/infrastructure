@@ -93,7 +93,7 @@ shelly_i3:
 
 shelly_bulp:
   hosts:
-    shellycolorbulb-485519CA30F1:
+    # shellycolorbulb-485519CA30F1:
 
 shelly_1pm:
   hosts:
