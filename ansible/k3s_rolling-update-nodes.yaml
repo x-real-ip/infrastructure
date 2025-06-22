@@ -7,7 +7,7 @@
   tasks:
     - name: Start rolling-update
       ansible.builtin.include_role:
-        name: k3s
+        name: kubernetes
         tasks_from: rolling-update
 
 - name: K3s worker system maintenance
@@ -18,5 +18,5 @@
   tasks:
     - name: Start system-updates
       ansible.builtin.include_role:
-        name: common
-        tasks_from: system-updates
+        name: system-upgrade
+
