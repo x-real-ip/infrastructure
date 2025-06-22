@@ -8,5 +8,5 @@
   tasks:
     - name: Include bare task
       ansible.builtin.include_role:
-        name: k3s
+        name: kubernetes
         tasks_from: bare.yaml
