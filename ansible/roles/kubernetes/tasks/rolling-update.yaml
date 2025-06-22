@@ -2,10 +2,13 @@
 - name: Drain node
   ansible.builtin.include_tasks: "drain.yaml"
 
-- name: Update system
+- name: System update package cache
   ansible.builtin.include_role:
-    name: common
-    tasks_from: system-updates
+    name: system-update-package-cache
+
+- name: System upgrade
+  ansible.builtin.include_role:
+    name: system-upgrade
 
 - name: Reboot the system
   ansible.builtin.reboot:
