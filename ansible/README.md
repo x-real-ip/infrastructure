@@ -7,5 +7,4 @@
 | shelly_update-firmware    | ansible-playbook shelly_update-firmware.yaml   |   Update and set desired state of all Shelly devices   |
 | k3s_rolling-update-nodes    | ansible-playbook --ask-vault-password k3s_rolling-update-nodes.yaml   |   Update the os packages on all k3s nodes   |
 | k3s_install_cluster_minimal    | ansible-playbook --ask-vault-password k3s_install_cluster_minimal.yaml   |  Install or update k3s to the latest version all k3s nodes   |
-
-
+| k3s_remove-apps-with-truenas-storage    | ansible-playbook --ask-vault-password k3s_remove-apps-with-truenas-storage.yaml   |  Delete all k8s resources that has storage=truenas label   |
