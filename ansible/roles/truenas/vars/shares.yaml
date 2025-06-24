@@ -118,18 +118,6 @@ shares:
       maproot_group: ""
       maproot_user: ""
       networks: []
-      path: /mnt/hdd/containers/k8s/frigate-media
-      ro: false
-      security: []
-    - aliases: []
-      comment: ""
-      enabled: true
-      hosts: []
-      mapall_group: ""
-      mapall_user: ""
-      maproot_group: ""
-      maproot_user: ""
-      networks: []
       path: /mnt/ssd/containers/k8s/frigate-media
       ro: false
       security: []
