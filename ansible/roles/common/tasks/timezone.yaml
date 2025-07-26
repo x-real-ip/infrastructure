@@ -1,5 +1,5 @@
 ---
-- name: Set timezone
-  community.general.timezone:
+- name: Set timezone to Europe/Amsterdam
+  ansible.builtin.timezone:
     name: "{{ system_timezone }}"
   when: system_timezone is defined
