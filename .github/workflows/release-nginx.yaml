@@ -1,0 +1,32 @@
+name: Check nginx release
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+jobs:
+  check-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get latest nginx release
+        id: nginx
+        run: |
+          latest=$(curl -s https://api.github.com/repos/nginx/nginx/releases/latest | jq -r .tag_name)
+          echo "latest=$latest" >> $GITHUB_OUTPUT
+
+      - name: Check if issue already exists
+        id: issue_check
+        run: |
+          exists=$(gh issue list --repo ${{ github.repository }} --search "nginx release ${{ steps.nginx.outputs.latest }}" --json number --jq '.[0].number')
+          echo "exists=$exists" >> $GITHUB_OUTPUT
+
+      - name: Create issue if new release
+        if: steps.issue_check.outputs.exists == ''
+        run: |
+          gh issue create \
+            --repo ${{ github.repository }} \
+            --title "New nginx release: ${{ steps.nginx.outputs.latest }}" \
+            --body "A new nginx release is available: **${{ steps.nginx.outputs.latest }}**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
