@@ -1,9 +1,17 @@
-name: Check nginx release
+name: Check release
 
 on:
   schedule:
     - cron: "0 9 * * *"
   workflow_dispatch:
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_REPO: ${{ github.repository }}
+  NAME: Ingress NGINX Controller
+  ASSIGNEES: x-real-ip
+  LABELS: upgrade,todo
+  TARGET_REPO: kubernetes/ingress-nginx
 
 jobs:
   check-release:
@@ -11,26 +19,35 @@ jobs:
     permissions:
       issues: write
     steps:
-      - name: Get latest nginx release
-        id: nginx
+      - name: Get latest release
+        id: get_release
         run: |
-          latest=$(curl -s https://api.github.com/repos/kubernetes/ingress-nginx/releases/latest | jq -r .tag_name)
+          RELEASE_API="https://api.github.com/repos/$TARGET_REPO/releases/latest"
+          latest=$(curl -s "$RELEASE_API" | jq -r .tag_name)
           echo "latest=$latest" >> $GITHUB_OUTPUT
 
-      - name: Check if issue already exists
+      - name: Check if issue already exists (open or closed)
         id: issue_check
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          exists=$(gh issue list --repo ${{ github.repository }} --search "nginx release ${{ steps.nginx.outputs.latest }}" --json number --jq '.[0].number')
+          exists=$(gh issue list \
+            --repo "$GH_REPO" \
+            --state all \
+            --search "$NAME release ${{ steps.get_release.outputs.latest }}" \
+            --json number \
+            --jq '.[0].number')
           echo "exists=$exists" >> $GITHUB_OUTPUT
 
       - name: Create issue if new release
         if: steps.issue_check.outputs.exists == ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BODY: |
+            ### New $NAME release
+
+            A new $NAME release is available: **${{ steps.get_release.outputs.latest }}**
+            Update $NAME to the latest version
         run: |
           gh issue create \
-            --repo ${{ github.repository }} \
-            --title "New nginx release: ${{ steps.nginx.outputs.latest }}" \
-            --body "A new nginx release is available: **${{ steps.nginx.outputs.latest }}**"
+            --title "New $NAME release: ${{ steps.get_release.outputs.latest }}" \
+            --assignee "$ASSIGNEES" \
+            --label "$LABELS" \
+            --body "$BODY"

@@ -38,6 +38,8 @@ jobs:
           TITLE: Monthly update and upgrade
           ASSIGNEES: x-real-ip
           LABELS: todo, backup
+          PINNED: false
+          CLOSE_PREVIOUS: true
           BODY: |
             ### Monthly update and upgrade
 
@@ -52,5 +54,3 @@ jobs:
             - [ ] [Immich](https://github.com/immich-app/immich/releases)
             - [ ] [Home-Assistant](https://github.com/home-assistant/core/releases)
             - [ ] [DSMR-Reader](https://github.com/xirixiz/dsmr-reader-docker/pkgs/container/dsmr-reader-docker)
-          PINNED: false
-          CLOSE_PREVIOUS: true
