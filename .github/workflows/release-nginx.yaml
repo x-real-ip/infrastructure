@@ -19,16 +19,18 @@ jobs:
 
       - name: Check if issue already exists
         id: issue_check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           exists=$(gh issue list --repo ${{ github.repository }} --search "nginx release ${{ steps.nginx.outputs.latest }}" --json number --jq '.[0].number')
           echo "exists=$exists" >> $GITHUB_OUTPUT
 
       - name: Create issue if new release
         if: steps.issue_check.outputs.exists == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh issue create \
             --repo ${{ github.repository }} \
             --title "New nginx release: ${{ steps.nginx.outputs.latest }}" \
             --body "A new nginx release is available: **${{ steps.nginx.outputs.latest }}**"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
