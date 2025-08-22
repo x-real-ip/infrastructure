@@ -35,7 +35,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
           TITLE: Montly offline backup
           ASSIGNEES: x-real-ip
-          LABELS: backup
+          LABELS: todo
           BODY: |
             ### Montly offline backup
 

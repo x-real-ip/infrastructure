@@ -35,7 +35,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
           TITLE: Monthly update and upgrade
           ASSIGNEES: x-real-ip
-          LABELS: update
+          LABELS: todo, backup
           BODY: |
             ### Monthly update and upgrade
 
