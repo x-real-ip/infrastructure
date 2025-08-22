@@ -10,7 +10,7 @@ env:
   GH_REPO: ${{ github.repository }}
   NAME: Ingress NGINX Controller
   ASSIGNEES: x-real-ip
-  LABELS: upgrade,todo
+  LABELS: update,todo
   TARGET_REPO: kubernetes/ingress-nginx
 
 jobs:
