@@ -8,6 +8,8 @@ on:
 jobs:
   check-release:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Get latest nginx release
         id: nginx
