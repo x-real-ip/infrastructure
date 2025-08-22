@@ -2,6 +2,7 @@ name: Montly offline backup
 on:
   schedule:
     - cron: 0 0 1 * *
+  workflow_dispatch:
 
 jobs:
   create_issue:
