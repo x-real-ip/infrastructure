@@ -39,13 +39,12 @@ jobs:
 
       - name: Create issue if new release
         if: steps.issue_check.outputs.exists == ''
-        env:
-          BODY: |
-            ### New $NAME release
-
-            A new $NAME release is available: **${{ steps.get_release.outputs.latest }}**
-            Update $NAME to the latest version
         run: |
+          BODY="### New $NAME release
+
+          A new $NAME release is available: **${{ steps.get_release.outputs.latest }}**
+          Update $NAME ingress controller to the latest version"
+
           gh issue create \
             --title "New $NAME release: ${{ steps.get_release.outputs.latest }}" \
             --assignee "$ASSIGNEES" \
