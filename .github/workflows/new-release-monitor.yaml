@@ -16,11 +16,14 @@ jobs:
       matrix:
         include:
           - name: Ingress NGINX Controller
-            target_repo: kubernetes/ingress-nginx
+            type: release
+            target: kubernetes/ingress-nginx
           - name: Immich
-            target_repo: immich-app/immich
+            type: release
+            target: immich-app/immich
           - name: DSMR-Reader
-            target_repo: xirixiz/dsmr-reader-docker
+            type: image
+            target: xirixiz/dsmr-reader-docker
     with:
       name: ${{ matrix.name }}
       target_repo: ${{ matrix.target_repo }}
