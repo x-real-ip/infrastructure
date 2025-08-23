@@ -26,4 +26,5 @@ jobs:
             target: xirixiz/dsmr-reader-docker
     with:
       name: ${{ matrix.name }}
-      target_repo: ${{ matrix.target_repo }}
+      target: ${{ matrix.target }}
+      type: ${{ matrix.type }}
