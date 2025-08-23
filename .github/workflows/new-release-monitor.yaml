@@ -11,8 +11,16 @@ concurrency:
 
 jobs:
   check-releases:
-    name: Build and Push Image
     uses: x-real-ip/github-actions/.github/workflows/new-release-issue.yaml@main
+    strategy:
+      matrix:
+        include:
+          - name: Ingress NGINX Controller
+            target_repo: kubernetes/ingress-nginx
+          - name: Immich
+            target_repo: immich-app/immich
+          - name: DSMR-Reader
+            target_repo: xirixiz/dsmr-reader-docker
     with:
-      name: Ingress NGINX Controller
-      target_repo: kubernetes/ingress-nginx
+      name: ${{ matrix.name }}
+      target_repo: ${{ matrix.target_repo }}
