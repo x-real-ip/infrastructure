@@ -15,15 +15,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: Ingress NGINX Controller
-            type: release
-            target: kubernetes/ingress-nginx
-          - name: Immich
-            type: release
-            target: immich-app/immich
-          - name: DSMR-Reader
-            type: image
-            target: xirixiz/dsmr-reader-docker
+          # - name: Ingress NGINX Controller
+          #   type: release
+          #   target: kubernetes/ingress-nginx
     with:
       name: ${{ matrix.name }}
       target: ${{ matrix.target }}
