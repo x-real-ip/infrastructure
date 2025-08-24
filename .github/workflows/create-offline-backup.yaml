@@ -1,4 +1,4 @@
-name: Montly offline backup
+name: Monthly offline backup
 
 on:
   schedule:
@@ -35,11 +35,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          TITLE: Montly offline backup
+          TITLE: Monthly offline backup
           ASSIGNEES: x-real-ip
           LABELS: todo
           BODY: |
-            ### Montly offline backup
+            ### Monthly offline backup
 
             - [ ] Photos
             - [ ] Opnsense config
