@@ -54,28 +54,34 @@
     #     name: kubectl
     #   become: true
 
-    - name: Install kubeseal
+    # - name: Install kubeseal
+    #   ansible.builtin.import_role:
+    #     name: kubeseal
+    #   become: true
+
+    # - name: Configure argocd-cli
+    #   ansible.builtin.import_role:
+    #     name: argocd-cli
+    #   become: true
+
+    # - name: Install Slack
+    #   ansible.builtin.import_role:
+    #     name: slack
+    #   become: true
+
+    - name: Setup NTP
       ansible.builtin.import_role:
-        name: kubeseal
+        name: ntp
       become: true
 
-    - name: Configure argocd-cli
-      ansible.builtin.import_role:
-        name: argocd-cli
-      become: true
 
-    - name: Install Slack
-      ansible.builtin.import_role:
-        name: slack
-      become: true
+# - name: Play to get kube config from kubernetes cluster to desktop
+#   hosts: k3s_master
+#   gather_facts: false
+#   become: true
+#   remote_user: root
 
-- name: Play to get kube config from kubernetes cluster to desktop
-  hosts: k3s_master
-  gather_facts: false
-  become: true
-  remote_user: root
-
-  tasks:
-    - name: Pull kube config file
-      ansible.builtin.import_role:
-        name: kube-config
+#   tasks:
+#     - name: Pull kube config file
+#       ansible.builtin.import_role:
+#         name: kube-config
