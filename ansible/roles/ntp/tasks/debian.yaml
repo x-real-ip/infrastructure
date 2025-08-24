@@ -1,2 +1,25 @@
 ---
+- name: Ensure systemd-timesyncd is installed
+  ansible.builtin.apt:
+    name: systemd-timesyncd
+    state: present
+    update_cache: true
 
+- name: Enable and start systemd-timesyncd
+  ansible.builtin.systemd:
+    name: systemd-timesyncd
+    enabled: true
+    state: started
+
+- name: Configure timesyncd to use OPNsense NTP server
+  ansible.builtin.copy:
+    dest: /etc/systemd/timesyncd.conf
+    content: |
+      [Time]
+      NTP=10.0.10.1
+      FallbackNTP=0.debian.pool.ntp.org 1.debian.pool.ntp.org
+
+- name: Restart timesyncd to apply changes
+  ansible.builtin.systemd:
+    name: systemd-timesyncd
+    state: restarted

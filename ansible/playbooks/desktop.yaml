@@ -74,6 +74,11 @@
     #     name: slack
     #   become: true
 
+    - name: Install calendar
+      ansible.builtin.import_role:
+        name: calendar
+      become: true
+
     - name: Setup NTP
       ansible.builtin.import_role:
         name: ntp
