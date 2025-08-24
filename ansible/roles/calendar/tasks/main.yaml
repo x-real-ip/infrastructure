@@ -1,0 +1,5 @@
+---
+- name: Install the GNOME calendar flatpak
+  community.general.flatpak:
+    name: https://dl.flathub.org/repo/appstream/org.gnome.Calendar.flatpakref
+    state: present
