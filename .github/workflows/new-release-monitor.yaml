@@ -15,9 +15,15 @@ jobs:
     strategy:
       matrix:
         include:
-          # - name: Ingress NGINX Controller
-          #   type: release
-          #   target: kubernetes/ingress-nginx
+          - name: kube-vip
+            type: release
+            target: kube-vip/kube-vip
+          - name: Sealed-secrets
+            type: release
+            target: bitnami-labs/sealed-secrets
+          - name: K3s
+            type: release
+            target: k3s-io/k3s
     with:
       name: ${{ matrix.name }}
       target: ${{ matrix.target }}
