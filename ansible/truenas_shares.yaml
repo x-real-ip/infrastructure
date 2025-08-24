@@ -1,6 +1,6 @@
 ---
 - name: "Play to setup shares in TrueNAS"
-  hosts: truenas-b
+  hosts: truenas
   become: false
   remote_user: admin
   gather_facts: false

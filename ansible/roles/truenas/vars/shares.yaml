@@ -345,7 +345,7 @@ shares:
         iscsi_parameters:
           QueuedCommands:
         mode: ISCSI
-        name: paperless-db
+        name: paperless-14-db
       - alias:
         auth_networks: []
         groups:
@@ -556,7 +556,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 758488585c11fd4
         type: DISK
         xen: false
       - avail_threshold: null
@@ -571,7 +570,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: aa6a7e0df371dcb
         type: DISK
         xen: false
       - avail_threshold: null
@@ -586,7 +584,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 65bc8ee6d84f2f8
         type: DISK
         xen: false
       - avail_threshold: null
@@ -601,7 +598,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 1cecc77e0072a3e
         type: DISK
         xen: false
       - avail_threshold: null
@@ -616,7 +612,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 7291ea6b71e8235
         type: DISK
         xen: false
       - avail_threshold: null
@@ -631,7 +626,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: db0843377971b4d
         type: DISK
         xen: false
       - avail_threshold: null
@@ -646,7 +640,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 2029757b1891470
         type: DISK
         xen: false
       - avail_threshold: null
@@ -661,7 +654,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 6fba984dcdae4a3
         type: DISK
         xen: false
       - avail_threshold: null
@@ -676,22 +668,20 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: f1de2c1905657be
         type: DISK
         xen: false
       - avail_threshold: null
         blocksize: 4096
         comment: ""
-        disk: zvol/ssd/containers/k8s/paperless-db
+        disk: zvol/ssd/containers/k8s/paperless-14-db
         enabled: true
         filesize: "0"
         insecure_tpc: true
-        name: paperless-db
-        path: zvol/ssd/containers/k8s/paperless-db
+        name: paperless-14-db
+        path: zvol/ssd/containers/k8s/paperless-14-db
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 08952d27e0ff6bf
         type: DISK
         xen: false
       - avail_threshold: null
@@ -706,7 +696,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 964216bd7083e7f
         type: DISK
         xen: false
       - avail_threshold: null
@@ -721,7 +710,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 8c4c5e936a17426
         type: DISK
         xen: false
       - avail_threshold: null
@@ -736,7 +724,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 08ec45e1e63a9ef
         type: DISK
         xen: false
       - avail_threshold: null
@@ -751,7 +738,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: fbfe27b4ea04462
         type: DISK
         xen: false
       - avail_threshold: null
@@ -766,7 +752,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: a2a4b6963b52495
         type: DISK
         xen: false
       - avail_threshold: null
@@ -781,7 +766,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: dc17fff58e03af3
         type: DISK
         xen: false
       - avail_threshold: null
@@ -796,7 +780,6 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 00e9648c31c349c
         type: DISK
         xen: false
       - avail_threshold: null
@@ -811,6 +794,5 @@ shares:
         pblocksize: false
         ro: false
         rpm: SSD
-        serial: 255966fbd099c1a
         type: DISK
         xen: false
