@@ -12,15 +12,20 @@
     #     name: common
     #   become: true
 
-    # - name: Install common packages
-    #   ansible.builtin.package:
-    #     name:
-    #       - curl
-    #       - jq
-    #       - nano
-    #       - adb
-    #       - open-iscsi
-    #     state: present
+    - name: Install common packages
+      ansible.builtin.package:
+        name:
+          - curl
+          - jq
+          - nano
+          - adb
+          - open-iscsi
+        state: present
+
+    - name: Intall Flatpak
+      ansible.builtin.import_role:
+        name: flatpak
+      become: true
 
     # - name: Uninstall apt packages
     #   ansible.builtin.package:
@@ -73,6 +78,7 @@
       ansible.builtin.import_role:
         name: ntp
       become: true
+
 
 
 # - name: Play to get kube config from kubernetes cluster to desktop

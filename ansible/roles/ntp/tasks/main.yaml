@@ -1,18 +1,13 @@
 ---
-- name: Gather facts
-  ansible.builtin.setup:
-    gather_subset:
-      - '!all'
-      - '!min'
-      - 'os_family'
-  when: |
-    'os_family' is not in ansible_facts
+- name: Install flatpak
+  ansible.builtin.package:
+    name:
+      - flatpak
+      - gnome-software-plugin-flatpak
+    state: present
 
-- name: Update package cache
-  ansible.builtin.include_tasks:
-    file: "{{ ansible_facts.os_family | lower }}.yaml"
-  when: ansible_facts.os_family is in supported_os_families
-  vars:
-    supported_os_families:
-      - Debian
-      - RedHat
+- name: Ensure Flathub remote is added
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    url: https://flathub.org/repo/flathub.flatpakrepo
