@@ -1,7 +1,9 @@
 # infrastructure
 
 - [infrastructure](#infrastructure)
-  - [Ansible playbooks](#ansible-playbooks)
+  - [Ansible](#ansible)
+    - [Install Ansible](#install-ansible)
+    - [Ansible playbooks](#ansible-playbooks)
   - [Kubernetes](#kubernetes)
     - [Prerequisites](#prerequisites)
     - [Add SSH keys on local device](#add-ssh-keys-on-local-device)
@@ -23,20 +25,37 @@
   - [Odroid](#odroid)
 - [Desktop](#desktop)
   - [Debian](#debian)
-    - [Installation](#installation)
+    - [OS installation](#os-installation)
+    - [Ansible installation](#ansible-installation)
 
-## Ansible playbooks
+## Ansible
 
-| Playbook | Command | Comment |
-|----------|----------|----------|
-| non-root-user    | ansible-playbook -k --ask-vault-password non-root-user.yaml   |   Add a non root user   |
-| desktop    | ansible-playbook -K --ask-vault-password desktop.yaml   |   Set the Debian desktop desired state   |
-| truenas-shares    | ansible-playbook truenas_shares.yaml   |   Configure all NFS and ISCSI shares on the truenas hosts   |
-| truenas_switch-master    | ansible-playbook --ask-vault-password truenas_switch-master.yaml   | Switch the master from A to B or the otherway around   |
-| shelly_update-firmware    | ansible-playbook shelly_update-firmware.yaml   |   Update and set desired state of all Shelly devices   |
-| k3s_rolling-update-nodes    | ansible-playbook --ask-vault-password k3s_rolling-update-nodes.yaml   |   Update the os packages on all k3s nodes   |
-| k3s_install_cluster_minimal    | ansible-playbook --ask-vault-password k3s_install_cluster_minimal.yaml   |  Install or update k3s to the latest version all k3s nodes   |
-| k3s_remove-apps-with-truenas-storage    | ansible-playbook --ask-vault-password k3s_remove-apps-with-truenas-storage.yaml   |  Delete all k8s resources that has storage=truenas label   |
+### Install Ansible
+
+Remove old Debian package
+
+```bash
+sudo apt remove ansible -y
+```
+
+Create a virtualenv for Ansible
+
+```bash
+
+```
+
+### Ansible playbooks
+
+| Playbook                             | Command                                                                         | Comment                                                   |
+| ------------------------------------ | ------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| non-root-user                        | ansible-playbook -k --ask-vault-password playbooks/non-root-user.yaml                     | Add a non root user                                       |
+| desktop                              | ansible-playbook -K --ask-vault-password playbooks/desktop.yaml                           | Set the Debian desktop desired state                      |
+| truenas-shares                       | ansible-playbook playbooks/truenas_shares.yaml                                            | Configure all NFS and ISCSI shares on the truenas hosts   |
+| truenas_switch-master                | ansible-playbook --ask-vault-password playbooks/truenas_switch-master.yaml                | Switch the master from A to B or the otherway around      |
+| shelly_update-firmware               | ansible-playbook playbooks/shelly_update-firmware.yaml                                    | Update and set desired state of all Shelly devices        |
+| k3s_rolling-update-nodes             | ansible-playbook --ask-vault-password playbooks/k3s_rolling-update-nodes.yaml             | Update the os packages on all k3s nodes                   |
+| k3s_install_cluster_minimal          | ansible-playbook --ask-vault-password playbooks/k3s_install_cluster_minimal.yaml          | Install or update k3s to the latest version all k3s nodes |
+| k3s_remove-apps-with-truenas-storage | ansible-playbook --ask-vault-password playbooks/k3s_remove-apps-with-truenas-storage.yaml | Delete all k8s resources that has storage=truenas label   |
 
 ## Kubernetes
 
@@ -421,15 +440,74 @@ sudo xfs_growfs /
 
 ## Debian
 
-### Installation
+### OS installation
 
-1. Install debian with the netinstall iso image.
-   1. Install Debian without any desktop environment.
-   2. Via the commandline
+1. Install debian with the netinstall iso image without any desktop environment.
+2. After installation, login and switch to root using su
+
+```bash
+su
+```
+
+3. Update apt
+
+```bash
+apt update
+```
+
+4. Install desktop and packages
+
+```bash
+apt install \
+  gnome-core \
+  git \
+  ssh
+```
+
+5. Reboot
+
+```bash
+shutdown -r now
+```
+
+6. Fix network
+   After the restart, login, open the terminal.
+
+```bash
+su
+```
+
+```bash
+mv /etc/network/interfaces /etc/network/interfaces.bak
+```
+
+After the restart, the wired or wireless network should work.
 
 Change wifi powersave setting from 3 to 2 in `etc/NetworkManager/conf.d/default-wifi-powersave-on.conf` to fix wifi issue
 
 ```
 [connection]
 wifi.powersave = 2
+```
+
+### Ansible installation
+
+1. Install pipx
+
+```bash
+sudo apt update
+sudo apt install pipx
+pipx ensurepath
+```
+
+2. Install the minimal `ansible-core` package using pipx
+
+```bash
+pipx install ansible-core
+```
+
+3. Install collections from the requirements.yaml located in the Ansible dir (optional)
+
+```bash
+ansible-galaxy collection install -r requirements.yaml
 ```
