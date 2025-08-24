@@ -44,9 +44,6 @@ jobs:
             ### Monthly update and upgrade
 
             - [ ] Proxmox nodes OS (ansible playbook)
-            - [ ] K3s version (ansible playbook)
             - [ ] K3s nodes OS (ansible playbook)
             - [ ] Shelly devices firmware (ansible playbook)
             - [ ] TrueNAS
-            - [ ] [Kube-VIP](https://github.com/kube-vip/kube-vip/releases) (ansible var)
-            - [ ] [Sealed-secrets](https://github.com/bitnami-labs/sealed-secrets/releases) (ansible var)
