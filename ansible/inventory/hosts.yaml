@@ -67,21 +67,17 @@ shelly_plug_s:
     shellyplug-s-083a8dc348f4:
     shellyplug-s-DD4D06:
     shellyplug-s-DE0CDF:
-    # shellyplug-s-dd9ea4:
-    # shellyplug-s-0212C1: # General-01
 
 shelly_plug_plus:
   hosts:
     shellyplusplugs-d4d4da3495cc:
     shellyplusplugs-d4d4da3626b4:
-    # shellyplusplugs-d4d4daf43764: # Heather
     shellyplusplugs-e465b8b48aa4:
     shellyplusplugs-64b7080cd27c:
 
 shelly_1:
   hosts:
     shelly1-768885:
-    shelly1-10521C45554B:
     shelly1-40F52004DEAF:
     shelly1-40F520053A34:
     shelly1-8CAAB5055BA0:
@@ -93,7 +89,7 @@ shelly_i3:
 
 shelly_bulp:
   hosts:
-    # shellycolorbulb-485519CA30F1:
+    shellycolorbulb-485519CA30F1:
 
 shelly_1pm:
   hosts:
