@@ -54,8 +54,10 @@
     mode: "0775"
     force: false
 
-- name: Run k3s install script on the master nodes
-  ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh"
+- name: Install or upgrade k3s on the master nodes, version {{ k3s_version }}
+  ansible.builtin.command: sh /etc/rancher/k3s/k3s_install.sh
+  environment:
+    INSTALL_K3S_VERSION: "{{ k3s_version }}"
   register: output
   changed_when: output.rc != 0
   until: output.rc == 0
@@ -63,8 +65,10 @@
   delay: 5
   when: "'k3s_master' in group_names"
 
-- name: Run k3s install script on the worker nodes
+- name: Install or upgrade k3s on the worker nodes, version {{ k3s_version }}
   ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh agent"
+  environment:
+    INSTALL_K3S_VERSION: "{{ k3s_version }}"
   register: output
   changed_when: output.rc != 0
   until: output.rc == 0
