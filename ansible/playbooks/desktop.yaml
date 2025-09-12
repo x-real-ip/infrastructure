@@ -1,98 +1,98 @@
 ---
-- name: Play to set the desired state on desktops
-  hosts: desktop
-  gather_facts: true
-  become: true
-  connection: local
-  remote_user: coen
+# - name: Play to set the desired state on desktops
+#   hosts: desktop
+#   gather_facts: true
+#   become: true
+#   connection: local
+#   remote_user: coen
 
-  tasks:
-    - name: Apply common role
-      ansible.builtin.import_role:
-        name: common
-      become: true
+#   tasks:
+#     - name: Apply common role
+#       ansible.builtin.import_role:
+#         name: common
+#       become: true
 
-    - name: Install Visual Studio Code
-      ansible.builtin.import_role:
-        name: vscode
-      become: true
+#     - name: Install Visual Studio Code
+#       ansible.builtin.import_role:
+#         name: vscode
+#       become: true
 
-    - name: Install common packages
-      ansible.builtin.package:
-        name:
-          - curl
-          - jq
-          - nano
-          - adb
-          - open-iscsi
-        state: present
+#     - name: Install common packages
+#       ansible.builtin.package:
+#         name:
+#           - curl
+#           - jq
+#           - nano
+#           - adb
+#           - open-iscsi
+#         state: present
 
-    - name: Install Flatpak
-      ansible.builtin.import_role:
-        name: flatpak
-      become: true
+#     - name: Install Flatpak
+#       ansible.builtin.import_role:
+#         name: flatpak
+#       become: true
 
-    - name: Uninstall apt packages
-      ansible.builtin.package:
-        name:
-          - chrome
-          - firefox-esr
-          - gnome-contacts
-          - gnome-characters
-        state: absent
+#     - name: Uninstall apt packages
+#       ansible.builtin.package:
+#         name:
+#           - chrome
+#           - firefox-esr
+#           - gnome-contacts
+#           - gnome-characters
+#         state: absent
 
-    - name: Configure mountpoints
-      ansible.builtin.include_role:
-        name: mountpoints
+#     - name: Configure mountpoints
+#       ansible.builtin.include_role:
+#         name: mountpoints
 
-    - name: Install libreoffice
-      ansible.builtin.include_role:
-        name: libreoffice
+#     - name: Install libreoffice
+#       ansible.builtin.include_role:
+#         name: libreoffice
 
-    - name: Configure git
-      ansible.builtin.import_role:
-        name: git
-      become: true
+#     - name: Configure git
+#       ansible.builtin.import_role:
+#         name: git
+#       become: true
 
-    # - name: Install Ansible lint
-    #   ansible.builtin.import_role:
-    #     name: ansible-lint
-    #   become: true
+#     - name: Install Ansible lint
+#       ansible.builtin.import_role:
+#         name: ansible-lint
+#       become: true
 
-    - name: Install kubectl
-      ansible.builtin.import_role:
-        name: kubectl
-      become: true
+#     - name: Install kubectl
+#       ansible.builtin.import_role:
+#         name: kubectl
+#       become: true
 
-    - name: Install kubeseal
-      ansible.builtin.import_role:
-        name: kubeseal
-      become: true
+#     - name: Install kubeseal
+#       ansible.builtin.import_role:
+#         name: kubeseal
+#       become: true
 
-    - name: Configure argocd-cli
-      ansible.builtin.import_role:
-        name: argocd-cli
-      become: true
+#     - name: Configure argocd-cli
+#       ansible.builtin.import_role:
+#         name: argocd-cli
+#       become: true
 
-    - name: Install Slack
-      ansible.builtin.import_role:
-        name: slack
-      become: true
+#     - name: Install Slack
+#       ansible.builtin.import_role:
+#         name: slack
+#       become: true
 
-    - name: Install calendar
-      ansible.builtin.import_role:
-        name: calendar
-      become: true
+#     - name: Install calendar
+#       ansible.builtin.import_role:
+#         name: calendar
+#       become: true
 
-    - name: Setup NTP
-      ansible.builtin.import_role:
-        name: ntp
-      become: true
+#     - name: Setup NTP
+#       ansible.builtin.import_role:
+#         name: ntp
+#       become: true
 
 - name: Play to get kube config from kubernetes cluster to desktop
   hosts: k3s_master
   gather_facts: false
-  become: true
+  become: false
   remote_user: root
 
   tasks:
