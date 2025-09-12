@@ -14,6 +14,7 @@
     value: "{{ git.user.name }}"
     scope: global
   when: git.user.name is defined
+  become: false
 
 - name: Set Git user email
   community.general.git_config:
@@ -21,6 +22,7 @@
     value: "{{ git.user.email }}"
     scope: global
   when: git.user.email is defined
+  become: false
 
 - name: Import clone task
   ansible.builtin.include_tasks: clone.yaml

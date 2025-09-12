@@ -28,3 +28,4 @@
   loop: "{{ git_repos }}"
   become: false
   ignore_errors: true
+  when: item.name != 'infrastructure'

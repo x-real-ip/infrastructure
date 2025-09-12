@@ -6,7 +6,7 @@
     - name: Generate Jinja2 templates
       ansible.builtin.find:
         paths: /path/to/templates_directory
-        recurse: yes
+        recurse: true
         patterns: "*.j2" # Pattern to match Jinja2 files
       register: template_files
 
