@@ -1,0 +1,30 @@
+---
+- name: Update apt package list
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - curl
+    state: present
+
+- name: Add Microsoft's GPG key
+  ansible.builtin.shell: curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/microsoft-archive-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/microsoft-archive-keyring.gpg
+
+- name: Add the VS Code repository
+  ansible.builtin.shell: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list
+  args:
+    creates: /etc/apt/sources.list.d/vscode.list
+
+- name: Update apt package list again
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install Visual Studio Code
+  ansible.builtin.apt:
+    name: code
+    state: present
