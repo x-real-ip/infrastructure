@@ -491,6 +491,24 @@ Change wifi powersave setting from 3 to 2 in `etc/NetworkManager/conf.d/default-
 wifi.powersave = 2
 ```
 
+7. Sudo
+Install sudo
+```bash
+su
+```
+```bash
+apt update && apt install sudo
+```
+Add user to sudoers group
+```bash
+sudo visudo
+```
+Add the following line at the end of the file to grant coen user sudo privileges:
+```bash
+coen  ALL=(ALL) NOPASSWD: ALL
+```
+This will allow coen to run any command as root without a password prompt (remove NOPASSWD if you want the password prompt to appear).
+
 ### Ansible installation
 
 1. Install pipx
