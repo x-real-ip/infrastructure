@@ -3,4 +3,11 @@
   ansible.builtin.package:
     name:
       - flatpak
+      - gnome-software-plugin-flatpak
     state: present
+
+- name: Add Flathub remote if not present
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
