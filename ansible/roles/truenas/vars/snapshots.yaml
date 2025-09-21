@@ -20,7 +20,9 @@ snapshot_tasks:
   - allow_empty: true
     dataset: hdd
     enabled: true
-    exclude: []
+    exclude:
+      - hdd/containers/k8s/plex-media
+      - hdd/backups/proxmox
     lifetime_unit: WEEK
     lifetime_value: 1
     naming_schema: auto-%Y-%m-%d_%H-%M-%S
@@ -52,7 +54,9 @@ snapshot_tasks:
   - allow_empty: true
     dataset: hdd
     enabled: true
-    exclude: []
+    exclude:
+      - hdd/containers/k8s/plex-media
+      - hdd/backups/proxmox
     lifetime_unit: YEAR
     lifetime_value: 1
     naming_schema: auto-%Y-%m-%d_%H-%M-%S
@@ -84,7 +88,9 @@ snapshot_tasks:
   - allow_empty: true
     dataset: hdd
     enabled: true
-    exclude: []
+    exclude:
+      - hdd/containers/k8s/plex-media
+      - hdd/backups/proxmox
     lifetime_unit: WEEK
     lifetime_value: 2
     naming_schema: auto-%Y-%m-%d_%H-%M-%S
