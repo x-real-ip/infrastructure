@@ -58,6 +58,8 @@
     #PCI
 
     iface enp4s0f1 inet manual
+       pre-up ethtool -G $IFACE rx 4096 tx 4096
+       pre-up ethtool -C $IFACE rx-usecs 0
     #PCI
 
     auto vmbr0
@@ -104,6 +106,8 @@
     #PCI
 
     iface enp3s0f1 inet manual
+       pre-up ethtool -G $IFACE rx 4096 tx 4096
+       pre-up ethtool -C $IFACE rx-usecs 0
     #PCI
 
     auto vmbr0
