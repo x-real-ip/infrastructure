@@ -20,7 +20,7 @@
     state: directory
     mode: "0770"
   loop: "{{ mount.points }}"
-  become: true
+  become: false
 
 - name: Mount NFS share
   ansible.posix.mount:
