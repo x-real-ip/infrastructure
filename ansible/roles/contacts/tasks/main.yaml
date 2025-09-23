@@ -1,0 +1,5 @@
+---
+- name: Install the GNOME contacts flatpak
+  community.general.flatpak:
+    name: https://dl.flathub.org/repo/appstream/org.gnome.Contacts.flatpakref
+    state: present

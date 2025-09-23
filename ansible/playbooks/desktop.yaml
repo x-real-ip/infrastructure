@@ -88,6 +88,11 @@
         name: calendar
       become: true
 
+    - name: Install contacts
+      ansible.builtin.import_role:
+        name: contacts
+      become: true
+
     - name: Setup NTP
       ansible.builtin.import_role:
         name: ntp
