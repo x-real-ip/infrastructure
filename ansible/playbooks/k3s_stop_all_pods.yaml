@@ -5,7 +5,7 @@
   tasks:
     - name: Cordon nodes
       ansible.builtin.include_role:
-        name: k3s
+        name: kubernetes
         tasks_from: cordon
 
 - name: Drain all k3s nodes
@@ -14,5 +14,5 @@
   tasks:
     - name: Drain nodes
       ansible.builtin.include_role:
-        name: k3s
+        name: kubernetes
         tasks_from: drain
