@@ -98,6 +98,11 @@
         name: ntp
       become: true
 
+    - name: Install Podman
+      ansible.builtin.import_role:
+        name: podman
+      become: true
+
 - name: Play to get kube config from kubernetes cluster to desktop
   hosts: k3s_master
   gather_facts: false
