@@ -25,6 +25,7 @@
           - nano
           - adb
           - open-iscsi
+          - xfsprogs
         state: present
 
     - name: Install Flatpak
