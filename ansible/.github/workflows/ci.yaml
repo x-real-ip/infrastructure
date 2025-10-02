@@ -1,0 +1,23 @@
+---
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ansible-lint:
+  #   uses: ./.github/workflows/reusable-checks.yaml
+
+  build-and-push-image:
+    name: Build and Push Image
+    # needs: [ansible-lint]
+    uses: x-real-ip/github-actions/.github/workflows/build-and-push.yaml@v2
+    with:
+      push: true
