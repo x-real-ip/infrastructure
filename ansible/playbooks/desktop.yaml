@@ -3,7 +3,6 @@
   hosts: desktop
   gather_facts: true
   become: true
-  connection: local
   remote_user: coen
 
   tasks:
