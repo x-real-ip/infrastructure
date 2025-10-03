@@ -2,7 +2,7 @@
 #
 # this script will tarball and backup files and folders from local machine to a remote machine over ssh.
 # script writtin by Coen Stam.
-# github@theautomation.nl
+# c.github@stamx.nl
 #
 
 set -ex

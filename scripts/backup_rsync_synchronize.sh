@@ -2,7 +2,7 @@
 #
 # This script will backup files and folders from local machine to a remote machine over ssh.
 # Writtin by Coen Stam.
-# github@theautomation.nl
+# c.github@stamx.nl
 #
 
 set -e

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Writtin by Coen Stam.
-# github@theautomation.nl
+# c.github@stamx.nl
 #
 
 key=""
