@@ -1,121 +1,71 @@
 ---
 snapshot_tasks:
-  - allow_empty: true
-    dataset: ssd
+  - dataset: ssd
+    recursive: true
+    lifetime_value: 1
+    lifetime_unit: WEEK
     enabled: true
     exclude:
       - ssd/homedirs
-    lifetime_unit: WEEK
-    lifetime_value: 1
     naming_schema: auto-%Y-%m-%d_%H-%M-%S
-    recursive: true
+    allow_empty: true
     schedule:
-      begin: "00:00"
-      dom: "*"
-      dow: "*"
-      end: "23:59"
-      hour: "0"
       minute: "0"
+      hour: "15"
+      dom: "*"
       month: "*"
-  - allow_empty: true
-    dataset: hdd
+      dow: "*"
+      begin: "00:00"
+      end: "23:59"
+  - dataset: hdd
+    recursive: true
+    lifetime_value: 1
+    lifetime_unit: WEEK
     enabled: true
     exclude:
-      - hdd/containers/k8s/plex-media
       - hdd/backups/proxmox
-    lifetime_unit: WEEK
-    lifetime_value: 1
     naming_schema: auto-%Y-%m-%d_%H-%M-%S
-    recursive: true
+    allow_empty: true
     schedule:
-      begin: "00:00"
+      minute: "0"
+      hour: "15"
       dom: "*"
-      dow: "*"
-      end: "23:59"
-      hour: "0"
-      minute: "0"
       month: "*"
-  - allow_empty: false
-    dataset: ssd/webdav
-    enabled: true
-    exclude: []
-    lifetime_unit: DAY
-    lifetime_value: 3
-    naming_schema: auto-%Y-%m-%d_%H-%M-%S
-    recursive: true
-    schedule:
-      begin: "07:00"
-      dom: "*"
       dow: "*"
-      end: "23:59"
-      hour: "*"
-      minute: "0"
-      month: "*"
-  - allow_empty: true
-    dataset: hdd
-    enabled: true
-    exclude:
-      - hdd/containers/k8s/plex-media
-      - hdd/backups/proxmox
-    lifetime_unit: YEAR
-    lifetime_value: 1
-    naming_schema: auto-%Y-%m-%d_%H-%M-%S
-    recursive: true
-    schedule:
       begin: "00:00"
-      dom: "1"
-      dow: "*"
       end: "23:59"
-      hour: "12"
-      minute: "0"
-      month: "*"
-  - allow_empty: true
-    dataset: ssd
-    enabled: true
-    exclude: []
-    lifetime_unit: YEAR
-    lifetime_value: 1
-    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+  - dataset: hdd
     recursive: true
-    schedule:
-      begin: "00:00"
-      dom: "1"
-      dow: "*"
-      end: "23:59"
-      hour: "12"
-      minute: "30"
-      month: "*"
-  - allow_empty: true
-    dataset: hdd
-    enabled: true
-    exclude:
-      - hdd/containers/k8s/plex-media
-      - hdd/backups/proxmox
-    lifetime_unit: WEEK
     lifetime_value: 2
-    naming_schema: auto-%Y-%m-%d_%H-%M-%S
-    recursive: true
-    schedule:
-      begin: "00:00"
-      dom: "*"
-      dow: sun
-      end: "23:59"
-      hour: "0"
-      minute: "0"
-      month: "*"
-  - allow_empty: true
-    dataset: ssd
-    enabled: true
-    exclude: []
     lifetime_unit: WEEK
-    lifetime_value: 2
+    enabled: true
+    exclude:
+      - hdd/containers/k8s/plex-media
+      - hdd/backups/proxmox
     naming_schema: auto-%Y-%m-%d_%H-%M-%S
-    recursive: true
+    allow_empty: true
     schedule:
-      begin: "00:00"
-      dom: "*"
-      dow: sun
-      end: "23:59"
-      hour: "0"
       minute: "0"
+      hour: "15"
+      dom: "*"
       month: "*"
+      dow: sun
+      begin: "00:00"
+      end: "23:59"
+  - dataset: ssd
+    recursive: true
+    lifetime_value: 2
+    lifetime_unit: WEEK
+    enabled: true
+    exclude:
+      - ssd/homedirs
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    allow_empty: true
+    schedule:
+      minute: "0"
+      hour: "15"
+      dom: "*"
+      month: "*"
+      dow: sun
+      begin: "00:00"
+      end: "23:59"
