@@ -295,7 +295,7 @@ shares:
         iscsi_parameters:
           QueuedCommands:
         mode: ISCSI
-        name: dsmr-reader-db
+        name: dsmr-reader-db-2
       - alias:
         auth_networks: []
         groups:
@@ -345,7 +345,7 @@ shares:
         iscsi_parameters:
           QueuedCommands:
         mode: ISCSI
-        name: paperless-14-db
+        name: paperless-db
       - alias:
         auth_networks: []
         groups:
@@ -517,12 +517,12 @@ shares:
       - avail_threshold: null
         blocksize: 4096
         comment: ""
-        disk: zvol/ssd/containers/k8s/dsmr-reader-db
+        disk: zvol/ssd/containers/k8s/dsmr-reader-db-2
         enabled: true
         filesize: "0"
         insecure_tpc: true
-        name: dsmr-reader-db
-        path: zvol/ssd/containers/k8s/dsmr-reader-db
+        name: dsmr-reader-db-2
+        path: zvol/ssd/containers/k8s/dsmr-reader-db-2
         pblocksize: false
         ro: false
         rpm: SSD
@@ -673,12 +673,12 @@ shares:
       - avail_threshold: null
         blocksize: 4096
         comment: ""
-        disk: zvol/ssd/containers/k8s/paperless-14-db
+        disk: zvol/ssd/containers/k8s/paperless-db
         enabled: true
         filesize: "0"
         insecure_tpc: true
-        name: paperless-14-db
-        path: zvol/ssd/containers/k8s/paperless-14-db
+        name: paperless-db
+        path: zvol/ssd/containers/k8s/paperless-db
         pblocksize: false
         ro: false
         rpm: SSD
