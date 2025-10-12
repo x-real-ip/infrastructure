@@ -117,14 +117,14 @@
   tasks:
     - name: Disable autosync for app-of-apps
       ansible.builtin.include_role:
-        name: k3s
+        name: kubernetes
         tasks_from: argocd-disable-app-sync
       vars:
         application_name: "app-of-apps"
 
     - name: Delete argocd application with label storage=truenas
       ansible.builtin.include_role:
-        name: k3s
+        name: kubernetes
         tasks_from: argocd-delete-app
 
 - name: "Play to start TrueNAS replication without running pods"
@@ -252,7 +252,7 @@
   tasks:
     - name: Apply ArgoCD and app-of-apps
       ansible.builtin.include_role:
-        name: k3s
+        name: kubernetes
         tasks_from: argocd-app-of-apps
 
 - name: "Play to update non-active Proxmox node"

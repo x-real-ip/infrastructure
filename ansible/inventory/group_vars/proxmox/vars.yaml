@@ -1,4 +1,0 @@
----
-# User for privilege escalation
-become_user: ansible
-become_method: sudo

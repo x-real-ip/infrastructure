@@ -12,5 +12,5 @@
     | map(attribute='state')
     | list
     | unique == ['SUCCESS']
-  retries: 30
-  delay: 15
+  retries: 100
+  delay: 20

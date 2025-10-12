@@ -2,8 +2,10 @@ truenas:
   hosts:
     truenas-a:
       ansible_host: 10.0.100.11
+      proxmox_host: pve-a
     truenas-b:
       ansible_host: 10.0.100.12
+      proxmox_host: pve-b
 
 k3s_cluster:
   children:

@@ -6,9 +6,11 @@
     mode: "0664"
     force: true
   run_once: true
+  become: true
 
 - name: Apply app-of-apps to the cluster | {{ argocd.name }}
   kubernetes.core.k8s:
     state: present
     src: ~/app-of-apps.yaml
   run_once: true
+  become: true

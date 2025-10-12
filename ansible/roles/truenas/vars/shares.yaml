@@ -305,7 +305,7 @@ shares:
         iscsi_parameters:
           QueuedCommands:
         mode: ISCSI
-        name: home-assistant-db
+        name: home-assistant-db-2
       - alias:
         auth_networks: []
         groups:
@@ -415,7 +415,7 @@ shares:
         iscsi_parameters:
           QueuedCommands:
         mode: ISCSI
-        name: vaultwarden-db
+        name: vaultwarden-db-2
       - alias:
         auth_networks: []
         groups:
@@ -547,12 +547,12 @@ shares:
       - avail_threshold: null
         blocksize: 4096
         comment: ""
-        disk: zvol/ssd/containers/k8s/home-assistant-db
+        disk: zvol/ssd/containers/k8s/home-assistant-db-2
         enabled: true
         filesize: "0"
         insecure_tpc: true
-        name: home-assistant-db
-        path: zvol/ssd/containers/k8s/home-assistant-db
+        name: home-assistant-db-2
+        path: zvol/ssd/containers/k8s/home-assistant-db-2
         pblocksize: false
         ro: false
         rpm: SSD
@@ -757,12 +757,12 @@ shares:
       - avail_threshold: null
         blocksize: 4096
         comment: ""
-        disk: zvol/ssd/containers/k8s/vaultwarden-db
+        disk: zvol/ssd/containers/k8s/vaultwarden-db-2
         enabled: true
         filesize: "0"
         insecure_tpc: true
-        name: vaultwarden-db
-        path: zvol/ssd/containers/k8s/vaultwarden-db
+        name: vaultwarden-db-2
+        path: zvol/ssd/containers/k8s/vaultwarden-db-2
         pblocksize: false
         ro: false
         rpm: SSD
