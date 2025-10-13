@@ -1,11 +1,5 @@
 ---
 - name: Migrate VM {{ item }} to the target host
-  ansible.builtin.command: "qm migrate {{ item }} {{ target_host }} --online --with-local-disks"
+  ansible.builtin.command: "qm migrate {{ item }} {{ proxmox_target_host }} --online --with-local-disks"
 
-- name: Check if VM {{ item }} has status running or stopped on the target host
-  ansible.builtin.command: "qm status {{ item }}"
-  register: qm_status
-  until: "qm_status.stdout == 'status: running' or qm_status.stdout == 'status: stopped'"
-  retries: 50
-  delay: 10
-  delegate_to: "{{ target_host }}"
+

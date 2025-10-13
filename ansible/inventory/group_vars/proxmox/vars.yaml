@@ -1,0 +1,5 @@
+---
+pve-a:
+  mac_address: "{{ vault_pve_a_mac_address }}"
+pve-b:
+  mac_address: "{{ vault_pve_b_mac_address }}"

@@ -13,7 +13,7 @@
 
 - name: Remove excluded VM id's from the list
   set_fact:
-    filtered_vm_ids: "{{ vm_ids | difference(exclude_vm_id_list) }}"
+    filtered_vm_ids: "{{ vm_ids | difference(proxmox_exclude_vm_id_list) }}"
 
 - name: Migrate each VM
   ansible.builtin.include_tasks: "migrate-vm.yaml"

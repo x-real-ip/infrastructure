@@ -32,7 +32,7 @@
         path: "/root/.ssh/authorized_keys"
         line: "{{ pve_a_pubkey.stdout }}"
         create: true
-        mode: 0600
+        mode: 600
       when: ansible_hostname == "odroid-c4"
 
     - name: Add Qdevice and except fingerprint

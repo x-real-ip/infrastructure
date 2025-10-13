@@ -1,0 +1,39 @@
+---
+- name: Wake up the standby Proxmox node
+  hosts: proxmox
+  strategy: linear
+  gather_facts: true
+  become: false
+  ignore_unreachable: true
+  tasks:
+    - name: Turn on Proxmox standby node using the master node
+      when: ansible_local.proxmox.is_master | bool
+      block:
+        - name: Set standby hostname fact
+          ansible.builtin.set_fact:
+            proxmox_standby_host:
+              "{{ 'pve-b' if inventory_hostname == 'pve-a' and
+              ansible_local.proxmox.is_master | bool else 'pve-a' if
+              inventory_hostname == 'pve-b' and ansible_local.proxmox.is_master
+              | bool }}"
+          run_once: true
+
+        - name: Show standby hostname
+          ansible.builtin.debug:
+            msg: "Standby node is {{ proxmox_standby_host }}"
+          run_once: true
+
+        - name: Wake up standby Proxmox node using Wake-on-LAN
+          community.general.wakeonlan:
+            mac: "{{ vars[proxmox_standby_host]['mac_address'] }}"
+            broadcast: 255.255.255.255
+          run_once: true
+          changed_when: true
+
+        - name: Wait for standby Proxmox node to become reachable
+          ansible.builtin.wait_for:
+            host: "{{ hostvars[proxmox_standby_host].ansible_host }}"
+            port: 22
+            timeout: 300
+            state: started
+          run_once: true
