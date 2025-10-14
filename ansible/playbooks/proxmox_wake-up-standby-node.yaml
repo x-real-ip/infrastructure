@@ -1,13 +1,27 @@
 ---
-- name: Wake up the standby Proxmox node
+- name: Run WOL only on reachable master node
   hosts: proxmox
-  strategy: linear
-  gather_facts: true
-  become: false
+  gather_facts: false
   ignore_unreachable: true
   tasks:
-    - name: Turn on Proxmox standby node using the master node
-      when: ansible_local.proxmox.is_master | bool
+    - name: Ping node to check reachability
+      ansible.builtin.ping:
+      register: ping_result
+      ignore_unreachable: true
+      failed_when: false
+
+    - name: Set reachability fact
+      ansible.builtin.set_fact:
+        is_reachable: "{{ ping_result.ping is defined }}"
+
+    - name: Gather facts for reachable nodes only
+      ansible.builtin.setup:
+      when: is_reachable | bool
+
+    - name: Run logic only on reachable master node
+      when:
+        - is_reachable | bool
+        - ansible_local.proxmox.is_master | default(false) | bool
       block:
         - name: Set standby hostname fact
           ansible.builtin.set_fact:
@@ -20,10 +34,10 @@
 
         - name: Show standby hostname
           ansible.builtin.debug:
-            msg: "Standby node is {{ proxmox_standby_host }}"
+            msg: "Standby node is {{ proxmox_standby_host }} mac: {{ vars[proxmox_standby_host]['mac_address'] }}"
           run_once: true
 
-        - name: Wake up standby Proxmox node using Wake-on-LAN
+        - name: Wake up standby Proxmox node {{ proxmox_standby_host }} using Wake-on-LAN
           community.general.wakeonlan:
             mac: "{{ vars[proxmox_standby_host]['mac_address'] }}"
             broadcast: 255.255.255.255
