@@ -19,12 +19,14 @@
     - name: Set timezone
       community.general.timezone:
         name: "{{ system_timezone }}"
-      when: (system_timezone is defined) and (system_timezone != "Your/Timezone")
+      when:
+        (system_timezone is defined) and (system_timezone != "Your/Timezone")
 
-    - name: Install needrestart
-      ansible.builtin.apt:
+    - name: Install packages
+      ansible.builtin.package:
         name:
           - debian-goodies
+          - wakeonlan
         state: present
 
     - name: Run checkrestart command
@@ -36,7 +38,13 @@
       ansible.builtin.debug:
         var: needs_restart.stdout_lines[0]
 
-    - name: Run a task if the specified string is present in stdout_lines and the number is not zero
+    - name:
+        Run a task if the specified string is present in stdout_lines and the
+        number is not zero
       ansible.builtin.debug:
-        msg: "The specified string is present in the output and the number is not zero."
-      when: "'processes using old versions of upgraded files' in needs_restart.stdout_lines[0]"
+        msg:
+          "The specified string is present in the output and the number is not
+          zero."
+      when:
+        "'processes using old versions of upgraded files' in
+        needs_restart.stdout_lines[0]"
