@@ -2,11 +2,24 @@
 - name: "Play to check for firmware updates and apply them when available"
   hosts: localhost
   connection: local
-  gather_facts: true
+  gather_facts: false
+  tasks:
+    - name: Enable firwall rule to allow internet access to NOT network
+      ansible.builtin.include_role:
+        name: opnsense
+        tasks_from: toggle-rule.yaml
+      vars:
+        opnsense_rule_uuid: "ecdde7e5-1c71-46aa-b897-a9515f29a294"
+        opnsense_enable_rule: true
 
-  pre_tasks:
-    - name: Include shelly group vars
-      ansible.builtin.include_vars: "{{ playbook_dir }}/group_vars/shelly/vars.yaml"
+    - name: Enable firwall rule to allow internet access to NOT network
+      ansible.builtin.include_role:
+        name: shelly
 
-  roles:
-    - shelly
+    - name: Disable firwall rule to disallow internet access to NOT network
+      ansible.builtin.include_role:
+        name: opnsense
+        tasks_from: toggle-rule.yaml
+      vars:
+        opnsense_rule_uuid: "ecdde7e5-1c71-46aa-b897-a9515f29a294"
+        opnsense_enable_rule: false

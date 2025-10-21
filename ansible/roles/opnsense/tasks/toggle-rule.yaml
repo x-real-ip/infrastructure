@@ -1,0 +1,23 @@
+---
+- name: Load vault variables
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/vault.yaml"
+
+- name: Enable or disable rule
+  ansible.builtin.uri:
+    url: "{{ opnsense_host }}/api/firewall/filter/toggle_rule/{{ opnsense_rule_uuid }}/{{ 1 if opnsense_enable_rule else 0 }}"
+    method: POST
+    user: "{{ opnsense_api_key }}"
+    password: "{{ opnsense_api_secret }}"
+    force_basic_auth: yes
+    validate_certs: no
+  register: toggle_result
+
+- name: Apply OPNsense firewall changes
+  ansible.builtin.uri:
+    url: "{{ opnsense_host }}/api/firewall/filter/apply"
+    method: POST
+    user: "{{ opnsense_api_key }}"
+    password: "{{ opnsense_api_secret }}"
+    force_basic_auth: yes
+    validate_certs: no
