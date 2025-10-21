@@ -12,4 +12,3 @@ ssh:
     public_key:
       control_node_location: "/home/coen/.ssh/ansible.pub"
 
-test: "/home/coen/.ssh/ansible.pub"
