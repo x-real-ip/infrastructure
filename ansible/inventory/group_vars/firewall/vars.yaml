@@ -1,2 +1,0 @@
----
-pfsense_api_key: "{{ vault_pfsense_api_key }}"
