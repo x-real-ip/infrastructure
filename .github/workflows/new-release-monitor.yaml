@@ -26,7 +26,7 @@ jobs:
             target: k3s-io/k3s
           - name: YaSolR
             type: release
-            target: mathieucarbou/YaSolR-Pro
+            target: mathieucarbou/YaSolr
     with:
       name: ${{ matrix.name }}
       target: ${{ matrix.target }}
