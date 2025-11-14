@@ -36,7 +36,7 @@ sealed_secrets:
   deploy: true
   name: "sealed-secrets"
   namespace: "kube-system"
-  image_tag: "0.32.2"
+  image_tag: "v0.33.1"
   sealed_secret_customkeys_2_tls_key: "{{ vault_sealed_secret_customkeys_2_tls_key }}"
 
 github_registry:
