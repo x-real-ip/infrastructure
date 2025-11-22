@@ -1,6 +1,6 @@
 ---
 - name: Play to set the desired state on desktops
-  hosts: desktop
+  hosts: localhost
   gather_facts: true
   become: true
   remote_user: coen
