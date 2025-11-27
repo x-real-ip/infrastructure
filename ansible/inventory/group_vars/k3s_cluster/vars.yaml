@@ -16,7 +16,7 @@ output_file_location: "/home/coen/Downloads/"
 k3s_token: "{{ vault_k3s_token }}"
 
 # k3s version to install
-k3s_version: "v1.34.1+k3s1"
+k3s_version: "v1.34.2+k3s1"
 
 argocd:
   deploy: true
