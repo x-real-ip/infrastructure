@@ -22,7 +22,7 @@ settings:
     rssi_threshold: -85
   voltage_limit: 254
   websocket:
-    enable: true
+    enable: false
     server: "ws://home-assistant.{{ localdomain }}/api/shelly/ws"
   bluetooth:
     enable: true
