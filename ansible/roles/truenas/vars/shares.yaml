@@ -345,6 +345,16 @@ shares:
         iscsi_parameters:
           QueuedCommands:
         mode: ISCSI
+        name: omada-controller-config-2
+      - alias:
+        auth_networks: []
+        groups:
+          - auth:
+            authmethod: NONE
+            portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
         name: paperless-db
       - alias:
         auth_networks: []
@@ -665,6 +675,20 @@ shares:
         insecure_tpc: true
         name: omada-controller-config
         path: zvol/ssd/containers/k8s/omada-controller-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/omada-controller-config-2
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: omada-controller-config-2
+        path: zvol/ssd/containers/k8s/omada-controller-config-2
         pblocksize: false
         ro: false
         rpm: SSD
