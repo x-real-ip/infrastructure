@@ -16,7 +16,7 @@ output_file_location: "/home/coen/Downloads/"
 k3s_token: "{{ vault_k3s_token }}"
 
 # k3s version to install
-k3s_version: "v1.34.2+k3s1"
+k3s_version: "v1.35.0+k3s1"
 
 argocd:
   deploy: true
@@ -28,7 +28,7 @@ kube_vip:
   deploy: true
   name: "kube-vip"
   namespace: "kube-system"
-  image_tag: "v1.0.2"
+  image_tag: "v1.0.3"
   apiserver_endpoint: "10.0.100.100"
   flannel_iface: "ens18"
 
@@ -36,7 +36,7 @@ sealed_secrets:
   deploy: true
   name: "sealed-secrets"
   namespace: "kube-system"
-  image_tag: "v0.33.1"
+  image_tag: "v0.34.0"
   sealed_secret_customkeys_2_tls_key: "{{ vault_sealed_secret_customkeys_2_tls_key }}"
 
 github_registry:
