@@ -7,7 +7,8 @@ venv_python: "{{ venv_dir }}/bin/python"
 primary_dns_ip: "10.0.100.1"
 
 # IP-address of first master node
-first_master_ip_address: "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
+first_master_ip_address:
+  "{{ hostvars[groups['k3s_master'][0]]['ansible_default_ipv4']['address'] }}"
 
 # The location to store rendered jinja2 templates like deployments .yaml files
 output_file_location: "/home/coen/Downloads/"
@@ -36,8 +37,9 @@ sealed_secrets:
   deploy: true
   name: "sealed-secrets"
   namespace: "kube-system"
-  image_tag: "v0.34.0"
-  sealed_secret_customkeys_2_tls_key: "{{ vault_sealed_secret_customkeys_2_tls_key }}"
+  image_tag: "0.34.0"
+  sealed_secret_customkeys_2_tls_key:
+    "{{ vault_sealed_secret_customkeys_2_tls_key }}"
 
 github_registry:
   credentials:
