@@ -78,4 +78,8 @@
       register: server_cert_result
 
     - name: Create K8s TLS secret
-      ansible.builtin.shell: "kubectl create secret tls {{ kubernetes.secret_name }} --key={{ directory }}/{{ server.private_key }} --cert={{ directory }}/{{ server.certificate }} --dry-run=client --output=yaml > {{ directory }}/{{ kubernetes.secret_name }}.yaml"
+      ansible.builtin.shell:
+        "kubectl create secret tls {{ kubernetes.secret_name }} --key={{
+        directory }}/{{ server.private_key }} --cert={{ directory }}/{{
+        server.certificate }} --dry-run=client --output=yaml > {{ directory
+        }}/{{ kubernetes.secret_name }}.yaml"
