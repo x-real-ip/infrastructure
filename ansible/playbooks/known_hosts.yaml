@@ -10,11 +10,12 @@
   tasks:
     - name: Collect all hosts from selected groups
       ansible.builtin.set_fact:
-        host_groups: "{{ host_groups | map('extract', groups) | list | flatten | unique }}"
+        host_groups:
+          "{{ host_groups | map('extract', groups) | list | flatten | unique }}"
 
     - name: Add hosts to known_hosts
       ansible.builtin.known_hosts:
-        path: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
+        path: "{{ lookup('env', 'HOME') }}/.ssh/known_hosts"
         name: "{{ item }}"
         key: "{{ lookup('pipe', 'ssh-keyscan -T 5 ' + item) }}"
       loop: "{{ host_groups }}"
