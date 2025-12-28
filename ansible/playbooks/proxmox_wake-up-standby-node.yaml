@@ -34,10 +34,14 @@
 
         - name: Show standby hostname
           ansible.builtin.debug:
-            msg: "Standby node is {{ proxmox_standby_host }} mac: {{ vars[proxmox_standby_host]['mac_address'] }}"
+            msg:
+              "Standby node is {{ proxmox_standby_host }} mac: {{
+              vars[proxmox_standby_host]['mac_address'] }}"
           run_once: true
 
-        - name: Wake up standby Proxmox node {{ proxmox_standby_host }} using Wake-on-LAN
+        - name:
+            Wake up standby Proxmox node {{ proxmox_standby_host }} using
+            Wake-on-LAN
           community.general.wakeonlan:
             mac: "{{ vars[proxmox_standby_host]['mac_address'] }}"
             broadcast: 255.255.255.255
