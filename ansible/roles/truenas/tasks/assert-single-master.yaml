@@ -1,0 +1,23 @@
+---
+- name: Validate exactly one TrueNAS node owns the VIP
+  delegate_to: localhost
+  run_once: true
+  vars:
+    masters: >-
+      {{
+        groups['truenas']
+        | map('extract', hostvars, 'is_master')
+        | zip(groups['truenas'])
+        | selectattr('0')
+        | map('last')
+        | list
+      }}
+    master_count: "{{ masters | length }}"
+  ansible.builtin.assert:
+    that:
+      - master_count == 1
+    fail_msg: >-
+      VIP ownership violation detected. Expected exactly 1 master, found {{
+      master_count }}. Masters: {{ masters }}
+    success_msg: >-
+      VIP ownership valid. Master node: {{ masters[0] }}

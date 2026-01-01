@@ -7,7 +7,7 @@
         name: kubernetes
         tasks_from: argocd-disable-app-sync
       vars:
-        application_name: "app-of-apps"
+        kubernetes_application_name: "app-of-apps"
 
     - name: Delete argocd application with label storage=truenas
       ansible.builtin.include_role:

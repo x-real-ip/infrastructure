@@ -1,7 +1,7 @@
 ---
 - name: Patch the ArgoCD application to remove syncPolicy
   ansible.builtin.command: >
-    kubectl patch application {{ application_name }} -n argocd --type=merge
+    kubectl patch application {{ kubernetes_application_name }} -n argocd --type=merge
     -p '{"spec": {"syncPolicy": null}}'
   register: patch_result
   run_once: true

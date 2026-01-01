@@ -1,0 +1,38 @@
+- name: Ensure required packages
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gnupg
+      - apt-transport-https
+    state: present
+    update_cache: true
+
+- name: Download Fish key
+  ansible.builtin.get_url:
+    url: https://download.opensuse.org/repositories/shells:fish:release:4/Debian_13/Release.key
+    dest: /tmp/fish_release.key
+    mode: "0644"
+
+- name: Convert key to gpg format
+  ansible.builtin.command:
+    gpg --dearmor -o /usr/share/keyrings/shells_fish_release_4.gpg
+    /tmp/fish_release.key
+  args:
+    creates: /usr/share/keyrings/shells_fish_release_4.gpg
+
+- name: Add Fish shell repo with signed-by
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/shells:fish:release:4.list
+    content:
+      "deb [signed-by=/usr/share/keyrings/shells_fish_release_4.gpg]
+      http://download.opensuse.org/repositories/shells:/fish:/release:/4/Debian_13/
+      /"
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install fish
+  ansible.builtin.apt:
+    name: fish
+    state: present

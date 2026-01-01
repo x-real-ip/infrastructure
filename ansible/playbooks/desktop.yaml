@@ -16,6 +16,10 @@
         name: vscode
       become: true
 
+    - name: Install Fish shell
+      ansible.builtin.import_role:
+        name: fish-shell
+
     - name: Install common packages
       ansible.builtin.package:
         name:
