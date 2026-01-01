@@ -15,66 +15,66 @@
           Press Enter to proceed, or Ctrl+C and then 'A' to abort.
           *********************************************************
 
-# - name:
-#     Determine which TrueNAS node owns the VIP (is the master) and write it as a
-#     local fact
-#   hosts: truenas
-#   gather_facts: false
-#   remote_user: admin
-#   become: true
-#   vars:
-#     vip_regex: "{{ vip_address | regex_escape }}"
-#   tasks:
-#     - name: Ensure VIP systemd service exists
-#       ansible.builtin.include_role:
-#         name: truenas
-#         tasks_from: add-vip
+- name:
+    Determine which TrueNAS node owns the VIP (is the master) and write it as a
+    local fact
+  hosts: truenas
+  gather_facts: false
+  remote_user: admin
+  become: true
+  vars:
+    vip_regex: "{{ vip_address | regex_escape }}"
+  tasks:
+    - name: Ensure VIP systemd service exists
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: add-vip
 
-#     - name: Detect TrueNAS master
-#       ansible.builtin.include_role:
-#         name: truenas
-#         tasks_from: detect-master
+    - name: Detect TrueNAS master
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: detect-master
 
-#     - name: Validate single master
-#       ansible.builtin.include_role:
-#         name: truenas
-#         tasks_from: assert-single-master
+    - name: Validate single master
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: assert-single-master
 
-#     - name: Propagate master state to paired PVE
-#       ansible.builtin.include_role:
-#         name: truenas
-#         tasks_from: propagate-master-to-pve
+    - name: Propagate master state to paired PVE
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: propagate-master-to-pve
 
-# - name: Start first run of data replication with running applications
-#   hosts: truenas
-#   become: false
-#   gather_facts: true
-#   remote_user: admin
-#   tasks:
-#     - name: Start snapshots and replication tasks from TrueNAS master
-#       run_once: true
-#       ansible.builtin.include_role:
-#         name: truenas
-#         tasks_from: start-snapshots-and-replication-tasks.yaml
-#       when: ansible_local.truenas.is_master
+- name: Start first run of data replication with running applications
+  hosts: truenas
+  become: false
+  gather_facts: true
+  remote_user: admin
+  tasks:
+    - name: Start snapshots and replication tasks from TrueNAS master
+      run_once: true
+      ansible.builtin.include_role:
+        name: truenas
+        tasks_from: start-snapshots-and-replication-tasks.yaml
+      when: ansible_local.truenas.is_master
 
-# - name:
-#     Play to remove Kubernetes applications from kubernetes cluster that use
-#     TrueNAS storage
-#   hosts: k3s_master
-#   become: false
-#   tasks:
-#     - name: Disable autosync for app-of-apps
-#       ansible.builtin.include_role:
-#         name: kubernetes
-#         tasks_from: argocd-disable-app-sync
-#       vars:
-#         kubernetes_application_name: "app-of-apps"
+- name:
+    Play to remove Kubernetes applications from kubernetes cluster that use
+    TrueNAS storage
+  hosts: k3s_master
+  become: false
+  tasks:
+    - name: Disable autosync for app-of-apps
+      ansible.builtin.include_role:
+        name: kubernetes
+        tasks_from: argocd-disable-app-sync
+      vars:
+        kubernetes_application_name: "app-of-apps"
 
-#     - name: Delete argocd application with label storage=truenas
-#       ansible.builtin.include_role:
-#         name: kubernetes
-#         tasks_from: argocd-delete-app
+    - name: Delete argocd application with label storage=truenas
+      ansible.builtin.include_role:
+        name: kubernetes
+        tasks_from: argocd-delete-app
 
 - name:
     Start second run of data replication without running Kubernetes applications
@@ -85,61 +85,61 @@
   vars:
     vip_regex: "{{ vip_address | regex_escape }}"
   tasks:
-    # - name: Run snapshot and replication logic only on TrueNAS master
-    #   when: ansible_local.truenas.is_master
-    #   run_once: true
-    #   block:
-    #     - name: Start snapshots and replication tasks from TrueNAS master
-    #       ansible.builtin.include_role:
-    #         name: truenas
-    #         tasks_from: start-snapshots-and-replication-tasks.yaml
+    - name: Run snapshot and replication logic only on TrueNAS master
+      when: ansible_local.truenas.is_master
+      run_once: true
+      block:
+        - name: Start snapshots and replication tasks from TrueNAS master
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: start-snapshots-and-replication-tasks.yaml
 
-    #     - name: Include task TrueNAS disable replication tasks
-    #       ansible.builtin.include_role:
-    #         name: truenas
-    #         tasks_from: enable-or-disable-replication-tasks.yaml
-    #       vars:
-    #         enabled: false
+        - name: Include task TrueNAS disable replication tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: enable-or-disable-replication-tasks.yaml
+          vars:
+            enabled: false
 
-    #     - name: Include task TrueNAS disable snapshot tasks
-    #       ansible.builtin.include_role:
-    #         name: truenas
-    #         tasks_from: enable-or-disable-snapshot-tasks.yaml
-    #       vars:
-    #         enabled: false
+        - name: Include task TrueNAS disable snapshot tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: enable-or-disable-snapshot-tasks.yaml
+          vars:
+            enabled: false
 
-    #     - name: Disable and stop the VIP service on the current master
-    #       ansible.builtin.systemd:
-    #         name: add-vip.service
-    #         daemon_reload: true
-    #         enabled: false
-    #         state: stopped
+        - name: Disable and stop the VIP service on the current master
+          ansible.builtin.systemd:
+            name: add-vip.service
+            daemon_reload: true
+            enabled: false
+            state: stopped
 
-    # - name:
-    #     Enable snapshots and replication tasks on TrueNAS that will become
-    #     master
-    #   when: not ansible_local.truenas.is_master
-    #   block:
-    #     - name: Include task to enable snapshot tasks
-    #       ansible.builtin.include_role:
-    #         name: truenas
-    #         tasks_from: enable-or-disable-snapshot-tasks.yaml
-    #       vars:
-    #         enabled: true
+    - name:
+        Enable snapshots and replication tasks on TrueNAS that will become
+        master
+      when: not ansible_local.truenas.is_master
+      block:
+        - name: Include task to enable snapshot tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: enable-or-disable-snapshot-tasks.yaml
+          vars:
+            enabled: true
 
-    #     - name: Include task to enable replication tasks
-    #       ansible.builtin.include_role:
-    #         name: truenas
-    #         tasks_from: enable-or-disable-replication-tasks.yaml
-    #       vars:
-    #         enabled: true
+        - name: Include task to enable replication tasks
+          ansible.builtin.include_role:
+            name: truenas
+            tasks_from: enable-or-disable-replication-tasks.yaml
+          vars:
+            enabled: true
 
-    #     - name: Enable and start the VIP service so it become the master
-    #       ansible.builtin.systemd:
-    #         name: add-vip.service
-    #         daemon_reload: true
-    #         enabled: true
-    #         state: started
+        - name: Enable and start the VIP service so it become the master
+          ansible.builtin.systemd:
+            name: add-vip.service
+            daemon_reload: true
+            enabled: true
+            state: started
 
     - name: Detect TrueNAS master
       ansible.builtin.include_role:
