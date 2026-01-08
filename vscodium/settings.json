@@ -1,0 +1,7 @@
+{
+  "git.autofetch": true,
+  "git.repositoryScanMaxDepth": 2,
+  "git.confirmSync": false,
+  "git.defaultCloneDirectory": "/home/coen/git-repositories/",
+  "scm.repositories.visible": 0
+}

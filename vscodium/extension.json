@@ -1,0 +1,9 @@
+[
+  "anweber.local-sync",
+  "charliermarsh.ruff",
+  "ms-python.debugpy",
+  "ms-python.python",
+  "ms-python.vscode-python-envs",
+  "redhat.vscode-yaml",
+  "yzhang.markdown-all-in-one"
+]
