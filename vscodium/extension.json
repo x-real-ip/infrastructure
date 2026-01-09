@@ -4,6 +4,8 @@
   "ms-python.debugpy",
   "ms-python.python",
   "ms-python.vscode-python-envs",
+  "oderwat.indent-rainbow",
+  "redhat.ansible",
   "redhat.vscode-yaml",
   "yzhang.markdown-all-in-one"
 ]

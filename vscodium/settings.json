@@ -4,5 +4,7 @@
   "git.confirmSync": false,
   "git.defaultCloneDirectory": "/home/coen/git-repositories/",
   "scm.repositories.visible": 0,
-  "redhat.telemetry.enabled": false
+  "redhat.telemetry.enabled": false,
+  "editor.renderWhitespace": "all",
+  "telemetry.feedback.enabled": false
 }
