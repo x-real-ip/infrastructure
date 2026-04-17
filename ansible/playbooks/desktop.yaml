@@ -4,8 +4,19 @@
   gather_facts: true
   become: true
   remote_user: coen
+  vars:
+    ansible_config_path: "/home/{{ username }}/.ansible.cfg"
+    bashrc_path: "/home/{{ username }}/.bashrc"
 
   tasks:
+    - name: Ensure ANSIBLE_CONFIG is exported in .bashrc
+      ansible.builtin.blockinfile:
+        path: "{{ bashrc_path }}"
+        block: |
+          export ANSIBLE_CONFIG="{{ ansible_config_path }}"
+        marker: "# {mark} managed by Ansible"
+      become: false
+
     - name: Apply common role
       ansible.builtin.import_role:
         name: common
