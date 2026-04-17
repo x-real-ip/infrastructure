@@ -1,0 +1,29 @@
+---
+- name: Install dependencies for apt over HTTPS
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+    update_cache: true
+
+- name: Add VSCodium GPG key
+  ansible.builtin.apt_key:
+    url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+    state: present
+
+- name: Add VSCodium APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main"
+    state: present
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install VSCodium
+  ansible.builtin.apt:
+    name: codium
+    state: latest
