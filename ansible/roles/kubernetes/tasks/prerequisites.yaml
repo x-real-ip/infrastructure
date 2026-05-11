@@ -6,7 +6,7 @@
     line: "DNS={{ primary_dns_ip }}"
     state: present
   notify: Restart systemd-resolved
-  when: ansible_os_family == "Debian"
+  when: ansible_facts["os_family"] == "Debian"
 
 - name: Ensure FallbackDNS is set in /etc/systemd/resolved.conf
   lineinfile:
@@ -15,14 +15,14 @@
     line: "FallbackDNS=1.1.1.1 8.8.8.8"
     state: present
   notify: Restart systemd-resolved
-  when: ansible_os_family == "Debian"
+  when: ansible_facts["os_family"] == "Debian"
 
 - name: Stop and disable service firewalld
   ansible.builtin.service:
     name: firewalld
     state: stopped
     enabled: false
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts["os_family"] == "RedHat"
 
 - name: Install the latest version of dnf packages
   ansible.builtin.package:
@@ -61,7 +61,7 @@
       - avahi-daemon
     state: present
     update_cache: true
-  when: ansible_os_family == "Debian"
+  when: ansible_facts["os_family"] == "Debian"
 
 - name: Install the latest version of avahi-daemon on the worker nodes
   ansible.builtin.apt:
