@@ -1,7 +1,0 @@
-chromium_ca_trust_nss_user: "coen"
-chromium_ca_trust_nss_db_dir: ".pki/nssdb"
-
-chromium_ca_trust_nss_certs:
-  - name: "Stamx CA"
-    src: "stamx-ca-certificate.pem"
-    trust: "TC,C,C"

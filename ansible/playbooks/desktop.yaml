@@ -120,7 +120,8 @@
 
     - name: Pull kube config file
       ansible.builtin.import_role:
-        name: chromium_ca_trust
+        name: ca_trust
+      become: false
 
 # - name: Play to get kube config from kubernetes cluster to desktop
 #   hosts: k3s_master
