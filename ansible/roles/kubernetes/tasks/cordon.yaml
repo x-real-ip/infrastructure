@@ -2,4 +2,4 @@
 - name: Mark node as unschedulable
   kubernetes.core.k8s_drain:
     state: cordon
-    name: "{{ ansible_hostname }}"
+    name: "{{ ansible_facts['hostname'] }}"

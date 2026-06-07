@@ -1,0 +1,47 @@
+- name: Install NSS tools (certutil/modutil)
+  ansible.builtin.package:
+    name: libnss3-tools
+    state: present
+  become: true
+
+- name: Ensure home directory exists
+  ansible.builtin.file:
+    path: "/home/{{ chromium_ca_trust_nss_user }}"
+    state: directory
+    owner: "{{ chromium_ca_trust_nss_user }}"
+    group: "{{ chromium_ca_trust_nss_user }}"
+    mode: "0755"
+  become: true
+
+- name: Ensure NSS DB directory exists
+  ansible.builtin.file:
+    path: "/home/{{ chromium_ca_trust_nss_user }}/{{ chromium_ca_trust_nss_db_dir }}"
+    state: directory
+    owner: "{{ chromium_ca_trust_nss_user }}"
+    group: "{{ chromium_ca_trust_nss_user }}"
+    mode: "0700"
+  become: true
+
+- name: Initialize NSS database if missing
+  ansible.builtin.command: >
+    certutil -N
+    -d sql:/home/{{ chromium_ca_trust_nss_user }}/{{ chromium_ca_trust_nss_db_dir }}
+    --empty-password
+  args:
+    creates: "/home/{{ chromium_ca_trust_nss_user }}/{{ chromium_ca_trust_nss_db_dir }}/cert9.db"
+  become: true
+  become_user: "{{ chromium_ca_trust_nss_user }}"
+
+- name: Import CA certificates into NSS DB
+  ansible.builtin.command: >
+    certutil -A
+    -d sql:/home/{{ chromium_ca_trust_nss_user }}/{{ chromium_ca_trust_nss_db_dir }}
+    -n "{{ item.name }}"
+    -t "{{ item.trust }}"
+    -i "{{ role_path }}/files/{{ item.src }}"
+  loop: "{{ chromium_ca_trust_nss_certs }}"
+  become: true
+  become_user: "{{ chromium_ca_trust_nss_user }}"
+  register: cert_import
+  changed_when: "'added' in cert_import.stdout or cert_import.rc == 0"
+  failed_when: cert_import.rc not in [0, 1]

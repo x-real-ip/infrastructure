@@ -1,6 +1,6 @@
 ---
 - name: Ensure dynamically discovered DNS is set in /etc/systemd/resolved.conf
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: "^#?DNS="
     line: "DNS={{ primary_dns_ip }}"
@@ -9,7 +9,7 @@
   when: ansible_facts["os_family"] == "Debian"
 
 - name: Ensure FallbackDNS is set in /etc/systemd/resolved.conf
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: "^#?FallbackDNS="
     line: "FallbackDNS=1.1.1.1 8.8.8.8"
@@ -42,7 +42,7 @@
       - cryptsetup
     state: present
     update_cache: true
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts["os_family"] == "RedHat"
 
 - name: Install the latest version of apt packages
   ansible.builtin.package:
@@ -69,7 +69,9 @@
       - avahi-daemon
     state: present
     update_cache: true
-  when: ansible_os_family == 'Debian' and 'k3s_worker' in group_names
+  when:
+    - ansible_facts["os_family"] == "Debian"
+    - "'k3s_worker' in group_names"
 
 - name: Enable avahi reflector
   ansible.builtin.lineinfile:
@@ -79,13 +81,13 @@
   when: "'k3s_worker' in group_names"
 
 - name: Enable and start service avahi-daemon, if not started
-  service:
+  ansible.builtin.service:
     name: avahi-daemon
     state: started
-    enabled: yes
+    enabled: true
   when: "'k3s_worker' in group_names"
 
-- name: >-
+- name:
     Install kubernetes python packages for Ansible kubernetes.core.k8s module
   ansible.builtin.pip:
     name:
@@ -98,7 +100,7 @@
     state: disabled
   register: selinux
   notify: Reboot
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts["os_family"] == "RedHat"
 
 - name: Enable IPv4 forwarding
   ansible.posix.sysctl:
@@ -126,13 +128,13 @@
     content: "br_netfilter"
     dest: /etc/modules-load.d/br_netfilter.conf
     mode: "u=rw,g=,o="
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts["os_family"] == "RedHat"
 
 - name: Load br_netfilter
   community.general.modprobe:
     name: br_netfilter
     state: present
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts["os_family"] == "RedHat"
 
 - name: Set bridge-nf-call-iptables (just to be sure)
   ansible.posix.sysctl:
@@ -140,24 +142,24 @@
     value: "1"
     state: present
     reload: true
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts["os_family"] == "RedHat"
   loop:
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
 
 - name: Add /usr/local/bin to sudo secure_path
   ansible.builtin.lineinfile:
-    line: "Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin"
+    line:
+      "Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin"
     regexp: "Defaults(\\s)*secure_path(\\s)*="
     state: present
     insertafter: EOF
     path: /etc/sudoers
     validate: "visudo -cf %s"
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts["os_family"] == "RedHat"
 
 - name: Disable SWAP
-  ansible.builtin.command: |
-    swapoff -a
+  ansible.builtin.command: swapoff -a
   register: output
   changed_when: output.rc != 0
 
@@ -188,7 +190,7 @@
 
 - name: Creating a multipath.conf file
   ansible.builtin.copy:
-    dest: "/etc/multipath.conf"
+    dest: /etc/multipath.conf
     content: |
       blacklist {
           devnode "sda"

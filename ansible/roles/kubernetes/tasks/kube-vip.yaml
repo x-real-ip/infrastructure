@@ -7,43 +7,45 @@
     state: present
   run_once: true
 
-- name: Read template file and apply to the k3s cluster | kube-vip
+- name: Apply kube-vip manifest template
   kubernetes.core.k8s:
     state: present
-    template: "kube-vip.yaml.j2"
+    template: kube-vip.yaml.j2
   run_once: true
 
-- name: Wait until all pods are running | kube-vip
+- name: Wait until all kube-vip pods are running
   kubernetes.core.k8s_info:
     kind: Pod
     namespace: "{{ kube_vip.namespace }}"
     label_selectors:
-      - "app.kubernetes.io/name = kube-vip-ds"
+      - "app.kubernetes.io/name=kube-vip-ds"
   register: pod_list
-  until: pod_list.resources | selectattr('status.phase', 'equalto', 'Running') | map(attribute='status.phase') | unique | list == ['Running']
+  until: >
+    (pod_list.resources | length > 0) and
+    (pod_list.resources | map(attribute='status.phase') | unique | list == ['Running'])
   retries: 15
   delay: 3
   run_once: true
 
-- name: Configure cluster IP in the kube config file to {{ endpoint_url }}
-  ansible.builtin.command: >-
-    k3s kubectl config set-cluster default
+- name: Configure cluster API endpoint in kubeconfig
+  ansible.builtin.command:
+    cmd: >-
+      k3s kubectl config set-cluster default
       --server={{ endpoint_url }}
-      --kubeconfig {{ ansible_user_dir }}/.kube/config
+      --kubeconfig {{ ansible_facts['user_dir'] }}/.kube/config
   vars:
-    endpoint_url: >-
-      https://{{ kube_vip.apiserver_endpoint }}:6443
-  when: endpoint_url is defined
+    endpoint_url: "https://{{ kube_vip.apiserver_endpoint }}:6443"
+  when: kube_vip.apiserver_endpoint is defined
 
-- name: Copy kube config file to the home directory of this local device
+- name: Fetch kubeconfig to local machine
   ansible.builtin.fetch:
-    src: "{{ ansible_user_dir }}/.kube/config"
+    src: "{{ ansible_facts['user_dir'] }}/.kube/config"
     dest: "/home/coen/.kube/"
     flat: true
     fail_on_missing: true
   run_once: true
 
-- name: Render template to localhost | kube-vip
+- name: Render kube-vip template on localhost
   ansible.builtin.include_tasks: render-template.yaml
   vars:
-    template_file: "kube-vip.yaml.j2"
+    template_file: kube-vip.yaml.j2

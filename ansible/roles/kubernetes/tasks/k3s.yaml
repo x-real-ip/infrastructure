@@ -1,46 +1,53 @@
+---
 - name: Create directory k3s
   ansible.builtin.file:
-    path: "/etc/rancher/k3s/config.yaml.d/"
+    path: /etc/rancher/k3s/config.yaml.d/
     state: directory
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ ansible_facts['user_id'] }}"
     mode: "0755"
 
 - name: Copy master config file to all k3s nodes
   ansible.builtin.template:
-    src: "k3s-config-master.yaml.j2"
-    dest: "/etc/rancher/k3s/config.yaml.d/k3s-config-master.yaml"
+    src: k3s-config-master.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml.d/k3s-config-master.yaml
     owner: root
     group: root
     mode: "0644"
     force: false
   when: "'k3s_master' in group_names"
 
+- name: Define first master hostname
+  ansible.builtin.set_fact:
+    first_master_hostname: >-
+      {{ hostvars[groups['k3s_master'][0]]['ansible_facts']['hostname'] }}
+
 - name: Copy init config file to the first k3s master
   ansible.builtin.copy:
-    src: "k3s-config-init.yaml"
-    dest: "/etc/rancher/k3s/config.yaml.d/init-config.yaml"
+    src: k3s-config-init.yaml
+    dest: /etc/rancher/k3s/config.yaml.d/init-config.yaml
     owner: root
     group: root
     mode: "0644"
   when:
     - groups['k3s_master'] | length > 0
-    - hostvars[groups['k3s_master'][0]] is defined
-    - ansible_hostname == hostvars[groups['k3s_master'][0]].ansible_hostname
+    - ansible_facts['hostname'] == first_master_hostname
 
-- name: Copy join config file to all k3 nodes except the first
+- name: Copy join config file to all k3s nodes except the first
   ansible.builtin.template:
-    src: "k3s-config-join.yaml.j2"
-    dest: "/etc/rancher/k3s/config.yaml.d/join-config.yaml"
+    src: k3s-config-join.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml.d/join-config.yaml
     owner: root
     group: root
     mode: "0644"
     force: true
-  when: ansible_hostname != hostvars[groups['k3s_master'][0]]['ansible_hostname']
+  when:
+    - groups['k3s_master'] | length > 0
+    - ansible_facts['hostname'] != first_master_hostname
 
 - name: Copy worker config file to worker nodes
   ansible.builtin.template:
-    src: "k3s-config-worker.yaml.j2"
-    dest: "/etc/rancher/k3s/config.yaml.d/k3s-config-worker.yaml"
+    src: k3s-config-worker.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml.d/k3s-config-worker.yaml
     owner: root
     group: root
     mode: "0644"
@@ -50,12 +57,13 @@
 - name: Download k3s install script
   ansible.builtin.get_url:
     url: https://get.k3s.io
-    dest: "/etc/rancher/k3s/k3s_install.sh"
+    dest: /etc/rancher/k3s/k3s_install.sh
     mode: "0775"
     force: false
 
-- name: Install or upgrade k3s on the master nodes, version {{ k3s_version }}
-  ansible.builtin.command: sh /etc/rancher/k3s/k3s_install.sh
+- name: Install or upgrade k3s on master nodes, version {{ k3s_version }}
+  ansible.builtin.command:
+    cmd: sh /etc/rancher/k3s/k3s_install.sh
   environment:
     INSTALL_K3S_VERSION: "{{ k3s_version }}"
   register: output
@@ -65,8 +73,9 @@
   delay: 5
   when: "'k3s_master' in group_names"
 
-- name: Install or upgrade k3s on the worker nodes, version {{ k3s_version }}
-  ansible.builtin.command: "sh /etc/rancher/k3s/k3s_install.sh agent"
+- name: Install or upgrade k3s on worker nodes, version {{ k3s_version }}
+  ansible.builtin.command:
+    cmd: sh /etc/rancher/k3s/k3s_install.sh agent
   environment:
     INSTALL_K3S_VERSION: "{{ k3s_version }}"
   register: output
@@ -78,10 +87,10 @@
 
 - name: Wait for master node to become ready
   kubernetes.core.k8s_info:
-    kubeconfig: "/etc/rancher/k3s/k3s.yaml"
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
     kind: node
     label_selectors:
-      - "kubernetes.io/hostname = {{ ansible_hostname }}"
+      - "kubernetes.io/hostname={{ ansible_facts['hostname'] }}"
     wait: true
     wait_condition:
       type: Ready
@@ -92,9 +101,13 @@
 
 - name: Check if all Kubernetes master nodes have joined the cluster
   ansible.builtin.command:
-    cmd: kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
+    cmd: >-
+      kubectl get nodes -l node-role.kubernetes.io/master=true -o
+      jsonpath="{.items[*].metadata.name}"
   register: nodes
-  until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s_master'] | length)
+  until:
+    nodes.rc == 0 and (nodes.stdout.split() | length) == (groups['k3s_master'] |
+    length)
   retries: 20
   delay: 10
   changed_when: false
@@ -102,7 +115,8 @@
   when: "'k3s_master' in group_names"
 
 - name: Wait until each worker node is part of the Kubernetes cluster
-  ansible.builtin.command: "kubectl get nodes --no-headers -o custom-columns=:.metadata.name"
+  ansible.builtin.command:
+    cmd: kubectl get nodes --no-headers -o custom-columns=:.metadata.name
   register: kubernetes_nodes
   changed_when: false
   retries: 20
@@ -113,19 +127,18 @@
   run_once: true
   when: "'k3s_master' in group_names"
 
-- name: Create directory .kube
+- name: Create kube config directory
   ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.kube"
+    path: "{{ ansible_facts['user_dir'] }}/.kube"
     state: directory
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ ansible_facts['user_id'] }}"
     mode: "u=rwx,g=rx,o="
-  when: "'k3s_master' in group_names"
 
 - name: Copy kube config file to user home directory
   ansible.builtin.copy:
     src: /etc/rancher/k3s/k3s.yaml
-    dest: "{{ ansible_user_dir }}/.kube/config"
+    dest: "{{ ansible_facts['user_dir'] }}/.kube/config"
     remote_src: true
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ ansible_facts['user_id'] }}"
     mode: "u=rw,g=,o="
   when: "'k3s_master' in group_names"

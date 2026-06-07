@@ -2,6 +2,6 @@
 - name: Uncordon node
   kubernetes.core.k8s_drain:
     state: uncordon
-    name: "{{ ansible_hostname }}"
+    name: "{{ ansible_facts['hostname'] }}"
   retries: 10
   delay: 20
