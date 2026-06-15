@@ -335,16 +335,6 @@ shares:
         iscsi_parameters:
           QueuedCommands:
         mode: ISCSI
-        name: omada-controller-config
-      - alias:
-        auth_networks: []
-        groups:
-          - auth:
-            authmethod: NONE
-            portal: 1
-        iscsi_parameters:
-          QueuedCommands:
-        mode: ISCSI
         name: omada-controller-config-2
       - alias:
         auth_networks: []
@@ -435,7 +425,7 @@ shares:
         iscsi_parameters:
           QueuedCommands:
         mode: ISCSI
-        name: frigate-config
+        name: frigate-config-2
       - alias:
         auth_networks: []
         groups:
@@ -485,7 +475,7 @@ shares:
         iscsi_parameters:
           QueuedCommands:
         mode: ISCSI
-        name: jellyseerr-config
+        name: seerr-config
       - alias:
         auth_networks: []
         groups:
@@ -542,12 +532,12 @@ shares:
       - avail_threshold: null
         blocksize: 4096
         comment: ""
-        disk: zvol/ssd/containers/k8s/frigate-config
+        disk: zvol/ssd/containers/k8s/frigate-config-2
         enabled: true
         filesize: "0"
         insecure_tpc: true
-        name: frigate-config
-        path: zvol/ssd/containers/k8s/frigate-config
+        name: frigate-config-2
+        path: zvol/ssd/containers/k8s/frigate-config-2
         pblocksize: false
         ro: false
         rpm: SSD
@@ -613,12 +603,12 @@ shares:
       - avail_threshold: null
         blocksize: 4096
         comment: ""
-        disk: zvol/ssd/containers/k8s/jellyseerr-config
+        disk: zvol/ssd/containers/k8s/seerr-config
         enabled: true
         filesize: "0"
         insecure_tpc: true
-        name: jellyseerr-config
-        path: zvol/ssd/containers/k8s/jellyseerr-config
+        name: seerr-config
+        path: zvol/ssd/containers/k8s/seerr-config
         pblocksize: false
         ro: false
         rpm: SSD
@@ -661,20 +651,6 @@ shares:
         insecure_tpc: true
         name: music-assistant-server-config
         path: zvol/ssd/containers/k8s/music-assistant-server-config
-        pblocksize: false
-        ro: false
-        rpm: SSD
-        type: DISK
-        xen: false
-      - avail_threshold: null
-        blocksize: 4096
-        comment: ""
-        disk: zvol/ssd/containers/k8s/omada-controller-config
-        enabled: true
-        filesize: "0"
-        insecure_tpc: true
-        name: omada-controller-config
-        path: zvol/ssd/containers/k8s/omada-controller-config
         pblocksize: false
         ro: false
         rpm: SSD
