@@ -86,11 +86,18 @@
   ansible.builtin.set_fact:
     kubectl_checksum_sha256: "{{ kubectl_checksum_file['content'] | b64decode | trim }}"
 
+- name: Remove kubectl directory if checksum is invalid
+  ansible.builtin.file:
+    path: "/opt/kubectl-{{ resolved_kubectl_version }}"
+    state: absent
+  when: kubectl_binary_sha256 | trim != kubectl_checksum_sha256 | trim
+  become: true
+
 - name: Assert that the kubectl binary is OK
   ansible.builtin.assert:
     that:
       - kubectl_binary_sha256 | trim == kubectl_checksum_sha256 | trim
-    fail_msg: "The sha256sum of the kubectl binary does not match the expected checksum."
+    fail_msg: "The sha256sum of the kubectl binary does not match the expected checksum. The corrupt download has been removed."
     success_msg: "kubectl sha256 checksum verified successfully."
 
 - name: Create a symlink to kubectl
@@ -98,11 +105,4 @@
     src: "/opt/kubectl-{{ resolved_kubectl_version }}/kubectl"
     dest: "/usr/bin/kubectl"
     state: link
-  become: true
-
-- name: Remove kubectl directory if checksum is invalid
-  ansible.builtin.file:
-    path: "/opt/kubectl-{{ resolved_kubectl_version }}"
-    state: absent
-  when: kubectl_binary_sha256 | trim != kubectl_checksum_sha256 | trim
   become: true

@@ -1,4 +1,8 @@
 ---
+- name: Load vault variables
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/vault.yaml"
+
 - name: Get repositories JSON
   ansible.builtin.uri:
     url: "https://api.github.com/users/{{ git.user.name }}/repos"
@@ -7,6 +11,7 @@
       Authorization: "token {{ git.token }}"
     return_content: true
   register: github_response
+  no_log: true
 
 - name: Initialize git_repos array
   ansible.builtin.set_fact:

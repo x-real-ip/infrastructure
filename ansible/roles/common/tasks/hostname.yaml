@@ -8,7 +8,7 @@
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
   register: hostname_change
-  when: current_hostname.stdout != 'new_hostname'
+  when: current_hostname.stdout != inventory_hostname
 
 - name: Reboot the machine if hostname changed
   reboot:

@@ -1,7 +1,0 @@
----
-- name: Uninstall apt packages
-  ansible.builtin.apt:
-    pkg:
-      - chrome
-      - firefox
-    state: absent
