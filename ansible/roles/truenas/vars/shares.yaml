@@ -285,6 +285,13 @@ shares:
           - ip: 0.0.0.0
             port: 3260
 
+    zvols:
+      - name: ssd/containers/k8s/authentik-db
+        type: VOLUME
+        volsize: 21474836480
+        volblocksize: "16K"
+        sparse: true
+
     targets:
       - alias:
         auth_networks: []
@@ -507,6 +514,16 @@ shares:
           QueuedCommands:
         mode: ISCSI
         name: syncthing-config
+      - alias:
+        auth_networks: []
+        groups:
+          - auth:
+            authmethod: NONE
+            portal: 1
+        iscsi_parameters:
+          QueuedCommands:
+        mode: ISCSI
+        name: authentik-db
 
     extents:
       - avail_threshold: null
@@ -815,6 +832,20 @@ shares:
         insecure_tpc: true
         name: syncthing-config
         path: zvol/ssd/containers/k8s/syncthing-config
+        pblocksize: false
+        ro: false
+        rpm: SSD
+        type: DISK
+        xen: false
+      - avail_threshold: null
+        blocksize: 4096
+        comment: ""
+        disk: zvol/ssd/containers/k8s/authentik-db
+        enabled: true
+        filesize: "0"
+        insecure_tpc: true
+        name: authentik-db
+        path: zvol/ssd/containers/k8s/authentik-db
         pblocksize: false
         ro: false
         rpm: SSD

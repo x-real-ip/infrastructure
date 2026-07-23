@@ -23,6 +23,9 @@
   when: >
     (iscsi_target_query.stdout | from_json | selectattr('name', 'equalto', item.name) | list | length) == 0
 
+- name: Ensure iSCSI-backing zvols exist
+  ansible.builtin.include_tasks: create-iscsi-zvols.yaml
+
 - name: Get current iSCSI extents
   ansible.builtin.include_tasks: get-current-iscsi-extents.yaml
 
