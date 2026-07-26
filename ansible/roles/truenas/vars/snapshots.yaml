@@ -69,3 +69,19 @@ snapshot_tasks:
       dow: sun
       begin: "00:00"
       end: "23:59"
+  - dataset: ssd/containers/k8s/depart-documents
+    recursive: false
+    lifetime_value: 14
+    lifetime_unit: DAY
+    enabled: true
+    exclude: []
+    naming_schema: auto-depart-%Y-%m-%d_%H-%M-%S
+    allow_empty: true
+    schedule:
+      minute: "0"
+      hour: "3"
+      dom: "*"
+      month: "*"
+      dow: "*"
+      begin: "00:00"
+      end: "23:59"
