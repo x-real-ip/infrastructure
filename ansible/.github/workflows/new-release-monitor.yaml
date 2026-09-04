@@ -1,0 +1,38 @@
+---
+name: Check releases
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-releases:
+    uses: x-real-ip/github-actions/.github/workflows/new-release-issue.yaml@main
+    secrets:
+      PAT: ${{ secrets.PAT }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: python
+            type: docker
+            target: library/python
+            bump: true
+            bump_type: containerfile
+            image: "docker.io/python"
+            include_tags: '^3\.[0-9]*-slim$'
+            exclude_tags: ""
+    with:
+      name: ${{ matrix.name }}
+      target: ${{ matrix.target }}
+      type: ${{ matrix.type }}
+      bump: ${{ matrix.bump }}
+      bump_type: ${{ matrix.bump_type }}
+      image: ${{ matrix.image }}
+      include_tags: ${{ matrix.include_tags }}
+      exclude_tags: ${{ matrix.exclude_tags }}
