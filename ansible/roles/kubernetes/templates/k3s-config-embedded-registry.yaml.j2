@@ -1,0 +1,6 @@
+---
+# Enable the distributed OCI registry mirror on this server node. When enabled
+# on the servers, every node in the cluster hosts a local OCI registry on port
+# 6443 and publishes its available images over a peer to peer network on port
+# 5001. See https://docs.k3s.io/installation/registry-mirror
+embedded-registry: true

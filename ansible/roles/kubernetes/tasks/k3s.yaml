@@ -54,6 +54,46 @@
     force: true
   when: "'k3s_worker' in group_names"
 
+- name: Enable the distributed OCI registry mirror on master nodes
+  ansible.builtin.template:
+    src: k3s-config-embedded-registry.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml.d/embedded-registry.yaml
+    owner: root
+    group: root
+    mode: "0644"
+    force: true
+  when:
+    - embedded_registry.enabled
+    - "'k3s_master' in group_names"
+  notify: Restart k3s
+
+- name: Disable the distributed OCI registry mirror on master nodes
+  ansible.builtin.file:
+    path: /etc/rancher/k3s/config.yaml.d/embedded-registry.yaml
+    state: absent
+  when:
+    - not embedded_registry.enabled
+    - "'k3s_master' in group_names"
+  notify: Restart k3s
+
+- name: Mirror registries through the distributed registry on all k3s nodes
+  ansible.builtin.template:
+    src: registries.yaml.j2
+    dest: /etc/rancher/k3s/registries.yaml
+    owner: root
+    group: root
+    mode: "0644"
+    force: true
+  when: embedded_registry.enabled
+  notify: Restart k3s
+
+- name: Stop mirroring registries through the distributed registry
+  ansible.builtin.file:
+    path: /etc/rancher/k3s/registries.yaml
+    state: absent
+  when: not embedded_registry.enabled
+  notify: Restart k3s
+
 - name: Download k3s install script
   ansible.builtin.get_url:
     url: https://get.k3s.io
