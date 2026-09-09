@@ -14,8 +14,10 @@
   hosts: k3s_worker
   gather_facts: true
   become: true
-  become_user: root
+  serial: 1
+  any_errors_fatal: true
   tasks:
-    - name: Start system-updates
+    - name: Start rolling-update
       ansible.builtin.include_role:
-        name: system-upgrade
+        name: kubernetes
+        tasks_from: rolling-update

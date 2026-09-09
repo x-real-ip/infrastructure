@@ -3,23 +3,28 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  vars:
+    # "Pass any (allow internet)" rule for the NOT (network of things) VLAN
+    shelly_internet_rule_uuid: "ecdde7e5-1c71-46aa-b897-a9515f29a294"
   tasks:
-    - name: Enable firwall rule to allow internet access to NOT network
-      ansible.builtin.include_role:
-        name: opnsense
-        tasks_from: toggle-rule.yaml
-      vars:
-        opnsense_rule_uuid: "ecdde7e5-1c71-46aa-b897-a9515f29a294"
-        opnsense_enable_rule: true
+    - name: Update shelly devices with internet access temporarily enabled
+      block:
+        - name: Enable firewall rule to allow internet access to NOT network
+          ansible.builtin.include_role:
+            name: opnsense
+            tasks_from: toggle-rule.yaml
+          vars:
+            opnsense_rule_uuid: "{{ shelly_internet_rule_uuid }}"
+            opnsense_enable_rule: true
 
-    - name: Enable firwall rule to allow internet access to NOT network
-      ansible.builtin.include_role:
-        name: shelly
-
-    - name: Disable firwall rule to disallow internet access to NOT network
-      ansible.builtin.include_role:
-        name: opnsense
-        tasks_from: toggle-rule.yaml
-      vars:
-        opnsense_rule_uuid: "ecdde7e5-1c71-46aa-b897-a9515f29a294"
-        opnsense_enable_rule: false
+        - name: Update firmware and apply the desired state on shelly devices
+          ansible.builtin.include_role:
+            name: shelly
+      always:
+        - name: Disable firewall rule to disallow internet access to NOT network
+          ansible.builtin.include_role:
+            name: opnsense
+            tasks_from: toggle-rule.yaml
+          vars:
+            opnsense_rule_uuid: "{{ shelly_internet_rule_uuid }}"
+            opnsense_enable_rule: false

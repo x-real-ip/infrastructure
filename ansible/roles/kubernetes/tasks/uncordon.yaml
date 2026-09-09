@@ -3,5 +3,8 @@
   kubernetes.core.k8s_drain:
     state: uncordon
     name: "{{ ansible_facts['hostname'] }}"
+  delegate_to: "{{ kubernetes_control_node }}"
+  register: uncordon_result
+  until: uncordon_result is succeeded
   retries: 10
   delay: 20

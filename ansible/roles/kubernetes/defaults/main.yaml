@@ -1,0 +1,13 @@
+---
+# Node to run kubectl/k8s API calls against. Master nodes have a kubeconfig and
+# the "kubernetes" python library, worker nodes do not, so tasks for a worker
+# are delegated to the first master.
+kubernetes_control_node: >-
+  {{ inventory_hostname if 'k3s_master' in group_names
+     else groups['k3s_master'][0] }}
+
+# Seconds to wait for pods to be evicted before the drain is considered failed
+kubernetes_drain_timeout: 300
+
+# Seconds to wait for a node to report Ready again after the reboot
+kubernetes_node_ready_timeout: 600

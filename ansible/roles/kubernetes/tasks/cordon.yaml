@@ -3,3 +3,4 @@
   kubernetes.core.k8s_drain:
     state: cordon
     name: "{{ ansible_facts['hostname'] }}"
+  delegate_to: "{{ kubernetes_control_node }}"
