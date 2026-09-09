@@ -14,53 +14,31 @@
   ansible.builtin.uri:
     url: http://{{ item }}/settings?led_status_disable={{ settings.led_status_disable }}
   changed_when: settings_content.json.led_status_disable != settings.led_status_disable
-  when: "'SHDM' in settings_content.json.device.type"
+  when: "'led_status_disable' in settings_content.json"
   register: device_set_led_status_disable_content
   until: device_set_led_status_disable_content.status == 200
   retries: 10
   delay: 5
   ignore_errors: true
 
-- name: Set device name for dimmers from inventory var for {{ hostvars[item]['device_name'] }}
+- name: Set device name from inventory var for {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/settings?name={{ hostvars[item]['device_name'] }}
   changed_when: settings_content.json.name != hostvars[item]['device_name']
-  when: "'SHDM' in settings_content.json.device.type"
+  when: "'name' in settings_content.json"
   register: device_set_name_content
   until: device_set_name_content.status == 200
   retries: 10
   delay: 5
   ignore_errors: true
 
-- name: Set channel name for dimmers from inventory var for {{ hostvars[item]['device_name'] }}
+- name: Set channel name for dimmers/bulbs from inventory var for {{ hostvars[item]['device_name'] }}
   ansible.builtin.uri:
     url: http://{{ item }}/settings/light/0?name={{ hostvars[item]['device_name'] }}
   changed_when: settings_content.json.lights[0].name != hostvars[item]['device_name']
-  when: "'SHDM' in settings_content.json.device.type"
-  register: device_set_name_content
-  until: device_set_name_content.status == 200
-  retries: 10
-  delay: 5
-  ignore_errors: true
-
-- name: Set device name for bulps from inventory var for {{ hostvars[item]['device_name'] }}
-  ansible.builtin.uri:
-    url: http://{{ item }}/settings?name={{ hostvars[item]['device_name'] }}
-  changed_when: settings_content.json.name != hostvars[item]['device_name']
-  when: "'SHCB' in settings_content.json.device.type"
-  register: device_set_name_content
-  until: device_set_name_content.status == 200
-  retries: 10
-  delay: 5
-  ignore_errors: true
-
-- name: Set device name for relays from inventory var for {{ hostvars[item]['device_name'] }}
-  ansible.builtin.uri:
-    url: http://{{ item }}/settings?name={{ hostvars[item]['device_name'] }}
-  changed_when: settings_content.json.name != hostvars[item]['device_name']
-  when: "'SHPLG' in settings_content.json.device.type or 'SHSW' in settings_content.json.device.type"
-  register: device_set_name_content
-  until: device_set_name_content.status == 200
+  when: "'lights' in settings_content.json"
+  register: device_set_channel_name_content
+  until: device_set_channel_name_content.status == 200
   retries: 10
   delay: 5
   ignore_errors: true
@@ -119,7 +97,7 @@
   ansible.builtin.uri:
     url: http://{{ item }}/settings/relay/0?default_state={{ settings.default_state }}
   changed_when: settings_content.json.relays[0].default_state != settings.default_state
-  when: "'SHPLG' in settings_content.json.device.type or 'SHSW' in settings_content.json.device.type"
+  when: "'relays' in settings_content.json"
   register: result
   until: result.status == 200
   retries: 10

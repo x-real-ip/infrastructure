@@ -2,7 +2,8 @@
 # Enable/Disable update firmware task
 update_firmware: true
 
-# Allow internet by turning on the firewall rule "Pass any (allow internet)" in the NOT (network of things) VLAN, this is needed if "update_firmware" is set to "true"
+# Allow internet by turning on the firewall rule "Pass any (allow internet)" in the NOT
+# (network of things) VLAN, this is needed if "update_firmware" is set to "true"
 allow_internet_access: true
 
 # Shelly device settings

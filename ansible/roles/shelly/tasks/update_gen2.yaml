@@ -20,13 +20,24 @@
         "id": 1,
         "method": "Shelly.Update",
         "params": {
-          "stage": "stable" {
-          }
+          "stage": "stable"
         }
       }
-  register: result
-  until: result.status == 200
+  register: update_result
+  until: update_result.status == 200
   retries: 10
   delay: 5
+  when: result.json != {}
+  ignore_errors: true
+
+- name: Wait for {{ item }} to come back up after firmware update
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Shelly.GetStatus
+    body_format: json
+    return_content: true
+  register: post_update_status_result
+  until: post_update_status_result.status == 200 and post_update_status_result.json.sys.uptime | int < 50
+  retries: 20
+  delay: 10
   when: result.json != {}
   ignore_errors: true

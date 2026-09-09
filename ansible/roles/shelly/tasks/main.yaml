@@ -7,6 +7,7 @@
   loop: "{{ groups['shelly'] }}"
 
 - name: Update
+  when: update_firmware
   block:
     - name: Start reboot task
       ansible.builtin.include_tasks: reboot_gen{{ hostvars[item].gen }}.yaml

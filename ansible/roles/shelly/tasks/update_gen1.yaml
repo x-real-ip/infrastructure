@@ -29,13 +29,13 @@
         msg:
           - Old firmware version is {{ ota_content.json.old_version }}
           - New firmware version is {{ ota_content.json.new_version }}
-      ignore_errors: true
 
     - name: Start updating {{ hostvars[item]['device_name'] }}
       ansible.builtin.uri:
         url: http://{{ item }}/ota?update=true
         body_format: json
-      until: result.status == 200
+      register: start_update_result
+      until: start_update_result.status == 200
       retries: 10
       delay: 5
       ignore_errors: true
@@ -56,7 +56,3 @@
         msg:
           - "Update firmware from {{ ota_content.json.old_version }} to {{ ota_content_after_upgrade.json.old_version }} succeed!"
       changed_when: ota_content.json.old_version != ota_content_after_upgrade.json.old_version
-      until: result.status == 200
-      retries: 10
-      delay: 5
-      ignore_errors: true
