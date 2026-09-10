@@ -8,7 +8,30 @@
   ansible.builtin.command: >
     midclt call sharing.nfs.create '{{ item | to_json }}'
   loop: "{{ shares.nfs }}"
-  changed_when: false
-  when: >
-    (sharing_nfs_query.stdout | from_json | selectattr('path', 'equalto', item.path) | list | length) == 0
-  register: sharing_nfs_create
+  loop_control:
+    label: "{{ item.path }}"
+  vars:
+    existing: >-
+      {{ sharing_nfs_query.stdout | from_json
+         | selectattr('path', 'equalto', item.path) | list }}
+  changed_when: true
+  when: existing | length == 0
+
+- name: Update NFS shares that drifted from the desired state
+  ansible.builtin.command: >
+    midclt call sharing.nfs.update {{ existing[0].id }} '{{ item | to_json }}'
+  loop: "{{ shares.nfs }}"
+  loop_control:
+    label: "{{ item.path }}"
+  vars:
+    existing: >-
+      {{ sharing_nfs_query.stdout | from_json
+         | selectattr('path', 'equalto', item.path) | list }}
+    managed: >-
+      {{ existing[0] | default({}) | dict2items
+         | selectattr('key', 'in', item.keys() | list)
+         | items2dict }}
+  changed_when: true
+  when:
+    - existing | length == 1
+    - managed != item

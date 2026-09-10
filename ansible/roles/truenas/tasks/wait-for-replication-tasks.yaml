@@ -1,33 +1,71 @@
 ---
-- name: Wait for replication tasks to finish running
+- name: Wait for replication to the peer TrueNAS node to finish
   ansible.builtin.command: midclt call replication.query
   register: replication_query
   changed_when: false
-  until: >-
-    replication_query.stdout | from_json
-    | selectattr('enabled', 'equalto', true)
-    | map(attribute='job') | select('truthy')
-    | selectattr('state', 'defined')
-    | map(attribute='state')
-    | select('in', ['RUNNING', 'WAITING', 'PENDING'])
-    | list | length == 0
+  vars:
+    peer_tasks: >-
+      {{ replication_query.stdout | from_json
+         | selectattr('enabled')
+         | selectattr('ssh_credentials', 'truthy')
+         | selectattr('ssh_credentials.attributes.host',
+                      'in', truenas_peer_addresses)
+         | list }}
+    finished_jobs: >-
+      {{ peer_tasks | map(attribute='job') | select('truthy')
+         | selectattr('id', 'gt',
+                      truenas_replication_job_baseline | default(0) | int)
+         | selectattr('state', 'defined')
+         | rejectattr('state', 'in', ['RUNNING', 'WAITING', 'PENDING'])
+         | list }}
+  until: finished_jobs | length == peer_tasks | length
   retries: 100
   delay: 20
 
-- name: Fail when a replication task did not succeed
-  vars:
-    replication_states: >-
+- name: Split replication tasks into peer and other
+  ansible.builtin.set_fact:
+    truenas_peer_replication: >-
       {{ replication_query.stdout | from_json
-         | selectattr('enabled', 'equalto', true)
-         | map(attribute='job') | select('truthy')
-         | selectattr('state', 'defined')
-         | map(attribute='state') | list }}
+         | selectattr('enabled')
+         | selectattr('ssh_credentials', 'truthy')
+         | selectattr('ssh_credentials.attributes.host',
+                      'in', truenas_peer_addresses)
+         | list }}
+    truenas_other_replication: >-
+      {{ replication_query.stdout | from_json
+         | selectattr('enabled')
+         | rejectattr('ssh_credentials', 'truthy')
+         | list
+         + (replication_query.stdout | from_json
+            | selectattr('enabled')
+            | selectattr('ssh_credentials', 'truthy')
+            | rejectattr('ssh_credentials.attributes.host',
+                         'in', truenas_peer_addresses)
+            | list) }}
+
+- name: Warn about failed replication outside the peer node
+  ansible.builtin.debug:
+    msg: >-
+      Let op: {{ item.name }} (id {{ item.id }}) staat op
+      {{ (item.job | default({})).state | default('onbekend') }}. Dit doel
+      hoort niet bij de master-switch, dus het blokkeert de switch niet.
+  loop: "{{ truenas_other_replication }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: (item.job | default({})).state | default('') == 'FAILED'
+
+- name: Fail when replication to the peer TrueNAS node did not succeed
+  vars:
+    peer_states: >-
+      {{ truenas_peer_replication | map(attribute='job') | select('truthy')
+         | selectattr('state', 'defined') | map(attribute='state') | list }}
   ansible.builtin.assert:
     that:
-      - "'FAILED' not in replication_states"
+      - "'FAILED' not in peer_states"
     fail_msg: >-
-      Replication did not complete successfully on {{ inventory_hostname }}.
-      States: {{ replication_states }}
+      Replication to the peer TrueNAS node failed on {{ inventory_hostname }}.
+      States: {{ peer_states }}. Switching master now would leave the new
+      master without up-to-date data.
     success_msg: >-
-      Replication finished on {{ inventory_hostname }}.
-      States: {{ replication_states }}
+      Replication to the peer TrueNAS node finished on {{ inventory_hostname }}.
+      States: {{ peer_states }}

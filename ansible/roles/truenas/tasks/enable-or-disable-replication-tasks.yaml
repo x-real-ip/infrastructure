@@ -5,5 +5,35 @@
 - name: Enable or disable replication tasks
   ansible.builtin.command: >
     midclt call replication.update {{ item }} '{"enabled": {{ enabled | lower }}}'
-  changed_when: false
+  register: replication_update
+  changed_when: replication_update.rc == 0
+  failed_when: false
   loop: "{{ replication_query.stdout | from_json | map(attribute='id') | list }}"
+
+- name: Report replication tasks that could not be updated
+  ansible.builtin.debug:
+    msg: >-
+      Replicatietaak {{ item.item }} kon niet op enabled={{ enabled }} gezet
+      worden en is overgeslagen: {{ (item.stderr | default(item.stdout))
+      | trim | truncate(200) }}
+  loop: "{{ replication_update.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.rc | default(0) != 0
+
+- name: Fail when not a single replication task could be updated
+  vars:
+    updated: >-
+      {{ replication_update.results | selectattr('rc', 'equalto', 0)
+         | list | length }}
+    total: "{{ replication_update.results | length }}"
+  ansible.builtin.assert:
+    that:
+      - total | int == 0 or updated | int > 0
+    fail_msg: >-
+      Geen enkele van de {{ total }} replicatietaken op {{ inventory_hostname }}
+      kon worden bijgewerkt. Dat wijst op een breder probleem dan een losse
+      kapotte taak.
+    success_msg: >-
+      {{ updated }} van {{ total }} replicatietaken op
+      enabled={{ enabled }} gezet.

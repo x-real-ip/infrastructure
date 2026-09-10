@@ -1,9 +1,38 @@
 ---
-- name: Query replication tasks
+- name: Query snapshot tasks
   ansible.builtin.include_tasks: get-pool-snapshot-tasks.yaml
 
-- name: Enable or disable replication tasks
+- name: Enable or disable snapshot tasks
   ansible.builtin.command: >
     midclt call pool.snapshottask.update {{ item }} '{"enabled": {{ enabled | lower }}}'
-  changed_when: false
+  register: snapshottask_update
+  changed_when: snapshottask_update.rc == 0
+  failed_when: false
   loop: "{{ pool_snapshottask_query.stdout | from_json | map(attribute='id') | list }}"
+
+- name: Report snapshot tasks that could not be updated
+  ansible.builtin.debug:
+    msg: >-
+      Snapshottaak {{ item.item }} kon niet op enabled={{ enabled }} gezet
+      worden en is overgeslagen: {{ (item.stderr | default(item.stdout))
+      | trim | truncate(200) }}
+  loop: "{{ snapshottask_update.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.rc | default(0) != 0
+
+- name: Fail when not a single snapshot task could be updated
+  vars:
+    updated: >-
+      {{ snapshottask_update.results | selectattr('rc', 'equalto', 0)
+         | list | length }}
+    total: "{{ snapshottask_update.results | length }}"
+  ansible.builtin.assert:
+    that:
+      - total | int == 0 or updated | int > 0
+    fail_msg: >-
+      Geen enkele van de {{ total }} snapshottaken op {{ inventory_hostname }}
+      kon worden bijgewerkt.
+    success_msg: >-
+      {{ updated }} van {{ total }} snapshottaken op
+      enabled={{ enabled }} gezet.

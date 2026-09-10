@@ -1,3 +1,10 @@
 ---
 vip_address: "10.0.100.10"
 vip_interface: "ens18"
+
+truenas_peer_hosts: "{{ groups['truenas'] | difference([inventory_hostname]) }}"
+truenas_peer_addresses: >-
+  {{ truenas_peer_hosts
+     + (truenas_peer_hosts
+        | map('regex_replace', '^(.+)$', '\1.' ~ localdomain) | list)
+     + (truenas_peer_hosts | map('extract', hostvars, 'ansible_host') | list) }}

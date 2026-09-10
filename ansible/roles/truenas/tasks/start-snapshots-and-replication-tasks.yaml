@@ -2,13 +2,23 @@
 - name: Query snapshot tasks
   ansible.builtin.include_tasks: get-pool-snapshot-tasks.yaml
 
+- name: Query replication tasks before starting snapshots
+  ansible.builtin.include_tasks: get-replication-tasks.yaml
+
+- name: Record the highest replication job id seen so far
+  ansible.builtin.set_fact:
+    truenas_replication_job_baseline: >-
+      {{ replication_query.stdout | from_json
+         | map(attribute='job') | select('truthy')
+         | map(attribute='id') | list | max | default(0) }}
+
 - name: Run existing snapshot tasks
   ansible.builtin.include_tasks: run-pool-snapshot-tasks.yaml
   vars:
-    id: "{{ pool_snapshottask_query.stdout | from_json | map(attribute='id') | list }}"
-
-- name: Query replication tasks
-  ansible.builtin.include_tasks: get-replication-tasks.yaml
+    id: >-
+      {{ pool_snapshottask_query.stdout | from_json
+         | selectattr('enabled')
+         | map(attribute='id') | list }}
 
 - name: Wait for replication tasks to complete
   ansible.builtin.include_tasks: wait-for-replication-tasks.yaml
