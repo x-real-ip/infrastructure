@@ -14,4 +14,5 @@
       ansible.builtin.template:
         src: "{{ item.path }}"
         dest: "/home/coen/Downloads/{{ item.path | basename | regex_replace('\\.j2$', '') }}"
+        mode: "0644"
       loop: "{{ template_files.files }}"

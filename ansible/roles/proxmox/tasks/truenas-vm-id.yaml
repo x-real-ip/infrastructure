@@ -1,8 +1,11 @@
 ---
 - name: Get TrueNAS VM id
-  shell: |
-    VM_NAME="truenas-*"
-    VM_ID=$(qm list | grep "${VM_NAME}" | awk '{print $1}')
-    echo "${VM_ID}"
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      VM_NAME="truenas-*"
+      VM_ID=$(qm list | grep "${VM_NAME}" | awk '{print $1}')
+      echo "${VM_ID}"
+    executable: /bin/bash
   register: truenas_vm_id_output
-  changed_when: False
+  changed_when: false

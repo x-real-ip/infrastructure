@@ -20,4 +20,4 @@
       VIP ownership violation detected. Expected exactly 1 master, found {{
       master_count }}. Masters: {{ masters }}
     success_msg: >-
-      VIP ownership valid. Master node: {{ masters[0] }}
+      VIP ownership valid. Master node: {{ masters | join(', ') }}

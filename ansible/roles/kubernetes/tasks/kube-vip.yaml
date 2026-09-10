@@ -35,6 +35,7 @@
       --kubeconfig {{ ansible_facts['user_dir'] }}/.kube/config
   vars:
     endpoint_url: "https://{{ kube_vip.apiserver_endpoint }}:6443"
+  changed_when: true
   when: kube_vip.apiserver_endpoint is defined
 
 - name: Fetch kubeconfig to local machine

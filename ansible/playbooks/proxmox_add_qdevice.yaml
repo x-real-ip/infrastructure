@@ -25,14 +25,14 @@
       register: pve_a_pubkey
       changed_when: pve_a_pubkey.rc != 0
       delegate_to: pve-a
-      run_once: true
+      run_once: true  # noqa: run-once[task]
 
     - name: Put SSH public key in authorized_keys on odroid-c4
       ansible.builtin.lineinfile:
         path: "/root/.ssh/authorized_keys"
         line: "{{ pve_a_pubkey.stdout }}"
         create: true
-        mode: 600
+        mode: "0600"
       when: ansible_hostname == "odroid-c4"
 
     - name: Add Qdevice and except fingerprint
@@ -43,4 +43,4 @@
         responses:
           "Are you sure you want to continue connecting (yes/no/[fingerprint])?": "yes"
       delegate_to: pve-a
-      run_once: true
+      run_once: true  # noqa: run-once[task]

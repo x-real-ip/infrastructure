@@ -30,7 +30,7 @@
   when: result.json != {}
   ignore_errors: true
 
-- name: Wait for {{ item }} to come back up after firmware update
+- name: Wait for the device after the firmware update {{ item }}
   ansible.builtin.uri:
     url: http://{{ item }}/rpc/Shelly.GetStatus
     body_format: json

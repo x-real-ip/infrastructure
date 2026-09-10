@@ -1,5 +1,6 @@
 ---
-- name: Migrate VM {{ item }} to the target host
-  ansible.builtin.command: "qm migrate {{ item }} {{ proxmox_target_host }} --online --with-local-disks"
-
-
+- name: Migrate VM to the target host {{ item }}
+  ansible.builtin.command:
+    "qm migrate {{ item }} {{ proxmox_target_host }} --online
+    --with-local-disks"
+  changed_when: true

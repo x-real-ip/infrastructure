@@ -1,21 +1,23 @@
 ---
 - name: Get list of ArgoCD applications with label storage=truenas
-  shell: |
+  ansible.builtin.shell: |
     kubectl get applications -l storage=truenas -o jsonpath='{.items[*].metadata.name}' -n argocd
   register: app_list
   changed_when: false
   run_once: true
 
 - name: Patch each ArgoCD application
-  shell: |
+  ansible.builtin.shell: |
     kubectl patch app {{ item }} -n argocd --type=merge -p '{"metadata": {"finalizers": ["resources-finalizer.argocd.argoproj.io"]}}'
   loop: "{{ app_list.stdout.split() }}"
   when: app_list.stdout != ""
+  changed_when: true
   run_once: true
 
 - name: Delete ArgoCD application
-  shell: |
+  ansible.builtin.shell: |
     kubectl delete app {{ item }} -n argocd
   loop: "{{ app_list.stdout.split() }}"
   when: app_list.stdout != ""
+  changed_when: true
   run_once: true

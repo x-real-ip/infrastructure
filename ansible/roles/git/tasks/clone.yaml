@@ -32,5 +32,5 @@
     update: true
   loop: "{{ git_repos }}"
   become: false
-  ignore_errors: true
+  failed_when: false
   when: item.name != 'infrastructure'

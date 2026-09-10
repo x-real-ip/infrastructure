@@ -1,18 +1,21 @@
 ---
-- ansible.builtin.debug:
+- name: Announce start of VM migration
+  ansible.builtin.debug:
     msg: "Start migrating VM's"
 
 - name: Execute qm list command and extract VM IDs
-  ansible.builtin.shell: "qm list | awk 'NR>1 {print $1}'"
+  ansible.builtin.shell:
+    cmd: set -o pipefail && qm list | awk 'NR>1 {print $1}'
+    executable: /bin/bash
   register: qm_list_result
   changed_when: false
 
 - name: Convert all VM id's to JSON list
-  set_fact:
+  ansible.builtin.set_fact:
     vm_ids: "{{ qm_list_result.stdout_lines | map('int') | list }}"
 
 - name: Remove excluded VM id's from the list
-  set_fact:
+  ansible.builtin.set_fact:
     filtered_vm_ids: "{{ vm_ids | difference(proxmox_exclude_vm_id_list) }}"
 
 - name: Migrate each VM

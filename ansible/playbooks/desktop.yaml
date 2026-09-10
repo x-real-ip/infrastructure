@@ -146,4 +146,3 @@
 #     - name: Pull kube config file
 #       ansible.builtin.import_role:
 #         name: kube-config
-

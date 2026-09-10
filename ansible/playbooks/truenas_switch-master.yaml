@@ -23,7 +23,7 @@
   remote_user: admin
   become: true
   vars:
-    vip_regex: "{{ vip_address | regex_escape }}"
+    vip_regex: "{{ vip_address | regex_escape }}/32"
   tasks:
     - name: Ensure VIP systemd service exists
       ansible.builtin.include_role:
@@ -52,7 +52,6 @@
   remote_user: admin
   tasks:
     - name: Start snapshots and replication tasks from TrueNAS master
-      run_once: true
       ansible.builtin.include_role:
         name: truenas
         tasks_from: start-snapshots-and-replication-tasks.yaml
@@ -83,11 +82,10 @@
   become: true
   remote_user: admin
   vars:
-    vip_regex: "{{ vip_address | regex_escape }}"
+    vip_regex: "{{ vip_address | regex_escape }}/32"
   tasks:
     - name: Run snapshot and replication logic only on TrueNAS master
       when: ansible_local.truenas.is_master
-      run_once: true
       block:
         - name: Start snapshots and replication tasks from TrueNAS master
           ansible.builtin.include_role:
@@ -115,6 +113,14 @@
             enabled: false
             state: stopped
 
+        - name: Verify the VIP is really gone before the other node claims it
+          ansible.builtin.command: ip -o addr show
+          register: vip_release_check
+          changed_when: false
+          until: vip_release_check.stdout is not regex(vip_regex)
+          retries: 10
+          delay: 3
+
     - name:
         Enable snapshots and replication tasks on TrueNAS that will become
         master
@@ -140,6 +146,14 @@
             daemon_reload: true
             enabled: true
             state: started
+
+        - name: Verify the VIP is actually up on the new master
+          ansible.builtin.command: ip -o addr show
+          register: vip_claim_check
+          changed_when: false
+          until: vip_claim_check.stdout is regex(vip_regex)
+          retries: 10
+          delay: 3
 
     - name: Detect TrueNAS master
       ansible.builtin.include_role:

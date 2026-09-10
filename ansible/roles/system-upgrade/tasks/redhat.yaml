@@ -1,5 +1,6 @@
 ---
-- name: Upgrade dnf packages
+# Een upgrade-rol hoort juist naar latest te gaan; dat is het doel.
+- name: Upgrade dnf packages  # noqa: package-latest
   ansible.builtin.dnf:
     name: "*"
     state: latest

@@ -1,5 +1,5 @@
 ---
-- name: Wait for {{ item }} to become up
+- name: Wait until the device is up {{ item }}
   ansible.builtin.uri:
     url: http://{{ item }}/rpc/Shelly.GetStatus
     body_format: json

@@ -83,3 +83,4 @@
         directory }}/{{ server.private_key }} --cert={{ directory }}/{{
         server.certificate }} --dry-run=client --output=yaml > {{ directory
         }}/{{ kubernetes.secret_name }}.yaml"
+      changed_when: true

@@ -23,7 +23,8 @@
   ansible.builtin.apt:
     update_cache: true
 
-- name: Install VSCodium
+# Bewust latest: deze rol houdt VSCodium bij.
+- name: Install VSCodium  # noqa: package-latest
   ansible.builtin.apt:
     name: codium
     state: latest

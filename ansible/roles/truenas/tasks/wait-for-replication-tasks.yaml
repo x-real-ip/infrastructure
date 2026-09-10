@@ -1,16 +1,33 @@
 ---
-- name: Wait for replication tasks to complete
+- name: Wait for replication tasks to finish running
   ansible.builtin.command: midclt call replication.query
   register: replication_query
   changed_when: false
-  until: >
-    replication_query.stdout
-    | from_json
+  until: >-
+    replication_query.stdout | from_json
     | selectattr('enabled', 'equalto', true)
-    | map(attribute='job')
+    | map(attribute='job') | select('truthy')
     | selectattr('state', 'defined')
     | map(attribute='state')
-    | list
-    | unique == ['SUCCESS']
+    | select('in', ['RUNNING', 'WAITING', 'PENDING'])
+    | list | length == 0
   retries: 100
   delay: 20
+
+- name: Fail when a replication task did not succeed
+  vars:
+    replication_states: >-
+      {{ replication_query.stdout | from_json
+         | selectattr('enabled', 'equalto', true)
+         | map(attribute='job') | select('truthy')
+         | selectattr('state', 'defined')
+         | map(attribute='state') | list }}
+  ansible.builtin.assert:
+    that:
+      - "'FAILED' not in replication_states"
+    fail_msg: >-
+      Replication did not complete successfully on {{ inventory_hostname }}.
+      States: {{ replication_states }}
+    success_msg: >-
+      Replication finished on {{ inventory_hostname }}.
+      States: {{ replication_states }}

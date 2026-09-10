@@ -9,8 +9,8 @@
     method: POST
     user: "{{ opnsense_api_key }}"
     password: "{{ opnsense_api_secret }}"
-    force_basic_auth: yes
-    validate_certs: no
+    force_basic_auth: true
+    validate_certs: false
   register: toggle_result
 
 - name: Apply OPNsense firewall changes
@@ -19,5 +19,5 @@
     method: POST
     user: "{{ opnsense_api_key }}"
     password: "{{ opnsense_api_secret }}"
-    force_basic_auth: yes
-    validate_certs: no
+    force_basic_auth: true
+    validate_certs: false
