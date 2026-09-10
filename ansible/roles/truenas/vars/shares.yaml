@@ -19,10 +19,22 @@ shares:
       hosts: []
       mapall_group: ""
       mapall_user: ""
+      maproot_group: home
+      maproot_user: coen
+      networks: []
+      path: /mnt/ssd/webdav
+      ro: false
+      security: []
+    - aliases: []
+      comment: ""
+      enabled: true
+      hosts: []
+      mapall_group: ""
+      mapall_user: ""
       maproot_group: ""
       maproot_user: ""
       networks: []
-      path: /mnt/ssd/webdav
+      path: /mnt/ssd/webdav/paperless-consume
       ro: false
       security: []
     - aliases: []
