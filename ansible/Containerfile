@@ -1,4 +1,4 @@
-FROM docker.io/python:3.12-slim
+FROM docker.io/python:3.14-slim
 
 ENV ANSIBLE_FORCE_COLOR=1 \
     ANSIBLE_STDOUT_CALLBACK=default
