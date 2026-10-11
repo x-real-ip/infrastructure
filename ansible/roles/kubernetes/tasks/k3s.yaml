@@ -16,11 +16,6 @@
     force: false
   when: "'k3s_master' in group_names"
 
-- name: Define first master hostname
-  ansible.builtin.set_fact:
-    first_master_hostname: >-
-      {{ hostvars[groups['k3s_master'][0]]['ansible_facts']['hostname'] }}
-
 - name: Copy init config file to the first k3s master
   ansible.builtin.copy:
     src: k3s-config-init.yaml
@@ -30,7 +25,7 @@
     mode: "0644"
   when:
     - groups['k3s_master'] | length > 0
-    - ansible_facts['hostname'] == first_master_hostname
+    - inventory_hostname == groups['k3s_master'][0]
 
 - name: Copy join config file to all k3s nodes except the first
   ansible.builtin.template:
@@ -42,7 +37,7 @@
     force: true
   when:
     - groups['k3s_master'] | length > 0
-    - ansible_facts['hostname'] != first_master_hostname
+    - inventory_hostname != groups['k3s_master'][0]
 
 - name: Copy worker config file to worker nodes
   ansible.builtin.template:
