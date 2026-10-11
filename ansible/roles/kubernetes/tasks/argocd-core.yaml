@@ -12,6 +12,7 @@
     url: https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd.version }}/manifests/install.yaml
     dest: ~/argocd-core.yaml
     mode: "0664"
+    force: true
   run_once: true
 
 - name: Apply manifest to the cluster | {{ argocd.name }}
