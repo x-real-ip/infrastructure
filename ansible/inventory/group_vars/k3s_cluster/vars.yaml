@@ -33,13 +33,13 @@ argocd:
   deploy: true
   name: argocd-core
   namespace: argocd
-  version: "stable"
+  version: "v3.5.4" # curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name
 
 kube_vip:
   deploy: true
   name: "kube-vip"
   namespace: "kube-system"
-  image_tag: "v1.2.3" # curl -s https://api.github.com/repos/kube-vip/kube-vip/releases/latest | jq -r .tag_name
+  image_tag: "v1.2.4" # curl -s https://api.github.com/repos/kube-vip/kube-vip/releases/latest | jq -r .tag_name
   apiserver_endpoint: "10.0.100.100"
   flannel_iface: "ens18"
 
