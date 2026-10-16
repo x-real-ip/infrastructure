@@ -45,7 +45,7 @@ Store `tofu@pve!provider=<value>` in Bitwarden. The value is shown only once.
 
 The web interface and API of every node use a certificate from the stamx CA.
 The stack reads them from `~/certs/proxmox` (variable `certificate_dir`):
-`<node>.crt`, `<node>.key` and `ca.crt`. How to create them is described in
+`<node>.crt` and `<node>.key`. How to create them is described in
 [Create the node certificates](https://x-real-ip.github.io/documentation/hypervisor/#5-create-the-node-certificates).
 The node private keys end up in the encrypted state.
 

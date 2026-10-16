@@ -5,7 +5,7 @@ variable "state_passphrase" {
 }
 
 variable "certificate_dir" {
-  description = "Directory with <node>.crt, <node>.key and ca.crt for the node certificates."
+  description = "Directory with <node>.crt and <node>.key for the node certificates."
   type        = string
   default     = "~/certs/proxmox"
 }
