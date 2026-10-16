@@ -3,3 +3,4 @@
 *.secret.tfvars
 crash.log
 crash.*.log
+*.tfstate.backup
