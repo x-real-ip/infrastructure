@@ -1,0 +1,2 @@
+---
+opnsense_host: "https://opnsense.{{ localdomain }}"

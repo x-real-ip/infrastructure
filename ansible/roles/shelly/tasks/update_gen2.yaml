@@ -1,0 +1,43 @@
+---
+- name: Check for available updates on {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Shelly.CheckForUpdate
+    body_format: json
+    return_content: true
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Start update {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    body_format: json
+    method: POST
+    url: http://{{ item }}/rpc
+    body: |
+      {
+        "id": 1,
+        "method": "Shelly.Update",
+        "params": {
+          "stage": "stable"
+        }
+      }
+  register: update_result
+  until: update_result.status == 200
+  retries: 10
+  delay: 5
+  when: result.json != {}
+  ignore_errors: true
+
+- name: Wait for the device after the firmware update {{ item }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Shelly.GetStatus
+    body_format: json
+    return_content: true
+  register: post_update_status_result
+  until: post_update_status_result.status == 200 and post_update_status_result.json.sys.uptime | int < 50
+  retries: 20
+  delay: 10
+  when: result.json != {}
+  ignore_errors: true

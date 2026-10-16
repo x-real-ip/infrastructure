@@ -1,0 +1,80 @@
+---
+- name: Run WOL only on reachable master node
+  hosts: proxmox
+  gather_facts: false
+  ignore_unreachable: true
+  tasks:
+    - name: Ping node to check reachability
+      ansible.builtin.ping:
+      register: ping_result
+      ignore_unreachable: true
+      failed_when: false
+
+    - name: Set reachability fact
+      ansible.builtin.set_fact:
+        is_reachable: "{{ ping_result.ping is defined }}"
+
+    - name: Gather facts for reachable nodes only
+      ansible.builtin.setup:
+      when: is_reachable | bool
+
+    - name: Set master fact
+      ansible.builtin.set_fact:
+        is_master:
+          "{{ is_reachable | bool and
+          (ansible_local.proxmox.is_master | default(false) | bool) }}"
+
+    # Zonder deze check slaat het playbook stilzwijgend alles over wanneer
+    # geen enkele node zichzelf master noemt (bijvoorbeeld als
+    # /etc/ansible/facts.d/proxmox.fact ontbreekt) en meldt het toch succes.
+    - name: Validate exactly one reachable master
+      delegate_to: localhost
+      run_once: true  # noqa: run-once[task]
+      vars:
+        masters: >-
+          {{
+            groups['proxmox']
+            | map('extract', hostvars, 'is_master')
+            | zip(groups['proxmox'])
+            | selectattr('0')
+            | map('last')
+            | list
+          }}
+      ansible.builtin.assert:
+        that:
+          - masters | length == 1
+        fail_msg: >-
+          Expected exactly 1 reachable Proxmox master, found {{ masters | length
+          }}: {{ masters }}. Check /etc/ansible/facts.d/proxmox.fact on both
+          nodes.
+        success_msg: >-
+          Master node: {{ masters | join(', ') }}
+
+    - name: Run logic only on reachable master node
+      when:
+        - is_reachable | bool
+        - ansible_local.proxmox.is_master | default(false) | bool
+      block:
+        - name: Set standby hostname fact
+          ansible.builtin.set_fact:
+            proxmox_standby_host:
+              "{{ 'pve-b' if inventory_hostname == 'pve-a' else 'pve-a' }}"
+
+        - name: Show standby hostname
+          ansible.builtin.debug:
+            msg:
+              "Standby node is {{ proxmox_standby_host }} mac: {{
+              proxmox_mac_addresses[proxmox_standby_host] }}"
+
+        - name: Wake up standby Proxmox node using Wake-on-LAN
+          community.general.wakeonlan:
+            mac: "{{ proxmox_mac_addresses[proxmox_standby_host] }}"
+            broadcast: 255.255.255.255
+          changed_when: true
+
+        - name: Wait for standby Proxmox node to become reachable
+          ansible.builtin.wait_for:
+            host: "{{ hostvars[proxmox_standby_host].ansible_host }}"
+            port: 22
+            timeout: 600
+            state: started

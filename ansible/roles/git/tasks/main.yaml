@@ -1,0 +1,29 @@
+---
+- name: Update packaged cache
+  ansible.builtin.import_role:
+    name: system-update-package-cache
+
+- name: Install git
+  ansible.builtin.package:
+    name: git
+    state: present
+
+- name: Set Git user name
+  community.general.git_config:
+    name: user.name
+    value: "{{ git.user.name }}"
+    scope: global
+  when: git.user.name is defined
+  become: false
+
+- name: Set Git user email
+  community.general.git_config:
+    name: user.email
+    value: "{{ git.user.email }}"
+    scope: global
+  when: git.user.email is defined
+  become: false
+
+- name: Import clone task
+  ansible.builtin.include_tasks: clone.yaml
+  when: git.clone_user_repos

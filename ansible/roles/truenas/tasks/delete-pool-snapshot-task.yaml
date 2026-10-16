@@ -1,0 +1,5 @@
+---
+- name: Delete snapshot task
+  ansible.builtin.command: "midclt call pool.snapshottask.delete {{ item }}"
+  changed_when: false
+  loop: "{{ id }}"

@@ -1,0 +1,5 @@
+---
+- name: Get current ZFS zvols
+  ansible.builtin.command: midclt call pool.dataset.query '[["type", "=", "VOLUME"]]'
+  register: zvol_query
+  changed_when: false

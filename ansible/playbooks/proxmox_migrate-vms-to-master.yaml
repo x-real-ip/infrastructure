@@ -1,0 +1,39 @@
+---
+- name: Play for the desired state of the proxmox servers
+  hosts: proxmox
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Get TrueNAS VM id on Proxmox server that is not master
+      ansible.builtin.include_role:
+        name: proxmox
+        tasks_from: truenas-vm-id.yaml
+      when: not ansible_local.proxmox.is_master | bool
+
+    - name: Convert TrueNAS VM id to a list of integers
+      ansible.builtin.set_fact:
+        proxmox_exclude_vm_id_list:
+          "{{ truenas_vm_id_output.stdout_lines | map('int') | list }}"
+      when: not ansible_local.proxmox.is_master | bool
+
+    - name: Set standby hostname for migration (hardcoded)
+      ansible.builtin.set_fact:
+        proxmox_target_host: >-
+          {% if inventory_hostname == "pve-a" and not ansible_local.proxmox.is_master | bool %}
+            pve-b
+          {% elif inventory_hostname == "pve-b" and not ansible_local.proxmox.is_master | bool %}
+            pve-a
+          {% else %}
+            ""
+          {% endif %}
+
+    - name: Debug master standby
+      ansible.builtin.debug:
+        msg: "The master standby is {{ proxmox_target_host | trim }}"
+      when: not ansible_local.proxmox.is_master | bool
+
+    - name: Include task vm migration
+      ansible.builtin.include_role:
+        name: proxmox
+        tasks_from: vm-migration.yaml
+      when: not ansible_local.proxmox.is_master | bool

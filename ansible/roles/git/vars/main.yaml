@@ -1,0 +1,16 @@
+---
+git:
+  user:
+    name: "x-real-ip"
+    email: "c.github@stamx.nl"
+  token: "{{ vault_git_token }}"
+  clone_user_repos: true
+  excluded_repos:
+    - "backup-to-cloud"
+    - "rsync-container"
+    - "workorder"
+    - "grafana"
+    - "reverse-proxy"
+    - "radicale"
+    - "ser2net"
+    - "dsmr-reader"

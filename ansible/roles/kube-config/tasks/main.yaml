@@ -1,0 +1,7 @@
+---
+- name: Fetch a file from a remote host
+  ansible.builtin.fetch:
+    src: /root/.kube/config
+    dest: "/home/coen/.kube/"
+    flat: true
+  run_once: true

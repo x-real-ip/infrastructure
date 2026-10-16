@@ -1,0 +1,87 @@
+---
+snapshot_tasks:
+  - dataset: ssd
+    recursive: true
+    lifetime_value: 1
+    lifetime_unit: WEEK
+    enabled: true
+    exclude:
+      - ssd/homedirs
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    allow_empty: true
+    schedule:
+      minute: "0"
+      hour: "15"
+      dom: "*"
+      month: "*"
+      dow: "*"
+      begin: "00:00"
+      end: "23:59"
+  - dataset: hdd
+    recursive: true
+    lifetime_value: 1
+    lifetime_unit: WEEK
+    enabled: true
+    exclude:
+      - hdd/backups/proxmox
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    allow_empty: true
+    schedule:
+      minute: "0"
+      hour: "15"
+      dom: "*"
+      month: "*"
+      dow: "*"
+      begin: "00:00"
+      end: "23:59"
+  - dataset: hdd
+    recursive: true
+    lifetime_value: 2
+    lifetime_unit: WEEK
+    enabled: true
+    exclude:
+      - hdd/containers/k8s/plex-media
+      - hdd/backups/proxmox
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    allow_empty: true
+    schedule:
+      minute: "0"
+      hour: "15"
+      dom: "*"
+      month: "*"
+      dow: sun
+      begin: "00:00"
+      end: "23:59"
+  - dataset: ssd
+    recursive: true
+    lifetime_value: 2
+    lifetime_unit: WEEK
+    enabled: true
+    exclude:
+      - ssd/homedirs
+    naming_schema: auto-%Y-%m-%d_%H-%M-%S
+    allow_empty: true
+    schedule:
+      minute: "0"
+      hour: "15"
+      dom: "*"
+      month: "*"
+      dow: sun
+      begin: "00:00"
+      end: "23:59"
+  - dataset: ssd/containers/k8s/depart-documents
+    recursive: false
+    lifetime_value: 14
+    lifetime_unit: DAY
+    enabled: true
+    exclude: []
+    naming_schema: auto-depart-%Y-%m-%d_%H-%M-%S
+    allow_empty: true
+    schedule:
+      minute: "0"
+      hour: "3"
+      dom: "*"
+      month: "*"
+      dow: "*"
+      begin: "00:00"
+      end: "23:59"

@@ -1,0 +1,71 @@
+- name: Install CA into system trust store (Debian/Ubuntu)
+  become: true
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "/usr/local/share/ca-certificates/{{ item.name | lower | replace(' ', '-') }}.crt"
+    mode: "0644"
+  loop: "{{ ca_trust_nss_certs }}"
+
+- name: Update system CA certificates
+  become: true
+  ansible.builtin.command: update-ca-certificates
+  changed_when: true
+
+- name: Install NSS tools (certutil/modutil)
+  ansible.builtin.package:
+    name: libnss3-tools
+    state: present
+  become: true
+
+- name: Ensure home directory exists
+  ansible.builtin.file:
+    path: "/home/{{ ca_trust_nss_user }}"
+    state: directory
+    owner: "{{ ca_trust_nss_user }}"
+    group: "{{ ca_trust_nss_user }}"
+    mode: "0755"
+  become: true
+
+- name: Ensure NSS DB directory exists
+  ansible.builtin.file:
+    path: "/home/{{ ca_trust_nss_user }}/{{ ca_trust_nss_db_dir }}"
+    state: directory
+    owner: "{{ ca_trust_nss_user }}"
+    group: "{{ ca_trust_nss_user }}"
+    mode: "0700"
+  become: true
+
+- name: Initialize NSS database if missing
+  ansible.builtin.command: >
+    certutil -N
+    -d sql:/home/{{ ca_trust_nss_user }}/{{ ca_trust_nss_db_dir }}
+    --empty-password
+  args:
+    creates: "/home/{{ ca_trust_nss_user }}/{{ ca_trust_nss_db_dir }}/cert9.db"
+  become: true
+  become_user: "{{ ca_trust_nss_user }}"
+
+- name: Check if certificate exists
+  ansible.builtin.command: >
+    certutil -L
+    -d sql:/home/{{ ca_trust_nss_user }}/{{ ca_trust_nss_db_dir }}
+    -n "{{ item.name }}"
+  loop: "{{ ca_trust_nss_certs }}"
+  register: cert_check
+  failed_when: false
+  changed_when: false
+  become: true
+  become_user: "{{ ca_trust_nss_user }}"
+
+- name: Import CA certificates into NSS DB
+  ansible.builtin.command: >
+    certutil -A
+    -d sql:/home/{{ ca_trust_nss_user }}/{{ ca_trust_nss_db_dir }}
+    -n "{{ item.item.name }}"
+    -t "{{ item.item.trust }}"
+    -i "{{ role_path }}/files/{{ item.item.src }}"
+  loop: "{{ cert_check.results }}"
+  when: item.rc != 0
+  become: true
+  become_user: "{{ ca_trust_nss_user }}"
+  changed_when: true

@@ -1,0 +1,34 @@
+---
+- name: Check device_name variable length
+  ansible.builtin.assert:
+    that:
+      - hostvars[item].device_name | length <= 29
+    fail_msg: "Variable value '{{ hostvars[item].device_name }}' is greater than 29 characters"
+  loop: "{{ groups['shelly'] }}"
+
+- name: Update
+  when: update_firmware
+  block:
+    - name: Start reboot task
+      ansible.builtin.include_tasks: reboot_gen{{ hostvars[item].gen }}.yaml
+      loop: "{{ groups['shelly'] }}"
+
+    - name: Check if device is up
+      ansible.builtin.include_tasks: up-check_gen{{ hostvars[item].gen }}.yaml
+      loop: "{{ groups['shelly'] }}"
+
+    - name: Start update task
+      ansible.builtin.include_tasks: update_gen{{ hostvars[item].gen }}.yaml
+      loop: "{{ groups['shelly'] }}"
+
+- name: Start desired state task
+  ansible.builtin.include_tasks: desired_state_gen{{ hostvars[item].gen }}.yaml
+  loop: "{{ groups['shelly'] }}"
+
+- name: Start reboot task
+  ansible.builtin.include_tasks: reboot_gen{{ hostvars[item].gen }}.yaml
+  loop: "{{ groups['shelly'] }}"
+
+- name: Check if device is up
+  ansible.builtin.include_tasks: up-check_gen{{ hostvars[item].gen }}.yaml
+  loop: "{{ groups['shelly'] }}"

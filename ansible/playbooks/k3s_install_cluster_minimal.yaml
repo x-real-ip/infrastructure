@@ -1,0 +1,13 @@
+---
+- name: Import bare K3s installation playbook
+  import_playbook: k3s_install_cluster_bare.yaml
+
+- name: Play for installing a K3s cluster with minimal applications and components
+  hosts: k3s_master
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Include main task
+      ansible.builtin.include_role:
+        name: kubernetes
+        tasks_from: main.yaml

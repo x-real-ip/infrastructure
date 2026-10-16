@@ -1,0 +1,31 @@
+---
+- name: Create namespace | {{ argocd.name }}
+  kubernetes.core.k8s:
+    kind: Namespace
+    api_version: v1
+    name: "{{ argocd.namespace }}"
+    state: present
+  run_once: true
+
+- name: Download public manifest | {{ argocd.name }}
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd.version }}/manifests/install.yaml
+    dest: ~/argocd-core.yaml
+    mode: "0664"
+    force: true
+  run_once: true
+
+- name: Apply manifest to the cluster | {{ argocd.name }}
+  kubernetes.core.k8s:
+    namespace: "{{ argocd.namespace }}"
+    state: present
+    src: ~/argocd-core.yaml
+  run_once: true
+
+- name: Deploy app-of-core-apps
+  ansible.builtin.include_tasks: "argocd-app-of-core-apps.yaml"
+  when: argocd.deploy
+
+- name: Deploy app-of-apps
+  ansible.builtin.include_tasks: "argocd-app-of-apps.yaml"
+  when: argocd.deploy

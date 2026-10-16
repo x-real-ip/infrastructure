@@ -1,0 +1,24 @@
+---
+- name: Run tasks on proxmox to set local fact about current master status
+  delegate_to: "{{ proxmox_host }}" # From inventory
+  become: true
+  remote_user: root
+  block:
+    - name: Ensure fact directory exists
+      ansible.builtin.file:
+        path: "/etc/ansible/facts.d"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Propagate master status to Proxmox host
+      ansible.builtin.copy:
+        dest: /etc/ansible/facts.d/proxmox.fact
+        content: |
+          {
+            "is_master": {{ is_master | to_json }}
+          }
+        owner: root
+        group: root
+        mode: "0644"

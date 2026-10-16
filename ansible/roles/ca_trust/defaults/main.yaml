@@ -1,0 +1,7 @@
+ca_trust_nss_user: "coen"
+ca_trust_nss_db_dir: ".local/share/pki/nssdb"
+
+ca_trust_nss_certs:
+  - name: "Stamx CA"
+    src: "stamx-ca-certificate.crt"
+    trust: "C,,"

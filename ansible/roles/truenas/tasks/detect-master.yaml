@@ -1,0 +1,30 @@
+---
+- name: Get IP addresses on host
+  ansible.builtin.command: ip -o addr show
+  register: ip_addr
+  changed_when: false
+
+- name: Determine VIP ownership
+  ansible.builtin.set_fact:
+    is_master: "{{ ip_addr.stdout is regex(vip_regex) }}"
+
+- name: Ensure local facts directory exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/ansible/facts.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Persist TrueNAS master status as local fact
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/ansible/facts.d/truenas.fact
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      {
+        "is_master": {{ is_master | to_json }}
+      }

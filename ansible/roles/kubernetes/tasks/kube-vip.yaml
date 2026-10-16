@@ -1,0 +1,52 @@
+---
+- name: Create namespace | kube-vip
+  kubernetes.core.k8s:
+    kind: Namespace
+    api_version: v1
+    name: "{{ kube_vip.namespace }}"
+    state: present
+  run_once: true
+
+- name: Apply kube-vip manifest template
+  kubernetes.core.k8s:
+    state: present
+    template: kube-vip.yaml.j2
+  run_once: true
+
+- name: Wait until all kube-vip pods are running
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ kube_vip.namespace }}"
+    label_selectors:
+      - "app.kubernetes.io/name=kube-vip-ds"
+  register: pod_list
+  until: >
+    (pod_list.resources | length > 0) and
+    (pod_list.resources | map(attribute='status.phase') | unique | list == ['Running'])
+  retries: 15
+  delay: 3
+  run_once: true
+
+- name: Configure cluster API endpoint in kubeconfig
+  ansible.builtin.command:
+    cmd: >-
+      k3s kubectl config set-cluster default
+      --server={{ endpoint_url }}
+      --kubeconfig {{ ansible_facts['user_dir'] }}/.kube/config
+  vars:
+    endpoint_url: "https://{{ kube_vip.apiserver_endpoint }}:6443"
+  changed_when: true
+  when: kube_vip.apiserver_endpoint is defined
+
+- name: Fetch kubeconfig to local machine
+  ansible.builtin.fetch:
+    src: "{{ ansible_facts['user_dir'] }}/.kube/config"
+    dest: "/home/coen/.kube/"
+    flat: true
+    fail_on_missing: true
+  run_once: true
+
+- name: Render kube-vip template on localhost
+  ansible.builtin.include_tasks: render-template.yaml
+  vars:
+    template_file: kube-vip.yaml.j2

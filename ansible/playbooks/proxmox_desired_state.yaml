@@ -1,0 +1,50 @@
+---
+- name: Play for the desired state of the proxmox servers
+  hosts: proxmox
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Set authorized key taken from file
+      ansible.posix.authorized_key:
+        user: root
+        state: present
+        key: "{{ lookup('file', '~/.ssh/ansible.pub') }}"
+
+    - name: Update apt repo and cache on
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+        upgrade: dist
+
+    - name: Set timezone
+      community.general.timezone:
+        name: "{{ system_timezone }}"
+      when:
+        (system_timezone is defined) and (system_timezone != "Your/Timezone")
+
+    - name: Install packages
+      ansible.builtin.package:
+        name:
+          - debian-goodies
+          - wakeonlan
+        state: present
+
+    - name: Run checkrestart command
+      ansible.builtin.command: checkrestart
+      register: needs_restart
+      changed_when: needs_restart.rc != 0
+
+    - name: Print checkrestart results
+      ansible.builtin.debug:
+        var: needs_restart.stdout_lines[0]
+
+    - name:
+        Run a task if the specified string is present in stdout_lines and the
+        number is not zero
+      ansible.builtin.debug:
+        msg:
+          "The specified string is present in the output and the number is not
+          zero."
+      when:
+        "'processes using old versions of upgraded files' in
+        needs_restart.stdout_lines[0]"

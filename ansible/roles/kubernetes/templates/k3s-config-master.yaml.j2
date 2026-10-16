@@ -1,0 +1,13 @@
+---
+write-kubeconfig-mode: "0644"
+token: "{{ k3s_token }}"
+node-name: {{ ansible_hostname }}
+disable:
+  - "traefik"
+  - "servicelb"
+  - "local-storage"
+disable-cloud-controller: true
+disable-helm-controller: true
+tls-san:
+  - "{{ kube_vip.apiserver_endpoint }}"
+

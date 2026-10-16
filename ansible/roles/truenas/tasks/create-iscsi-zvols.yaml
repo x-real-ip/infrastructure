@@ -1,0 +1,13 @@
+---
+- name: Get current ZFS zvols
+  ansible.builtin.include_tasks: get-current-zvols.yaml
+
+- name: Ensure iSCSI-backing zvols exist
+  ansible.builtin.command: >
+    midclt call pool.dataset.create '{{ item | to_json }}'
+  loop: "{{ shares.iscsi.zvols }}"
+  loop_control:
+    label: "{{ item.name }}"
+  changed_when: true
+  when: >
+    (zvol_query.stdout | from_json | selectattr('id', 'equalto', item.name) | list | length) == 0
