@@ -1,0 +1,33 @@
+---
+# Enable/Disable update firmware task
+update_firmware: true
+
+# Allow internet by turning on the firewall rule "Pass any (allow internet)" in the NOT
+# (network of things) VLAN, this is needed if "update_firmware" is set to "true"
+allow_internet_access: true
+
+# Shelly device settings
+settings:
+  coiot:
+    enable: true
+    peer: "10.33.33.100:5683"
+  sntp:
+    enable: true
+    server: "10.0.40.1"
+  eco_mode_enabled: false
+  default_state: "last"
+  ap:
+    enable: false
+  ap_roaming:
+    enable: true
+    rssi_threshold: -85
+  voltage_limit: 254
+  websocket:
+    enable: false
+    server: "ws://home-assistant.{{ localdomain }}/api/shelly/ws"
+  bluetooth:
+    enable: true
+    enable_rpc: true
+    enable_gateway: true
+  transition_time: 0 # Miliseconds (max 5000)
+  led_status_disable: true

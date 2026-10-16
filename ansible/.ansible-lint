@@ -1,0 +1,17 @@
+---
+exclude_paths:
+  # Vervangen door truenas_switch-master.yaml. Dit playbook gebruikt
+  # `hosts: "pve-{{ hostvars[...] }}"`, wat pas at runtime te resolven is
+  # en dus principieel niet door een statische syntax-check komt.
+  - playbooks/_old_update_proxmox_rolling-update-nodes.yaml
+
+skip_list:
+  # Beide regels zijn naamgevingsconventies, geen bugs. Ze aanzetten
+  # vraagt om een repo-brede hernoeming:
+  #   var-naming[no-role-prefix] -> vip_address wordt truenas_vip_address,
+  #     ook in group_vars/all en in alle templates die ernaar verwijzen.
+  #   role-name -> roldirectories als system-upgrade worden system_upgrade,
+  #     plus elke verwijzing in de playbooks.
+  # Zet ze aan zodra je die refactor wilt doen.
+  - var-naming[no-role-prefix]
+  - role-name

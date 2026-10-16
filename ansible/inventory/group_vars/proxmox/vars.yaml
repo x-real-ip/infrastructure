@@ -1,0 +1,4 @@
+---
+proxmox_mac_addresses:
+  pve-a: "{{ vault_pve_a_mac_address }}"
+  pve-b: "{{ vault_pve_b_mac_address }}"

@@ -1,0 +1,8 @@
+---
+# Registries that are mirrored through the embedded distributed registry.
+# An entry without endpoints only uses the peer to peer mirror, with a fallback
+# to the upstream registry itself.
+mirrors:
+{% for registry in embedded_registry.mirrors %}
+  "{{ registry }}": {}
+{% endfor %}

@@ -1,0 +1,23 @@
+---
+- name: Ensure NFS client is installed
+  ansible.builtin.import_role:
+    name: nfs-client
+  become: true
+
+- name: Ensure mountpoint directory exists before mount (on local FS)
+  ansible.builtin.file:
+    path: "{{ mount.directory }}/{{ item.folder }}"
+    state: directory
+    mode: "0770"
+  loop: "{{ mount.points }}"
+  become: false
+
+- name: Mount NFS share
+  ansible.posix.mount:
+    src: "{{ nfs.server }}:{{ item.nfs_path }}"
+    path: "{{ mount.directory }}/{{ item.folder }}"
+    fstype: nfs
+    opts: defaults
+    state: mounted
+  loop: "{{ mount.points }}"
+  become: true

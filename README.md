@@ -6,3 +6,9 @@
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/x-real-ip/infrastructure/main?logo=github)
 
 Read documentation at <https://x-real-ip.github.io/documentation/>
+
+| Directory | Contents |
+| --------- | -------- |
+| `ansible` | Ansible playbooks and roles for the configuration inside machines |
+| `scripts` | Helper scripts for backups, iSCSI and sealed secrets |
+| `templates` | Template for new repositories |

@@ -1,0 +1,128 @@
+---
+- name: Get current settings from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings
+    body_format: json
+    return_content: true
+  register: settings_content
+  until: settings_content.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Disable wifi status LED light for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?led_status_disable={{ settings.led_status_disable }}
+  changed_when: settings_content.json.led_status_disable != settings.led_status_disable
+  when: "'led_status_disable' in settings_content.json"
+  register: device_set_led_status_disable_content
+  until: device_set_led_status_disable_content.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set device name from inventory var for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?name={{ hostvars[item]['device_name'] }}
+  changed_when: settings_content.json.name != hostvars[item]['device_name']
+  when: "'name' in settings_content.json"
+  register: device_set_name_content
+  until: device_set_name_content.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set channel name for dimmers/bulbs from inventory var for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings/light/0?name={{ hostvars[item]['device_name'] }}
+  changed_when: settings_content.json.lights[0].name != hostvars[item]['device_name']
+  when: "'lights' in settings_content.json"
+  register: device_set_channel_name_content
+  until: device_set_channel_name_content.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Enable/disable ap roaming for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?ap_roaming_enabled={{ settings.ap_roaming.enable }}
+  changed_when: settings_content.json.ap_roaming.enabled != settings.ap_roaming.enable
+  register: device_ap_romaing
+  until: device_ap_romaing.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set ap roaming rssi threshold for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?ap_roaming_threshold={{ settings.ap_roaming.rssi_threshold }}
+  changed_when: settings_content.json.ap_roaming.threshold != settings.ap_roaming.rssi_threshold
+  register: device_ap_romaing_rssi
+  until: device_ap_romaing_rssi.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Enable/disable coiot and set peer for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?coiot_enable={{ settings.coiot.enable }}&coiot_peer={{ settings.coiot.peer }}
+  changed_when: settings_content.json.coiot.enabled != settings.coiot.enable or settings_content.json.coiot.peer != settings.coiot.peer
+  register: device_coiot
+  until: device_coiot.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Enable/disable sntp and set address for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?sntp_enable={{ settings.sntp.enable }}&sntp_server={{ settings.sntp.server }}
+  changed_when: settings_content.json.sntp.enabled != settings.sntp.enable or settings_content.json.sntp.server != settings.sntp.server
+  register: device_sntp
+  until: device_sntp.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Enable/disable eco mode for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings?eco_mode_enabled={{ settings.eco_mode_enabled }}
+  changed_when: settings_content.json.eco_mode_enabled != settings.eco_mode_enabled
+  register: device_eco_mode
+  until: device_eco_mode.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Enable/disable relays default state for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings/relay/0?default_state={{ settings.default_state }}
+  changed_when: settings_content.json.relays[0].default_state != settings.default_state
+  when: "'relays' in settings_content.json"
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Enable/disable lights default state for {{ hostvars[item].device_name }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings/light/0?default_state={{ settings.default_state }}
+  changed_when: settings_content.json.lights[0].default_state != settings.default_state
+  when: "'lights' in settings_content.json"
+  register: device_default_state
+  until: device_default_state.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set transition time for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/settings/?transition={{ hostvars[item].settings.transition_time | default(settings.transition_time) }}
+    timeout: 30
+  changed_when: settings_content.json.transition != (hostvars[item].settings.transition_time | default(settings.transition_time))
+  when: "'transition' in settings_content.json"
+  register: device_transition_time
+  until: device_transition_time.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true

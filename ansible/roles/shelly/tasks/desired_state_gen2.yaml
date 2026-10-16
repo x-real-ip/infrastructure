@@ -1,0 +1,177 @@
+---
+- name: Get sys config from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Sys.GetConfig
+    body_format: json
+    return_content: true
+  register: get_sys_result
+  until: get_sys_result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set sys config for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    body_format: json
+    method: POST
+    url: http://{{ item }}/rpc
+    body: |
+      {
+        "id": 1,
+        "method": "Sys.SetConfig",
+        "params": {
+          "config": {
+            "device": {
+              "name": "{{ hostvars[item]['device_name'] }}",
+              "eco_mode": {{ settings.eco_mode_enabled }}
+            },
+            "sntp": {
+              "server": "{{ settings.sntp.server }}"
+            }
+          }
+        }
+      }
+  register: result
+  changed_when: get_sys_result.json.device.name != hostvars[item]['device_name']
+  until: result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Get wifi config from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Wifi.GetConfig
+    body_format: json
+    return_content: true
+  register: get_wifi_config_result
+  until: get_wifi_config_result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set wifi config for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    body_format: json
+    method: POST
+    url: http://{{ item }}/rpc
+    body: |
+      {
+        "id": 1,
+        "method": "WiFi.SetConfig",
+        "params": {
+          "config": {
+            "ap": {
+              "enable": {{ settings.ap.enable }}
+            },
+            "roam": {
+              "rssi_thr": {{ settings.ap_roaming.enable | ternary(settings.ap_roaming.rssi_threshold | int, -80) }}
+            }
+          }
+        }
+      }
+  register: result
+  changed_when: get_wifi_config_result.json.ap.enable != settings.ap.enable or
+    get_wifi_config_result.json.roam.rssi_thr != settings.ap_roaming.rssi_threshold
+  until: result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Get switch config from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Switch.GetConfig?id=0
+    body_format: json
+    return_content: true
+  register: get_switch_result
+  until: get_switch_result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set voltage limit for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    body_format: json
+    method: GET
+    url: 'http://{{ item }}/rpc/Switch.SetConfig?id=0&config={"voltage_limit":{{ settings.voltage_limit }}}'
+  register: result
+  changed_when: get_switch_result.json.voltage_limit != settings.voltage_limit
+  until: result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Get outbound websocket config from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/WS.GetConfig
+    body_format: json
+    return_content: true
+  register: get_ws_result
+  until: get_ws_result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set websocket config for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    body_format: json
+    method: POST
+    url: http://{{ item }}/rpc
+    body: |
+      {
+        "id": 1,
+        "method": "WS.SetConfig",
+        "params": {
+          "config": {
+            "enable": {{ settings.websocket.enable }},
+            "server": "{{ settings.websocket.server }}"
+          }
+        }
+      }
+  register: result
+  changed_when: get_ws_result.json.enable != settings.websocket.enable or
+    get_ws_result.json.server != settings.websocket.server
+  until: result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Get BLE config from {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/BLE.GetConfig
+    body_format: json
+    return_content: true
+  register: get_ble_result
+  until: get_ble_result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true
+
+- name: Set BLE config for {{ hostvars[item]['device_name'] }}
+  ansible.builtin.uri:
+    body_format: json
+    method: POST
+    url: http://{{ item }}/rpc
+    body: |
+      {
+        "id": 1,
+        "method": "BLE.SetConfig",
+        "params": {
+          "config": {
+            "enable": {{ settings.bluetooth.enable }},
+            "rpc": {
+              "enable": {{ settings.bluetooth.enable_rpc }}
+            },
+            "observer": {
+              "enable": {{ settings.bluetooth.enable_gateway }}
+            }
+          }
+        }
+      }
+  register: result
+  changed_when: get_ble_result.json.enable != settings.bluetooth.enable or
+    get_ble_result.json.rpc.enable != settings.bluetooth.enable_rpc or
+    get_ble_result.json.observer.enable != settings.bluetooth.enable_gateway
+  until: result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true

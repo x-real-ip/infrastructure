@@ -1,0 +1,52 @@
+---
+name: Ansible image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ansible/**
+      - .github/workflows/ansible-image.yaml
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Same steps as x-real-ip/github-actions build-and-push.yaml, which can only
+# build ./Containerfile under the name of the repository.
+env:
+  IMAGE_NAME: ansible
+  IMAGE_TAGS: latest ${{ github.sha }}
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+
+jobs:
+  build-and-push-image:
+    name: Build and push image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build image
+        uses: redhat-actions/buildah-build@v3
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          platforms: amd64
+          tags: ${{ env.IMAGE_TAGS }}
+          oci: true
+          context: ansible
+          containerfiles: |
+            ansible/Containerfile
+
+      - name: Push to ghcr.io
+        uses: redhat-actions/push-to-registry@v3
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ env.IMAGE_TAGS }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}

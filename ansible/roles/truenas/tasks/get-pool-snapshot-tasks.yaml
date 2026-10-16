@@ -1,0 +1,5 @@
+---
+- name: Get current snapshot tasks
+  ansible.builtin.command: midclt call pool.snapshottask.query
+  register: pool_snapshottask_query
+  changed_when: false

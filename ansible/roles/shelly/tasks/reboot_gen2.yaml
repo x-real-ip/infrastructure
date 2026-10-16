@@ -1,0 +1,9 @@
+---
+- name: Reboot {{ item }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/rpc/Shelly.Reboot
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5
+  ignore_errors: true

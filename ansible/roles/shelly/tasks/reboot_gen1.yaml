@@ -1,0 +1,10 @@
+---
+- name: Reboot {{ item }}
+  ansible.builtin.uri:
+    url: http://{{ item }}/reboot
+    body_format: json
+  register: content
+  until: content.json.ok
+  retries: 10
+  delay: 5
+  ignore_errors: true

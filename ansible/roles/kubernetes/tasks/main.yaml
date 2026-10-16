@@ -1,0 +1,15 @@
+---
+- name: Deploy | {{ argocd.name }}
+  ansible.builtin.include_tasks: "argocd-core.yaml"
+  when: argocd.deploy
+
+- name: Deploy | {{ kube_vip.name }}
+  ansible.builtin.include_tasks: "{{ kube_vip.name }}.yaml"
+  when: kube_vip.deploy
+
+- name: Deploy | {{ sealed_secrets.name }}
+  ansible.builtin.include_tasks: "{{ sealed_secrets.name }}.yaml"
+  when: sealed_secrets.deploy
+
+- name: Deploy | GitHub registry credentials
+  ansible.builtin.include_tasks: github-registry-credentials.yaml

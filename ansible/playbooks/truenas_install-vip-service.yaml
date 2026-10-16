@@ -1,0 +1,18 @@
+---
+- name: Install VIP systemd service
+  hosts: truenas_hosts
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Create systemd service file to add VIP from template
+      ansible.builtin.template:
+        src: templates/truenas_vip.service.j2
+        dest: /etc/systemd/system/truenas_vip.service
+        mode: '0644'
+
+    - name: Enable and start the VIP service
+      ansible.builtin.systemd:
+        name: truenas_vip.service
+        daemon_reload: true
+        enabled: true
+        state: started

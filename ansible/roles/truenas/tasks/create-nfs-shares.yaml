@@ -1,0 +1,37 @@
+---
+- name: Get current NFS shares
+  ansible.builtin.command: midclt call sharing.nfs.query
+  register: sharing_nfs_query
+  changed_when: false
+
+- name: Ensure NFS shares exist
+  ansible.builtin.command: >
+    midclt call sharing.nfs.create '{{ item | to_json }}'
+  loop: "{{ shares.nfs }}"
+  loop_control:
+    label: "{{ item.path }}"
+  vars:
+    existing: >-
+      {{ sharing_nfs_query.stdout | from_json
+         | selectattr('path', 'equalto', item.path) | list }}
+  changed_when: true
+  when: existing | length == 0
+
+- name: Update NFS shares that drifted from the desired state
+  ansible.builtin.command: >
+    midclt call sharing.nfs.update {{ existing[0].id }} '{{ item | to_json }}'
+  loop: "{{ shares.nfs }}"
+  loop_control:
+    label: "{{ item.path }}"
+  vars:
+    existing: >-
+      {{ sharing_nfs_query.stdout | from_json
+         | selectattr('path', 'equalto', item.path) | list }}
+    managed: >-
+      {{ existing[0] | default({}) | dict2items
+         | selectattr('key', 'in', item.keys() | list)
+         | items2dict }}
+  changed_when: true
+  when:
+    - existing | length == 1
+    - managed != item

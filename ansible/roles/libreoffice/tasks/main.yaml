@@ -1,0 +1,9 @@
+---
+- name: Update packaged cache
+  ansible.builtin.import_role:
+    name: system-update-package-cache
+
+- name: Install libreoffice
+  ansible.builtin.package:
+    name: libreoffice
+    state: present

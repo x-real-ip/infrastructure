@@ -1,0 +1,14 @@
+---
+- name: Reboot
+  ansible.builtin.reboot:
+
+- name: Restart systemd-resolved
+  ansible.builtin.service:
+    name: systemd-resolved
+    state: restarted
+
+- name: Restart k3s
+  ansible.builtin.systemd_service:
+    name: "{{ 'k3s' if 'k3s_master' in group_names else 'k3s-agent' }}"
+    state: restarted
+  throttle: 1

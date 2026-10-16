@@ -1,0 +1,29 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install extrepo
+  ansible.builtin.apt:
+    name: extrepo
+    state: present
+
+- name: Enable Librewolf repo via extrepo
+  ansible.builtin.command: extrepo enable librewolf
+  args:
+    creates: /etc/apt/sources.list.d/extrepo_librewolf.sources
+  register: extrepo_enable
+  changed_when: "'already enabled' not in (extrepo_enable.stdout | default(''))"
+
+- name: Update extrepo metadata for Librewolf
+  ansible.builtin.command: extrepo update librewolf
+  changed_when: false
+
+- name: Update apt cache after enabling repo
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install Librewolf
+  ansible.builtin.apt:
+    name: librewolf
+    state: present

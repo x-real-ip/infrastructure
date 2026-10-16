@@ -1,0 +1,38 @@
+---
+- name: Get Latest Argo CD Release Version Meta Data
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/argoproj/argo-cd/releases/latest
+    method: GET
+    return_content: true
+    status_code: 200
+    body_format: json
+  register: stable_version
+  when: argocd_cli.version == 'stable'
+
+- name: Set resolved argocd-cli version
+  ansible.builtin.set_fact:
+    resolved_argocd_cli_version: "{{ stable_version.json.tag_name | trim }}"
+  when: argocd_cli.version == 'stable'
+
+- name: Use provided argocd-cli version if not 'stable'
+  ansible.builtin.set_fact:
+    resolved_argocd_cli_version: "{{ argocd_cli.version }}"
+  when: argocd_cli.version != 'stable'
+
+- name: Download / Install Latest Argo CD CLI binary
+  ansible.builtin.get_url:
+    url: https://github.com/argoproj/argo-cd/releases/download/{{ resolved_argocd_cli_version }}/argocd-linux-amd64
+    dest: /usr/local/bin/argocd
+    mode: "0555"
+
+- name: Setup bash auto completion for argocd
+  ansible.builtin.shell: argocd completion bash > /etc/bash_completion.d/argocd_completion
+  register: output
+  changed_when: output.rc != 0
+
+- name: Ensure bash auto completion script has proper file permissions
+  ansible.builtin.file:
+    path: /etc/bash_completion.d/argocd_completion
+    owner: root
+    group: root
+    mode: "0644"

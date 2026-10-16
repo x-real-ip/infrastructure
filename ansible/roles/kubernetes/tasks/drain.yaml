@@ -1,0 +1,11 @@
+---
+- name: Drain node
+  kubernetes.core.k8s_drain:
+    state: drain
+    name: "{{ ansible_facts['hostname'] }}"
+    delete_options:
+      ignore_daemonsets: true
+      delete_emptydir_data: true
+      force: true
+      wait_timeout: "{{ kubernetes_drain_timeout }}"
+  delegate_to: "{{ kubernetes_control_node }}"
