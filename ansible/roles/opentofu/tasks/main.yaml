@@ -1,0 +1,35 @@
+---
+# Installs OpenTofu from the official APT repository, so it is upgraded
+# together with the other packages.
+- name: Create the APT keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Download the OpenTofu signing keys
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "/etc/apt/keyrings/{{ item.file }}"
+    mode: "0644"
+  loop:
+    - url: https://get.opentofu.org/opentofu.gpg
+      file: opentofu.gpg
+    # ASCII armored; APT reads it directly because of the .asc extension.
+    - url: https://packages.opentofu.org/opentofu/tofu/gpgkey
+      file: opentofu-repo.asc
+  loop_control:
+    label: "{{ item.file }}"
+
+- name: Add the OpenTofu repository
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/opentofu.list
+    mode: "0644"
+    content: |
+      deb [signed-by=/etc/apt/keyrings/opentofu.gpg,/etc/apt/keyrings/opentofu-repo.asc] https://packages.opentofu.org/opentofu/tofu/any/ any main
+
+- name: Install OpenTofu
+  ansible.builtin.apt:
+    name: tofu
+    state: present
+    update_cache: true

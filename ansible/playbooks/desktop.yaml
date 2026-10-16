@@ -86,6 +86,11 @@
       ansible.builtin.import_role:
         name: helm
 
+    - name: Install OpenTofu
+      ansible.builtin.import_role:
+        name: opentofu
+      become: true
+
     - name: Configure git
       ansible.builtin.import_role:
         name: git
