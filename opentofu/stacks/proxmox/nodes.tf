@@ -13,6 +13,66 @@ resource "proxmox_virtual_environment_time" "node" {
   time_zone = local.timezone
 }
 
+resource "proxmox_node_config" "node" {
+  for_each = local.nodes
+
+  node_name   = each.key
+  description = trimspace(each.value.notes)
+}
+
+# Replaces /etc/hosts. Every node resolves itself and its peer without DNS;
+# the IPv6 entries are the Debian defaults.
+resource "proxmox_virtual_environment_hosts" "node" {
+  for_each = local.nodes
+
+  node_name = each.key
+
+  entry {
+    address   = "127.0.0.1"
+    hostnames = ["localhost.localdomain", "localhost"]
+  }
+
+  entry {
+    address   = each.value.mgmt_ip
+    hostnames = ["${each.key}.${local.domain}", each.key]
+  }
+
+  entry {
+    address   = local.nodes[each.value.peer].mgmt_ip
+    hostnames = ["${each.value.peer}.${local.domain}", each.value.peer]
+  }
+
+  entry {
+    address   = "::1"
+    hostnames = ["ip6-localhost", "ip6-loopback"]
+  }
+
+  entry {
+    address   = "fe00::0"
+    hostnames = ["ip6-localnet"]
+  }
+
+  entry {
+    address   = "ff00::0"
+    hostnames = ["ip6-mcastprefix"]
+  }
+
+  entry {
+    address   = "ff02::1"
+    hostnames = ["ip6-allnodes"]
+  }
+
+  entry {
+    address   = "ff02::2"
+    hostnames = ["ip6-allrouters"]
+  }
+
+  entry {
+    address   = "ff02::3"
+    hostnames = ["ip6-allhosts"]
+  }
+}
+
 resource "proxmox_network_linux_bridge" "node" {
   for_each = local.node_bridges
 

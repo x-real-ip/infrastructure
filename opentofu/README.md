@@ -6,7 +6,7 @@ in one stack can never touch the resources of another.
 
 | Stack | Manages |
 | ----- | ------- |
-| `stacks/proxmox` | Proxmox cluster: cluster options, DNS, time zone, network bridges, APT repositories and storage |
+| `stacks/proxmox` | Proxmox cluster: cluster options, DNS, hosts, time zone, network bridges, SDN VLANs, APT repositories, storage, HA, replication, PCI mappings, pools and node certificates |
 
 Configuration *inside* the machines (packages, files, services) stays in
 Ansible.
@@ -40,6 +40,14 @@ pveum user token add tofu@pve provider --privsep 0
 ```
 
 Store `tofu@pve!provider=<value>` in Bitwarden. The value is shown only once.
+
+## Node certificates
+
+The web interface and API of every node use a certificate from the stamx CA.
+The stack reads them from `~/certs/proxmox` (variable `certificate_dir`):
+`<node>.crt`, `<node>.key` and `ca.crt`. How to create them is described in
+[Create the node certificates](https://x-real-ip.github.io/documentation/hypervisor/#5-create-the-node-certificates).
+The node private keys end up in the encrypted state.
 
 ## Usage
 
