@@ -18,6 +18,11 @@
       retries: 60
       delay: 10
 
+    - name: Disable Slack apt repository before any apt cache update
+      ansible.builtin.include_role:
+        name: slack
+        tasks_from: disable-repo.yaml
+
     - name: Ensure ANSIBLE_CONFIG is exported in .bashrc
       ansible.builtin.blockinfile:
         path: "{{ bashrc_path }}"

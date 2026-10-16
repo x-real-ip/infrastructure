@@ -1,0 +1,17 @@
+---
+# Slack is installed from the .deb, the packagecloud repo it adds is signed with a
+# SHA1-bound key that apt (sqv) rejects, which breaks every apt cache update.
+- name: Prevent the Slack package from (re)adding its apt repository
+  ansible.builtin.copy:
+    dest: /etc/default/slack
+    content: |
+      repo_add_once="false"
+      repo_reenable_on_distupgrade="false"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Remove the Slack apt repository
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/slack.list
+    state: absent

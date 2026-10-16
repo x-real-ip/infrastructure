@@ -21,6 +21,11 @@
     state: present
   when: ansible_os_family == "Debian"
 
+- name: Disable Slack apt repository
+  ansible.builtin.import_tasks:
+    file: disable-repo.yaml
+  when: ansible_os_family == "Debian"
+
 - name: Slack autostart
   ansible.builtin.import_tasks:
     file: autostart.yaml
