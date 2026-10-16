@@ -28,3 +28,18 @@ jobs:
       name: ${{ matrix.name }}
       target: ${{ matrix.target }}
       type: ${{ matrix.type }}
+
+  check-ansible-image:
+    uses: x-real-ip/github-actions/.github/workflows/new-release-issue.yaml@v3
+    secrets:
+      PAT: ${{ secrets.PAT }}
+    with:
+      name: ansible-python
+      type: docker
+      target: library/python
+      bump: true
+      bump_type: containerfile
+      containerfile: ansible/Containerfile
+      image: docker.io/python
+      include_tags: '^3\.[0-9]*-slim$'
+      exclude_tags: ""
