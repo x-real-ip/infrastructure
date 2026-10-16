@@ -3,6 +3,10 @@ resource "proxmox_storage_directory" "local" {
   path    = "/var/lib/vz"
   content = ["backup", "iso", "vztmpl"]
 
+  # /var/lib/vz exists separately on every node. The provider defaults
+  # shared to true for directory storage.
+  shared = false
+
   lifecycle {
     prevent_destroy = true
   }

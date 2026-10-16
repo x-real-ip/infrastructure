@@ -57,7 +57,9 @@ Commit `terraform.tfstate` and `.terraform.lock.hcl` after every apply.
 
 ## Adopting existing resources
 
-`imports.tf` adopts the configuration that already exists on the cluster. The
-first `tofu plan` must report only imports and no changes. If it shows a
-change, align the code with reality before applying. Pay special attention to
-the bridges: `vmbr0` carries the management address of the node.
+To bring something that already exists under OpenTofu, add a temporary
+`imports.tf` with an `import` block for it. The `tofu plan` must report only
+imports and no changes. If it shows a change, align the code with reality
+before applying. Remove `imports.tf` after the apply: an import block for a
+resource that does not exist, for example a bridge on a freshly installed
+node, makes the plan fail.
