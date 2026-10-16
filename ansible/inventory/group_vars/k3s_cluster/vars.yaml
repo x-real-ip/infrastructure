@@ -17,7 +17,7 @@ output_file_location: "/home/coen/Downloads/"
 k3s_token: "{{ vault_k3s_token }}"
 
 # k3s version to install https://update.k3s.io/v1-release/channels/stable
-k3s_version: "v1.36.4+k3s1"
+k3s_version: "v1.37.1+k3s1"
 
 # https://docs.k3s.io/installation/registry-mirror
 embedded_registry:
@@ -33,7 +33,7 @@ argocd:
   deploy: true
   name: argocd-core
   namespace: argocd
-  version: "v3.5.4" # curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name
+  version: "v3.5.5" # curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name
 
 kube_vip:
   deploy: true
