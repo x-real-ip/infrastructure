@@ -20,7 +20,7 @@ jobs:
             target: kube-vip/kube-vip
           - name: Sealed-secrets
             type: release
-            target: bitnami-labs/sealed-secrets
+            target: bitnami/sealed-secrets
           - name: K3s
             type: release
             target: k3s-io/k3s
