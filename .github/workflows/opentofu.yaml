@@ -22,6 +22,7 @@ jobs:
       matrix:
         stack:
           - proxmox
+          - talos
     defaults:
       run:
         working-directory: opentofu/stacks/${{ matrix.stack }}

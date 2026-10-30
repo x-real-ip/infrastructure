@@ -7,9 +7,17 @@ in one stack can never touch the resources of another.
 | Stack | Manages |
 | ----- | ------- |
 | `stacks/proxmox` | Proxmox cluster: cluster options, DNS, hosts, time zone, network bridges, SDN VLANs, APT repositories, storage, HA, replication, PCI mappings, pools and node certificates |
+| `stacks/talos` | Talos Kubernetes cluster: the image, the VMs on Proxmox, the machine configuration, the etcd bootstrap and the Kubernetes version |
 
 Configuration *inside* the machines (packages, files, services) stays in
-Ansible.
+Ansible. Talos is the exception: it has no SSH or shell, so its machine
+configuration is part of `stacks/talos`.
+
+Files that every stack needs live in `shared/` and are symlinked into the
+stacks: `encryption.tf` (state encryption and `state_passphrase`) and
+`proxmox.tf` (the Proxmox provider and `endpoint`). Change them in
+`shared/`; a new stack links them with
+`ln -s ../../shared/encryption.tf ../../shared/proxmox.tf .`.
 
 ## Requirements
 
@@ -62,6 +70,33 @@ tofu apply
 ```
 
 Commit `terraform.tfstate` and `.terraform.lock.hcl` after every apply.
+
+## Talos
+
+The stack depends on the proxmox stack: the `systems` vnet, the
+`kubernetes` pool and the `import` content type on `local` must exist, so
+apply `stacks/proxmox` first.
+
+Nodes, addresses, sizing and versions are in `stacks/talos/locals.tf`. A
+node only names its role, host, VM ID and address; CPU, memory and disk come
+from its role and can be overridden per node.
+
+```sh
+cd stacks/talos
+tofu apply
+tofu output -raw talosconfig > ~/.talos/config
+tofu output -raw kubeconfig > ~/.kube/config
+```
+
+The nodes stay `NotReady` until Cilium is installed.
+
+- **Kubernetes upgrade**: change `kubernetes_version` and apply. Talos
+  upgrades the control plane and kubelets one by one.
+- **Talos upgrade**: change `talos_version` and apply. This only builds the
+  new image. Upgrade the nodes one at a time, control planes first:
+  `talosctl upgrade -n <ip> --image "$(tofu output -raw installer_image)"`.
+  The VMs are never recreated for this: the disk image is only read when a VM
+  is created.
 
 ## Adopting existing resources
 
